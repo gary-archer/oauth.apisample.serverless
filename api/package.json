@@ -1,19 +1,16 @@
 {
-  "name": "api-lambda",
+  "name": "basicapi",
   "version": "1.0.0",
-  "description": "",
-  "lambdaname": "arn:aws:lambda:us-east-1:090109105180:function:api-lambda",
-  "main": "index.js",
+  "description": "A Basic API deployed as an AWS lambda",
+  "main": "index.ts",
   "scripts": {
-    "test": "lambda-local -l src/index.js -h handler -e test/test.json -v 1",
-    "package": "ts-node scripts/build.ts && cd build && npm install && cd .. && zip -r upload.zip build/* -x *.json",
-    "deploy": "aws lambda update-function-code --function-name arn:aws:lambda:us-east-1:090109105180:function:api-lambda --zip-file fileb://upload.zip"
+    "lint": "tslint -c tslint.json src/**/*.ts"
   },
   "devDependencies": {
-    "aws-sdk": "^2.286.2",
-    "fs-extra": "^7.0.0",
-    "lambda-local": "^1.5.1",
-    "ts-node": "^7.0.0",
+    "@types/aws-lambda": "^8.10.10",
+    "serverless-offline": "^3.25.6",
+    "serverless-plugin-typescript": "EugeneDraitsev/serverless-plugin-typescript#build",
+    "tslint": "^5.11.0",
     "typescript": "^3.0.1"
   },
   "author": "Gary Archer",
