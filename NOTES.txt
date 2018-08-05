@@ -1,0 +1,6 @@
+1. Productive setup
+   Test on Mac
+ 
+2. Get API gateway basically working
+
+2. Deploy dependencies to AWS in zip file, but not devDependencies

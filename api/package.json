@@ -1,0 +1,21 @@
+{
+  "name": "api-lambda",
+  "version": "1.0.0",
+  "description": "",
+  "lambdaname": "arn:aws:lambda:us-east-1:090109105180:function:api-lambda",
+  "main": "index.js",
+  "scripts": {
+    "test": "lambda-local -l src/index.js -h handler -e test/test.json -v 1",
+    "package": "ts-node scripts/build.ts && cd build && npm install && cd .. && zip -r upload.zip build/* -x *.json",
+    "deploy": "aws lambda update-function-code --function-name arn:aws:lambda:us-east-1:090109105180:function:api-lambda --zip-file fileb://upload.zip"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.286.2",
+    "fs-extra": "^7.0.0",
+    "lambda-local": "^1.5.1",
+    "ts-node": "^7.0.0",
+    "typescript": "^3.0.1"
+  },
+  "author": "Gary Archer",
+  "license": "ISC"
+}
