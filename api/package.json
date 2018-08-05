@@ -1,17 +1,18 @@
 {
   "name": "basicapi",
   "version": "1.0.0",
-  "description": "A Basic API deployed as an AWS lambda",
+  "description": "A Basic OAuth secured API deployed as an AWS lambda",
   "main": "index.js",
   "scripts": {
     "lint": "tslint -c tslint.json src/**/*.ts",
     "build": "ts-node --no-cache src/local.ts",
     "start": "nodemon -e ts --exec \"npm run build\"",
     "httpDebug": "cross-env HTTPS_PROXY=http://127.0.0.1:8888 nodemon -e ts --exec \"npm run build\"",
-    "aws-build": "ts-node scripts/clean.ts && tsc",
+    "aws-compile": "ts-node scripts/clean.ts && tsc",
     "aws-files": "ts-node scripts/fileSetup.ts && cd .build && npm install && cd ..",
     "aws-package": "cd .build && zip -r deploy.zip * -x *.zip package*.json && cd ..",
-    "aws-start": "npm run aws-build && npm run aws-files && npm run aws-package"
+    "aws-build": "npm run aws-build && npm run aws-files && npm run aws-package",
+    "aws-deploy": "sls deploy"
   },
   "author": "Gary Archer",
   "license": "ISC",
