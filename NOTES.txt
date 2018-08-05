@@ -8,7 +8,7 @@ SETUP AND COMMANDS
 
 Deploy the API Gateway - URL is then of this form:
 https://{restapi-id}.execute-api.{region}.amazonaws.com/{stageName}
-https://yky9lwpz8j.execute-api.us-east-1.amazonaws.com/dev
+https://yky9lwpz8j.execute-api.us-east-1.amazonaws.com/dev/companies
 
 LINKS
 -----
@@ -29,5 +29,5 @@ https://medium.freecodecamp.org/node-js-apis-on-aws-the-pros-and-cons-of-express
 
 TODO
 ----
-1. Fix deploy dependencies problem
-2. Get sls offline start to use SSL as for other APIs rather than localhost:3000
+1. Unhandled promise rejection in build scripts
+2. Get rid of Winston dependency for AWS and use DI?
