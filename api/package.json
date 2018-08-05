@@ -9,7 +9,7 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.10",
     "serverless-offline": "^3.25.6",
-    "serverless-plugin-typescript": "EugeneDraitsev/serverless-plugin-typescript#build",
+    "serverless-plugin-typescript": "^1.1.5",
     "tslint": "^5.11.0",
     "typescript": "^3.0.1"
   },

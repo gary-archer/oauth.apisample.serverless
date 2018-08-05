@@ -1,4 +1,6 @@
-# Serverless configuration - see docs.serverless.com
+#
+# Serverless configuration for a generic endpoint
+#
 
 service: basicapi
 
@@ -7,7 +9,7 @@ provider:
   runtime: nodejs8.10
 
 functions:
-  hello:
+  any:
     handler: index.handler
     events:
       - http: ANY /

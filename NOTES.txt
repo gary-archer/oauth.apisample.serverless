@@ -1,3 +1,11 @@
+Setup:
+* sudo npm install serverless -g
+* sls offline start
+* serverless config credentials --provider aws --key mykey --secret mysecret --overwrite
+* sls deploy -v
+* sls invoke -f any -l
+ 
+
 Typescript and Serverless:
 https://blog.shovonhasan.com/deploying-a-typescript-node-aws-lambda-function-with-serverless/
 
