@@ -1,16 +1,33 @@
-Setup:
+SETUP AND COMMANDS
+------------------
 * sudo npm install serverless -g
-* sls offline start
+* sls offline start then browse to http://localhost:3000
 * serverless config credentials --provider aws --key mykey --secret mysecret --overwrite
 * sls deploy -v
-* sls invoke -f any -l
- 
+* sls invoke -f any -l to run the lambda
 
+Deploy the API Gateway - URL is then of this form:
+https://{restapi-id}.execute-api.{region}.amazonaws.com/{stageName}
+https://yky9lwpz8j.execute-api.us-east-1.amazonaws.com/dev
+
+LINKS
+-----
 Typescript and Serverless:
 https://blog.shovonhasan.com/deploying-a-typescript-node-aws-lambda-function-with-serverless/
 
-Issue on Windows:
-https://github.com/prismagraphql/serverless-plugin-typescript/issues/23
-
 Using Express with API gateway
 https://serverless.com/blog/serverless-express-rest-api/
+
+Deployment problems on Windows:
+https://github.com/prismagraphql/serverless-plugin-typescript/issues/23
+
+Dependencies not included in AWS deployment:
+https://github.com/serverless/serverless/issues/3915
+
+Pros and Cons - Serverless v Epress:
+https://medium.freecodecamp.org/node-js-apis-on-aws-the-pros-and-cons-of-express-versus-serverless-a370ab7eadd7
+
+TODO
+----
+1. Fix deploy dependencies problem
+2. Get sls offline start to use SSL as for other APIs rather than localhost:3000

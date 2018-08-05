@@ -2,17 +2,28 @@
   "name": "basicapi",
   "version": "1.0.0",
   "description": "A Basic API deployed as an AWS lambda",
-  "main": "index.ts",
+  "main": "index.js",
   "scripts": {
-    "lint": "tslint -c tslint.json src/**/*.ts"
-  },
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.10",
-    "serverless-offline": "^3.25.6",
-    "serverless-plugin-typescript": "^1.1.5",
-    "tslint": "^5.11.0",
-    "typescript": "^3.0.1"
+    "lint": "tslint -c tslint.json src/**/*.ts",
+    "build": "ts-node --no-cache src/server.ts",
+    "start": "nodemon -e ts --exec \"npm run build\"",
+    "httpDebug": "cross-env HTTPS_PROXY=http://127.0.0.1:8888 nodemon -e ts --exec \"npm run build\"",
+    "aws-build": "ts-node scripts/clean.ts && tsc && rm .build/local.js",
+    "aws-dependencies": "ts-node scripts/dependencySetup.ts && cd .build && npm install && cd ..",
+    "aws-package": "cd .build && zip -r deploy.zip * -x *.zip package*.json && cd ..",
+    "aws-deploy": "npm run aws-build && npm run aws-dependencies && npm run aws-package && sls deploy"
   },
   "author": "Gary Archer",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "serverless-http": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.16.0",
+    "fs-extra": "^7.0.0",
+    "ts-node": "^7.0.0",
+    "tslint": "^5.11.0",
+    "typescript": "^3.0.1"
+  }
 }

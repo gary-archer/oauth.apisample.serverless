@@ -10,17 +10,11 @@ provider:
 
 functions:
   any:
-    handler: index.handler
+    handler: aws.handler
     events:
       - http: ANY /
       - http: 'ANY {proxy+}'
 
-plugins:
-  - serverless-offline
-  - serverless-plugin-typescript
-
 package:
-  exclude:
-    - node_modules/**/*
-  include:
-    index.ts
+  artifact:
+    .build/deploy.zip
