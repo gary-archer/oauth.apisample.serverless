@@ -5,9 +5,9 @@ import {CompanyTransactions} from '../entities/companyTransactions';
 import {Transaction} from '../entities/transaction';
 
 /*
- * A simple API controller for getting data about a startup company and its investments
+ * A simple API controller for getting data about a company and its investments
  */
-export class StartupCompanyRepository {
+export class CompanyRepository {
 
     /*
      * Every API request receives our complex claims which are only calculated when the token is first received
@@ -22,7 +22,7 @@ export class StartupCompanyRepository {
     }
 
     /*
-     * Return the list of startup companies from a hard coded data file
+     * Return the list of companies from a hard coded data file
      */
     public async getCompanyList(): Promise<Company[]> {
 
@@ -36,7 +36,7 @@ export class StartupCompanyRepository {
     }
 
     /*
-     * Return transactions for a startup company given its id
+     * Return transactions for a company given its id
      */
     public async getCompanyTransactions(id: number): Promise<CompanyTransactions | null> {
 

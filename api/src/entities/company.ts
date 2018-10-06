@@ -1,5 +1,5 @@
 /*
- * A simple startup company entity
+ * A simple company entity
  */
 export interface Company {
     id: number;

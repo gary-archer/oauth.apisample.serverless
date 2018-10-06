@@ -5,7 +5,7 @@ import {ClaimsMiddleware} from '../plumbing/claimsMiddleware';
 import {ErrorHandler} from '../plumbing/errorHandler';
 import {ResponseWriter} from '../plumbing/responseWriter';
 import {AuthorizationMicroservice} from './authorizationMicroservice';
-import {StartupCompanyController} from './startupCompanyController';
+import {CompanyController} from './companyController';
 import {UserInfoController} from './userInfoController';
 
 /*
@@ -47,8 +47,8 @@ export class WebApi {
 
         // Define routes for API operations
         this._expressApp.get('/api/userclaims/current', UserInfoController.getUserClaims);
-        this._expressApp.get('/api/companies', StartupCompanyController.getCompanyList);
-        this._expressApp.get('/api/companies/:id([0-9]+)', StartupCompanyController.getCompanyTransactions);
+        this._expressApp.get('/api/companies', CompanyController.getCompanyList);
+        this._expressApp.get('/api/companies/:id([0-9]+)', CompanyController.getCompanyTransactions);
 
         // Handle exceptions
         this._expressApp.use('/api/*', this._unhandledExceptionMiddleware);

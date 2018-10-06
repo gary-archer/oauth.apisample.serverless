@@ -4,12 +4,6 @@
 export class ApiLogger {
 
     /*
-     * Initialize the logger
-     */
-    public static initialize(): void {
-    }
-
-    /*
      * Log info level
      */
     public static info(...args: any[]): void {

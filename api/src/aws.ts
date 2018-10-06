@@ -6,7 +6,6 @@ import * as fs from 'fs-extra';
 import * as serverlessHttp from 'serverless-http';
 import {Configuration} from './configuration/configuration';
 import {WebApi} from './logic/webApi';
-import {ApiLogger} from './plumbing/apiLogger';
 
 /*
  * First load configuration
@@ -18,7 +17,6 @@ const apiConfig = JSON.parse(apiConfigText) as Configuration;
  * Create the express app
  */
 const expressApp = express();
-ApiLogger.initialize();
 
 /*
  * Configure the API

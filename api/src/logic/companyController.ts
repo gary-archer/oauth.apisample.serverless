@@ -2,22 +2,22 @@ import {Request, Response} from 'express';
 import {ApiLogger} from '../plumbing/apiLogger';
 import {ErrorHandler} from '../plumbing/errorHandler';
 import {ResponseWriter} from '../plumbing/responseWriter';
-import {StartupCompanyRepository} from './startupCompanyRepository';
+import {CompanyRepository} from './companyRepository';
 
 /*
  * Our API controller runs after claims handling has completed and we can use claims for authorization
  */
-export class StartupCompanyController {
+export class CompanyController {
 
     /*
-     * Return the list of startup companies
+     * Return the list of companies
      */
     public static async getCompanyList(request: Request, response: Response): Promise<void> {
 
         try {
             // Create a repository and give it claims
-            const repository = new StartupCompanyRepository(response.locals.claims);
-            ApiLogger.info('StartupCompanyController', 'Returning company list');
+            const repository = new CompanyRepository(response.locals.claims);
+            ApiLogger.info('CompanyController', 'Returning company list');
 
             // Get data as entities
             const companies = await repository.getCompanyList();
@@ -33,13 +33,13 @@ export class StartupCompanyController {
     }
 
     /*
-     * Return the transaction details for a startup company
+     * Return the transaction details for a company
      */
     public static async getCompanyTransactions(request: Request, response: Response): Promise<void> {
 
         try {
             // Create a repository
-            const repository = new StartupCompanyRepository(response.locals.claims);
+            const repository = new CompanyRepository(response.locals.claims);
             const id = parseInt(request.params.id, 10);
             ApiLogger.info('API call', `Request for transaction details for company: ${id}`);
 
