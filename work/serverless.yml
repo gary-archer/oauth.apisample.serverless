@@ -1,0 +1,76 @@
+########################
+## Serverless.yml is required to run the functions using VS debug tool for stepping over code etc.
+#######################
+
+service: members-service
+
+plugins:
+  -serverless-pseudo-parameters
+  -serverless-sam
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+
+# overwrite defaults here
+  stage: sandbox
+  region: eu-west-1
+
+functions:
+
+  get-transactions:
+    handler: handlers/get-transactions.handler
+    events:
+      - http: 
+          path: /{id}/transactions
+          method: get
+          request: 
+          parameters: 
+             paths: 
+               id: true
+    environment:
+      SLS_DEBUG: true
+    
+  get-dmc:
+    handler: handlers/get-dmc.handler
+    events: 
+      - http:
+          path: /
+          method: get
+          parameters: 
+             paths: 
+               id: true
+    environment:
+      SLS_DEBUG: true
+
+  put-profile:
+    handler: handlers/put-profile.handler
+    events: 
+      - http:
+          path: /{id}
+          method: post
+          request: 
+          parameters: 
+             paths: 
+               id: true
+    environment:
+      SLS_DEBUG: true
+
+  post-enrol:
+    handler: handlers/post-enrol.handler
+    events: 
+      - http:
+          path: /{id}
+          method: post
+          request: 
+    environment:
+      SLS_DEBUG: true
+
+  get-status:
+    handler: handlers/get-status.handler
+    events: 
+      - http:
+        path: /status
+        method: get
+    environment:
+      SLS_DEBUG: true

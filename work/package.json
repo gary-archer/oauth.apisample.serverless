@@ -1,0 +1,54 @@
+{
+  "name": "members",
+  "version": "1.0.0",
+  "description": "Prequisites: *npm install",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha tests/tests.js --watch",
+    "unit-tests": "mocha tests/unit-tests/*.js",
+    "unit-test-coverage": "nyc npm run unit-tests"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "deep-equal": "^1.0.1",
+    "elasticsearch": "^15.1.1",
+    "fast-json-patch": "^2.0.7",
+    "got": "^9.2.0",
+    "md5": "^2.2.1",
+    "moment": "^2.22.2",
+    "request-image-size": "^2.1.0",
+    "request-promise-native": "^1.0.5",
+    "tv4": "^1.3.0",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "assert-rejects": "^1.0.0",
+    "aws-sdk": "^2.307.0",
+    "mocha": "^5.2.0",
+    "nyc": "^13.0.1",
+    "proxyquire": "^2.1.0",
+    "serverless": "^1.30.3",
+    "sinon": "^6.2.0",
+    "tunnel-agent": "^0.6.0",
+    "url": "^0.11.0"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "exclude": [
+      "tests/**"
+    ],
+    "lines": 80,
+    "statements": 80,
+    "functions": 80,
+    "branches": 80,
+    "reporter": [
+      "lcov",
+      "text-summary",
+      "html",
+      "teamcity"
+    ],
+    "report-dir": ".reports/coverage-report",
+    "temp-directory": ".reports/.nyc"
+  }
+}

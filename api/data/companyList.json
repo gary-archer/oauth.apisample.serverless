@@ -1,32 +1,28 @@
 [
     {
         "id":               1,
-        "name":             "Virtuo",
-        "description":      "A virtual reality platform for gaming",
+        "name":             "Company 1",
         "targetUsd":        20000000,
         "investmentUsd":    13801299,
         "noInvestors":      2310
     },
     {
         "id":               2,
-        "name":             "FairLoans",
-        "description":      "A system for connecting borrowers and lenders",
+        "name":             "Company 2",
         "targetUsd":        35000000,
         "investmentUsd":    41251365,
         "noInvestors":      3951
     },
     {
         "id":               3,
-        "name":             "DataPower",
-        "description":      "A cloud provider for distributed data gathering and processing",
+        "name":             "Company 3",
         "targetUsd":        70000000,
         "investmentUsd":    59621800,
         "noInvestors":      10133
     },
     {
         "id":               4,
-        "name":             "FinExec",
-        "description":      "A live financial prediction system for executives",
+        "name":             "Company4",
         "targetUsd":        25000000,
         "investmentUsd":    7114335,
         "noInvestors":      1201
