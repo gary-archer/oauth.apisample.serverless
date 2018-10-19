@@ -43,7 +43,7 @@ export class WebApi {
     public configureRoutes(): void {
 
         // All API requests are authorized first
-        this._expressApp.get('/api/*', this._authorizeRequest);
+        this._expressApp.use('/api/*', this._authorizeRequest);
 
         // Define routes for API operations
         this._expressApp.get('/api/userclaims/current', UserInfoController.getUserClaims);
