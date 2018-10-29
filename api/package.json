@@ -2,12 +2,12 @@
   "name": "basicapi",
   "version": "1.0.0",
   "description": "A Basic OAuth secured API deployed as an AWS lambda",
-  "main": "index.ts",
+  "main": "handler.ts",
   "scripts": {
     "lint": "tslint -c tslint.json src/**/*.ts",
     "build": "tsc",
     "getCompanyList": "sls invoke local -f getCompanyList",
-    "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p data/transactions.json"
+    "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/transactions.json"
   },
   "author": "Gary Archer",
   "license": "ISC",

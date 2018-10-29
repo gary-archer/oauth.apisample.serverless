@@ -1,7 +1,3 @@
-#
-# Serverless configuration of HTTP endpoints
-#
-
 service: basicapi
 
 provider:
@@ -10,7 +6,7 @@ provider:
 
 functions:
   getCompanyList:
-    handler: build_out/handler.handler1
+    handler: build_out/handler.getCompanyList
     events:
       - http: 
           path: /companies
@@ -21,3 +17,16 @@ functions:
                id: true
     environment:
       SLS_DEBUG: true
+
+  getCompanyTransactions:
+    handler: build_out/handler.getCompanyTransactions
+    events:
+      - http: 
+          path: /companies/{id}/transactions
+          method: get
+          request: 
+          parameters: 
+             paths: 
+               id: true
+    environment:
+      SLS_DEBUG: true      

@@ -1,33 +1,32 @@
-/*
- * The main handler for incoming routes
- */
 import middy from 'middy';
 
 /*
-const routes = [
-    "getCompanyList", CompanyController.getCompanyList,
-    "getCompanyTransactions", CompanyController.getCompanyTransactions
-]
-*/
+ * The lambda handler class
+ */
+class Handler {
 
-const getCompanyList = async (event: any, context: any): Promise<any> => {
+    public async getCompanyList(event: any, context: any): Promise<any> {
 
-    console.log('In getCompanyList');
-    return {
-        result: 'success',
-        message: 'company list',
-    };
-};
+        console.log('In getCompanyList');
+        return {
+            result: 'success',
+            message: 'company list',
+        };
+    }
 
-const getCompanyTransactions = async (event: any, context: any): Promise<any> => {
+    public async getCompanyTransactions(event: any, context: any): Promise<any> {
 
-    console.log('In getCompanyTransactions');
-    return {
-        result: 'success',
-        message: 'company transactions',
-    };
-};
+        console.log('In getCompanyTransactions');
+        return {
+            result: 'success',
+            message: 'company transactions',
+        };
+    }
+}
 
-const handler1 = middy(getCompanyList);
-const handler2 = middy(getCompanyTransactions);
-export {handler1};
+const handler = new Handler();
+
+const getCompanyList = middy(handler.getCompanyList);
+const getCompanyTransactions = middy(handler.getCompanyTransactions);
+
+export {getCompanyList, getCompanyTransactions};
