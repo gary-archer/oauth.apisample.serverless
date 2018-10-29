@@ -1,10 +1,16 @@
+NEXT
+----
+1. Get shell working from command line for 2 methods returning objects
+2. Get error responses working
+3. Look into types and TypeScript plugin
+4. Push to AWS and reduce upload size
+5. Do blog write up first draft
+
 LOCAL EXECUTION
 ---------------
 sls invoke local -f get-transactions -p=..\transactions.json
 sls invoke local -f put-profile -p=..\profile.json
 sls invoke local -f post-enrol -p=..\enrol.json
-
-
 
 SETUP AND COMMANDS
 ------------------
