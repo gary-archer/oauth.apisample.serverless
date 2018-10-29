@@ -7,7 +7,7 @@
     "lint": "tslint -c tslint.json src/**/*.ts",
     "build": "tsc",
     "getCompanyList": "sls invoke local -f getCompanyList",
-    "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/transactions.json"
+    "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json"
   },
   "author": "Gary Archer",
   "license": "ISC",
