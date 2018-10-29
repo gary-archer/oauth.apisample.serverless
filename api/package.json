@@ -15,6 +15,7 @@
     "middy": "^0.19.2"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.14",
     "serverless": "^1.32.0",
     "tslint": "^5.11.0",
     "typescript": "^3.0.1"

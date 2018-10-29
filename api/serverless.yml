@@ -6,7 +6,7 @@ provider:
 
 functions:
   getCompanyList:
-    handler: build_out/handler.getCompanyList
+    handler: build/routes.getCompanyList
     events:
       - http: 
           path: /companies
@@ -19,7 +19,7 @@ functions:
       SLS_DEBUG: true
 
   getCompanyTransactions:
-    handler: build_out/handler.getCompanyTransactions
+    handler: build/routes.getCompanyTransactions
     events:
       - http: 
           path: /companies/{id}/transactions
@@ -29,4 +29,10 @@ functions:
              paths: 
                id: true
     environment:
-      SLS_DEBUG: true      
+      SLS_DEBUG: true
+
+package:
+  exclude:
+    - node_modules/**/*
+  include:
+    handler.ts
