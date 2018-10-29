@@ -1,5 +1,5 @@
 #
-# Serverless configuration for a generic endpoint
+# Serverless configuration of HTTP endpoints
 #
 
 service: basicapi
@@ -9,12 +9,15 @@ provider:
   runtime: nodejs8.10
 
 functions:
-  any:
-    handler: aws.handler
+  getCompanyList:
+    handler: build_out/handler.handler1
     events:
-      - http: ANY /
-      - http: 'ANY {proxy+}'
-
-package:
-  artifact:
-    .build/deploy.zip
+      - http: 
+          path: /companies
+          method: get
+          request: 
+          parameters: 
+             paths: 
+               id: true
+    environment:
+      SLS_DEBUG: true

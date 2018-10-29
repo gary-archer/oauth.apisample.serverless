@@ -1,3 +1,11 @@
+LOCAL EXECUTION
+---------------
+sls invoke local -f get-transactions -p=..\transactions.json
+sls invoke local -f put-profile -p=..\profile.json
+sls invoke local -f post-enrol -p=..\enrol.json
+
+
+
 SETUP AND COMMANDS
 ------------------
 * sudo npm install serverless -g

@@ -1,4 +1,4 @@
 .gitignore
 node_modules
-.build
+build_out
 .serverless
