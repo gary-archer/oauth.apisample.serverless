@@ -6,7 +6,7 @@ provider:
 
 functions:
   getCompanyList:
-    handler: build/routes.getCompanyList
+    handler: build/handler.getCompanyList
     events:
       - http: 
           path: /companies
@@ -19,7 +19,7 @@ functions:
       SLS_DEBUG: true
 
   getCompanyTransactions:
-    handler: build/routes.getCompanyTransactions
+    handler: build/handler.getCompanyTransactions
     events:
       - http: 
           path: /companies/{id}/transactions

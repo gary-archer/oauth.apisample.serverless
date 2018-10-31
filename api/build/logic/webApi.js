@@ -7,40 +7,31 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const middy_1 = __importDefault(require("middy"));
-const companyController_1 = require("./logic/companyController");
-const errorHandlingMiddleware_1 = require("./plumbing/errorHandlingMiddleware");
+const companyController_1 = require("./companyController");
 /*
  * Entry points for business logic
  */
-class Routes {
+class WebApi {
     getCompanyList(event, context) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log('routes');
+            console.log('*** DEBUG: WebApi');
             const data = yield companyController_1.CompanyController.getCompanyList();
-            return JSON.stringify(data);
+            return {
+                statusCode: 200,
+                body: JSON.stringify(data),
+            };
         });
     }
     getCompanyTransactions(event, context) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log('*** DEBUG: WebApi');
             const data = yield companyController_1.CompanyController.getCompanyTransactions();
-            return JSON.stringify(data);
+            return {
+                statusCode: 200,
+                body: JSON.stringify(data),
+            };
         });
     }
 }
-/*
- * Plug in middleware
- */
-console.log('DEBUG');
-console.log(typeof errorHandlingMiddleware_1.errorHandlingMiddleware);
-const routes = new Routes();
-const getCompanyList = middy_1.default(routes.getCompanyList)
-    .use(errorHandlingMiddleware_1.errorHandlingMiddleware);
-exports.getCompanyList = getCompanyList;
-const getCompanyTransactions = middy_1.default(routes.getCompanyTransactions)
-    .use(errorHandlingMiddleware_1.errorHandlingMiddleware);
-exports.getCompanyTransactions = getCompanyTransactions;
+exports.WebApi = WebApi;

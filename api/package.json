@@ -12,6 +12,7 @@
   "author": "Gary Archer",
   "license": "ISC",
   "dependencies": {
+    "fs-extra": "^7.0.0",
     "middy": "^0.19.2"
   },
   "devDependencies": {
