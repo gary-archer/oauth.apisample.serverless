@@ -26,6 +26,8 @@ export class CompanyRepository {
      */
     public async getCompanyList(): Promise<Company[]> {
 
+        // TODO: Put back correct paths
+
         // We will first get all data
         const companiesText = await fs.readFile('data/companyList2.json');
         const companies = JSON.parse(companiesText) as Company[];

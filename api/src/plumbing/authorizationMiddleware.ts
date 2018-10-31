@@ -5,21 +5,35 @@ import {ApiClaims} from '../entities/apiClaims';
 import {ApiLogger} from './apiLogger';
 
 /*
- * Custom middleware for authorization
+ * The middleware coded in a class based manner
  */
-export const authorizationMiddleware = (config: Configuration) => {
+class AuthorizationMiddleware {
 
-    return ({
-      before: (handler: IHandlerLambda<any, any>, next: any) => {
+    private _apiConfig: Configuration;
 
-        // For now we'll return a hard coded result
+    public constructor(apiConfig: Configuration) {
+        this._apiConfig = apiConfig;
+        this.onBefore = this.onBefore.bind(this);
+    }
+
+    public onBefore(handler: IHandlerLambda<any, any>, next: any) {
+        handler.event.claims = this._getHardCodedClaims();
+        return next();
+    }
+
+    private _getHardCodedClaims(): ApiClaims {
         const claims = new ApiClaims('gary.archer', '', '');
         claims.setProductSpecificUserRights([1, 2, 3]);
-        handler.event.claims = claims;
+        return claims;
+    }
+}
 
-        // TODO: Try to convert this to a class and export a single public function
-
-        return next();
-      },
+/*
+ * Do the export plumbing
+ */
+export const authorizationMiddleware = (config: Configuration) => {
+    const middleware = new AuthorizationMiddleware(config);
+    return ({
+        before: middleware.onBefore,
     });
 };
