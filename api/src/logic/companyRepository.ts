@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra';
-// import {ApiClaims} from '../entities/apiClaims';
+import {ApiClaims} from '../entities/apiClaims';
 import {Company} from '../entities/company';
 import {CompanyTransactions} from '../entities/companyTransactions';
 import {Transaction} from '../entities/transaction';
@@ -12,13 +12,13 @@ export class CompanyRepository {
     /*
      * Every API request receives our complex claims which are only calculated when the token is first received
      */
-    // private _claims: ApiClaims;
+    private _claims: ApiClaims;
 
     /*
      * Receive claims when constructed
      */
-    public constructor(/*claims: ApiClaims*/) {
-        // this._claims = claims;
+    public constructor(claims: ApiClaims) {
+        this._claims = claims;
     }
 
     /*
@@ -73,9 +73,7 @@ export class CompanyRepository {
      * Apply claims that were read when the access token was first validated
      */
     private _isUserAuthorizedForCompany(companyId: number): boolean {
-        // const found = this._claims.userCompanyIds.find((c) => c === companyId);
-        // return !!found;
-
-        return true;
+        const found = this._claims.userCompanyIds.find((c) => c === companyId);
+        return !!found;
     }
 }

@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "tslint -c tslint.json src/**/*.ts",
     "build": "tsc",
-    "getCompanyList": "sls invoke local -f getCompanyList",
+    "getCompanyList": "sls invoke local -f getCompanyList -p test/getCompanyList.json",
     "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json"
   },
   "author": "Gary Archer",

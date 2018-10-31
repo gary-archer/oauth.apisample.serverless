@@ -1,3 +1,4 @@
+import {APIGatewayEvent, Context} from 'aws-lambda';
 import {Company} from '../entities/company';
 import {CompanyTransactions} from '../entities/companyTransactions';
 import {Transaction} from '../entities/transaction';
@@ -12,27 +13,39 @@ export class CompanyController {
     /*
      * Return the list of companies
      */
-    public static async getCompanyList(): Promise<Company[]> {
+    public static async getCompanyList(event: any, context: Context): Promise<any> {
 
-        const repository = new CompanyRepository();
+        const repository = new CompanyRepository(event.claims);
         ApiLogger.info('CompanyController', 'Returning company list');
 
-        // Get data as entities
-        return await repository.getCompanyList();
+        const data = await repository.getCompanyList();
+        return {
+            statusCode: 200,
+            body: JSON.stringify(data),
+        };
     }
 
     /*
      * Return the transaction details for a company
      */
-    public static async getCompanyTransactions(): Promise<CompanyTransactions | null> {
+    public static async getCompanyTransactions(event: any, context: Context): Promise<any> {
 
         // Create a repository
-        const repository = new CompanyRepository();
-        // const id = parseInt(request.params.id, 10);
-        const id = parseInt('2', 10);
-        ApiLogger.info('CompanyController', `Request for transaction details for company: ${id}`);
+        const repository = new CompanyRepository(event.claims);
+        const id = event.pathParameters.id;
+        ApiLogger.info('CompanyController', `Returning transactions for company ${id}`);
 
-        // Get data as entities and handle not found items
-        return await repository.getCompanyTransactions(id);
+        const transactions =  await repository.getCompanyTransactions(id);
+        if (transactions) {
+            return {
+                statusCode: 200,
+                body: JSON.stringify(transactions),
+            };
+        } else {
+            return {
+                statusCode: 403,
+                body: JSON.stringify('The user is unauthorized to access the requested data'),
+            };
+        }
     }
 }

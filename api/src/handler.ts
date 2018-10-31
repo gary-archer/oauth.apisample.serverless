@@ -1,23 +1,22 @@
+import * as fs from 'fs-extra';
 import middy from 'middy';
-import {WebApi} from './logic/webApi';
+import {Configuration} from './configuration/configuration';
+import {CompanyController} from './logic/companyController';
 import {authorizationMiddleware} from './plumbing/authorizationMiddleware';
 import {errorHandlingMiddleware} from './plumbing/errorHandlingMiddleware';
 
-// Create the class to manage business logic entry points
-const webApi = new WebApi();
+// First load configuration
+const apiConfigText = fs.readFileSync('api.config.json');
+const apiConfig = JSON.parse(apiConfigText) as Configuration;
 
-/*
- * Add middleware for security and error handling
- */
-const getCompanyList = middy(webApi.getCompanyList)
-    .use(authorizationMiddleware(null))
-    .use(errorHandlingMiddleware(null));
+// Enrich business logic with middleware for security and error handling
+const getCompanyList = middy(CompanyController.getCompanyList)
+    .use(authorizationMiddleware(apiConfig))
+    .use(errorHandlingMiddleware(apiConfig));
 
-const getCompanyTransactions = middy(webApi.getCompanyTransactions)
-    .use(authorizationMiddleware(null))
-    .use(errorHandlingMiddleware(null));
+const getCompanyTransactions = middy(CompanyController.getCompanyTransactions)
+    .use(authorizationMiddleware(apiConfig))
+    .use(errorHandlingMiddleware(apiConfig));
 
-/*
- * Export results
- */
+// Export enriched functions
 export {getCompanyList, getCompanyTransactions};
