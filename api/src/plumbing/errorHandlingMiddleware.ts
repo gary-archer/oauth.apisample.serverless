@@ -9,7 +9,14 @@ export const errorHandlingMiddleware = (config: Configuration) => {
 
     return ({
       onError: (handler: IHandlerLambda<any, any>, next: any) => {
-        ApiLogger.info('ErrorMiddleware', handler.error);
+
+        handler.response = {
+            statusCode: 500,
+            body: JSON.stringify(handler.error.message),
+        };
+
+        // TODO: Handle errors as objects
+        return next();
       },
     });
 };

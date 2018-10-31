@@ -27,10 +27,8 @@ export class CompanyRepository {
     public async getCompanyList(): Promise<Company[]> {
 
         // We will first get all data
-        const companiesText = await fs.readFile('data/companyList.json');
+        const companiesText = await fs.readFile('data/companyList2.json');
         const companies = JSON.parse(companiesText) as Company[];
-
-        // throw new Error('It all went horribly wrong!');
 
         // We will then filter on only authorized companies
         const authorizedCompanies = companies.filter((c) => this._isUserAuthorizedForCompany(c.id));
@@ -48,7 +46,7 @@ export class CompanyRepository {
         }
 
         // First read companies from the database
-        const companiesText = await fs.readFile('data/companyList.json');
+        const companiesText = await fs.readFile('data/companyList2.json');
         const companyList = JSON.parse(companiesText) as Company[];
 
         const foundCompany = companyList.find((c) => c.id === id);
