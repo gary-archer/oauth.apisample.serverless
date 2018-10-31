@@ -1,9 +1,0 @@
-{
-  "pathParameters": {
-    "id": "14014700356996"
-  },
-  "queryStringParameters": {
-    "transactionDateFrom": "2018-05-17T00:00:00Z",
-    "transactionDateTo": "2018-09-17T00:00:00Z"
-  }
-}
