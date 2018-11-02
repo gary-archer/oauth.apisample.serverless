@@ -5,9 +5,12 @@
   "main": "handler.ts",
   "scripts": {
     "lint": "tslint -c tslint.json src/**/*.ts",
-    "build": "tsc",
+    "build": "rm -rf build && tsc",
     "getCompanyList": "sls invoke local -f getCompanyList -p test/getCompanyList.json",
-    "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json"
+    "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
+    "clean": "rm -rf .serverless",
+    "package": "rm -rf .serverless && sls package",
+    "deploy": "sls deploy"
   },
   "author": "Gary Archer",
   "license": "ISC",

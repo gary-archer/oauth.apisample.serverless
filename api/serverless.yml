@@ -29,6 +29,9 @@ functions:
 
 package:
   exclude:
-    - node_modules/**/*
-  include:
-    handler.ts
+  - src/**
+  - test/**
+  - package*.json
+  - ts*.json
+include:
+  - build/handler.js
