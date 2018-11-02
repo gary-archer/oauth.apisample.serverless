@@ -1,14 +1,6 @@
 NEXT
 ----
-1. Get claims data passed between middleware
-2. Get error responses working
-3. Build and deploy to AWS, revisting TypeScript plugin
-
-LOCAL EXECUTION
----------------
-sls invoke local -f get-transactions -p=..\transactions.json
-sls invoke local -f put-profile -p=..\profile.json
-sls invoke local -f post-enrol -p=..\enrol.json
+1. Build and deploy to AWS, revisting TypeScript plugin
 
 SETUP AND COMMANDS
 ------------------
@@ -16,7 +8,6 @@ SETUP AND COMMANDS
 * sls offline start then browse to http://localhost:3000
 * serverless config credentials --provider aws --key mykey --secret mysecret --overwrite
 * sls deploy -v
-* sls invoke -f any -l to run the lambda
 
 Deploy the API Gateway - URL is then of this form:
 https://{restapi-id}.execute-api.{region}.amazonaws.com/{stageName}
@@ -36,10 +27,5 @@ https://github.com/prismagraphql/serverless-plugin-typescript/issues/23
 Dependencies not included in AWS deployment:
 https://github.com/serverless/serverless/issues/3915
 
-Pros and Cons - Serverless v Epress:
+Pros and Cons - Serverless v Express:
 https://medium.freecodecamp.org/node-js-apis-on-aws-the-pros-and-cons-of-express-versus-serverless-a370ab7eadd7
-
-TODO
-----
-1. Unhandled promise rejection in build scripts
-2. Get rid of Winston dependency for AWS and use DI?

@@ -11,10 +11,6 @@ functions:
       - http: 
           path: /companies
           method: get
-          request: 
-          parameters: 
-             paths: 
-               id: true
     environment:
       SLS_DEBUG: true
 
