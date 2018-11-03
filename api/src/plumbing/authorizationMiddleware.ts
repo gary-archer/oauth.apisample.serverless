@@ -1,8 +1,6 @@
-import {APIGatewayEvent, Context} from 'aws-lambda';
 import {IHandlerLambda} from 'middy';
 import {Configuration} from '../configuration/configuration';
 import {ApiClaims} from '../entities/apiClaims';
-import {ApiLogger} from './apiLogger';
 
 /*
  * The middleware coded in a class based manner
