@@ -24,6 +24,7 @@ class AuthorizationMiddleware {
     // TODO: replace once authorization is done properly
     private _getHardCodedClaims(): ApiClaims {
         const claims = new ApiClaims('gary.archer', '', '');
+        claims.setCentralUserData('Gary', 'Archer', 'garyarcher36@gmail.com');
         claims.setProductSpecificUserRights([1, 2, 3]);
         return claims;
     }

@@ -2,7 +2,6 @@ import * as fs from 'fs-extra';
 import {ApiClaims} from '../entities/apiClaims';
 import {Company} from '../entities/company';
 import {CompanyTransactions} from '../entities/companyTransactions';
-import {Transaction} from '../entities/transaction';
 
 /*
  * A simple API controller for getting data about a company and its investments

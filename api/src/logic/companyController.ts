@@ -1,7 +1,4 @@
-import {APIGatewayEvent, Context} from 'aws-lambda';
-import {Company} from '../entities/company';
-import {CompanyTransactions} from '../entities/companyTransactions';
-import {Transaction} from '../entities/transaction';
+import {Context} from 'aws-lambda';
 import {ApiLogger} from '../plumbing/apiLogger';
 import {CompanyRepository} from './companyRepository';
 
@@ -32,7 +29,7 @@ export class CompanyController {
 
         // Create a repository
         const repository = new CompanyRepository(event.claims);
-        const id = parseInt(event.pathParameters.id);
+        const id = parseInt(event.pathParameters.id, 10);
         ApiLogger.info('CompanyController', `Returning transactions for company ${id}`);
 
         const transactions =  await repository.getCompanyTransactions(id);

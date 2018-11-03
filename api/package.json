@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "tslint -c tslint.json src/**/*.ts",
     "build": "rm -rf build && tsc",
-    "getCompanyList": "sls invoke local -f getCompanyList -p test/getCompanyList.json",
+    "getUserClaims": "sls invoke local -f getUserClaims -p test/empty.json",
+    "getCompanyList": "sls invoke local -f getCompanyList -p test/empty.json",
     "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
     "clean": "rm -rf .serverless",
     "package": "npm run clean && sls package",
