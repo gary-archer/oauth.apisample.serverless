@@ -33,17 +33,6 @@ functions:
              paths: 
                id: true
 
-# Include only transpiled Javascript in the package
-# Node modules are excluded here and managed via the below hook instead
-package:
-  exclude:
-  - node_modules/**/*
-  - src/**
-  - test/**
-  - ts*.json
-include:
-  - build/handler.js
-
 # Include non development dependencies only so that the upload size is small - see below links:
 #   https://github.com/serverless/serverless/issues/569
 #   https://gist.github.com/ugnb/0ca7d9ac5c3efe4171d0f33e48a34189#file-serverless-yml
@@ -55,5 +44,16 @@ custom:
         (cd .serverless/basicapi && npm install --only=prod > /dev/null 2>&1) &&
         (cd .serverless/basicapi && zip -q -FSr ../basicapi.zip .)
 
-  plugins:
-  - serverless-plugin-scripts  
+# Include only transpiled Javascript in the package
+# Node modules are excluded here and managed via the above hook instead
+package:
+  exclude:
+  - node_modules/**/*
+  - src/**
+  - test/**
+  - ts*.json
+  include:
+  - build/handler.js
+
+plugins:
+  - serverless-plugin-scripts
