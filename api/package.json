@@ -9,8 +9,8 @@
     "getCompanyList": "sls invoke local -f getCompanyList -p test/getCompanyList.json",
     "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
     "clean": "rm -rf .serverless",
-    "package": "rm -rf .serverless && sls package",
-    "deploy": "sls deploy"
+    "package": "npm run clean && sls package",
+    "deploy": "sls deploy -p .serverless/basicapi.zip"
   },
   "author": "Gary Archer",
   "license": "ISC",
@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.14",
-    "serverless": "^1.32.0",
+    "serverless-plugin-scripts": "^1.0.2",
     "tslint": "^5.11.0",
     "typescript": "^3.0.1"
   }

@@ -3,6 +3,8 @@ service: basicapi
 provider:
   name: aws
   runtime: nodejs8.10
+  region: eu-west-2
+  profile: default
 
 functions:
   getCompanyList:
@@ -27,11 +29,25 @@ functions:
     environment:
       SLS_DEBUG: true
 
+# Exclude development dependencies so that the upload size is small - see below links:
+#   https://github.com/serverless/serverless/issues/569
+#   https://gist.github.com/ugnb/0ca7d9ac5c3efe4171d0f33e48a34189#file-serverless-yml
+custom:
+  scripts:
+    hooks:
+      'after:package:createDeploymentArtifacts': >
+        (cd .serverless && unzip -qq basicapi.zip -d basicapi) &&
+        (cd .serverless/basicapi && npm install --only=prod > /dev/null 2>&1) &&
+        (cd .serverless/basicapi && zip -q -FSr ../basicapi.zip .)
+
 package:
   exclude:
+  - node_modules/**/*
   - src/**
   - test/**
-  - package*.json
   - ts*.json
 include:
   - build/handler.js
+
+plugins:
+  - serverless-plugin-scripts  

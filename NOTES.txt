@@ -18,9 +18,6 @@ LINKS
 Typescript and Serverless:
 https://blog.shovonhasan.com/deploying-a-typescript-node-aws-lambda-function-with-serverless/
 
-Using Express with API gateway
-https://serverless.com/blog/serverless-express-rest-api/
-
 Deployment problems on Windows:
 https://github.com/prismagraphql/serverless-plugin-typescript/issues/23
 

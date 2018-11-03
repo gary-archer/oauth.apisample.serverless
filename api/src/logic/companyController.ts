@@ -32,7 +32,7 @@ export class CompanyController {
 
         // Create a repository
         const repository = new CompanyRepository(event.claims);
-        const id = event.pathParameters.id;
+        const id = parseInt(event.pathParameters.id);
         ApiLogger.info('CompanyController', `Returning transactions for company ${id}`);
 
         const transactions =  await repository.getCompanyTransactions(id);
