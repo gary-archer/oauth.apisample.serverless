@@ -1,13 +1,10 @@
-NEXT
-----
-1. Build and deploy to AWS, revisting TypeScript plugin
+WHAT I WANT
+-----------
+Listen on different host names for web.mycompany.com and api.mycompany.com
+CORS
+No transpiling of API async await
 
-SETUP AND COMMANDS
-------------------
-* sudo npm install serverless -g
-* sls offline start then browse to http://localhost:3000
-* serverless config credentials --provider aws --key mykey --secret mysecret --overwrite
-* sls deploy -v
+
 
 Deploy the API Gateway - URL is then of this form:
 https://{restapi-id}.execute-api.{region}.amazonaws.com/{stageName}

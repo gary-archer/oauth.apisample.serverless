@@ -13,7 +13,8 @@ functions:
       - http: 
           path: /userclaims/current
           method: get
-
+          cors:
+            origin: 'https://web.mycompany.com'
 
   getCompanyList:
     handler: build/handler.getCompanyList
@@ -21,6 +22,8 @@ functions:
       - http: 
           path: /companies
           method: get
+          cors:
+            origin: 'https://web.mycompany.com'
 
   getCompanyTransactions:
     handler: build/handler.getCompanyTransactions
@@ -28,10 +31,12 @@ functions:
       - http: 
           path: /companies/{id}/transactions
           method: get
+          cors:
+            origin: 'https://web.mycompany.com'
           request: 
-          parameters: 
-             paths: 
-               id: true
+            parameters: 
+              paths: 
+                id: true
 
 # Include non development dependencies only so that the upload size is small - see below links:
 #   https://github.com/serverless/serverless/issues/569
