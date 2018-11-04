@@ -13,6 +13,7 @@ export class UserInfoController {
 
         ApiLogger.info('UserInfoController', 'Returning user info');
         const userInfo = event.claims.userInfo;
+
         return {
             statusCode: 200,
             body: JSON.stringify(userInfo),

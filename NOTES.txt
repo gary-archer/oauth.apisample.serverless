@@ -4,7 +4,7 @@ PROBLEMS
 
 LOOK AT
 -------
-1. Avoid transpiling async await via ES2017
+1. Avoid transpiling async await via ES2017 - test on AWS
 2. Better type safety around AWS types - see aws lambda typescript project
 
 SETUP I WANT

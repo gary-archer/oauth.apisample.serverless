@@ -13,7 +13,7 @@ class UnauthorizedMiddleware {
 
         // Only move onto the API controller if we are authorized
         if (!!handler.event.claims) {
-            next();
+            return next();
         }
     }
 

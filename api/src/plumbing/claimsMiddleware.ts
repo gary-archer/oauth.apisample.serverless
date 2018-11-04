@@ -42,7 +42,7 @@ class ClaimsMiddleware {
         } else {
 
             // Otherwise move on to the API controller
-            next();
+            return next();
         }
     }
 
@@ -129,9 +129,9 @@ export function claimsMiddleware(
     config: Configuration,
     authService: AuthorizationMicroservice): middy.IMiddyMiddlewareObject {
 
+    const middleware = new ClaimsMiddleware(config.oauth, authService);
     return {
-        before: async (handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction) => {
-            const middleware = new ClaimsMiddleware(config.oauth, authService);
+        before: async (handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): Promise<any> => {
             await middleware.onBefore(handler, next);
         },
     };
