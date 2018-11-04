@@ -1,14 +1,19 @@
-WHAT I WANT
------------
-Listen on different host names for web.mycompany.com and api.mycompany.com
-CORS
-No transpiling of API async await
+PROBLEMS
+--------
+1. Happy path failing due to middy return value
+2. Middy calls next async handler if claims middleware does not succeed (hack)
+3. Error during auth not returning a response
 
+LOOK AT
+-------
+1. Avoid transpiling async await via ES2017
+2. Better type safety around AWS types - see aws lambda typescript project
 
-
-Deploy the API Gateway - URL is then of this form:
-https://{restapi-id}.execute-api.{region}.amazonaws.com/{stageName}
-https://yky9lwpz8j.execute-api.us-east-1.amazonaws.com/dev/companies
+SETUP I WANT
+------------
+1. Express to listen on different host names for web.mycompany.com and api.mycompany.com
+2. SPA to use pfx option to local web server
+3. Use sls offline for local API
 
 LINKS
 -----

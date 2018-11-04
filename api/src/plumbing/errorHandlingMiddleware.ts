@@ -1,28 +1,21 @@
-import {IHandlerLambda} from 'middy';
-import {Configuration} from '../configuration/configuration';
+import * as middy from 'middy';
 import {ErrorHandler} from './errorHandler';
+import {ResponseHandler} from './responseHandler';
 
 /*
  * The middleware coded in a class based manner
  */
 class ErrorHandlingMiddleware {
 
-    private _apiConfig: Configuration;
-
-    public constructor(apiConfig: Configuration) {
-        this._apiConfig = apiConfig;
+    public constructor() {
         this.onError = this.onError.bind(this);
     }
 
-    public onError(handler: IHandlerLambda<any, any>, next: any) {
+    public onError(handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): any {
 
         const serverError = ErrorHandler.fromException(handler.error);
         const [statusCode, clientError] = ErrorHandler.handleError(serverError);
-
-        handler.response = {
-            statusCode,
-            body: JSON.stringify(clientError),
-        };
+        handler.response = ResponseHandler.objectResponse(statusCode, clientError);
 
         return next();
     }
@@ -31,9 +24,10 @@ class ErrorHandlingMiddleware {
 /*
  * Do the export plumbing
  */
-export const errorHandlingMiddleware = (config: Configuration) => {
-    const middleware = new ErrorHandlingMiddleware(config);
-    return ({
+export function errorHandlingMiddleware(): middy.IMiddyMiddlewareObject {
+
+    const middleware = new ErrorHandlingMiddleware();
+    return {
         onError: middleware.onError,
-    });
+    };
 };
