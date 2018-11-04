@@ -1,4 +1,4 @@
-import * as middy from 'middy';
+import middy from 'middy';
 import {ErrorHandler} from './errorHandler';
 import {ResponseHandler} from './responseHandler';
 
@@ -8,7 +8,7 @@ import {ResponseHandler} from './responseHandler';
 class ErrorHandlingMiddleware {
 
     public constructor() {
-        this.onError = this.onError.bind(this);
+        this._setupCallbacks();
     }
 
     public onError(handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): any {
@@ -18,6 +18,13 @@ class ErrorHandlingMiddleware {
         handler.response = ResponseHandler.objectResponse(statusCode, clientError);
 
         return next();
+    }
+
+    /*
+     * Plumbing to ensure that the this parameter is available in async callbacks
+     */
+    private _setupCallbacks(): void {
+        this.onError = this.onError.bind(this);
     }
 }
 
@@ -30,4 +37,4 @@ export function errorHandlingMiddleware(): middy.IMiddyMiddlewareObject {
     return {
         onError: middleware.onError,
     };
-};
+}
