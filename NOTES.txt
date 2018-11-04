@@ -1,11 +1,12 @@
 PROBLEMS
 --------
 1. Happy path failing due to calling handler twice and the second call hangs
+   Either force a once only call somehow or understand middy code better
+   Once fixed I can upload to AWS - check also that transpiling to ES2017 has no issues
 
 LOOK AT
 -------
-1. Avoid transpiling async await via ES2017 - test on AWS
-2. Better type safety around AWS types - see aws lambda typescript project
+1. AWS lambda typescript project
 
 SETUP I WANT
 ------------
