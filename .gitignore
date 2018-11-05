@@ -2,3 +2,4 @@
 node_modules
 build
 .serverless
+.DS_store
