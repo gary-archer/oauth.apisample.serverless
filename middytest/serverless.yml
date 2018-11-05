@@ -1,0 +1,12 @@
+service: basicapi
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+
+functions:
+  sync:
+    handler: sync.handler
+
+  async:
+    handler: async.handler

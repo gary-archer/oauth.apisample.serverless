@@ -57,7 +57,6 @@ const once = require('once')
  */
 
 const runMiddlewares = (middlewares, instance, done) => {
-  
   const stack = Array.from(middlewares)
   const runNext = (err) => {
     try {
@@ -75,13 +74,9 @@ const runMiddlewares = (middlewares, instance, done) => {
             throw new Error('Unexpected return value in middleware')
           }
 
-          /*
-           * I have removed this code since if my claims middleware does not return next() I do not want the middleware to be called
-           *
           retVal
             .then(runNext)
             .catch(done)
-          */
         }
 
         return
