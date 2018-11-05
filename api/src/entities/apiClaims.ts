@@ -34,8 +34,8 @@ export class ApiClaims {
     /*
      * Set fields after receiving OAuth user info data
      */
-    public setCentralUserData(response: any) {
-        this.userInfo = new UserInfoClaims(response.given_name, response.family_name, response.email);
+    public setCentralUserData(givenName: string, familyName: string, email: string) {
+        this.userInfo = new UserInfoClaims(givenName, familyName, email);
     }
 
     /*

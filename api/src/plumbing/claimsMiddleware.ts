@@ -1,19 +1,20 @@
-import {NextFunction, Request, Response} from 'express';
+import middy from 'middy';
+import {Configuration} from '../configuration/configuration';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {AuthorizationMicroservice} from '../logic/authorizationMicroservice';
 import {ApiLogger} from './apiLogger';
 import {Authenticator} from './authenticator';
 import {ClaimsCache} from './claimsCache';
 import {ErrorHandler} from './errorHandler';
-import {ResponseWriter} from './responseWriter';
+import {ResponseHandler} from './responseHandler';
 
 /*
- * An entry point class for claims processing
+ * The middleware coded in a class based manner
  */
-export class ClaimsMiddleware {
+class ClaimsMiddleware {
 
     /*
-     * Fields
+     * Dependencies
      */
     private _oauthConfig: OAuthConfiguration;
     private _authorizationMicroservice: AuthorizationMicroservice;
@@ -27,28 +28,23 @@ export class ClaimsMiddleware {
     }
 
     /*
-     * The entry point method to authorize a request
+     * Do the authorization and set claims, or return an unauthorized response
      */
-    public async authorizeRequestAndSetClaims(
-        request: Request,
-        response: Response,
-        next: NextFunction): Promise<void> {
+    public async authorizeRequestAndSetClaims(handler: middy.IHandlerLambda<any, object>): Promise<any> {
 
         try {
             // First read the token from the request header and report missing tokens
-            const accessToken = this._readToken(request.header('authorization'));
-            if (accessToken === null) {
+            const accessToken = this._readToken(handler.event.headers['Authorization']);
+            if (!accessToken) {
                 ApiLogger.info('Claims Middleware', 'No access token received');
-                ResponseWriter.writeMissingTokenResponse(response);
-                return;
+                return ResponseHandler.missingTokenResponse();
             }
 
             // Bypass validation and use cached results if they exist
             const cachedClaims = ClaimsCache.getClaimsForToken(accessToken);
             if (cachedClaims !== null) {
-                response.locals.claims = cachedClaims;
-                next();
-                return;
+                handler.event.claims = cachedClaims;
+                return null;
             }
 
             // Otherwise start by introspecting the token
@@ -58,8 +54,7 @@ export class ClaimsMiddleware {
             // Handle invalid or expired tokens
             if (!result.isValid) {
                 ApiLogger.info('Claims Middleware', 'Invalid or expired access token received');
-                ResponseWriter.writeInvalidTokenResponse(response);
-                return;
+                return ResponseHandler.invalidTokenResponse();
             }
 
             // Next add central user info to claims
@@ -73,15 +68,15 @@ export class ClaimsMiddleware {
 
             // Then move onto the API controller to execute business logic
             ApiLogger.info('Claims Middleware', 'Claims lookup completed successfully');
-            response.locals.claims = result.claims;
-            next();
+            handler.event.claims = result.claims;
+            return null;
 
         } catch (e) {
 
             // Report any exceptions
             const serverError = ErrorHandler.fromException(e);
             const [statusCode, clientError] = ErrorHandler.handleError(serverError);
-            ResponseWriter.writeObject(response, statusCode, clientError);
+            return ResponseHandler.objectResponse(statusCode, clientError);
         }
     }
 
@@ -99,4 +94,29 @@ export class ClaimsMiddleware {
 
         return null;
     }
+}
+
+/*
+ * Do the export plumbing
+ */
+export function claimsMiddleware(
+    config: Configuration,
+    authService: AuthorizationMicroservice): middy.IMiddyMiddlewareObject {
+
+    const middleware = new ClaimsMiddleware(config.oauth, authService);
+    return {
+        before: async (handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): Promise<any> => {
+
+            const unauthorizedResponse = await middleware.authorizeRequestAndSetClaims(handler);
+            if (unauthorizedResponse) {
+
+                // If unauthorized then halt processing and return the unauthorized response
+                handler.callback(null, unauthorizedResponse);
+            } else {
+
+                // Otherwise move on to the API controller
+                return next();
+            }
+        },
+    };
 }

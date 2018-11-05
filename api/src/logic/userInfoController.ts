@@ -1,7 +1,5 @@
-import {Request, Response} from 'express';
-import {UserInfoClaims} from '../entities/userInfoClaims';
+import {Context} from 'aws-lambda';
 import {ApiLogger} from '../plumbing/apiLogger';
-import {ResponseWriter} from '../plumbing/responseWriter';
 
 /*
  * A simple API controller to return user info
@@ -11,10 +9,14 @@ export class UserInfoController {
     /*
      * Return user info to the UI
      */
-    public static getUserClaims(request: Request, response: Response): void {
+    public static async getUserClaims(event: any, context: Context): Promise<any> {
 
         ApiLogger.info('UserInfoController', 'Returning user info');
-        const userInfo = response.locals.claims.userInfo;
-        ResponseWriter.writeObject(response, 200, userInfo);
+        const userInfo = event.claims.userInfo;
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify(userInfo),
+        };
     }
 }

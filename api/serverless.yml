@@ -1,20 +1,65 @@
-#
-# Serverless configuration for a generic endpoint
-#
-
 service: basicapi
 
 provider:
   name: aws
   runtime: nodejs8.10
+  region: eu-west-2
+  profile: default
 
 functions:
-  any:
-    handler: aws.handler
+  getUserClaims:
+    handler: build/handler.getUserClaims
     events:
-      - http: ANY /
-      - http: 'ANY {proxy+}'
+      - http: 
+          path: /userclaims/current
+          method: get
+          cors:
+            origin: 'https://web.mycompany.com'
 
+  getCompanyList:
+    handler: build/handler.getCompanyList
+    events:
+      - http: 
+          path: /companies
+          method: get
+          cors:
+            origin: 'https://web.mycompany.com'
+
+  getCompanyTransactions:
+    handler: build/handler.getCompanyTransactions
+    events:
+      - http: 
+          path: /companies/{id}/transactions
+          method: get
+          cors:
+            origin: 'https://web.mycompany.com'
+          request: 
+            parameters: 
+              paths: 
+                id: true
+
+# Include non development dependencies only so that the upload size is small - see below links:
+#   https://github.com/serverless/serverless/issues/569
+#   https://gist.github.com/ugnb/0ca7d9ac5c3efe4171d0f33e48a34189#file-serverless-yml
+custom:
+  scripts:
+    hooks:
+      'after:package:createDeploymentArtifacts': >
+        (cd .serverless && unzip -qq basicapi.zip -d basicapi) &&
+        (cd .serverless/basicapi && npm install --only=prod > /dev/null 2>&1) &&
+        (ncp hacks/middy.js .serverless/basicapi/node_modules/middy/src/middy.js) &&
+        (cd .serverless/basicapi && zip -q -FSr ../basicapi.zip .)
+
+# Include only transpiled Javascript in the package
+# Node modules are excluded here and managed via the above hook instead
 package:
-  artifact:
-    .build/deploy.zip
+  exclude:
+  - node_modules/**/*
+  - src/**
+  - test/**
+  - ts*.json
+  include:
+  - build/handler.js
+
+plugins:
+  - serverless-plugin-scripts

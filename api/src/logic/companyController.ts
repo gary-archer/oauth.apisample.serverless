@@ -1,7 +1,5 @@
-import {Request, Response} from 'express';
+import {Context} from 'aws-lambda';
 import {ApiLogger} from '../plumbing/apiLogger';
-import {ErrorHandler} from '../plumbing/errorHandler';
-import {ResponseWriter} from '../plumbing/responseWriter';
 import {CompanyRepository} from './companyRepository';
 
 /*
@@ -12,51 +10,39 @@ export class CompanyController {
     /*
      * Return the list of companies
      */
-    public static async getCompanyList(request: Request, response: Response): Promise<void> {
+    public static async getCompanyList(event: any, context: Context) {
 
-        try {
-            // Create a repository and give it claims
-            const repository = new CompanyRepository(response.locals.claims);
-            ApiLogger.info('CompanyController', 'Returning company list');
+        const repository = new CompanyRepository(event.claims);
+        ApiLogger.info('CompanyController', 'Returning company list');
 
-            // Get data as entities
-            const companies = await repository.getCompanyList();
-            ResponseWriter.writeObject(response, 200, companies);
-
-        } catch (e) {
-
-            // Ensure promises are rejected correctly
-            const serverError = ErrorHandler.fromException(e);
-            const [statusCode, clientError] = ErrorHandler.handleError(serverError);
-            ResponseWriter.writeObject(response, statusCode, clientError);
-        }
+        const data = await repository.getCompanyList();
+        return {
+            statusCode: 200,
+            body: JSON.stringify(data),
+        };
     }
 
     /*
      * Return the transaction details for a company
      */
-    public static async getCompanyTransactions(request: Request, response: Response): Promise<void> {
+    public static async getCompanyTransactions(event: any, context: Context): Promise<any> {
 
-        try {
-            // Create a repository
-            const repository = new CompanyRepository(response.locals.claims);
-            const id = parseInt(request.params.id, 10);
-            ApiLogger.info('API call', `Request for transaction details for company: ${id}`);
+        // Create a repository
+        const repository = new CompanyRepository(event.claims);
+        const id = parseInt(event.pathParameters.id, 10);
+        ApiLogger.info('CompanyController', `Returning transactions for company ${id}`);
 
-            // Get data as entities and handle not found items
-            const transactions = await repository.getCompanyTransactions(id);
-            if (transactions) {
-                ResponseWriter.writeObject(response, 200, transactions);
-            } else {
-                ResponseWriter.writeObject(response, 403, 'The user is unauthorized to access the requested data');
-            }
-
-        } catch (e) {
-
-            // Ensure promises are rejected correctly
-            const serverError = ErrorHandler.fromException(e);
-            const [statusCode, clientError] = ErrorHandler.handleError(serverError);
-            ResponseWriter.writeObject(response, statusCode, clientError);
+        const transactions =  await repository.getCompanyTransactions(id);
+        if (transactions) {
+            return {
+                statusCode: 200,
+                body: JSON.stringify(transactions),
+            };
+        } else {
+            return {
+                statusCode: 403,
+                body: JSON.stringify('The user is unauthorized to access the requested data'),
+            };
         }
     }
 }

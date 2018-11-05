@@ -4,8 +4,6 @@ import * as Url from 'url';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {ApiClaims} from '../entities/apiClaims';
 import {TokenValidationResult} from '../entities/tokenValidationResult';
-import {UserInfoClaims} from '../entities/userInfoClaims';
-import {ApiLogger} from './apiLogger';
 import {ErrorHandler} from './errorHandler';
 
 /*
@@ -129,7 +127,7 @@ export class Authenticator {
         try {
             // Extend token data with central user info
             const response = await client.userinfo(accessToken);
-            claims.setCentralUserData(response);
+            claims.setCentralUserData(response.given_name, response.family_name, response.email);
 
         } catch (e) {
 

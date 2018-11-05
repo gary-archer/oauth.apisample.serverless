@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "strict": true,
+    
+    // This lib entry is a hack due to a TypeScript bug with core-js to avoid a TS2693 error using generics
+    // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/15140
+    "lib": ["es2017", "dom"]
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
