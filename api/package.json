@@ -18,14 +18,13 @@
   "dependencies": {
     "fs-extra": "^7.0.0",
     "js-sha256": "^0.9.0",
-    "memory-cache": "^0.2.0",
     "middy": "^0.19.2",
+    "node-cache": "^4.2.0",
     "openid-client": "^2.4.4",
     "tunnel-agent": "^0.6.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.14",
-    "@types/memory-cache": "^0.2.0",
     "@types/node": "^10.12.2",
     "aws-sdk": "^2.348.0",
     "ncp": "^2.0.0",

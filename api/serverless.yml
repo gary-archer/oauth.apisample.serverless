@@ -47,6 +47,7 @@ custom:
       'after:package:createDeploymentArtifacts': >
         (cd .serverless && unzip -qq basicapi.zip -d basicapi) &&
         (cd .serverless/basicapi && npm install --only=prod > /dev/null 2>&1) &&
+        (ncp hacks/middy.js .serverless/basicapi/node_modules/middy/src/middy.js) &&
         (cd .serverless/basicapi && zip -q -FSr ../basicapi.zip .)
 
 # Include only transpiled Javascript in the package

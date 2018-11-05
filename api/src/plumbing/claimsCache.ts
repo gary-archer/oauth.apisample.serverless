@@ -1,5 +1,5 @@
 import * as hasher from 'js-sha256';
-import * as cache from 'memory-cache';
+import NodeCache from 'node-cache';
 import {ApiClaims} from '../entities/apiClaims';
 import {ApiLogger} from './apiLogger';
 
@@ -21,7 +21,7 @@ export class ClaimsCache {
             // Cache the token until it expires
             ApiLogger.info('ClaimsCache', `Caching received token for ${secondsToCache} seconds`);
             const hash = hasher.sha256(accessToken);
-            cache.put(hash, JSON.stringify(claims), secondsToCache * 1000);
+            ClaimsCache._cache.set(hash, JSON.stringify(claims), secondsToCache * 1000);
         }
     }
 
@@ -31,8 +31,8 @@ export class ClaimsCache {
     public static getClaimsForToken(accessToken: string): ApiClaims | null {
 
         const hash = hasher.sha256(accessToken);
-        const claims = cache.get(hash);
-        if (claims === null) {
+        const claims = ClaimsCache._cache.get<string>(hash);
+        if (!claims) {
 
             // We need to introspect the new token
             ApiLogger.info('ClaimsCache', `No existing token found for hash ${hash}`);
@@ -41,7 +41,9 @@ export class ClaimsCache {
 
             // We can efficiently return existing claims
             ApiLogger.info('ClaimsCache', `Found existing token for hash ${hash}`);
-            return JSON.parse(claims);
+            return JSON.parse(claims!);
         }
     }
+
+    private static _cache = new NodeCache();
 }

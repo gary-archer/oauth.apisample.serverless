@@ -77,7 +77,8 @@ const runMiddlewares = (middlewares, instance, done) => {
           retVal
             .then(() => {
               
-              // GJA. Commented out since it calls the next middleware even if authorization fails
+              // HACK. Commented out since it calls the next middleware even if authorization fails
+              // This also causes the API controller to be run twice
               // runNext();
             })
             .catch(done)

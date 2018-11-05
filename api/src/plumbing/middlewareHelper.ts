@@ -1,4 +1,3 @@
-import {Context} from 'aws-lambda';
 import middy from 'middy';
 import {cors, ICorsOptions} from 'middy/middlewares';
 import {Configuration} from '../configuration/configuration';

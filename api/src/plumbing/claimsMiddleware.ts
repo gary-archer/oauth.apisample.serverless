@@ -7,7 +7,6 @@ import {Authenticator} from './authenticator';
 import {ClaimsCache} from './claimsCache';
 import {ErrorHandler} from './errorHandler';
 import {ResponseHandler} from './responseHandler';
-import { ApiClaims } from '../entities/apiClaims';
 
 /*
  * The middleware coded in a class based manner
@@ -26,36 +25,17 @@ class ClaimsMiddleware {
     public constructor(oauthConfig: OAuthConfiguration, authorizationMicroservice: AuthorizationMicroservice) {
         this._oauthConfig = oauthConfig;
         this._authorizationMicroservice = authorizationMicroservice;
-        this._setupCallbacks();
-    }
-
-    /*
-     * Do the authorization and only move to the next handler if it succeeds
-     */
-    public async onBefore(handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): Promise<any> {
-
-        // Do the work and only move to next if authorization succeeded
-        const unauthorizedResponse = await this._authorizeRequestAndSetClaims(handler);
-        if (unauthorizedResponse) {
-
-            // If unauthorized then halt processing and return the unauthorized response
-            handler.callback(null, unauthorizedResponse);
-        } else {
-
-            // Otherwise move on to the API controller
-            return next();
-        }
     }
 
     /*
      * Do the authorization and set claims, or return an unauthorized response
      */
-    private async _authorizeRequestAndSetClaims(handler: middy.IHandlerLambda<any, object>): Promise<object | null> {
+    public async authorizeRequestAndSetClaims(handler: middy.IHandlerLambda<any, object>): Promise<any> {
 
         try {
             // First read the token from the request header and report missing tokens
-            const accessToken = this._readToken(handler.event.headers.authorization);
-            if (accessToken === null) {
+            const accessToken = this._readToken(handler.event.headers['Authorization']);
+            if (!accessToken) {
                 ApiLogger.info('Claims Middleware', 'No access token received');
                 return ResponseHandler.missingTokenResponse();
             }
@@ -114,13 +94,6 @@ class ClaimsMiddleware {
 
         return null;
     }
-
-    /*
-     * Plumbing to ensure that the this parameter is available in async callbacks
-     */
-    private _setupCallbacks(): void {
-        this.onBefore = this.onBefore.bind(this);
-    }
 }
 
 /*
@@ -133,13 +106,17 @@ export function claimsMiddleware(
     const middleware = new ClaimsMiddleware(config.oauth, authService);
     return {
         before: async (handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): Promise<any> => {
-            // return await middleware.onBefore(handler, next);
-            const claims = new ApiClaims('gary', 'app', 'scopes');
-            claims.setCentralUserData('gary', 'archer', 'gary@gary.com');
-            claims.setProductSpecificUserRights([1,2,3]);
-            handler.event.claims = claims;
 
-            return next();
+            const unauthorizedResponse = await middleware.authorizeRequestAndSetClaims(handler);
+            if (unauthorizedResponse) {
+
+                // If unauthorized then halt processing and return the unauthorized response
+                handler.callback(null, unauthorizedResponse);
+            } else {
+
+                // Otherwise move on to the API controller
+                return next();
+            }
         },
     };
 }
