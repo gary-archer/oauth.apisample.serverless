@@ -5,7 +5,6 @@ import {Configuration} from '../configuration/configuration';
 import {AuthorizationMicroservice} from '../logic/authorizationMicroservice';
 import {claimsMiddleware} from '../plumbing/claimsMiddleware';
 import {errorHandlingMiddleware} from '../plumbing/errorHandlingMiddleware';
-import {unauthorizedMiddleware} from '../plumbing/unauthorizedMiddleware';
 
 /*
  * Set up middleware
@@ -30,12 +29,9 @@ export class MiddlewareHelper {
      */
     public enrichApiOperation(operation: any): middy.IMiddy {
 
-        return middy(async (event: any, context: Context) => {
-            return await operation(event, context);
-        })
-        .use(cors(this._corsConfig))
-        .use(claimsMiddleware(this._apiConfig, this._authorizationMicroservice))
-        .use(unauthorizedMiddleware())
-        .use(errorHandlingMiddleware());
+        return middy(operation)
+            .use(cors(this._corsConfig))
+            .use(claimsMiddleware(this._apiConfig, this._authorizationMicroservice))
+            .use(errorHandlingMiddleware());
     }
 }

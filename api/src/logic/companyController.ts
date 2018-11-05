@@ -10,7 +10,7 @@ export class CompanyController {
     /*
      * Return the list of companies
      */
-    public static async getCompanyList(event: any, context: Context): Promise<any> {
+    public static async getCompanyList(event: any, context: Context) {
 
         const repository = new CompanyRepository(event.claims);
         ApiLogger.info('CompanyController', 'Returning company list');

@@ -7,6 +7,7 @@ import {Authenticator} from './authenticator';
 import {ClaimsCache} from './claimsCache';
 import {ErrorHandler} from './errorHandler';
 import {ResponseHandler} from './responseHandler';
+import { ApiClaims } from '../entities/apiClaims';
 
 /*
  * The middleware coded in a class based manner
@@ -132,7 +133,13 @@ export function claimsMiddleware(
     const middleware = new ClaimsMiddleware(config.oauth, authService);
     return {
         before: async (handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): Promise<any> => {
-            await middleware.onBefore(handler, next);
+            // return await middleware.onBefore(handler, next);
+            const claims = new ApiClaims('gary', 'app', 'scopes');
+            claims.setCentralUserData('gary', 'archer', 'gary@gary.com');
+            claims.setProductSpecificUserRights([1,2,3]);
+            handler.event.claims = claims;
+
+            return next();
         },
     };
 }

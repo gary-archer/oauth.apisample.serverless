@@ -75,7 +75,11 @@ const runMiddlewares = (middlewares, instance, done) => {
           }
 
           retVal
-            .then(runNext)
+            .then(() => {
+              
+              // GJA. Commented out since it calls the next middleware even if authorization fails
+              // runNext();
+            })
             .catch(done)
         }
 
