@@ -1,7 +1,7 @@
 PROBLEMS
 --------
 1. No access-control-allow-headers response header written for a 401 get request
-2. Bearer header not read correctly when running in AWS
+2. Use node-cache for other samples and change the blog write up
 
 NEXT
 ----
