@@ -5,7 +5,7 @@ import {ResponseHandler} from './responseHandler';
 /*
  * The middleware coded in a class based manner
  */
-class ErrorHandlingMiddleware {
+class ExceptionMiddleware {
 
     public constructor() {
         this._setupCallbacks();
@@ -31,9 +31,9 @@ class ErrorHandlingMiddleware {
 /*
  * Do the export plumbing
  */
-export function errorHandlingMiddleware(): middy.IMiddyMiddlewareObject {
+export function exceptionMiddleware(): middy.IMiddyMiddlewareObject {
 
-    const middleware = new ErrorHandlingMiddleware();
+    const middleware = new ExceptionMiddleware();
     return {
         onError: middleware.onError,
     };

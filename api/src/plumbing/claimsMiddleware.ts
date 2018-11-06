@@ -32,52 +32,43 @@ class ClaimsMiddleware {
      */
     public async authorizeRequestAndSetClaims(handler: middy.IHandlerLambda<any, object>): Promise<any> {
 
-        try {
-            // First read the token from the request header and report missing tokens
-            const accessToken = this._readToken(handler.event.headers['Authorization']);
-            if (!accessToken) {
-                ApiLogger.info('Claims Middleware', 'No access token received');
-                return ResponseHandler.missingTokenResponse();
-            }
-
-            // Bypass validation and use cached results if they exist
-            const cachedClaims = ClaimsCache.getClaimsForToken(accessToken);
-            if (cachedClaims !== null) {
-                handler.event.claims = cachedClaims;
-                return null;
-            }
-
-            // Otherwise start by introspecting the token
-            const authenticator = new Authenticator(this._oauthConfig);
-            const result = await authenticator.validateTokenAndGetTokenClaims(accessToken);
-
-            // Handle invalid or expired tokens
-            if (!result.isValid) {
-                ApiLogger.info('Claims Middleware', 'Invalid or expired access token received');
-                return ResponseHandler.invalidTokenResponse();
-            }
-
-            // Next add central user info to claims
-            await authenticator.getCentralUserInfoClaims(result.claims!, accessToken);
-
-            // Next add product user data to claims
-            await this._authorizationMicroservice.getProductClaims(result.claims!, accessToken);
-
-            // Next cache the results
-            ClaimsCache.addClaimsForToken(accessToken, result.expiry!, result.claims!);
-
-            // Then move onto the API controller to execute business logic
-            ApiLogger.info('Claims Middleware', 'Claims lookup completed successfully');
-            handler.event.claims = result.claims;
-            return null;
-
-        } catch (e) {
-
-            // Report any exceptions
-            const serverError = ErrorHandler.fromException(e);
-            const [statusCode, clientError] = ErrorHandler.handleError(serverError);
-            return ResponseHandler.objectResponse(statusCode, clientError);
+        // First read the token from the request header and report missing tokens
+        const accessToken = this._readToken(handler.event.headers.Authorization);
+        if (!accessToken) {
+            ApiLogger.info('Claims Middleware', 'No access token received');
+            return ResponseHandler.missingTokenResponse();
         }
+
+        // Bypass validation and use cached results if they exists
+        const cachedClaims = ClaimsCache.getClaimsForToken(accessToken);
+        if (cachedClaims !== null) {
+            handler.event.claims = cachedClaims;
+            return null;
+        }
+
+        // Otherwise start by introspecting the token
+        const authenticator = new Authenticator(this._oauthConfig);
+        const result = await authenticator.validateTokenAndGetTokenClaims(accessToken);
+
+        // Handle invalid or expired tokens
+        if (!result.isValid) {
+            ApiLogger.info('Claims Middleware', 'Invalid or expired access token received');
+            return ResponseHandler.invalidTokenResponse();
+        }
+
+        // Next add central user info to claims
+        await authenticator.getCentralUserInfoClaims(result.claims!, accessToken);
+
+        // Next add product user data to claims
+        await this._authorizationMicroservice.getProductClaims(result.claims!, accessToken);
+
+        // Next cache the results
+        ClaimsCache.addClaimsForToken(accessToken, result.expiry!, result.claims!);
+
+        // Then move onto the API controller to execute business logic
+        ApiLogger.info('Claims Middleware', 'Claims lookup completed successfully');
+        handler.event.claims = result.claims;
+        return null;
     }
 
     /*
@@ -98,6 +89,8 @@ class ClaimsMiddleware {
 
 /*
  * Do the export plumbing
+ * Because this is an async middleware, we do not call next() ourselves
+ * Instead middy calls next for us
  */
 export function claimsMiddleware(
     config: Configuration,
@@ -111,11 +104,8 @@ export function claimsMiddleware(
             if (unauthorizedResponse) {
 
                 // If unauthorized then halt processing and return the unauthorized response
+                // handler.response = unauthorizedResponse;
                 handler.callback(null, unauthorizedResponse);
-            } else {
-
-                // Otherwise move on to the API controller
-                return next();
             }
         },
     };
