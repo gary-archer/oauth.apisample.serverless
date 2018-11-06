@@ -103,8 +103,7 @@ export function claimsMiddleware(
             const unauthorizedResponse = await middleware.authorizeRequestAndSetClaims(handler);
             if (unauthorizedResponse) {
 
-                // If unauthorized then halt processing and return the unauthorized response
-                // handler.response = unauthorizedResponse;
+                // If unauthorized then return an unauthorized response
                 handler.callback(null, unauthorizedResponse);
             }
         },
