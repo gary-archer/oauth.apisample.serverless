@@ -109,6 +109,7 @@ export function claimsMiddleware(
         after: async (handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): Promise<any> => {
 
             // We can only actually set the response in the after handler
+            // Note that the CORS middleware adds headers to this response later
             if (handler.event.unauthorizedResponse) {
                 handler.response = handler.event.unauthorizedResponse;
             }

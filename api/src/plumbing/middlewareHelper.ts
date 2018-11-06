@@ -32,13 +32,13 @@ export class MiddlewareHelper {
 
         return middy(async (event: any, context: Context) => {
 
-                // If authorization has failed we do not call the business entry point
-                if (event.claims) {
-                    return await operation(event, context);
-                }
-            })
-            .use(claimsMiddleware(this._apiConfig, this._authorizationMicroservice))
-            .use(cors(this._corsConfig))
-            .use(exceptionMiddleware());
+            // Only call the business entry point if authorization succeeded
+            if (event.claims) {
+                return await operation(event, context);
+            }
+        })
+        .use(cors(this._corsConfig))
+        .use(claimsMiddleware(this._apiConfig, this._authorizationMicroservice))
+        .use(exceptionMiddleware());
     }
 }
