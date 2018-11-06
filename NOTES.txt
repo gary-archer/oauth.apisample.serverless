@@ -1,23 +1,18 @@
 PROBLEMS
 --------
-1. No access-control-allow-headers response header written for a 401 get request
-2. Use node-cache for other samples and change the blog write up
+1. Use node-cache for other samples and change the blog write up
 
-NEXT
-----
-SPA hosted in AWS
-Can I use multiple trusted origins for web.mycompany.com and the AWS URL
-Also look at custom domain names
+NEXT - HOSTING SETUP LOCALLY
+----------------------------
+1. sls offline for API at https://api.mycompany.com (host header)
+2. express for SPA at https://web.mycompany.com (host header)
+3. SPA to AWS
+4. Multiple trusted origins for web.mycompany.com and the AWS web URL
+5. Use domains in AWS api.serverless.authguidance.com and spa.serverless.authguidance.com
 
 LOOK AT
 -------
 1. AWS lambda typescript project
-
-SETUP I WANT
-------------
-1. Express to listen on different host names for web.mycompany.com and api.mycompany.com
-2. SPA to use pfx option to local web server
-3. Use sls offline for local API
 
 LINKS
 -----
@@ -27,14 +22,8 @@ https://blog.shovonhasan.com/deploying-a-typescript-node-aws-lambda-function-wit
 Deployment problems on Windows:
 https://github.com/prismagraphql/serverless-plugin-typescript/issues/23
 
-Dependencies not included in AWS deployment:
-https://github.com/serverless/serverless/issues/3915
-
-Pros and Cons - Serverless v Express:
-https://medium.freecodecamp.org/node-js-apis-on-aws-the-pros-and-cons-of-express-versus-serverless-a370ab7eadd7
-
-Examples
---------
+Input data when testing
+-----------------------
 // Get-Transactions
 {
     "pathParameters": {
