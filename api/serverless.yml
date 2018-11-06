@@ -46,8 +46,8 @@ custom:
     hooks:
       'after:package:createDeploymentArtifacts': >
         (cd .serverless && unzip -qq basicapi.zip -d basicapi) &&
-        (cd .serverless/basicapi && npm install --only=prod > /dev/null 2>&1) &&
-        (cd .serverless/basicapi && zip -q -FSr ../basicapi.zip .)
+        (cd basicapi && npm install --only=prod > /dev/null 2>&1) &&
+        (zip -q -FSr ../basicapi.zip .)
 
 # Include only transpiled Javascript in the package
 # Node modules are excluded here and managed via the above hook instead

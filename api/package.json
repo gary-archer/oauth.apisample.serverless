@@ -9,7 +9,8 @@
     "getUserClaims": "sls invoke local -f getUserClaims -p test/empty.json",
     "getCompanyList": "sls invoke local -f getCompanyList -p test/empty.json",
     "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
-    "package": "rimraf .serverless && sls package",
+    "package": "rimraf .serverless",
+    "package2": "rimraf .serverless && sls package",
     "deploy": "sls deploy -p .serverless/basicapi.zip"
   },
   "author": "Gary Archer",
