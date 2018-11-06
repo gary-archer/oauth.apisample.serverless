@@ -41,6 +41,10 @@ functions:
 # Include non development dependencies only so that the upload size is small - see below links:
 #   https://github.com/serverless/serverless/issues/569
 #   https://gist.github.com/ugnb/0ca7d9ac5c3efe4171d0f33e48a34189#file-serverless-yml
+#
+# On Windows download the zip and unzip tools from these URLs:
+#   http://gnuwin32.sourceforge.net/packages/zip.htm
+#   http://gnuwin32.sourceforge.net/packages/unzip.htm
 custom:
   scripts:
     hooks:

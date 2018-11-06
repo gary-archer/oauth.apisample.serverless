@@ -100,11 +100,17 @@ export function claimsMiddleware(
     return {
         before: async (handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): Promise<any> => {
 
+            // If unauthorized then store the response
             const unauthorizedResponse = await middleware.authorizeRequestAndSetClaims(handler);
             if (unauthorizedResponse) {
+                handler.event.unauthorizedResponse = unauthorizedResponse;
+            }
+        },
+        after: async (handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): Promise<any> => {
 
-                // If unauthorized then return an unauthorized response
-                handler.callback(null, unauthorizedResponse);
+            // We can only actually set the response in the after handler
+            if (handler.event.unauthorizedResponse) {
+                handler.response = handler.event.unauthorizedResponse;
             }
         },
     };
