@@ -14,7 +14,7 @@ functions:
           path: /userclaims/current
           method: get
           cors:
-            origin: 'https://web.mycompany.com'
+            origin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
 
   getCompanyList:
     handler: build/handler.getCompanyList
@@ -23,7 +23,7 @@ functions:
           path: /companies
           method: get
           cors:
-            origin: 'https://web.mycompany.com'
+            origin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
 
   getCompanyTransactions:
     handler: build/handler.getCompanyTransactions
@@ -32,7 +32,7 @@ functions:
           path: /companies/{id}/transactions
           method: get
           cors:
-            origin: 'https://web.mycompany.com'
+            origin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
           request: 
             parameters: 
               paths: 
@@ -53,9 +53,9 @@ custom:
     hooks:
 
       'after:package:createDeploymentArtifacts': >
-        (cd .serverless && unzip -qq basicapi.zip -d basicapi) &&
-        (cd .serverless/basicapi && npm install --only=prod > /dev/null 2>&1) &&
-        (cd .serverless/basicapi && zip -q -FSr ../basicapi.zip .)
+        (cd .serverless && unzip -qq basicapi.zip -d basicapi && cd ..) &&
+        (cd .serverless/basicapi && npm install --only=prod > /dev/null 2>&1  && cd .. && cd ..) &&
+        (cd .serverless/basicapi && zip -q -FSr ../basicapi.zip . && cd .. && cd ..)
 
 # Include only transpiled Javascript in the package
 # Node modules are excluded here and managed via the above hook instead
