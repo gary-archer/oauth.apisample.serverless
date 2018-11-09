@@ -12,7 +12,7 @@ export class UserInfoController {
     public static async getUserClaims(event: any, context: Context): Promise<any> {
 
         ApiLogger.info('UserInfoController', 'Returning user info');
-        const userInfo = event.claims.userInfo;
+        const userInfo = event.requestContext.authorizer.claims.userInfo;
 
         return {
             statusCode: 200,

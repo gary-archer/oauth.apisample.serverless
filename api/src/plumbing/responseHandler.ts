@@ -16,23 +16,47 @@ export class ResponseHandler {
      */
     public static authorizedResponse(claims: ApiClaims, event: any): object {
 
-        const serializedClaims = JSON.stringify(claims);
-        return {
-            principalId: claims.userId,
-            policyDocument: {
-                Version: '2012-10-17',
-                Statement: [
-                    {
-                        Action: 'execute-api:Invoke',
-                        Effect: 'Allow',
-                        Resource: event.methodArn,
-                    },
-                ],
-            },
-            context: {
-                claims: serializedClaims,
+        const context = {
+            claims: JSON.stringify(claims),
+        };
+
+        return ResponseHandler._policyDocument(claims.userId, 'Allow', event.methodArn, context);
+    }
+
+    /*
+     * Return a missing token response to the caller
+     */
+    public static missingTokenResponse(event: any): any {
+
+        const context = {
+            unauthorizedResponse: {
+                statusCode: 401,
+                headers: {
+                    'WWW-Authenticate': 'Bearer',
+                },
+                body: JSON.stringify(INVALID_TOKEN_MESSAGE),
             },
         };
+
+        return ResponseHandler._policyDocument('unauthorized', 'Deny', event.methodArn, context);
+    }
+
+    /*
+     * Return an invalid token response to the caller
+     */
+    public static invalidTokenResponse(event: any): any {
+
+        const context = {
+            unauthorizedResponse: {
+                statusCode: 401,
+                headers: {
+                    'WWW-Authenticate': 'Bearer, error=invalid_token',
+                },
+                body: JSON.stringify(INVALID_TOKEN_MESSAGE),
+            },
+        };
+
+        return ResponseHandler._policyDocument('unauthorized', 'Deny', event.methodArn, context);
     }
 
     /*
@@ -47,30 +71,26 @@ export class ResponseHandler {
     }
 
     /*
-     * Return a missing token response to the caller
+     * Write an authorized or unauthorized policy document
      */
-    public static missingTokenResponse(): any {
+    private static _policyDocument(userId: string, effect: string, resource: string, context: any) {
 
-        return {
-            statusCode: 401,
-            headers: {
-                'WWW-Authenticate': 'Bearer',
+        const doc = {
+            principalId: userId,
+            policyDocument: {
+                Version: '2012-10-17',
+                Statement: [
+                    {
+                        Action: 'execute-api:Invoke',
+                        Effect: effect,
+                        Resource: resource,
+                    },
+                ],
             },
-            body: JSON.stringify(INVALID_TOKEN_MESSAGE),
+            context,
         };
-    }
 
-    /*
-     * Return an invalid token response to the caller
-     */
-    public static invalidTokenResponse(): any {
-
-        return {
-            statusCode: 401,
-            headers: {
-                'WWW-Authenticate': 'Bearer, error=invalid_token',
-            },
-            body: JSON.stringify(INVALID_TOKEN_MESSAGE),
-        };
+        console.log('*** DEBUG AUTHORIZER RESPONSE');
+        return doc;
     }
 }

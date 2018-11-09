@@ -12,7 +12,7 @@ export class CompanyController {
      */
     public static async getCompanyList(event: any, context: Context) {
 
-        const repository = new CompanyRepository(event.claims);
+        const repository = new CompanyRepository(event.requestContext.authorizer.claims);
         ApiLogger.info('CompanyController', 'Returning company list');
 
         const data = await repository.getCompanyList();
@@ -28,7 +28,7 @@ export class CompanyController {
     public static async getCompanyTransactions(event: any, context: Context): Promise<any> {
 
         // Create a repository
-        const repository = new CompanyRepository(event.claims);
+        const repository = new CompanyRepository(event.requestContext.authorizer.claims);
         const id = parseInt(event.pathParameters.id, 10);
         ApiLogger.info('CompanyController', `Returning transactions for company ${id}`);
 

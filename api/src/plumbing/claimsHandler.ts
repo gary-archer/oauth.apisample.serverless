@@ -32,10 +32,10 @@ export class ClaimsHandler {
     public async authorizeRequestAndSetClaims(event: any, context: Context) {
 
         // First read the token from the request header and report missing tokens
-        const accessToken = this._readToken(event.headers.Authorization);
+        const accessToken = this._readToken(event.authorizationToken);
         if (!accessToken) {
-            ApiLogger.info('Claims Handler', 'No access token received');
-            return ResponseHandler.missingTokenResponse();
+            ApiLogger.info('ClaimsHandler', 'No access token received');
+            return ResponseHandler.missingTokenResponse(event);
         }
 
         // Bypass validation and use cached results if they exists
@@ -50,8 +50,8 @@ export class ClaimsHandler {
 
         // Handle invalid or expired tokens
         if (!result.isValid) {
-            ApiLogger.info('Claims Handler', 'Invalid or expired access token received');
-            return ResponseHandler.invalidTokenResponse();
+            ApiLogger.info('ClaimsHandler', 'Invalid or expired access token received');
+            return ResponseHandler.invalidTokenResponse(event);
         }
 
         // Next add central user info to claims
@@ -64,7 +64,7 @@ export class ClaimsHandler {
         ClaimsCache.addClaimsForToken(accessToken, result.expiry!, result.claims!);
 
         // Then move onto the API controller to execute business logic
-        ApiLogger.info('Claims Handler', 'Claims lookup completed successfully');
+        ApiLogger.info('ClaimsHandler', 'Claims lookup completed successfully');
         return ResponseHandler.authorizedResponse(result.claims!, event);
     }
 

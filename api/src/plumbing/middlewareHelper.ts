@@ -31,8 +31,6 @@ export class MiddlewareHelper {
 
         return middy(async (event: any, context: Context) => {
 
-            console.log('*** DEBUG: RUNNING AUTHORIZER');
-
             // Do the authorization which will set claims on the event
             return await operation(event, context);
         })
@@ -48,17 +46,19 @@ export class MiddlewareHelper {
 
         return middy(async (event: any, context: Context) => {
 
-            console.log('*** DEBUG: RUNNING OPERATION');
-
-            console.log('*** DEBUG: context');
-            console.log(context);
-            console.log('*** DEBUG: event claims');
-            console.log(event.claims);
+            console.log('*** DEBUG OPERATION REQUEST CONTEXT');
+            console.log(event.requestContext);
 
             // Only call the business entry point if authorization succeeded
-            if (event.claims) {
-                return await operation(event, context);
+            if (!event.requestContext ||
+                !event.requestContext.authorizer ||
+                !event.requestContext.authorizer.claims) {
+
+                throw new Error('Unable to resolve claims from authorizer');
             }
+
+            return await operation(event, context);
+
         })
         .use(cors(this._corsConfig))
         .use(exceptionMiddleware());

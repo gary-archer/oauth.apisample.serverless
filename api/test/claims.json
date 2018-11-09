@@ -1,15 +1,17 @@
 {
-    "context": {
-        "claims": {
-            "userId": "test.user@test.com",
-            "callingApplicationId": "basicSpa",
-            "scopes": "openid profile email",
-            "userInfo": {
-                "givenName": "test",
-                "familyName": "user",
-                "email": "test.user@test.com"
-            },
-            "userCompanyIds": [1, 2, 3]
+    "requestContext": {
+        "authorizer": {
+            "claims": {
+                "userId": "test.user@test.com",
+                "callingApplicationId": "basicSpa",
+                "scopes": "openid profile email",
+                "userInfo": {
+                    "givenName": "test",
+                    "familyName": "user",
+                    "email": "test.user@test.com"
+                },
+                "userCompanyIds": [1, 2, 3]
+            }
         }
     }
 }
