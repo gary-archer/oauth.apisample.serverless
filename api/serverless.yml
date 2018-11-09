@@ -7,12 +7,18 @@ provider:
   profile: default
 
 functions:
+  authorize:
+    handler: build/handler.authorize
+    cors:
+      origin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
+
   getUserClaims:
     handler: build/handler.getUserClaims
     events:
       - http: 
           path: /userclaims/current
           method: get
+          authorizer: authorize
           cors:
             origin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
 
@@ -22,6 +28,7 @@ functions:
       - http: 
           path: /companies
           method: get
+          authorizer: authorize
           cors:
             origin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
 
@@ -31,6 +38,7 @@ functions:
       - http: 
           path: /companies/{id}/transactions
           method: get
+          authorizer: authorize
           cors:
             origin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
           request: 

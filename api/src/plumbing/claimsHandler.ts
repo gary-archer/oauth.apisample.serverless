@@ -1,17 +1,15 @@
-import middy from 'middy';
-import {Configuration} from '../configuration/configuration';
+import {Context} from 'aws-lambda';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {AuthorizationMicroservice} from '../logic/authorizationMicroservice';
 import {ApiLogger} from './apiLogger';
 import {Authenticator} from './authenticator';
 import {ClaimsCache} from './claimsCache';
-import {ErrorHandler} from './errorHandler';
 import {ResponseHandler} from './responseHandler';
 
 /*
  * The middleware coded in a class based manner
  */
-class ClaimsMiddleware {
+export class ClaimsHandler {
 
     /*
      * Dependencies
@@ -25,25 +23,25 @@ class ClaimsMiddleware {
     public constructor(oauthConfig: OAuthConfiguration, authorizationMicroservice: AuthorizationMicroservice) {
         this._oauthConfig = oauthConfig;
         this._authorizationMicroservice = authorizationMicroservice;
+        this._setupCallbacks();
     }
 
     /*
      * Do the authorization and set claims, or return an unauthorized response
      */
-    public async authorizeRequestAndSetClaims(handler: middy.IHandlerLambda<any, object>): Promise<any> {
+    public async authorizeRequestAndSetClaims(event: any, context: Context) {
 
         // First read the token from the request header and report missing tokens
-        const accessToken = this._readToken(handler.event.headers.Authorization);
+        const accessToken = this._readToken(event.headers.Authorization);
         if (!accessToken) {
-            ApiLogger.info('Claims Middleware', 'No access token received');
+            ApiLogger.info('Claims Handler', 'No access token received');
             return ResponseHandler.missingTokenResponse();
         }
 
         // Bypass validation and use cached results if they exists
         const cachedClaims = ClaimsCache.getClaimsForToken(accessToken);
         if (cachedClaims !== null) {
-            handler.event.claims = cachedClaims;
-            return null;
+            return ResponseHandler.authorizedResponse(cachedClaims, event);
         }
 
         // Otherwise start by introspecting the token
@@ -52,7 +50,7 @@ class ClaimsMiddleware {
 
         // Handle invalid or expired tokens
         if (!result.isValid) {
-            ApiLogger.info('Claims Middleware', 'Invalid or expired access token received');
+            ApiLogger.info('Claims Handler', 'Invalid or expired access token received');
             return ResponseHandler.invalidTokenResponse();
         }
 
@@ -66,9 +64,8 @@ class ClaimsMiddleware {
         ClaimsCache.addClaimsForToken(accessToken, result.expiry!, result.claims!);
 
         // Then move onto the API controller to execute business logic
-        ApiLogger.info('Claims Middleware', 'Claims lookup completed successfully');
-        handler.event.claims = result.claims;
-        return null;
+        ApiLogger.info('Claims Handler', 'Claims lookup completed successfully');
+        return ResponseHandler.authorizedResponse(result.claims!, event);
     }
 
     /*
@@ -85,34 +82,11 @@ class ClaimsMiddleware {
 
         return null;
     }
-}
 
-/*
- * Do the export plumbing
- * Because this is an async middleware, we do not call next() ourselves
- * Instead middy calls next for us
- */
-export function claimsMiddleware(
-    config: Configuration,
-    authService: AuthorizationMicroservice): middy.IMiddyMiddlewareObject {
-
-    const middleware = new ClaimsMiddleware(config.oauth, authService);
-    return {
-        before: async (handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): Promise<any> => {
-
-            // If unauthorized then store the response
-            const unauthorizedResponse = await middleware.authorizeRequestAndSetClaims(handler);
-            if (unauthorizedResponse) {
-                handler.event.unauthorizedResponse = unauthorizedResponse;
-            }
-        },
-        after: async (handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): Promise<any> => {
-
-            // We can only actually set the response in the after handler
-            // Note that the CORS middleware adds headers to this response later
-            if (handler.event.unauthorizedResponse) {
-                handler.response = handler.event.unauthorizedResponse;
-            }
-        },
-    };
+    /*
+     * Plumbing to ensure that the this parameter is available in async callbacks
+     */
+    private _setupCallbacks(): void {
+        this.authorizeRequestAndSetClaims = this.authorizeRequestAndSetClaims.bind(this);
+    }
 }

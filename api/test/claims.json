@@ -10,9 +10,6 @@
                 "email": "test.user@test.com"
             },
             "userCompanyIds": [1, 2, 3]
-        },
-        "pathParameters": {
-            "id": "2"
         }
     }
 }
