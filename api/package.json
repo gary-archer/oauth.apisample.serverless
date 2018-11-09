@@ -6,8 +6,8 @@
   "scripts": {
     "lint": "tslint -c tslint.json src/**/*.ts",
     "build": "rimraf build && tsc",
-    "getUserClaims": "sls invoke local -f getUserClaims -p test/empty.json",
-    "getCompanyList": "sls invoke local -f getCompanyList -p test/empty.json",
+    "getUserClaims": "sls invoke local -f getUserClaims -p test/default.json",
+    "getCompanyList": "sls invoke local -f getCompanyList -p test/default.json",
     "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
     "package": "rimraf .serverless && sls package",
     "deploy": "sls deploy -p .serverless/basicapi.zip"

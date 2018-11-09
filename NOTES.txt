@@ -1,6 +1,6 @@
 PROBLEMS
 --------
-1. Use node-cache for other samples and change the blog write up
+1. Use node-cache for other samples, update blog and GitHub README files
 
 NEXT - HOSTING SETUP LOCALLY
 ----------------------------

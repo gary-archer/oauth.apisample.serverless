@@ -45,9 +45,6 @@ functions:
 # On Windows download the zip and unzip tools from these URLs:
 #   http://gnuwin32.sourceforge.net/packages/zip.htm
 #   http://gnuwin32.sourceforge.net/packages/unzip.htm
-#
-# Do I need to use these EXEs on Windows?
-#   http://stahlworks.com/dev/index.php?tool=zipunzip
 custom:
   scripts:
     hooks:
