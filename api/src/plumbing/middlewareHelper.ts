@@ -46,6 +46,7 @@ export class MiddlewareHelper {
 
         return middy(async (event: any, context: Context) => {
 
+            // TODO - remove once stable
             console.log('*** DEBUG OPERATION REQUEST CONTEXT');
             console.log(event.requestContext);
 

@@ -90,7 +90,9 @@ export class ResponseHandler {
             context,
         };
 
+        // TODO - remove once stable and once I understand error responses
         console.log('*** DEBUG AUTHORIZER RESPONSE');
+        console.log(doc);
         return doc;
     }
 }

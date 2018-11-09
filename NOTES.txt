@@ -1,8 +1,8 @@
 PROBLEMS
 --------
-1. Authorizer error responses
+1. Authorizer to complete, including error responses
    https://github.com/serverless/examples/blob/master/aws-node-auth0-custom-authorizers-api/handler.js
-   
+
 2. Use node-cache for other samples, update blog and GitHub README files
 
 NEXT - HOSTING SETUP LOCALLY
