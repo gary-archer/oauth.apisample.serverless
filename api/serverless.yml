@@ -5,12 +5,14 @@ provider:
   runtime: nodejs8.10
   region: eu-west-2
   profile: default
+  custom:
+    trustedOrigin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
 
 functions:
   authorize:
     handler: build/handler.authorize
     cors:
-      origin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
+      origin: ${self:custom.trustedOrigin}
 
   getUserClaims:
     handler: build/handler.getUserClaims
@@ -20,7 +22,7 @@ functions:
           method: get
           authorizer: authorize
           cors:
-            origin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
+            origin: ${self:custom.trustedOrigin}
 
   getCompanyList:
     handler: build/handler.getCompanyList
@@ -30,7 +32,7 @@ functions:
           method: get
           authorizer: authorize
           cors:
-            origin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
+            origin: ${self:custom.trustedOrigin}
 
   getCompanyTransactions:
     handler: build/handler.getCompanyTransactions
@@ -40,7 +42,7 @@ functions:
           method: get
           authorizer: authorize
           cors:
-            origin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
+            origin: ${self:custom.trustedOrigin}
           request: 
             parameters: 
               paths: 
@@ -62,7 +64,6 @@ custom:
         (cd .serverless/basicapi && npm install --only=prod > /dev/null 2>&1  && cd .. && cd ..) &&
         (cd .serverless/basicapi && zip -q -FSr ../basicapi.zip . && cd .. && cd ..)
 
-# Include only transpiled Javascript in the package
 # Node modules are excluded here and managed via the above hook instead
 package:
   exclude:
@@ -70,8 +71,6 @@ package:
   - src/**
   - test/**
   - ts*.json
-  include:
-  - build/handler.js
 
 plugins:
   - serverless-plugin-scripts

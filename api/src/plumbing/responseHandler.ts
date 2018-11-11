@@ -77,40 +77,31 @@ export class ResponseHandler {
     }
 
     /*
-     * TODO: Set the ARN properly
+     * This takes an ARN for the current API request, such as this:
+     *   arn:aws:execute-api:eu-west-2:090109105180:cqo3riplm6/dev/GET/companies
+     *
+     * It reduces it to a wildcard that applies to all lambdas in the service:
+     *   arn:aws:execute-api:eu-west-2:090109105180:cqo3riplm6/dev/GET/companies
+     *
+     * The policy document will be cached and will then be usable for any secured API request
      */
     private static _getServiceArn(methodArn: string) {
 
-        console.log(`Method ARN is ${methodArn}`);
+        // Get the last part, such as cqo3riplm6/dev/GET/companies
+        const parts = methodArn.split(':');
+        if (parts.length === 6) {
 
-        // const methodArnExample = 'arn:aws:execute-api:eu-west-2:090109105180:cqo3riplm6/dev/GET/companies';
+            // Split the path into parts
+            const pathParts = parts[5].split('/');
+            if (pathParts.length >= 4) {
 
-        // Parse the input for the parameter values
-        var tmp = methodArn.split(':');
-        var apiGatewayArnTmp = tmp[5].split('/');
+                // Update the final part to a wildcard value such as cqo3riplm6/dev/* and then rejoin
+                parts[5] = `${pathParts[0]}/${pathParts[1]}/*`;
+                return parts.join(':');
+            }
+        }
 
-        console.log(`API Gateway ARN is ${apiGatewayArnTmp}`);
-
-        var awsAccountId = tmp[4];
-        var region = tmp[3];
-        var restApiId = apiGatewayArnTmp[0];
-
-        console.log(`Rest API id is ${apiGatewayArnTmp}`);
-
-        var stage = apiGatewayArnTmp[1];
-        var method = apiGatewayArnTmp[2];
-
-        console.log(`Method is ${method}`);
-
-        var resource = '/'; // root resource
-        
-        /*if (apiGatewayArnTmp[3]) {
-            resource += apiGatewayArnTmp[3];
-        }*/
-
-        console.log(`Service ARN is ${resource}`);
-
-        return 'arn:aws:execute-api:eu-west-2:090109105180:cqo3riplm6/dev/*';
-        return resource;
+        // Sanity check
+        throw new Error(`Unexpected method ARN received: ${methodArn}`);
     }
 }

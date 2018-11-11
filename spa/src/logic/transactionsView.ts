@@ -74,7 +74,7 @@ export class TransactionsView {
           const transactionDiv = $(`<div class='item col-xs-3'>
                                       <div class='thumbnail'>
                                         <div class='caption row'>
-                                          <div class='col-xs-6 text-left'>Transaction Id</div>
+                                          <div class='col-xs-6 text-left'>Id</div>
                                           <div class='col-xs-6 text-right link'>${transaction.id}</div>
                                         </div>
                                         <div class='caption row'>

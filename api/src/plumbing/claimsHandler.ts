@@ -56,7 +56,7 @@ export class ClaimsHandler {
         }
 
         ApiLogger.info('ClaimsHandler', 'OAuth token validation succeeded');
-        
+
         // Next add central user info to claims
         await authenticator.getCentralUserInfoClaims(result.claims!, accessToken);
 
