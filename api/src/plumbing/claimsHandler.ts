@@ -35,12 +35,13 @@ export class ClaimsHandler {
         const accessToken = this._readToken(event.authorizationToken);
         if (!accessToken) {
             ApiLogger.info('ClaimsHandler', 'No access token received');
-            return ResponseHandler.missingTokenResponse(event);
+            return ResponseHandler.invalidTokenResponse(event);
         }
 
         // Bypass validation and use cached results if they exists
         const cachedClaims = ClaimsCache.getClaimsForToken(accessToken);
         if (cachedClaims !== null) {
+            ApiLogger.info('ClaimsHandler', 'Claims returned from cache');
             return ResponseHandler.authorizedResponse(cachedClaims, event);
         }
 
@@ -54,6 +55,8 @@ export class ClaimsHandler {
             return ResponseHandler.invalidTokenResponse(event);
         }
 
+        ApiLogger.info('ClaimsHandler', 'OAuth token validation succeeded');
+        
         // Next add central user info to claims
         await authenticator.getCentralUserInfoClaims(result.claims!, accessToken);
 

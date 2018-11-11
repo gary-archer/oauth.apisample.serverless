@@ -46,22 +46,34 @@ export class MiddlewareHelper {
 
         return middy(async (event: any, context: Context) => {
 
-            // TODO - remove once stable
-            console.log('*** DEBUG OPERATION REQUEST CONTEXT');
-            console.log(event.requestContext);
-
-            // Only call the business entry point if authorization succeeded
-            if (!event.requestContext ||
-                !event.requestContext.authorizer ||
-                !event.requestContext.authorizer.claims) {
-
-                throw new Error('Unable to resolve claims from authorizer');
-            }
-
+            this._deserializeClaims(event);
             return await operation(event, context);
 
         })
         .use(cors(this._corsConfig))
         .use(exceptionMiddleware());
+    }
+
+    /*
+     * Claims are returned in a serialised form from the authorizer so deserialize here
+     */
+    private _deserializeClaims(event: any): void {
+
+        if (!event.requestContext ||
+            !event.requestContext.authorizer ||
+            !event.requestContext.authorizer.claims) {
+
+            throw new Error('Unable to resolve claims from authorizer');
+        }
+
+        if (typeof event.requestContext.authorizer.claims === 'string') {
+
+            // In AWS we receive a serialized object
+            event.claims = JSON.parse(event.requestContext.authorizer.claims);
+        } else {
+
+            // On a local PC we have an object
+            event.claims = event.requestContext.authorizer.claims;
+        }
     }
 }
