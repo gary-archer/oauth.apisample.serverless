@@ -6,7 +6,7 @@
     },
     "oauth": {
         "authority":    "https://dev-843469.oktapreview.com/oauth2/default",
-        "clientId":     "xxx0oac5s69rjXE0HcZO0h7",
+        "clientId":     "0oac5s69rjXE0HcZO0h7",
         "clientSecret": "VEEe9m9WDneeUSUJUOMKZiso_X6xwKvAqRInT2kg"
     }
 }
