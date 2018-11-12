@@ -5,8 +5,6 @@ provider:
   runtime: nodejs8.10
   region: eu-west-2
   profile: default
-  custom:
-    trustedOrigin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
 
 functions:
   authorize:
@@ -56,13 +54,49 @@ functions:
 #   http://gnuwin32.sourceforge.net/packages/zip.htm
 #   http://gnuwin32.sourceforge.net/packages/unzip.htm
 custom:
+  trustedOrigin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
   scripts:
     hooks:
-
       'after:package:createDeploymentArtifacts': >
         (cd .serverless && unzip -qq basicapi.zip -d basicapi && cd ..) &&
         (cd .serverless/basicapi && npm install --only=prod > /dev/null 2>&1  && cd .. && cd ..) &&
         (cd .serverless/basicapi && zip -q -FSr ../basicapi.zip . && cd .. && cd ..)
+
+resources:
+  Resources:
+    ExpiredGatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: EXPIRED_TOKEN
+        ResponseTemplates:
+          application/json: |
+            {
+              "message": "$context.authorizer.error",
+              "success": false
+            }
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
+
+    AuthFailureGatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+        ResponseType: UNAUTHORIZED
+        ResponseTemplates:
+          application/json: |
+            {
+              "message": "$context.authorizer.error",
+              "success": false
+            }
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '500'
 
 # Node modules are excluded here and managed via the above hook instead
 package:

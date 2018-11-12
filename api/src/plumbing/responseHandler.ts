@@ -1,14 +1,21 @@
 import {ApiClaims} from '../entities/apiClaims';
-
-/*
- * A generic 401 message
- */
-const INVALID_TOKEN_MESSAGE = 'Missing, invalid or expired access token';
+import {ClientError} from '../entities/clientError';
 
 /*
  * Helper methods to return responses
  */
 export class ResponseHandler {
+
+    /*
+     * Return data to the caller, which could be a success or error object
+     */
+    public static objectResponse(statusCode: number, data: any): any {
+
+        return {
+            statusCode,
+            body: JSON.stringify(data),
+        };
+    }
 
     /*
      * The authorized response includes an aws policy document
@@ -24,32 +31,32 @@ export class ResponseHandler {
     }
 
     /*
-     * Return an invalid token response to the caller
+     * Called when there is a technical error processing a token
      */
-    public static invalidTokenResponse(event: any): any {
+    public static authorizedErrorResponse(event: any, error: ClientError): object {
 
         const context = {
-            unauthorizedResponse: {
-                statusCode: 401,
-                headers: {
-                    'WWW-Authenticate': 'Bearer',
-                },
-                body: JSON.stringify(INVALID_TOKEN_MESSAGE),
-            },
+            error: JSON.stringify(error),
         };
 
         return ResponseHandler._policyDocument('unauthorized', 'Deny', event.methodArn, context);
     }
 
     /*
-     * Return data to the caller, which could be a success or error object
+     * Return an invalid token response to the caller
      */
-    public static objectResponse(statusCode: number, data: any): any {
+    public static invalidTokenResponse(event: any): any {
 
-        return {
-            statusCode,
-            body: JSON.stringify(data),
+        const invalidTokenMessage = 'Missing, invalid or expired access token';
+        const error = {
+            message: JSON.stringify(invalidTokenMessage),
         };
+
+        const context = {
+            error: JSON.stringify(error),
+        };
+
+        return ResponseHandler._policyDocument('unauthorized', 'Deny', event.methodArn, context);
     }
 
     /*

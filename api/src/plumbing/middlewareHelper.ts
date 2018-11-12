@@ -46,6 +46,7 @@ export class MiddlewareHelper {
 
         return middy(async (event: any, context: Context) => {
 
+            // Try the operation
             this._deserializeClaims(event);
             return await operation(event, context);
 

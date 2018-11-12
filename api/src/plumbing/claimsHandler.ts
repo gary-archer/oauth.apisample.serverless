@@ -4,6 +4,7 @@ import {AuthorizationMicroservice} from '../logic/authorizationMicroservice';
 import {ApiLogger} from './apiLogger';
 import {Authenticator} from './authenticator';
 import {ClaimsCache} from './claimsCache';
+import {ErrorHandler} from './errorHandler';
 import {ResponseHandler} from './responseHandler';
 
 /*
@@ -31,44 +32,51 @@ export class ClaimsHandler {
      */
     public async authorizeRequestAndSetClaims(event: any, context: Context) {
 
-        // First read the token from the request header and report missing tokens
-        const accessToken = this._readToken(event.authorizationToken);
-        if (!accessToken) {
-            ApiLogger.info('ClaimsHandler', 'No access token received');
-            return ResponseHandler.invalidTokenResponse(event);
+        try {
+            // First read the token from the request header and report missing tokens
+            const accessToken = this._readToken(event.authorizationToken);
+            if (!accessToken) {
+                ApiLogger.info('ClaimsHandler', 'No access token received');
+                return ResponseHandler.invalidTokenResponse(event);
+            }
+
+            // Bypass validation and use cached results if they exists
+            const cachedClaims = ClaimsCache.getClaimsForToken(accessToken);
+            if (cachedClaims !== null) {
+                ApiLogger.info('ClaimsHandler', 'Claims returned from cache');
+                return ResponseHandler.authorizedResponse(cachedClaims, event);
+            }
+
+            // Otherwise start by introspecting the token
+            const authenticator = new Authenticator(this._oauthConfig);
+            const result = await authenticator.validateTokenAndGetTokenClaims(accessToken);
+
+            // Handle invalid or expired tokens
+            if (!result.isValid) {
+                ApiLogger.info('ClaimsHandler', 'Invalid or expired access token received');
+                return ResponseHandler.invalidTokenResponse(event);
+            }
+
+            ApiLogger.info('ClaimsHandler', 'OAuth token validation succeeded');
+
+            // Next add central user info to claims
+            await authenticator.getCentralUserInfoClaims(result.claims!, accessToken);
+
+            // Next add product user data to claims
+            await this._authorizationMicroservice.getProductClaims(result.claims!, accessToken);
+
+            // Next cache the results
+            ClaimsCache.addClaimsForToken(accessToken, result.expiry!, result.claims!);
+
+            // Then move onto the API controller to execute business logic
+            ApiLogger.info('ClaimsHandler', 'Claims lookup completed successfully');
+            return ResponseHandler.authorizedResponse(result.claims!, event);
+
+        } catch (e) {
+            const serverError = ErrorHandler.fromException(e);
+            const [_, clientError] = ErrorHandler.handleError(serverError);
+            return ResponseHandler.authorizedErrorResponse(event, clientError);
         }
-
-        // Bypass validation and use cached results if they exists
-        const cachedClaims = ClaimsCache.getClaimsForToken(accessToken);
-        if (cachedClaims !== null) {
-            ApiLogger.info('ClaimsHandler', 'Claims returned from cache');
-            return ResponseHandler.authorizedResponse(cachedClaims, event);
-        }
-
-        // Otherwise start by introspecting the token
-        const authenticator = new Authenticator(this._oauthConfig);
-        const result = await authenticator.validateTokenAndGetTokenClaims(accessToken);
-
-        // Handle invalid or expired tokens
-        if (!result.isValid) {
-            ApiLogger.info('ClaimsHandler', 'Invalid or expired access token received');
-            return ResponseHandler.invalidTokenResponse(event);
-        }
-
-        ApiLogger.info('ClaimsHandler', 'OAuth token validation succeeded');
-
-        // Next add central user info to claims
-        await authenticator.getCentralUserInfoClaims(result.claims!, accessToken);
-
-        // Next add product user data to claims
-        await this._authorizationMicroservice.getProductClaims(result.claims!, accessToken);
-
-        // Next cache the results
-        ClaimsCache.addClaimsForToken(accessToken, result.expiry!, result.claims!);
-
-        // Then move onto the API controller to execute business logic
-        ApiLogger.info('ClaimsHandler', 'Claims lookup completed successfully');
-        return ResponseHandler.authorizedResponse(result.claims!, event);
     }
 
     /*
