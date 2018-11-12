@@ -2,7 +2,6 @@ import {Context} from 'aws-lambda';
 import middy from 'middy';
 import {cors, ICorsOptions} from 'middy/middlewares';
 import {Configuration} from '../configuration/configuration';
-import {AuthorizationMicroservice} from '../logic/authorizationMicroservice';
 import {exceptionMiddleware} from './exceptionMiddleware';
 
 /*
@@ -10,32 +9,13 @@ import {exceptionMiddleware} from './exceptionMiddleware';
  */
 export class MiddlewareHelper {
 
-    private _apiConfig: Configuration;
-    private _authorizationMicroservice: AuthorizationMicroservice;
     private _corsConfig: ICorsOptions;
 
     /*
      * Receive dependencies
      */
-    public constructor(apiConfig: Configuration, authorizationMicroservice: AuthorizationMicroservice) {
-        this._apiConfig = apiConfig;
-        this._authorizationMicroservice = authorizationMicroservice;
+    public constructor(apiConfig: Configuration) {
         this._corsConfig = {origins: apiConfig.app.trustedOrigins};
-    }
-
-    /*
-     * Add cross cutting concerns to enrich the API operation
-     * Middy works by always calling all middlewares, including the main operation
-     */
-    public enrichAuthOperation(operation: any): middy.IMiddy {
-
-        return middy(async (event: any, context: Context) => {
-
-            // Do the authorization which will set claims on the event
-            return await operation(event, context);
-        })
-        .use(cors(this._corsConfig))
-        .use(exceptionMiddleware());
     }
 
     /*

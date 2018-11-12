@@ -10,15 +10,13 @@ import {MiddlewareHelper} from './plumbing/middlewareHelper';
 const apiConfigText = fs.readFileSync('api.config.json');
 const apiConfig = JSON.parse(apiConfigText) as Configuration;
 
-// Create a helper to wire up middleware
-const authorizationMicroservice = new AuthorizationMicroservice();
-const helper = new MiddlewareHelper(apiConfig, authorizationMicroservice);
-
 // Set up the authorize operation
+const authorizationMicroservice = new AuthorizationMicroservice();
 const claimsHandler = new ClaimsHandler(apiConfig.oauth, authorizationMicroservice);
-const authorize = helper.enrichAuthOperation(claimsHandler.authorizeRequestAndSetClaims);
+const authorize = claimsHandler.authorizeRequestAndSetClaims;
 
-// Set up business operationss
+// Set up business operations
+const helper = new MiddlewareHelper(apiConfig);
 const getUserClaims = helper.enrichApiOperation(UserInfoController.getUserClaims);
 const getCompanyList = helper.enrichApiOperation(CompanyController.getCompanyList);
 const getCompanyTransactions = helper.enrichApiOperation(CompanyController.getCompanyTransactions);

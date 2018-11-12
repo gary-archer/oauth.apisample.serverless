@@ -62,41 +62,25 @@ custom:
         (cd .serverless/basicapi && npm install --only=prod > /dev/null 2>&1  && cd .. && cd ..) &&
         (cd .serverless/basicapi && zip -q -FSr ../basicapi.zip . && cd .. && cd ..)
 
+# Response types are listed here
+# https://docs.aws.amazon.com/apigateway/latest/developerguide/supported-gateway-response-types.html
 resources:
   Resources:
-    ExpiredGatewayResponse:
+    InvalidTokenGatewayResponse:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
         ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: EXPIRED_TOKEN
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.trustedOrigin}'"
+        ResponseType: ACCESS_DENIED
         ResponseTemplates:
           application/json: |
             {
-              "message": "$context.authorizer.error",
-              "success": false
+              "message": "$context.authorizer.errorMessage"
             }
         RestApiId:
           Ref: 'ApiGatewayRestApi'
         StatusCode: '401'
-
-    AuthFailureGatewayResponse:
-      Type: 'AWS::ApiGateway::GatewayResponse'
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: UNAUTHORIZED
-        ResponseTemplates:
-          application/json: |
-            {
-              "message": "$context.authorizer.error",
-              "success": false
-            }
-        RestApiId:
-          Ref: 'ApiGatewayRestApi'
-        StatusCode: '500'
 
 # Node modules are excluded here and managed via the above hook instead
 package:

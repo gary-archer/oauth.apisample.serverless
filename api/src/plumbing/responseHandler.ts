@@ -1,5 +1,4 @@
 import {ApiClaims} from '../entities/apiClaims';
-import {ClientError} from '../entities/clientError';
 
 /*
  * Helper methods to return responses
@@ -31,32 +30,15 @@ export class ResponseHandler {
     }
 
     /*
-     * Called when there is a technical error processing a token
-     */
-    public static authorizedErrorResponse(event: any, error: ClientError): object {
-
-        const context = {
-            error: JSON.stringify(error),
-        };
-
-        return ResponseHandler._policyDocument('unauthorized', 'Deny', event.methodArn, context);
-    }
-
-    /*
-     * Return an invalid token response to the caller
+     * Return an invalid token policy response to the caller which is an AWS ACCESS_DENIED gateway response
      */
     public static invalidTokenResponse(event: any): any {
 
-        const invalidTokenMessage = 'Missing, invalid or expired access token';
-        const error = {
-            message: JSON.stringify(invalidTokenMessage),
-        };
-
         const context = {
-            error: JSON.stringify(error),
+            errorMessage: '[InvalidToken]Missing, invalid or expired access token',
         };
 
-        return ResponseHandler._policyDocument('unauthorized', 'Deny', event.methodArn, context);
+        return ResponseHandler._policyDocument('*', 'Deny', event.methodArn, context);
     }
 
     /*

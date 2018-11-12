@@ -73,9 +73,15 @@ export class ClaimsHandler {
             return ResponseHandler.authorizedResponse(result.claims!, event);
 
         } catch (e) {
+
+            // Ensure that we log errors then fail in the API gateway expected manner
             const serverError = ErrorHandler.fromException(e);
             const [_, clientError] = ErrorHandler.handleError(serverError);
-            return ResponseHandler.authorizedErrorResponse(event, clientError);
+
+            // TODO: How can I make this fail with a particular error type and also pass context
+            // This always results in a AUTHORIZER_CONFIGURATION_ERROR
+            // https://forums.aws.amazon.com/thread.jspa?threadID=226689
+            return ResponseHandler.objectResponse(500, clientError);
         }
     }
 
