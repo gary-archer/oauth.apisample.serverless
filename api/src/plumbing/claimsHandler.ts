@@ -3,7 +3,6 @@ import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {AuthorizationMicroservice} from '../logic/authorizationMicroservice';
 import {ApiLogger} from './apiLogger';
 import {Authenticator} from './authenticator';
-import {ClaimsCache} from './claimsCache';
 import {ErrorHandler} from './errorHandler';
 import {ResponseHandler} from './responseHandler';
 
@@ -40,14 +39,7 @@ export class ClaimsHandler {
                 return ResponseHandler.invalidTokenResponse(event);
             }
 
-            // Bypass validation and use cached results if they exists
-            const cachedClaims = ClaimsCache.getClaimsForToken(accessToken);
-            if (cachedClaims !== null) {
-                ApiLogger.info('ClaimsHandler', 'Claims returned from cache');
-                return ResponseHandler.authorizedResponse(cachedClaims, event);
-            }
-
-            // Otherwise start by introspecting the token
+            // Start by introspecting the token
             const authenticator = new Authenticator(this._oauthConfig);
             const result = await authenticator.validateTokenAndGetTokenClaims(accessToken);
 
@@ -57,16 +49,12 @@ export class ClaimsHandler {
                 return ResponseHandler.invalidTokenResponse(event);
             }
 
-            ApiLogger.info('ClaimsHandler', 'OAuth token validation succeeded');
-
             // Next add central user info to claims
+            ApiLogger.info('ClaimsHandler', 'OAuth token validation succeeded');
             await authenticator.getCentralUserInfoClaims(result.claims!, accessToken);
 
             // Next add product user data to claims
             await this._authorizationMicroservice.getProductClaims(result.claims!, accessToken);
-
-            // Next cache the results
-            ClaimsCache.addClaimsForToken(accessToken, result.expiry!, result.claims!);
 
             // Then move onto the API controller to execute business logic
             ApiLogger.info('ClaimsHandler', 'Claims lookup completed successfully');
@@ -74,14 +62,10 @@ export class ClaimsHandler {
 
         } catch (e) {
 
-            // Ensure that we log errors then fail in the API gateway expected manner
+            // Log errors, then return an error response
             const serverError = ErrorHandler.fromException(e);
-            const [_, clientError] = ErrorHandler.handleError(serverError);
-
-            // TODO: How can I make this fail with a particular error type and also pass context
-            // This always results in a AUTHORIZER_CONFIGURATION_ERROR
-            // https://forums.aws.amazon.com/thread.jspa?threadID=226689
-            return ResponseHandler.objectResponse(500, clientError);
+            const [statusCode, clientError] = ErrorHandler.handleError(serverError);
+            return ResponseHandler.authorizationErrorResponse(500, clientError);
         }
     }
 

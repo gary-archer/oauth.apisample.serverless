@@ -72,7 +72,10 @@ resources:
         ResponseParameters:
           gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.trustedOrigin}'"
           gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.trustedOrigin}'"
+          gatewayresponse.header.WWW-Authenticate: "'Bearer'"
         ResponseType: ACCESS_DENIED
+        
+        # Handle invalid token errors from the context set in responseHandler.ts
         ResponseTemplates:
           application/json: |
             {
@@ -81,6 +84,28 @@ resources:
         RestApiId:
           Ref: 'ApiGatewayRestApi'
         StatusCode: '401'
+
+    ErrorGatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.trustedOrigin}'"
+
+        ResponseType: AUTHORIZER_CONFIGURATION_ERROR
+        
+        # AWS does not support setting runtime context for error responses
+        # We can however customize the status code and supply a hard coded error object
+        # See comments in responseHandler.ts for further details
+        ResponseTemplates:
+          application/json: |
+            {
+              "area": "Authorization"
+              "message": "Problem encountered during authorization"
+            }
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '500'
 
 # Node modules are excluded here and managed via the above hook instead
 package:

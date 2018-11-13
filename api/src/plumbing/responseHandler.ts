@@ -1,4 +1,5 @@
 import {ApiClaims} from '../entities/apiClaims';
+import {ClientError} from '../entities/clientError';
 
 /*
  * Helper methods to return responses
@@ -35,10 +36,30 @@ export class ResponseHandler {
     public static invalidTokenResponse(event: any): any {
 
         const context = {
-            errorMessage: '[InvalidToken]Missing, invalid or expired access token',
+            errorMessage: 'Missing, invalid or expired access token',
         };
 
         return ResponseHandler._policyDocument('*', 'Deny', event.methodArn, context);
+    }
+
+    /*
+     * I would like to return a 500 error and this error object to the caller
+     * Unfortunately this is not supported via any of these methods:
+     * - Returning a policy document
+     * - Calling context.fail
+     * - Returning an object
+     * - Throwing an exception
+     *
+     * Any response without a policy document returns an AUTHORIZER_CONFIGURATION_ERROR
+     * This is not customizable from context
+     * https://forums.aws.amazon.com/thread.jspa?threadID=226689
+     */
+    public static authorizationErrorResponse(statusCode: number, error: ClientError): object {
+
+        return {
+            statusCode,
+            body: JSON.stringify(error),
+        };
     }
 
     /*
