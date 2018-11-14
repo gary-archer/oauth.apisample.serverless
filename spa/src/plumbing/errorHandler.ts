@@ -138,10 +138,12 @@ export class ErrorHandler {
 
             // See if there is an API error
             const clientError = ErrorHandler._getApiErrorFromResponse(xhr.responseText);
-            if (clientError && clientError.area && clientError.message && clientError.id) {
+            if (clientError && clientError.area && clientError.message) {
                 error.area = `API / ${clientError.area}`;
                 error.message = clientError.message;
-                error.instanceId = clientError.id;
+                if (clientError.id) {
+                    error.instanceId = clientError.id;
+                }
             }
         }
 
@@ -210,7 +212,9 @@ export class ErrorHandler {
             errorContainer.append($('<li>').html(`Area : <b>${error.area}</b>`));
         }
 
-        $('#error').append($('<li>').html(`Id : <b>${error.instanceId}</b>`));
+        if(error.instanceId) {
+            $('#error').append($('<li>').html(`Id : <b>${error.instanceId}</b>`));
+        }
 
         if (error.url.length > 0) {
             errorContainer.append($('<li>').html(`URL : <b>${error.url}</b>`));

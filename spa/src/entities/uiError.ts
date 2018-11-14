@@ -1,7 +1,3 @@
-// Range for random error ids
-const MIN_ERROR_ID = 10000;
-const MAX_ERROR_ID = 65535;
-
 /*
  * A simple error class for the UI
  */
@@ -12,11 +8,11 @@ export class UIError extends Error {
      */
     private _statusCode: number;
     private _area: string;
-    private _instanceId: number;
     private _url: string;
     private _time: Date;
     private _details: string;
     private _nonError: boolean;
+    private _instanceId: number | null;
 
     /*
      * Let callers supply a subset of named parameters via object destructuring
@@ -25,7 +21,6 @@ export class UIError extends Error {
         message = '',
         statusCode = -1,
         area = '',
-        instanceId = Math.floor(Math.random() * (MAX_ERROR_ID - MIN_ERROR_ID + 1) + MIN_ERROR_ID),
         url = '',
         time = new Date(),
         details = '',
@@ -38,11 +33,11 @@ export class UIError extends Error {
 
         this._statusCode = statusCode;
         this._area = area;
-        this._instanceId = instanceId;
         this._url = url;
         this._time = time;
         this._details = details;
         this._nonError = nonError;
+        this._instanceId = null;
     }
 
     public get statusCode(): number {
@@ -61,7 +56,7 @@ export class UIError extends Error {
         this._area = area;
     }
 
-    get instanceId() {
+    get instanceId(): number | null {
         return this._instanceId;
     }
 
@@ -73,7 +68,7 @@ export class UIError extends Error {
         return this._url;
     }
 
-    get time() {
+    get time(): Date {
         return this._time;
     }
 

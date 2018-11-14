@@ -1,22 +1,18 @@
 PROBLEMS
 --------
-1. Authorizer error responses to do
-   Also make sure caching works
+1. uiError to avoid generating since no log to look up in + update samples + blog
+2. Recommend known set of API error codes in blog
+3. Look at AWS lambda typescript project
+4. Understand sls offline
+5. Express for SPA hosting locally
+6. Multiple trusted origins for web.mycompany.com and the AWS web URL
 
-2. Use node-cache for other samples, update blog and GitHub README files
-   Also get rid of missing token + invalid token separate responses
-
-NEXT - HOSTING SETUP LOCALLY
-----------------------------
-1. sls offline for API at https://api.mycompany.com (host header)
-2. express for SPA at https://web.mycompany.com (host header)
-3. SPA to AWS
-4. Multiple trusted origins for web.mycompany.com and the AWS web URL
-5. Use domains in AWS api.serverless.authguidance.com and spa.serverless.authguidance.com
-
-LOOK AT
--------
-1. AWS lambda typescript project
+NEXT - SPA
+----------
+1. Automate delivery according to links
+2. Use SSL in AWS - and possibly understand certificate manager and custom domains
+3. Create guest user in Okta
+4. Blog updates + make repo public
 
 LINKS
 -----

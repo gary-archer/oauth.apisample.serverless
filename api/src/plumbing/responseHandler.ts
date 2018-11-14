@@ -35,11 +35,7 @@ export class ResponseHandler {
      */
     public static invalidTokenResponse(event: any): any {
 
-        const context = {
-            errorMessage: 'Missing, invalid or expired access token',
-        };
-
-        return ResponseHandler._policyDocument('*', 'Deny', event.methodArn, context);
+        return ResponseHandler._policyDocument('*', 'Deny', event.methodArn, {});
     }
 
     /*

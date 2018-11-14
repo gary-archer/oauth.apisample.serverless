@@ -25,11 +25,8 @@ export class MiddlewareHelper {
     public enrichApiOperation(operation: any): middy.IMiddy {
 
         return middy(async (event: any, context: Context) => {
-
-            // Try the operation
             this._deserializeClaims(event);
             return await operation(event, context);
-
         })
         .use(cors(this._corsConfig))
         .use(exceptionMiddleware());

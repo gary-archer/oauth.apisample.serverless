@@ -16,7 +16,6 @@ class ExceptionMiddleware {
         const serverError = ErrorHandler.fromException(handler.error);
         const [statusCode, clientError] = ErrorHandler.handleError(serverError);
         handler.response = ResponseHandler.objectResponse(statusCode, clientError);
-
         return next();
     }
 
