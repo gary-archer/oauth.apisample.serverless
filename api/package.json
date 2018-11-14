@@ -19,8 +19,7 @@
     "fs-extra": "^7.0.0",
     "js-sha256": "^0.9.0",
     "middy": "^0.19.2",
-    "openid-client": "^2.4.4",
-    "tunnel-agent": "^0.6.0"
+    "openid-client": "^2.4.4"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.14",
@@ -29,6 +28,7 @@
     "rimraf": "^2.6.2",
     "serverless-plugin-scripts": "^1.0.2",
     "tslint": "^5.11.0",
+    "tunnel-agent": "^0.6.0",
     "typescript": "^3.0.1"
   }
 }
