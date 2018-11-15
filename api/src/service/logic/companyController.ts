@@ -1,5 +1,5 @@
 import {Context} from 'aws-lambda';
-import {ApiLogger} from '../plumbing/apiLogger';
+import {ApiLogger} from '../../shared/plumbing/apiLogger';
 import {CompanyRepository} from './companyRepository';
 
 /*

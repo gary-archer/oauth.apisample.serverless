@@ -1,4 +1,4 @@
-import {ApiClaims} from '../entities/apiClaims';
+import {ApiClaims} from '../../shared/entities/apiClaims';
 
 /*
  * A repository class for returning domain specific authorization rules

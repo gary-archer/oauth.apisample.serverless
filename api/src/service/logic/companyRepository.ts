@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra';
-import {ApiClaims} from '../entities/apiClaims';
+import {ApiClaims} from '../../shared/entities/apiClaims';
 import {Company} from '../entities/company';
 import {CompanyTransactions} from '../entities/companyTransactions';
 

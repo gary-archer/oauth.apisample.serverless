@@ -1,7 +1,7 @@
 import {Context} from 'aws-lambda';
 import middy from 'middy';
 import {cors, ICorsOptions} from 'middy/middlewares';
-import {Configuration} from '../configuration/configuration';
+import {AppConfiguration} from '../configuration/appConfiguration';
 import {exceptionMiddleware} from './exceptionMiddleware';
 
 /*
@@ -14,8 +14,8 @@ export class MiddlewareHelper {
     /*
      * Receive dependencies
      */
-    public constructor(apiConfig: Configuration) {
-        this._corsConfig = {origins: apiConfig.app.trustedOrigins};
+    public constructor(apiConfig: AppConfiguration) {
+        this._corsConfig = {origins: apiConfig.trustedOrigins};
     }
 
     /*
