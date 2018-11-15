@@ -8,12 +8,12 @@ provider:
 
 functions:
   authorize:
-    handler: build/handler.authorize
+    handler: build/authorizer/handler.authorize
     cors:
       origin: ${self:custom.trustedOrigin}
 
   getUserClaims:
-    handler: build/handler.getUserClaims
+    handler: build/service/handler.getUserClaims
     events:
       - http: 
           path: /userclaims/current
@@ -25,7 +25,7 @@ functions:
             origin: ${self:custom.trustedOrigin}
 
   getCompanyList:
-    handler: build/handler.getCompanyList
+    handler: build/service/handler.getCompanyList
     events:
       - http: 
           path: /companies
@@ -37,7 +37,7 @@ functions:
             origin: ${self:custom.trustedOrigin}
 
   getCompanyTransactions:
-    handler: build/handler.getCompanyTransactions
+    handler: build/service/handler.getCompanyTransactions
     events:
       - http: 
           path: /companies/{id}/transactions
