@@ -5,10 +5,9 @@ ALL SAMPLES / BLOG
 
 SERVERLESS PACKAGING
 --------------------
-1. Rearrange code layout to service, authorize and shared subfolders
-2. service/handler.ts and authorize/handler.ts entry points
-3. Multiple serverless.yml files
-4. package.ts rebuilding of package.json via 'npm run repackage' and return errors from script
+1. Make config files the source of truth and output to serverless.yml at build time
+2. Multiple serverless.yml files
+3. package.ts rebuilding of package.json via 'npm run repackage' and return errors from script
 https://www.npmjs.com/package/serverless-scriptable-plugin
 
 RESEARCH
