@@ -4,11 +4,9 @@
     "target": "es2017",
     "strict": true,
     "esModuleInterop": true,
-    "outDir": "build",
-    "lib": [
-      "es2017",
-      "dom"
-    ]
+    "outDir": "js",
+    "lib": ["es2017", "dom"],
+    "typeRoots": ["./node_modules/@types"]
   },
   "include": [
     "src/**/*.ts"

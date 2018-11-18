@@ -1,5 +1,5 @@
 import middy from 'middy';
-import {ErrorHandler} from './errorHandler';
+import {ErrorHandler} from '../../shared/plumbing/errorHandler';
 import {ResponseHandler} from './responseHandler';
 
 /*

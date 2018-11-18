@@ -3,87 +3,82 @@ service: basicapi
 provider:
   name: aws
   runtime: nodejs8.10
-  region: eu-west-2
+  region: ${self:custom.config.settings.deployRegion}
   profile: default
 
-functions:
-  authorize:
-    handler: build/handler.authorize
-    cors:
-      origin: ${self:custom.trustedOrigin}
+# Custom configuration properties go in their own file
+# We use a custom packager to fully customize lambda packages
+custom:
+  config: ${file(config.yml)}
+  scripts:
+    hooks:
+      'after:package:createDeploymentArtifacts': npm run customPackager
 
+functions:
+  # The custom authorizer has extra OAuth related dependencies
+  authorize:
+    handler: js/authorizer/handler.authorize
+    cors:
+      origin: ${self:custom.config.settings.trustedOrigin}
+    package:
+      individually: true
+
+  # The other lambdas reference the authorizer lambda
   getUserClaims:
-    handler: build/handler.getUserClaims
+    handler: js/service/handler.getUserClaims
     events:
       - http: 
           path: /userclaims/current
           method: get
           authorizer:
             name: authorize
-            resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
+            resultTtlInSeconds: ${self:custom.config.settings.claimsCacheTtlSeconds}
           cors:
-            origin: ${self:custom.trustedOrigin}
+            origin: ${self:custom.config.settings.trustedOrigin}
 
   getCompanyList:
-    handler: build/handler.getCompanyList
+    handler: js/service/handler.getCompanyList
     events:
       - http: 
           path: /companies
           method: get
           authorizer:
             name: authorize
-            resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
+            resultTtlInSeconds: ${self:custom.config.settings.claimsCacheTtlSeconds}
           cors:
-            origin: ${self:custom.trustedOrigin}
+            origin: ${self:custom.config.settings.trustedOrigin}
 
   getCompanyTransactions:
-    handler: build/handler.getCompanyTransactions
+    handler: js/service/handler.getCompanyTransactions
     events:
       - http: 
           path: /companies/{id}/transactions
           method: get
           authorizer:
             name: authorize
-            resultTtlInSeconds: ${self:custom.resultTtlInSeconds}
+            resultTtlInSeconds: ${self:custom.config.settings.claimsCacheTtlSeconds}
           cors:
-            origin: ${self:custom.trustedOrigin}
+            origin: ${self:custom.config.settings.trustedOrigin}
           request: 
             parameters: 
               paths: 
                 id: true
 
-custom:
-  trustedOrigin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
-  resultTtlInSeconds: 1800
-  
-  # Include non development dependencies only so that the upload size is small - see below links:
-  #   https://github.com/serverless/serverless/issues/569
-  #   https://gist.github.com/ugnb/0ca7d9ac5c3efe4171d0f33e48a34189#file-serverless-yml
-  #
-  # On Windows download the zip and unzip tools from these URLs:
-  #   http://gnuwin32.sourceforge.net/packages/zip.htm
-  #   http://gnuwin32.sourceforge.net/packages/unzip.htm
-  scripts:
-    hooks:
-      'after:package:createDeploymentArtifacts': >
-        (cd .serverless && unzip -qq basicapi.zip -d basicapi && cd ..) &&
-        (cd .serverless/basicapi && npm install --only=prod > /dev/null 2>&1  && cd .. && cd ..) &&
-        (cd .serverless/basicapi && zip -q -FSr ../basicapi.zip . && cd .. && cd ..)
-
 # Response types are listed here
 # https://docs.aws.amazon.com/apigateway/latest/developerguide/supported-gateway-response-types.html
 resources:
   Resources:
+    
+    # Handle ACCESS_DENIED errors, meaning the token is invalid or expired
     InvalidTokenGatewayResponse:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
         ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.trustedOrigin}'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
           gatewayresponse.header.WWW-Authenticate: "'Bearer'"
         ResponseType: ACCESS_DENIED
         
-        # Handle invalid token errors from the context set in responseHandler.ts
         ResponseTemplates:
           application/json: |
             {
@@ -93,12 +88,13 @@ resources:
           Ref: 'ApiGatewayRestApi'
         StatusCode: '401'
 
+    # Handle AUTHORIZER_CONFIGURATION_ERROR errors, meaning a technical problem during token validation
     ErrorGatewayResponse:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
         ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.trustedOrigin}'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
 
         ResponseType: AUTHORIZER_CONFIGURATION_ERROR
         
@@ -115,13 +111,17 @@ resources:
           Ref: 'ApiGatewayRestApi'
         StatusCode: '500'
 
-# Node modules are excluded here and managed via the above hook instead
+# By default all files are included so remove files we don't need for any lambda
+# The custom packager does the rest of the work in code, including adding node_modules
 package:
   exclude:
   - node_modules/**/*
   - src/**
+  - scripts/**
   - test/**
   - ts*.json
+  - package*.json
+  - config.yml
 
 plugins:
   - serverless-plugin-scripts

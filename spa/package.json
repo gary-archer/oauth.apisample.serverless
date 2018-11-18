@@ -1,13 +1,12 @@
 {
   "name": "basicspa",
-  "version": "3.0.0",
-  "description": "A Basic SPA using the OIDC Client security library",
+  "version": "4.0.0",
+  "description": "A Basic SPA using the OIDC Client security library and AWS Serverless Hosting",
   "main": "app.ts",
   "scripts": {
     "lint": "tslint -c tslint.json src/**/*.ts",
-    "watch": "webpack --watch",
-    "build": "webpack -p",
-    "start": "cd .. && ws --https --port 443 --hostname web.mycompany.com --key spa/certs/mycompany.ssl.key --cert spa/certs/mycompany.ssl.pem --directory spa --spa index.html"
+    "start": "webpack --watch",
+    "build": "webpack -p"
   },
   "keywords": [],
   "author": "Gary Archer",
@@ -20,7 +19,6 @@
     "@types/core-js": "^0.9.46",
     "@types/jquery": "^3.2.16",
     "core-js": "^2.5.6",
-    "local-web-server": "^2.6.0",
     "ts-loader": "^3.1.1",
     "tslint": "^5.10.0",
     "typescript": "^2.8.3",

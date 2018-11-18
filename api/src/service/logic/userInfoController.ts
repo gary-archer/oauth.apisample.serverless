@@ -1,5 +1,5 @@
 import {Context} from 'aws-lambda';
-import {ApiLogger} from '../plumbing/apiLogger';
+import {ApiLogger} from '../../shared/plumbing/apiLogger';
 
 /*
  * A simple API controller to return user info

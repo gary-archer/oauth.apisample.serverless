@@ -2,36 +2,30 @@ ALL SAMPLES / BLOG
 ------------------
 1. uiError to avoid generating since no log to look up in + update samples + blog
 2. Recommend known set of API error codes in blog
-
-SERVERLESS PACKAGING
---------------------
-1. Rearrange code layout to service, authorize and shared subfolders
-2. service/handler.ts and authorize/handler.ts entry points
-3. Multiple serverless.yml files
-4. package.ts rebuilding of package.json via 'npm run repackage' and return errors from script
-https://www.npmjs.com/package/serverless-scriptable-plugin
+3. Comment about ES2017 being a hack to remove
+4. Explain ES2017 option and that node 8.x supports async / await so we can transpile to 2017 in our case
+5. Versions of SPA and API to be 1.0, 2.0, 3.0, 4.0 for initial / improved / complete / cloud
 
 RESEARCH
 --------
 1. Look at AWS lambda typescript project
-2. Understand sls offline
+2. Understand sls offline better
 
 SPA
 ---
-1. Express for SPA hosting locally
-2. Multiple trusted origins for web.mycompany.com and the AWS web URL
-3. Automate delivery according to links
-4. Use SSL in AWS - and possibly understand certificate manager and custom domains
-5. Create guest user in Okta
-6 Blog updates + make repo public
+1. Automate delivery according to links
+2. Use SSL in AWS - and possibly understand certificate manager and custom domains
+3. Create guest user in Okta
+4. Blog updates + make repo public
 
-LINKS
------
-Typescript and Serverless:
-https://blog.shovonhasan.com/deploying-a-typescript-node-aws-lambda-function-with-serverless/
+CUSTOM DOMAINS
+--------------
+1. See if I can get nice domain names
+2. Set limits on cloud usage and understand billing
 
-Deployment problems on Windows:
-https://github.com/prismagraphql/serverless-plugin-typescript/issues/23
+SPA + DOMAIN LINKS
+------------------
+1. Add links for remaining objectives here
 
 Input data when testing
 -----------------------

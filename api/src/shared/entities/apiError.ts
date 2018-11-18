@@ -2,7 +2,7 @@
  * A range for random error ids
  */
 const MIN_ERROR_ID = 10000;
-const MAX_ERROR_ID = 65535;
+const MAX_ERROR_ID = 99999;
 
 /*
  * A simple error class for the API

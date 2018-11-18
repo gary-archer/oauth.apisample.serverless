@@ -1,10 +1,10 @@
 import {Context} from 'aws-lambda';
+import {ApiLogger} from '../../shared/plumbing/apiLogger';
+import {ErrorHandler} from '../../shared/plumbing/errorHandler';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {AuthorizationMicroservice} from '../logic/authorizationMicroservice';
-import {ApiLogger} from './apiLogger';
+import {ResponseHandler} from '../plumbing/responseHandler';
 import {Authenticator} from './authenticator';
-import {ErrorHandler} from './errorHandler';
-import {ResponseHandler} from './responseHandler';
 
 /*
  * The middleware coded in a class based manner

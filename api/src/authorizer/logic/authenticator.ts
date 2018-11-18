@@ -1,22 +1,24 @@
 import * as OpenIdClient from 'openid-client';
-import * as TunnelAgent from 'tunnel-agent';
 import * as Url from 'url';
+import {ApiClaims} from '../../shared/entities/apiClaims';
+import {ErrorHandler} from '../../shared/plumbing/errorHandler';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
-import {ApiClaims} from '../entities/apiClaims';
-import {TokenValidationResult} from '../entities/tokenValidationResult';
-import {ErrorHandler} from './errorHandler';
+import {TokenValidationResult} from './tokenValidationResult';
 
 /*
  * This handles debugging to Fiddler or Charles so that we can view requests to Okta
  */
 if (process.env.HTTPS_PROXY) {
 
-    const opts = Url.parse(process.env.HTTPS_PROXY as string);
-    OpenIdClient.Issuer.defaultHttpOptions = {
-        agent: TunnelAgent.httpsOverHttp({
-            proxy: opts,
-        }),
-    };
+    // Use a dynamic import so that this dependency is only used on a developer PC
+    import('tunnel-agent').then((tunnelAgent) => {
+        const opts = Url.parse(process.env.HTTPS_PROXY as string);
+        OpenIdClient.Issuer.defaultHttpOptions = {
+            agent: tunnelAgent.httpsOverHttp({
+                proxy: opts,
+            }),
+        };
+    });
 }
 
 /*

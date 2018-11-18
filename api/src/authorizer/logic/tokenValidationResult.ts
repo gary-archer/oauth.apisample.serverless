@@ -1,4 +1,4 @@
-import {ApiClaims} from './apiClaims';
+import {ApiClaims} from '../../shared/entities/apiClaims';
 
 /*
  * The result of trying to validate a token

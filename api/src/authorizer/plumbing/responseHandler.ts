@@ -1,5 +1,5 @@
-import {ApiClaims} from '../entities/apiClaims';
-import {ClientError} from '../entities/clientError';
+import {ApiClaims} from '../../shared/entities/apiClaims';
+import {ClientError} from '../../shared/entities/clientError';
 
 /*
  * Helper methods to return responses
