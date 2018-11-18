@@ -11,13 +11,13 @@ import {TokenValidationResult} from './tokenValidationResult';
 if (process.env.HTTPS_PROXY) {
 
     // Use a dynamic import so that this dependency is only used on a developer PC
-    import('tunnel-agent').then((TunnelAgent) => {
+    import('tunnel-agent').then((tunnelAgent) => {
         const opts = Url.parse(process.env.HTTPS_PROXY as string);
         OpenIdClient.Issuer.defaultHttpOptions = {
-            agent: TunnelAgent.httpsOverHttp({
+            agent: tunnelAgent.httpsOverHttp({
                 proxy: opts,
             }),
-        }
+        };
     });
 }
 

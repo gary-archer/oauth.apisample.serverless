@@ -5,7 +5,8 @@
     "strict": true,
     "esModuleInterop": true,
     "outDir": "js",
-    "lib": ["es2017", "dom"]
+    "lib": ["es2017", "dom"],
+    "typeRoots": ["./node_modules/@types"]
   },
   "include": [
     "src/**/*.ts"

@@ -1,6 +1,7 @@
 import AdmZip from 'adm-zip';
 import * as ChildProcess from 'child-process-es6-promise';
 import * as FileSystem from 'fs-extra';
+import process from 'process';
 import './typings';
 
 class Packager {
@@ -78,20 +79,30 @@ class Packager {
         // Write back changes and include formatting
         await FileSystem.writeFile(`.serverless/${packageName}/package.json`, JSON.stringify(pkg, null, 2));
 
-        // Install dependencies for the lambda to create its node_modules folder
+        // Do the work of installing node modules
+        await this._installNodeModules(packageName);
+
+        // Remove package-lock.json from the temporary folder
+        await FileSystem.remove(`.serverless/${packageName}/package-lock.json`);
+    }
+
+    /*
+     * Start a child process to install node modules and wait for it to complete
+     */
+    private async _installNodeModules(packageName: string) {
+
         try {
+            console.log(`Installing node modules for ${packageName} ...`);
+            const npmCommand = /^win/.test(process.platform) ? 'npm.cmd' : 'npm';
             const options = {
                 cwd: `.serverless/${packageName}`,
                 capture: ['stdout', 'stderr'],
             };
-            const childProcess = await ChildProcess.spawn('npm', ['install'], options);
+            const childProcess = await ChildProcess.spawn(npmCommand, ['install'], options);
             console.log(childProcess.stdout);
         } catch (e) {
             throw new Error(`Error installing npm packages for ${packageName}: ${e} : ${e.stderr.toString()}`);
         }
-
-        // Remove package-lock.json from the temporary folder
-        await FileSystem.remove(`.serverless/${packageName}/package-lock.json`);
     }
 
     /*
