@@ -2,6 +2,9 @@ ALL SAMPLES / BLOG
 ------------------
 1. uiError to avoid generating since no log to look up in + update samples + blog
 2. Recommend known set of API error codes in blog
+3. Comment about ES2017 being a hack to remove
+4. Explain ES2017 option and that node 8.x supports async / await so we can transpile to 2017 in our case
+5. Versions of SPA and API to be 1.0, 2.0, 3.0, 4.0 for initial / improved / complete / cloud
 
 RESEARCH
 --------

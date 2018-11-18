@@ -1,7 +1,7 @@
 {
   "name": "basicapi",
-  "version": "1.0.0",
-  "description": "A Basic OAuth secured API deployed as an AWS lambda",
+  "version": "4.0.0",
+  "description": "A Basic OAuth secured API deployed and AWS Serverless Hosting via lambdas",
   "main": "handler.ts",
   "scripts": {
     "lint": "tslint -c tslint.json src/**/*.ts && tslint -c tslint.json scripts/**/*.ts",
