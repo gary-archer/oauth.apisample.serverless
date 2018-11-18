@@ -1,5 +1,4 @@
 import * as OpenIdClient from 'openid-client';
-import * as TunnelAgent from 'tunnel-agent';
 import * as Url from 'url';
 import {ApiClaims} from '../../shared/entities/apiClaims';
 import {ErrorHandler} from '../../shared/plumbing/errorHandler';
@@ -11,12 +10,15 @@ import {TokenValidationResult} from './tokenValidationResult';
  */
 if (process.env.HTTPS_PROXY) {
 
-    const opts = Url.parse(process.env.HTTPS_PROXY as string);
-    OpenIdClient.Issuer.defaultHttpOptions = {
-        agent: TunnelAgent.httpsOverHttp({
-            proxy: opts,
-        }),
-    };
+    // Use a dynamic import so that this dependency is only used on a developer PC
+    import('tunnel-agent').then((TunnelAgent) => {
+        const opts = Url.parse(process.env.HTTPS_PROXY as string);
+        OpenIdClient.Issuer.defaultHttpOptions = {
+            agent: TunnelAgent.httpsOverHttp({
+                proxy: opts,
+            }),
+        }
+    });
 }
 
 /*

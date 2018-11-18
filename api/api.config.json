@@ -3,5 +3,10 @@
         "trustedOrigins": [
             "http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com"
         ]
+    },
+    "oauth": {
+        "authority":    "https://dev-843469.oktapreview.com/oauth2/default",
+        "clientId":     "0oac5s69rjXE0HcZO0h7",
+        "clientSecret": "VEEe9m9WDneeUSUJUOMKZiso_X6xwKvAqRInT2kg"
     }
 }

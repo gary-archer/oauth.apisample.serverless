@@ -4,7 +4,7 @@ import {AuthorizationMicroservice} from './logic/authorizationMicroservice';
 import {ClaimsHandler} from './logic/claimsHandler';
 
 // Read configuration
-const apiConfigText = fs.readFileSync('auth.config.json');
+const apiConfigText = fs.readFileSync('api.config.json');
 const config = JSON.parse(apiConfigText);
 const oauthConfig = config.oauth as OAuthConfiguration;
 

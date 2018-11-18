@@ -4,14 +4,15 @@
   "description": "A Basic OAuth secured API deployed as an AWS lambda",
   "main": "handler.ts",
   "scripts": {
-    "lint": "tslint -c tslint.json src/**/*.ts",
+    "lint": "tslint -c tslint.json src/**/*.ts && tslint -c tslint.json scripts/**/*.ts",
     "build": "rimraf build && tsc",
     "auth": "sls invoke local -f authorize -p test/auth.json",
     "getUserClaims": "sls invoke local -f getUserClaims -p test/claims.json",
     "getCompanyList": "sls invoke local -f getCompanyList -p test/claims.json",
     "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
     "package": "rimraf .serverless && sls package",
-    "deploy": "sls deploy -p .serverless/basicapi.zip"
+    "customPackager": "ts-node scripts/customPackager.ts",
+    "deploy": "sls deploy -p .serverless"
   },
   "author": "Gary Archer",
   "license": "ISC",
@@ -24,9 +25,12 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.14",
     "@types/node": "^10.12.2",
+    "adm-zip": "^0.4.13",
     "aws-sdk": "^2.348.0",
+    "child-process-es6-promise": "^1.2.0",
     "rimraf": "^2.6.2",
     "serverless-plugin-scripts": "^1.0.2",
+    "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "tunnel-agent": "^0.6.0",
     "typescript": "^3.0.1"
