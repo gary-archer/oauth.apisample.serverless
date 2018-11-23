@@ -9,10 +9,20 @@ ALL SAMPLES / BLOG
 SPA
 ---
 1. Implement packaging, update .gitignore and clean up checked in files
-2. Prevent normal HTTP usage to ugly S3 URL via redirects
-3. Link to below article
+2. Prevent S3 ugly URL from working via redirect to HTTPS
+3. Make SPA look better on mobile devices / portrait via Bootstrap
+
+LOCAL PC EXECUTION
+------------------
+1. Start with testing API in isolation via event objects
+2. Deploy API to AWS to test UI
+3. Develop UI locally via hosts file to override AWS + serving content via express 
+
+BLOG
+----
+1. Do write ups according to email draft and link to the below article
    https://medium.com/@P_Lessing/single-page-apps-on-aws-part-1-hosting-a-website-on-s3-3c9871f126
-4. Blog updates + make repo public
+2. Make repo public
 
 CUSTOM DOMAINS
 --------------
