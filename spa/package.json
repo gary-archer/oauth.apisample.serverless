@@ -5,8 +5,9 @@
   "main": "app.ts",
   "scripts": {
     "lint": "tslint -c tslint.json src/**/*.ts",
-    "start": "webpack --watch",
-    "build": "webpack -p"
+    "build": "webpack -p",
+    "package": "",
+    "deploy": "aws s3 cp .package s3://web.authguidance-examples.com --recursive"
   },
   "keywords": [],
   "author": "Gary Archer",

@@ -1,5 +1,9 @@
 node_modules
+
+# API build locations
 js
-.build
 .serverless
-.DS_store
+
+# SPA build locations
+dist
+# .package
