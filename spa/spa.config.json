@@ -1,6 +1,6 @@
 {
     "app": {
-        "apiBaseUrl":       "https://cqo3riplm6.execute-api.eu-west-2.amazonaws.com/dev"
+        "apiBaseUrl":       "https://api.authguidance-examples.com/api"
     },
     "oauth": {
         "authority":        "https://dev-843469.oktapreview.com/oauth2/default",

@@ -5,6 +5,7 @@ provider:
   runtime: nodejs8.10
   region: ${self:custom.config.settings.deployRegion}
   profile: default
+  stage: demo
 
 # Custom configuration properties go in their own file
 # We use a custom packager to fully customize lambda packages
@@ -13,6 +14,12 @@ custom:
   scripts:
     hooks:
       'after:package:createDeploymentArtifacts': npm run customPackager
+  customDomain:
+    domainName: api.authguidance-examples.com
+    certificateName: '*.authguidance-examples.com'
+    basePath: api
+    stage: ${self:provider.stage}
+    endpointType: regional
 
 functions:
   # The custom authorizer has extra OAuth related dependencies
@@ -68,6 +75,25 @@ functions:
 # https://docs.aws.amazon.com/apigateway/latest/developerguide/supported-gateway-response-types.html
 resources:
   Resources:
+
+    # Handle UNAUTHORIZED errors, meaning the token is missing
+    MissingTokenGatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.WWW-Authenticate: "'Bearer'"
+        ResponseType: UNAUTHORIZED
+        
+        ResponseTemplates:
+          application/json: |
+            {
+              "message": "Missing, invalid or expired access token"
+            }
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
     
     # Handle ACCESS_DENIED errors, meaning the token is invalid or expired
     InvalidTokenGatewayResponse:
@@ -125,3 +151,4 @@ package:
 
 plugins:
   - serverless-plugin-scripts
+  - serverless-domain-manager
