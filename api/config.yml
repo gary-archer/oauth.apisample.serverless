@@ -1,4 +1,4 @@
 settings:
   deployRegion: eu-west-2
-  trustedOrigin: 'http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com'
+  trustedOrigin: 'https://web.authguidance-examples.com'
   claimsCacheTtlSeconds: 1800

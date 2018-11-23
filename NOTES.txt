@@ -2,25 +2,21 @@ ALL SAMPLES / BLOG
 ------------------
 1. uiError to avoid generating since no log to look up in + update samples + blog
 2. Recommend known set of API error codes in blog
-3. Comment about ES2017 being a hack to remove
+3. Remove comment about ES2017 being a hack to remove
 4. Explain ES2017 option and that node 8.x supports async / await so we can transpile to 2017 in our case
 5. Versions of SPA and API to be 1.0, 2.0, 3.0, 4.0 for initial / improved / complete / cloud
 
-RESEARCH
---------
-1. Look at AWS lambda typescript project
-2. Understand sls offline better
-
 SPA
 ---
-1. Automate delivery according to links
-2. Use SSL in AWS - and possibly understand certificate manager and custom domains
-3. Create guest user in Okta
+1. Implement packaging, update .gitignore and clean up checked in files
+2. Prevent normal HTTP usage to ugly S3 URL via redirects
+3. Link to below article
+   https://medium.com/@P_Lessing/single-page-apps-on-aws-part-1-hosting-a-website-on-s3-3c9871f126
 4. Blog updates + make repo public
 
 CUSTOM DOMAINS
 --------------
-1. See if I can get nice domain names
+1. Create guest user in Okta
 2. Set limits on cloud usage and understand billing
 
 SPA + DOMAIN LINKS

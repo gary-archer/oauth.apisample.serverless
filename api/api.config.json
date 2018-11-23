@@ -1,7 +1,7 @@
 {
     "app": {
         "trustedOrigins": [
-            "http://serverless.spa.com.s3-website.eu-west-2.amazonaws.com"
+            "https://web.authguidance-examples.com"
         ]
     },
     "oauth": {
