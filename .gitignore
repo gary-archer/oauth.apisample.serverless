@@ -7,3 +7,4 @@ js
 # SPA build locations
 dist
 .package
+.DS_store

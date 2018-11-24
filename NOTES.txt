@@ -22,14 +22,12 @@ BLOG
 ----
 1. Do write ups according to email draft and link to the below article
    https://medium.com/@P_Lessing/single-page-apps-on-aws-part-1-hosting-a-website-on-s3-3c9871f126
-2. Make repo public
+2. Try to get subpaths working for SPA
 
 CUSTOM DOMAINS
 --------------
 1. Create guest user in Okta
 2. Set limits on cloud usage and understand billing
-
-aws cloudfront create-invalidation --distribution-id=E1KK6YUBAK08ZY --paths /
 
 Input data to add to blog notes
 -------------------------------
