@@ -6,4 +6,4 @@ js
 
 # SPA build locations
 dist
-# .package
+.package

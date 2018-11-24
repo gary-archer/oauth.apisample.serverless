@@ -29,12 +29,10 @@ CUSTOM DOMAINS
 1. Create guest user in Okta
 2. Set limits on cloud usage and understand billing
 
-SPA + DOMAIN LINKS
-------------------
-1. Add links for remaining objectives here
+aws cloudfront create-invalidation --distribution-id=E1KK6YUBAK08ZY --paths /
 
-Input data when testing
------------------------
+Input data to add to blog notes
+-------------------------------
 // Get-Transactions
 {
     "pathParameters": {

@@ -17,7 +17,7 @@
 ### API Middleware Used
 * The [OpenId-Client Library](https://github.com/panva/node-openid-client) is used to handle API token validation
 * The AWS API Gateway is used as an SSL entry point to API operations
-* AWS Lambda functions are used for serverless cloud hosting
+* AWS Lambda Functions are used for OAuth authorization and API logic
 * CloudWatch is used to store API logs
 
 ### SPA Middleware Used
@@ -27,4 +27,5 @@
 
 ### Common Middleware Used
 * Okta is used for the Authorization Server
+* AWS Route 53 is used for custom domain names
 * AWS Certificate Manager is used for SSL certificate handling
