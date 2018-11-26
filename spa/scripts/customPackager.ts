@@ -5,17 +5,17 @@ import './typings';
 class Packager {
 
     /*
-     * Copy files into 
+     * Copy files into a folder that is easier to deploy to AWS
      */
     public async execute(): Promise<void> {
 
         await FileSystem.remove('.package');
-        await FileSystem.ensureDir('.package');
-        await FileSystem.copy('spa.config.json', '.package/spa.config.json');
-        await FileSystem.copy('index.html', '.package/index.html');
-        await FileSystem.copy('dist', '.package/dist');
-        await FileSystem.copy('css', '.package/css');
-        await FileSystem.copy('images', '.package/images');
+        await FileSystem.ensureDir('.package/spa');
+        await FileSystem.copy('spa.config.json', '.package/spa/spa.config.json');
+        await FileSystem.copy('index.html', '.package/spa/index.html');
+        await FileSystem.copy('dist', '.package/spa/dist');
+        await FileSystem.copy('css', '.package/spa/css');
+        await FileSystem.copy('images', '.package/spa/images');
     }
 }
 
