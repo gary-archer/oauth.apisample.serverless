@@ -10,13 +10,6 @@ import {DebugProxyAgent} from '../plumbing/debugProxyAgent';
 import {TokenValidationResult} from './tokenValidationResult';
 
 /*
- * Configure the HTTP proxy if applicable
- */
-OpenIdClient.Issuer.defaultHttpOptions = {
-    agent: DebugProxyAgent.get(),
-};
-
-/*
  * The entry point for OAuth related operations
  */
 export class Authenticator {
@@ -38,6 +31,18 @@ export class Authenticator {
 
         this._oauthConfig = oauthConfig;
         this._setupCallbacks();
+
+        // Configure the HTTP proxy if applicable
+        OpenIdClient.Issuer.defaultHttpOptions = {
+            agent: DebugProxyAgent.get(),
+        };
+    }
+
+    /*
+     * Configure proxy details used on a developer PC
+     */
+    public static async configureProxy() {
+
     }
 
     /*

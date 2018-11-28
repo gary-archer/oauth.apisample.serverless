@@ -3,6 +3,7 @@ import {OAuthConfiguration} from '../../shared/configuration/oauthConfiguration'
 import {ApiLogger} from '../../shared/plumbing/apiLogger';
 import {ErrorHandler} from '../../shared/plumbing/errorHandler';
 import {AuthorizationMicroservice} from '../logic/authorizationMicroservice';
+import {DebugProxyAgent} from '../plumbing/debugProxyAgent';
 import {ResponseHandler} from '../plumbing/responseHandler';
 import {Authenticator} from './authenticator';
 
@@ -32,6 +33,9 @@ export class ClaimsHandler {
     public async authorizeRequestAndSetClaims(event: any, context: Context) {
 
         try {
+            // Configure a proxy for OAuth requests if the HTTPS_PROXY environment variable is set
+            await DebugProxyAgent.initialize();
+
             // First read the token from the request header and report missing tokens
             const accessToken = this._readToken(event.authorizationToken);
             if (!accessToken) {

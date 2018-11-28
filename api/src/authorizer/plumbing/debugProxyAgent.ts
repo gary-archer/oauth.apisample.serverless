@@ -10,16 +10,16 @@ export class DebugProxyAgent {
     /*
      * Create the agent if there is a proxy environment variable
      */
-    public static initialize(): void {
+    public static async initialize(): Promise<void> {
 
         if (process.env.HTTPS_PROXY) {
 
             // Use a dynamic import so that this dependency is only used on a developer PC
-            import('tunnel-agent').then((tunnelAgent) => {
-                const opts = Url.parse(process.env.HTTPS_PROXY as string);
-                DebugProxyAgent.proxyAgent = TunnelAgent.httpsOverHttp({
-                    proxy: opts,
-                });
+            await import('tunnel-agent');
+        
+            const opts = Url.parse(process.env.HTTPS_PROXY as string);
+            DebugProxyAgent.proxyAgent = TunnelAgent.httpsOverHttp({
+                proxy: opts,
             });
         }
     }
