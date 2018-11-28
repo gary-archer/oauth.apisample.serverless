@@ -11,6 +11,7 @@ export class Authenticator {
      * Fields
      */
     private _userManager: Oidc.UserManager;
+    private _config: OAuthConfiguration;
 
     /*
      * Class setup
@@ -32,6 +33,7 @@ export class Authenticator {
         };
 
         // Create the user manager
+        this._config = config;
         this._userManager = new Oidc.UserManager(settings);
         this._userManager.events.addSilentRenewError(this._onSilentTokenRenewalError);
         this._setupCallbacks();
@@ -141,12 +143,22 @@ export class Authenticator {
     }
 
     /*
-     * Redirect in order to log out at the authorization server and remove vendor cookies
+     * Implement the non standard Cognito redirect to log out at the authorization server
+     * https://docs.aws.amazon.com/cognito/latest/developerguide/logout-endpoint.html
      */
     public async startLogout(): Promise<void> {
 
         try {
-            await this._userManager.signoutRedirect();
+            // First clear the access token from session storage
+            await this.clearAccessToken();
+
+            // AWS requires a logout return URL as a path segment /spa/loggedout
+            // Our code captures this path and redirects to spa#loggedout
+            const logoutEndpoint = this._config.logoutEndpoint;
+            const returnUri = encodeURIComponent(`${this._config.appUri}${this._config.postLogoutPath}`);
+            const url = `${logoutEndpoint}?client_id=${this._config.clientId}&logout_uri=${returnUri}`;
+            location.replace(url);
+
         } catch (e) {
             ErrorHandler.reportError(ErrorHandler.getFromOAuthRequest(e));
         }

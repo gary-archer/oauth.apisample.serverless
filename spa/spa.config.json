@@ -3,10 +3,11 @@
         "apiBaseUrl":       "https://api.authguidance-examples.com/api"
     },
     "oauth": {
-        "authority":        "https://dev-843469.oktapreview.com/oauth2/default",
-        "clientId":         "0oac5m78icnW3C06L0h7",
+        "authority":        "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_eYkCF87Sn",
+        "clientId":         "1rhp8fk8h6fee0tp0fg2qai5je",
         "appUri":           "https://web.authguidance-examples.com/spa/",
-        "postLogoutPath":   "#loggedout",
-        "scope":            "openid profile email"
+        "postLogoutPath":   "loggedout",
+        "scope":            "openid profile email",
+        "logoutEndpoint":   "https://login.authguidance-examples.com/logout"
     }
 }

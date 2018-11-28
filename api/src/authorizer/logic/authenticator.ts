@@ -1,25 +1,20 @@
+import * as jwt from 'jsonwebtoken';
+import jwksClient from 'jwks-rsa';
 import * as OpenIdClient from 'openid-client';
 import * as Url from 'url';
+import {OAuthConfiguration} from '../../shared/configuration/oauthConfiguration';
 import {ApiClaims} from '../../shared/entities/apiClaims';
+import {ApiLogger} from '../../shared/plumbing/apiLogger';
 import {ErrorHandler} from '../../shared/plumbing/errorHandler';
-import {OAuthConfiguration} from '../configuration/oauthConfiguration';
+import {DebugProxyAgent} from '../plumbing/debugProxyAgent';
 import {TokenValidationResult} from './tokenValidationResult';
 
 /*
- * This handles debugging to Fiddler or Charles so that we can view requests to Okta
+ * Configure the HTTP proxy if applicable
  */
-if (process.env.HTTPS_PROXY) {
-
-    // Use a dynamic import so that this dependency is only used on a developer PC
-    import('tunnel-agent').then((tunnelAgent) => {
-        const opts = Url.parse(process.env.HTTPS_PROXY as string);
-        OpenIdClient.Issuer.defaultHttpOptions = {
-            agent: tunnelAgent.httpsOverHttp({
-                proxy: opts,
-            }),
-        };
-    });
-}
+OpenIdClient.Issuer.defaultHttpOptions = {
+    agent: DebugProxyAgent.get(),
+};
 
 /*
  * The entry point for OAuth related operations
@@ -50,18 +45,51 @@ export class Authenticator {
      */
     public async validateTokenAndGetTokenClaims(accessToken: string): Promise<TokenValidationResult> {
 
+        // First get metadata if required
         await this._getMetadata();
-        return await this._introspectTokenAndGetClaims(accessToken);
-    }
 
-    /*
-     * This sample uses Okta user info as the source of central user data
-     * Since getting user info is an OAuth operation we include that in this class also
-     */
-    public async getCentralUserInfoClaims(claims: ApiClaims, accessToken: string) {
+        // First decoode the token without verifying it so that we get the key identifier
+        const decoded = jwt.decode(accessToken, {complete: true});
+        if (!decoded) {
 
-        await this._getMetadata();
-        return await this._lookupCentralUserDataClaims(claims, accessToken);
+            // Indicate an invalid token if we cannot decode it
+            ApiLogger.warn('Authenticator', 'Unable to decode received JWT');
+            return {
+                isValid: false,
+            } as TokenValidationResult;
+        }
+
+        // Get the key identifier from the JWT header
+        const keyIdentifier = decoded.header.kid;
+        ApiLogger.info('Authenticator', `Token key identifier is ${keyIdentifier}`);
+
+        // Download the token signing public key for the key identifier
+        const tokenSigningPublicKey = await this._downloadJwksKeyForKeyIdentifier(keyIdentifier);
+        ApiLogger.info('Authenticator', `Token signing public key for ${keyIdentifier} downloaded successfully`);
+
+        // Use a library to verify the token's signature, issuer, audience and that it is not expired
+        const [isValid, result] = this._validateTokenAndReadClaims(accessToken, tokenSigningPublicKey);
+
+        // Indicate an invalid token if it failed verification
+        if (!isValid) {
+            ApiLogger.warn('Authenticator', `JWT verification failed: ${result}`);
+            return {
+                isValid: false,
+            } as TokenValidationResult;
+        }
+
+        // Get token claims
+        const apiClaims = new ApiClaims(result.sub, result.client_id, result.scope);
+
+        // Look up user info to get the name and email
+        await this._lookupCentralUserDataClaims(apiClaims, accessToken);
+
+        // Indicate success
+        return {
+                isValid: true,
+                expiry: result.exp,
+                claims: apiClaims,
+            } as TokenValidationResult;
     }
 
     /*
@@ -74,6 +102,7 @@ export class Authenticator {
         }
 
         try {
+            ApiLogger.info('Authenticator', `Downloading metadata from: ${this._oauthConfig.authority}`);
             Authenticator._issuer = await OpenIdClient.Issuer.discover(this._oauthConfig.authority);
         } catch (e) {
             throw ErrorHandler.fromMetadataError(e, this._oauthConfig.authority);
@@ -81,39 +110,50 @@ export class Authenticator {
     }
 
     /*
-     * Make a call to the introspection endpoint to read our token
+     * Download the public key with which our access token is signed
      */
-    private async _introspectTokenAndGetClaims(accessToken: string): Promise<TokenValidationResult> {
+    private async _downloadJwksKeyForKeyIdentifier(tokenKeyIdentifier: string): Promise<string> {
 
-        // Create the Authorization Server client
-        const client = new Authenticator._issuer.Client({
-            client_id: this._oauthConfig.clientId,
-            client_secret: this._oauthConfig.clientSecret,
+        return new Promise<string>((resolve, reject) => {
+
+            // Create the client to download the signing key
+            const client = jwksClient({
+                strictSsl: DebugProxyAgent.isDebuggingActive() ? false : true,
+                cache: false,
+                jwksUri: Authenticator._issuer.jwks_uri,
+            });
+
+            // Make a call to get the signing key
+            ApiLogger.info('Authenticator', `Downloading JWKS key from: ${Authenticator._issuer.jwks_uri}`);
+            client.getSigningKey(tokenKeyIdentifier, (err: any, key: any) => {
+
+                if (err) {
+                    return reject(ErrorHandler.fromSigningKeyDownloadError(err, Authenticator._issuer.jwks_uri));
+                }
+
+                return resolve(key.publicKey || key.rsaPublicKey);
+            });
         });
+    }
+
+    /*
+     * Call a third party library to do the token validation
+     */
+    private _validateTokenAndReadClaims(accessToken: string, tokenSigningPublicKey: string): [boolean, any] {
 
         try {
+            // Verify the token's signature, issuer, audience and that it is not expired
+            const options = {
+                issuer: Authenticator._issuer.issuer,
+            };
 
-            // Make a client request to do the introspection
-            const tokenData = await client.introspect(accessToken);
-
-            // Return an invalid result if the token is invalid or expired
-            if (!tokenData.active) {
-                return {
-                    isValid: false,
-                } as TokenValidationResult;
-            }
-
-            // Otherise return a valid result and wrap claims in an object
-            return {
-                isValid: true,
-                expiry: tokenData.exp,
-                claims: new ApiClaims(tokenData.sub, tokenData.cid, tokenData.scope),
-            } as TokenValidationResult;
+            const claims = jwt.verify(accessToken, tokenSigningPublicKey, options);
+            return [true, claims];
 
         } catch (e) {
 
-            // Report introspection errors clearly
-            throw ErrorHandler.fromIntrospectionError(e, Authenticator._issuer.introspection_endpoint);
+            // Indicate failure
+            return [false, e];
         }
     }
 
@@ -128,6 +168,9 @@ export class Authenticator {
 
         try {
             // Extend token data with central user info
+            ApiLogger.info(
+                'Authenticator',
+                `Downloading user info from: ${Authenticator._issuer.userinfo_endpoint}`);
             const response = await client.userinfo(accessToken);
             claims.setCentralUserData(response.given_name, response.family_name, response.email);
 
@@ -142,7 +185,7 @@ export class Authenticator {
      * Plumbing to ensure that the this parameter is available in async callbacks
      */
     private _setupCallbacks(): void {
-        this._introspectTokenAndGetClaims = this._introspectTokenAndGetClaims.bind(this);
+        this._validateTokenAndReadClaims = this._validateTokenAndReadClaims.bind(this);
         this._lookupCentralUserDataClaims = this._lookupCentralUserDataClaims.bind(this);
     }
 }

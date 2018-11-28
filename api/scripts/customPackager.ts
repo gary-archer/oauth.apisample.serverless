@@ -17,11 +17,8 @@ class Packager {
         await this._excludeFolders('authorize', ['js/service', 'data']);
         await this._excludeFolders('basicapi', ['js/authorizer']);
 
-        await this._excludeConfigFileSections('authorize', ['app']);
-        await this._excludeConfigFileSections('basicapi', ['oauth']);
-
         await this._installDependencies('authorize', ['middy']);
-        await this._installDependencies('basicapi',  ['js-sha256', 'openid-client']);
+        await this._installDependencies('basicapi',  ['openid-client', 'jwks-rsa', 'jsonwebtoken']);
 
         await this._rezipPackage('authorize');
         await this._rezipPackage('basicapi');
@@ -44,19 +41,6 @@ class Packager {
         for (const folder of folders) {
             await FileSystem.remove(`.serverless/${packageName}/${folder}`);
         }
-    }
-
-    /*
-     * Remove sections from the configuration file that are not relevant to this lambda
-     */
-    private async _excludeConfigFileSections(packageName: string, sections: string[]) {
-
-        const config = await FileSystem.readJson(`.serverless/${packageName}/api.config.json`);
-        for (const section of sections) {
-            delete config[section];
-        }
-
-        await FileSystem.writeFile(`.serverless/${packageName}/api.config.json`, JSON.stringify(config, null, 2));
     }
 
     /*

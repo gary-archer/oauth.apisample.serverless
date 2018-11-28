@@ -1,7 +1,7 @@
 import {Context} from 'aws-lambda';
+import {OAuthConfiguration} from '../../shared/configuration/oauthConfiguration';
 import {ApiLogger} from '../../shared/plumbing/apiLogger';
 import {ErrorHandler} from '../../shared/plumbing/errorHandler';
-import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {AuthorizationMicroservice} from '../logic/authorizationMicroservice';
 import {ResponseHandler} from '../plumbing/responseHandler';
 import {Authenticator} from './authenticator';
@@ -49,15 +49,12 @@ export class ClaimsHandler {
                 return ResponseHandler.invalidTokenResponse(event);
             }
 
-            // Next add central user info to claims
-            ApiLogger.info('ClaimsHandler', 'OAuth token validation succeeded');
-            await authenticator.getCentralUserInfoClaims(result.claims!, accessToken);
-
             // Next add product user data to claims
+            ApiLogger.info('ClaimsHandler', 'OAuth token validation and user lookup succeeded');
             await this._authorizationMicroservice.getProductClaims(result.claims!, accessToken);
 
             // Then move onto the API controller to execute business logic
-            ApiLogger.info('ClaimsHandler', 'Claims lookup completed successfully');
+            ApiLogger.info('ClaimsHandler', 'Claims handler completed successfully');
             return ResponseHandler.authorizedResponse(result.claims!, event);
 
         } catch (e) {

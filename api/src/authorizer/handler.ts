@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra';
-import {OAuthConfiguration} from './configuration/oauthConfiguration';
+import {OAuthConfiguration} from '../shared/configuration/oauthConfiguration';
 import {AuthorizationMicroservice} from './logic/authorizationMicroservice';
 import {ClaimsHandler} from './logic/claimsHandler';
 

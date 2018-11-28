@@ -212,7 +212,7 @@ export class ErrorHandler {
             errorContainer.append($('<li>').html(`Area : <b>${error.area}</b>`));
         }
 
-        if(error.instanceId) {
+        if (error.instanceId) {
             $('#error').append($('<li>').html(`Id : <b>${error.instanceId}</b>`));
         }
 

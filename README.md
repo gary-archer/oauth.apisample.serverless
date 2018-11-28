@@ -26,6 +26,6 @@
 * AWS Cloudfront is used as a Content Delivery Network
 
 ### Common Middleware Used
-* Okta is used for the Authorization Server
+* AWS Cognito is used for the Authorization Server
 * AWS Route 53 is used for custom domain names
 * AWS Certificate Manager is used for SSL certificate handling

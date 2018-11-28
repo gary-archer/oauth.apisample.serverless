@@ -1,5 +1,5 @@
 import * as fs from 'fs-extra';
-import {AppConfiguration} from './configuration/appConfiguration';
+import {AppConfiguration} from '../shared/configuration/appConfiguration';
 import {CompanyController} from './logic/companyController';
 import {UserInfoController} from './logic/userInfoController';
 import {MiddlewareHelper} from './plumbing/middlewareHelper';

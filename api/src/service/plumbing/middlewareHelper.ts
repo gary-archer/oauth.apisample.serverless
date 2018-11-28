@@ -1,7 +1,7 @@
 import {Context} from 'aws-lambda';
 import middy from 'middy';
 import {cors, ICorsOptions} from 'middy/middlewares';
-import {AppConfiguration} from '../configuration/appConfiguration';
+import {AppConfiguration} from '../../shared/configuration/appConfiguration';
 import {exceptionMiddleware} from './exceptionMiddleware';
 
 /*

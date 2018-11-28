@@ -72,18 +72,17 @@ export class ErrorHandler {
     }
 
     /*
-     * Handle the request promise error for introspection failures
+     * Handle the error for key identifier lookups
      */
-    public static fromIntrospectionError(responseError: any, url: string): ApiError {
+    public static fromSigningKeyDownloadError(responseError: any, url: string): ApiError {
 
-        const apiError = new ApiError({
+        return new ApiError({
             statusCode: 500,
-            area: 'Token Validation',
+            area: 'Signing Key Download',
             url,
-            message: 'Token validation failed',
+            message: 'Signing key download failed',
+            details: responseError,
         });
-        ErrorHandler._updateErrorFromHttpResponse(apiError, responseError);
-        return apiError;
     }
 
     /*
