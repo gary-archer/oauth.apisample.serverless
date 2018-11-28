@@ -19,6 +19,7 @@ export class Authenticator {
     public constructor(config: OAuthConfiguration) {
 
         // Create OIDC settings from our application configuration
+        // Note that with Cognito we have to set 'token' rather than the correct value of 'token id_token'
         const settings = {
             authority: config.authority,
             client_id: config.clientId,
@@ -100,8 +101,12 @@ export class Authenticator {
         };
 
         try {
-            // Start a login redirect
-            await this._userManager.signinRedirect({state: JSON.stringify(data)});
+            // Start a login redirect in a non standard manner to work around Cognito limitations
+            // Cognito actually returns an id token but requires us to send 'token', which is not correct
+            // The important thing is that we receive an id token and validate it
+            const request = await this._userManager.createSigninRequest({state: JSON.stringify(data)});
+            request.url = request.url.replace('token%20id_token', 'token');
+            location.replace(request.url);
 
             // Short circuit SPA page execution
             throw ErrorHandler.getNonError();

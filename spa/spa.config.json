@@ -4,7 +4,7 @@
     },
     "oauth": {
         "authority":        "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_eYkCF87Sn",
-        "clientId":         "1rhp8fk8h6fee0tp0fg2qai5je",
+        "clientId":         "26mvhbag6iolhc2tpu0gdspb4r",
         "appUri":           "https://web.authguidance-examples.com/spa/",
         "postLogoutPath":   "loggedout",
         "scope":            "openid profile email",
