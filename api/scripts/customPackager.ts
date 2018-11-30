@@ -1,7 +1,7 @@
 import AdmZip from 'adm-zip';
 import * as ChildProcess from 'child-process-es6-promise';
 import * as FileSystem from 'fs-extra';
-import process from 'process';
+import * as process from 'process';
 import './typings';
 
 class Packager {
