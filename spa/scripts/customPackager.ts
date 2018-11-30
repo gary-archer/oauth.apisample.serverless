@@ -1,6 +1,5 @@
 import * as FileSystem from 'fs-extra';
-import process from 'process';
-import './typings';
+import * as process from 'process';
 
 class Packager {
 
