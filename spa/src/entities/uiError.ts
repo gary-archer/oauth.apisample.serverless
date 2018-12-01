@@ -36,8 +36,8 @@ export class UIError extends Error {
         this._url = url;
         this._time = time;
         this._details = details;
-        this._nonError = nonError;
         this._instanceId = null;
+        this._nonError = nonError;
     }
 
     public get statusCode(): number {
