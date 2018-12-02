@@ -1,5 +1,6 @@
 import * as Oidc from 'oidc-client';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
+import {CognitoUserManager} from './cognitoUserManager';
 import {ErrorHandler} from './errorHandler';
 
 /*
@@ -10,7 +11,7 @@ export class Authenticator {
     /*
      * Fields
      */
-    private _userManager: Oidc.UserManager;
+    private _userManager: CognitoUserManager;
     private _config: OAuthConfiguration;
 
     /*
@@ -35,7 +36,7 @@ export class Authenticator {
 
         // Create the user manager
         this._config = config;
-        this._userManager = new Oidc.UserManager(settings);
+        this._userManager = new CognitoUserManager(settings);
         this._userManager.events.addSilentRenewError(this._onSilentTokenRenewalError);
         this._setupCallbacks();
     }
@@ -101,12 +102,8 @@ export class Authenticator {
         };
 
         try {
-            // Start a login redirect in a non standard manner to work around Cognito limitations
-            // Cognito actually returns an id token but requires us to send 'token', which is not correct
-            // The important thing is that we receive an id token and validate it
-            const request = await this._userManager.createSigninRequest({state: JSON.stringify(data)});
-            request.url = request.url.replace('token%20id_token', 'token');
-            location.replace(request.url);
+            // Start a login redirect
+            const request = await this._userManager.signinRedirect({state: JSON.stringify(data)});
 
             // Short circuit SPA page execution
             throw ErrorHandler.getNonError();
