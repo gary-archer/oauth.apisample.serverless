@@ -21,16 +21,15 @@ ROOT_CERT_PASSWORD=RootPassword1
 #
 # SSL certificate parameters
 #
-SSL_CERT_FILE_NAME=mycompany.ssl
-SSL_CERT_PASSWORD=SslPassword1
-WILDCARD_DOMAIN_NAME=*.authguidance-examples.com
-API_DOMAIN_NAME=api.authguidance-examples.com
-WEB_DOMAIN_NAME=web.authguidance-examples.com
+SSL_CERT_FILE_NAME='mycompany.ssl'
+SSL_CERT_PASSWORD='SslPassword1'
+WILDCARD_DOMAIN_NAME='*.authguidance-examples.com'
+API_DOMAIN_NAME='api.authguidance-examples.com'
+WEB_DOMAIN_NAME='web.authguidance-examples.com'
 
 #
 # Create the root certificate public + private key protected by a passphrase
 #
-echo 'START'
 openssl genrsa -out $ROOT_CERT_DOMAIN_NAME.key 2048 -passout pass:$ROOT_CERT_PASSWORD
 echo '*** Successfully created Root CA key'
 
