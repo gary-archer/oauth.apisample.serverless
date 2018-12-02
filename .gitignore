@@ -8,3 +8,4 @@ js
 dist
 .package
 .DS_store
+subjectAlternativeNames.ext
