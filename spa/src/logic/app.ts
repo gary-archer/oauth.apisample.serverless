@@ -116,7 +116,7 @@ class App {
      * Button handler to reset the hash location to the list view and refresh
      */
     private _onHome(): void {
-        location.hash = '#';
+        this._router!.moveHome();
     }
 
     /*

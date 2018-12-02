@@ -61,7 +61,6 @@ export class TransactionsView {
 
         // Show buttons and render
         $('.transactionscontainer').removeClass('hide');
-        $('.authenticated').removeClass('hide');
         $('.transactionslist').text('');
         $('.transactionsheader').text(`Transactions for ${data.company.name}`);
 

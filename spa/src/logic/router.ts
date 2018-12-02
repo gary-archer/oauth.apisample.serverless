@@ -80,4 +80,18 @@ export class Router {
             await view.execute();
         }
     }
+
+    /*
+     * Button handler to reset the hash location to the list view and refresh
+     */
+    private _onHome(): void {
+
+        if (location.hash !== '#home') {
+            // Move home
+            location.hash = '#home';
+        } else {
+            // Otherwise force a hash update
+            location.hash = '#';
+        }
+    }
 }
