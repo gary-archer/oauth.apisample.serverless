@@ -84,7 +84,7 @@ export class Router {
     /*
      * Button handler to reset the hash location to the list view and refresh
      */
-    private _onHome(): void {
+    public moveHome(): void {
 
         if (location.hash !== '#home') {
             // Move home

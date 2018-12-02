@@ -5,7 +5,7 @@ provider:
   runtime: nodejs8.10
   region: ${self:custom.config.settings.deployRegion}
   profile: default
-  stage: demo
+  stage: default
 
 # Custom configuration properties go in their own file
 # We use a custom packager to fully customize lambda packages
