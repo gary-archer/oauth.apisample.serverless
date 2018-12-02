@@ -27,32 +27,7 @@ WILDCARD_DOMAIN_NAME='*.authguidance-examples.com'
 API_DOMAIN_NAME='api.authguidance-examples.com'
 WEB_DOMAIN_NAME='web.authguidance-examples.com'
 
-#
-# Create the root certificate public + private key protected by a passphrase
-#
-openssl genrsa -out $ROOT_CERT_DOMAIN_NAME.key 2048 -passout pass:$ROOT_CERT_PASSWORD
-echo '*** Successfully created Root CA key'
 
-#
-# Create the public key root certificate file
-#
-openssl req -x509 \
-            -new \
-			-nodes \
-   			-key $ROOT_CERT_DOMAIN_NAME.key \
-			-out $ROOT_CERT_DOMAIN_NAME.crt \
-			-subj "/CN=$ROOT_CERT_DESCRIPTION" \
-			-reqexts v3_req \
-			-extensions v3_ca \
-			-sha256 \
-			-days 3650
-echo '*** Successfully created Root CA'
-
-#
-# Create the certificate public + private key
-#
-openssl genrsa -out $SSL_CERT_FILE_NAME.key 2048
-echo '*** Successfully created SSL key'
 
 #
 # Create the certificate signing request file
