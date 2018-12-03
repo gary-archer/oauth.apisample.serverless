@@ -1,7 +1,6 @@
 import * as jwt from 'jsonwebtoken';
-import jwksClient from 'jwks-rsa';
+import jwks from 'jwks-rsa';
 import * as OpenIdClient from 'openid-client';
-import * as Url from 'url';
 import {OAuthConfiguration} from '../../shared/configuration/oauthConfiguration';
 import {ApiClaims} from '../../shared/entities/apiClaims';
 import {ApiLogger} from '../../shared/plumbing/apiLogger';
@@ -39,13 +38,6 @@ export class Authenticator {
     }
 
     /*
-     * Configure proxy details used on a developer PC
-     */
-    public static async configureProxy() {
-
-    }
-
-    /*
      * When we receive a new token, validate it and return token claims
      */
     public async validateTokenAndGetTokenClaims(accessToken: string): Promise<TokenValidationResult> {
@@ -68,8 +60,14 @@ export class Authenticator {
         const keyIdentifier = decoded.header.kid;
         ApiLogger.info('Authenticator', `Token key identifier is ${keyIdentifier}`);
 
-        // Download the token signing public key for the key identifier
+        // Download the token signing public key for the key identifier and we'll return 401 if not found
         const tokenSigningPublicKey = await this._downloadJwksKeyForKeyIdentifier(keyIdentifier);
+        if (!tokenSigningPublicKey) {
+            return {
+                isValid: false,
+            } as TokenValidationResult;
+        }
+
         ApiLogger.info('Authenticator', `Token signing public key for ${keyIdentifier} downloaded successfully`);
 
         // Use a library to verify the token's signature, issuer, audience and that it is not expired
@@ -117,12 +115,12 @@ export class Authenticator {
     /*
      * Download the public key with which our access token is signed
      */
-    private async _downloadJwksKeyForKeyIdentifier(tokenKeyIdentifier: string): Promise<string> {
+    private async _downloadJwksKeyForKeyIdentifier(tokenKeyIdentifier: string): Promise<string | null> {
 
-        return new Promise<string>((resolve, reject) => {
+        return new Promise<string | null>((resolve, reject) => {
 
             // Create the client to download the signing key
-            const client = jwksClient({
+            const client = jwks({
                 strictSsl: DebugProxyAgent.isDebuggingActive() ? false : true,
                 cache: false,
                 jwksUri: Authenticator._issuer.jwks_uri,
@@ -130,13 +128,22 @@ export class Authenticator {
 
             // Make a call to get the signing key
             ApiLogger.info('Authenticator', `Downloading JWKS key from: ${Authenticator._issuer.jwks_uri}`);
-            client.getSigningKey(tokenKeyIdentifier, (err: any, key: any) => {
+            client.getSigningKeys((err: any, keys: jwks.Jwk[]) => {
 
+                // Handle errors
                 if (err) {
                     return reject(ErrorHandler.fromSigningKeyDownloadError(err, Authenticator._issuer.jwks_uri));
                 }
 
-                return resolve(key.publicKey || key.rsaPublicKey);
+                // Find the key in the download
+                const key = keys.find((k) => k.kid === tokenKeyIdentifier);
+                if (key) {
+                    return resolve(key.publicKey || key.rsaPublicKey);
+                }
+
+                // Indicate not found
+                ApiLogger.info('Authenticator', `Failed to find JWKS key with identifier: ${tokenKeyIdentifier}`);
+                return resolve(null);
             });
         });
     }
