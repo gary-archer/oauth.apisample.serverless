@@ -154,11 +154,14 @@ export class Authenticator {
             // First clear the access token from session storage
             await this.clearAccessToken();
 
-            // AWS requires a logout return URL as a path segment /spa/loggedout
-            // Our code captures this path and redirects to spa#loggedout
-            const logoutEndpoint = this._config.logoutEndpoint;
-            const returnUri = encodeURIComponent(`${this._config.appUri}${this._config.postLogoutPath}`);
-            const url = `${logoutEndpoint}?client_id=${this._config.clientId}&logout_uri=${returnUri}`;
+            // Cognito requires the configured Sign Our URL to use a path segment
+            // Therefore we configure https://web.authguidance-examples.com/spa/loggedout.html
+            const logoutReturnUri = encodeURIComponent(`${this._config.appUri}${this._config.postLogoutPath}.html`);
+
+            // We then use this in the logout redirect request
+            // Upon return this small HTML page redirects to https://web.authguidance-examples.com/spa/#loggedout
+            let url = `${this._config.logoutEndpoint}`;
+            url += `?client_id=${this._config.clientId}&logout_uri=${logoutReturnUri}`;
             location.replace(url);
 
         } catch (e) {
