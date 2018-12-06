@@ -20,7 +20,6 @@ export class Authenticator {
     public constructor(config: OAuthConfiguration) {
 
         // Create OIDC settings from our application configuration
-        // Note that with Cognito we have to set 'token' rather than the correct value of 'token id_token'
         const settings = {
             authority: config.authority,
             client_id: config.clientId,
@@ -102,7 +101,7 @@ export class Authenticator {
         };
 
         try {
-            // Start a login redirect
+            // Start a login redirect, at which point CognitoUserManager will override the response type
             const request = await this._userManager.signinRedirect({state: JSON.stringify(data)});
 
             // Short circuit SPA page execution
