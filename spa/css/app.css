@@ -10,19 +10,7 @@ a
 .panel {
     border: 0;
 }
-.listcontainer
-{
-    margin-top: 20px;
-}
-.transactionscontainer
-{
-    margin-top: 20px;
-}
-.errorcontainer
-{
-    margin-top: 20px;
-}
-.transactionslist
+.vertical-padding
 {
     margin-top: 20px;
 }
@@ -51,4 +39,48 @@ a
 .hide
 {
     display:none;
+}
+
+@media all and (max-width: 768px) {
+    body {
+        font-size: 0.8em;
+    }
+    .text-heading {
+        font-size: 2.5em;
+    }
+    .btn {
+        margin-top:10px;
+        width:100px;
+        font-size: 0.9em;
+    }
+    .vertical-padding
+    {
+        margin-top: 20px;
+    }
+}
+
+@media all and (max-width: 480px) {
+    body {
+        font-size: 0.5em;
+    }
+    .text-heading {
+        font-size: 2.0em;
+    }
+    .btn {
+        margin-top:5px;
+        width:75px;
+        font-size: 0.9em;
+    }
+    .listcontainer
+    {
+        margin-top: 5px;
+    }
+    .vertical-padding
+    {
+        margin-top: 20px;
+    }
+    .hide-mobile
+    {
+        display:none;
+    }
 }

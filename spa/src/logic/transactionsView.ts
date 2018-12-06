@@ -70,10 +70,10 @@ export class TransactionsView {
           const formattedAmountUsd = Number(transaction.amountUsd).toLocaleString();
 
           // Render the UI
-          const transactionDiv = $(`<div class='item col-xs-3'>
+          const transactionDiv = $(`<div class='item col-md-3 col-xs-6'>
                                       <div class='thumbnail'>
                                         <div class='caption row'>
-                                          <div class='col-xs-6 text-left'>Id</div>
+                                          <div class='col-xs-6 text-left'>Transaction Id</div>
                                           <div class='col-xs-6 text-right link'>${transaction.id}</div>
                                         </div>
                                         <div class='caption row'>

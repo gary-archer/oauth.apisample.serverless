@@ -59,26 +59,22 @@ export class ListView {
             const companyDiv = $(`<div class='panel panel-default'>
                                     <div class='panel-body'>
                                       <div class='row'>
-                                        <div class='col-xs-1'>
+                                        <div class='col-xs-1 hide-mobile'>
                                             <img src='images/${company.id}.svg' />
                                         </div>
-                                        <div class='col-xs-2'>
-                                            <br/>
+                                        <div class='col-xs-2 vertical-padding'>
                                             ${company.name}
                                         </div>
-                                        <div class='col-xs-3'>
-                                            <br/>
+                                        <div class='col-xs-3 vertical-padding'>
                                             <a data-id=${company.id}>View Transactions</a>
                                         </div>
-                                        <div class='col-xs-2 amount'>
-                                            <br/>
+                                        <div class='col-xs-2 amount vertical-padding'>
                                             ${formattedTargetUsd}<br/>
                                         </div>
-                                        <div class='col-xs-2 amount'>
-                                            <br/>
-                                            ${formattedInvestmentUsd}<br/>
+                                        <div class='col-xs-2 amount vertical-padding'>
+                                            ${formattedInvestmentUsd}
                                         </div>
-                                            <br/>
+                                        <div class='col-xs-2 vertical-padding'>
                                             <div class='col-xs-2'>${company.noInvestors}</div>
                                       </div>
                                     </div>
