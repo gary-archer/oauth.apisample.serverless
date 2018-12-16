@@ -72,7 +72,7 @@ export class Authenticator {
 
         // Use a library to verify the token's signature, issuer, audience and that it is not expired
         const [isValid, result] = this._validateTokenAndReadClaims(accessToken, tokenSigningPublicKey);
-
+   
         // Indicate an invalid token if it failed verification
         if (!isValid) {
             ApiLogger.warn('Authenticator', `JWT verification failed: ${result}`);

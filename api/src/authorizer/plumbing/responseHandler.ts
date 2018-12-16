@@ -1,5 +1,6 @@
 import {ApiClaims} from '../../shared/entities/apiClaims';
 import {ClientError} from '../../shared/entities/clientError';
+import {ApiLogger} from '../../shared/plumbing/apiLogger';
 
 /*
  * Helper methods to return responses
@@ -84,16 +85,17 @@ export class ResponseHandler {
 
     /*
      * This takes an ARN for the current API request, such as this:
-     *   arn:aws:execute-api:eu-west-2:090109105180:cqo3riplm6/dev/GET/companies
+     *   arn:aws:execute-api:eu-west-2:090109105180:cqo3riplm6/default/GET/companies
      *
      * It reduces it to a wildcard that applies to all lambdas in the service:
-     *   arn:aws:execute-api:eu-west-2:090109105180:cqo3riplm6/dev/GET/companies
+     *   arn:aws:execute-api:eu-west-2:090109105180:cqo3riplm6/default/GET/companies
      *
      * The policy document will be cached and will then be usable for any secured API request
      */
     private static _getServiceArn(methodArn: string) {
 
-        // Get the last part, such as cqo3riplm6/dev/GET/companies
+        // Get the last part, such as cqo3riplm6/default/GET/companies
+        ApiLogger.info('PolicyDocument', `Method ARN is ${methodArn}`);
         const parts = methodArn.split(':');
         if (parts.length === 6) {
 
@@ -101,9 +103,11 @@ export class ResponseHandler {
             const pathParts = parts[5].split('/');
             if (pathParts.length >= 4) {
 
-                // Update the final part to a wildcard value such as cqo3riplm6/dev/* and then rejoin
+                // Update the final part to a wildcard value such as cqo3riplm6/default/* and then rejoin
                 parts[5] = `${pathParts[0]}/${pathParts[1]}/*`;
-                return parts.join(':');
+                const result = parts.join(':');
+                ApiLogger.info('PolicyDocument', `Service resource path is ${result}`);
+                return result;
             }
         }
 

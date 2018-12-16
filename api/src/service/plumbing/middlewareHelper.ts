@@ -28,8 +28,8 @@ export class MiddlewareHelper {
             this._deserializeClaims(event);
             return await operation(event, context);
         })
-        .use(cors(this._corsConfig))
-        .use(exceptionMiddleware());
+        .use(exceptionMiddleware())
+        .use(cors(this._corsConfig));
     }
 
     /*

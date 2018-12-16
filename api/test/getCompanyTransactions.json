@@ -1,20 +1,21 @@
 {
+    "httpMethod": "GET",
+    "pathParameters": {
+        "id": "2"
+    },
     "requestContext": {
         "authorizer": {
             "claims": {
-                "userId": "test.user@test.com",
-                "callingApplicationId": "basicSpa",
+                "userId": "53d99c88-a992-4e1c-9b58-d739c2a20de5",
+                "callingApplicationId": "3iojt0uhtp0nqm0lc3rmvj92ck",
                 "scopes": "openid profile email",
                 "userInfo": {
-                    "givenName": "test",
-                    "familyName": "user",
-                    "email": "test.user@test.com"
+                    "givenName": "Guest",
+                    "familyName": "User",
+                    "email": "guestuser@authguidance.com"
                 },
                 "userCompanyIds": [1, 2, 3]
             }
         }
-    },
-    "pathParameters": {
-        "id": "2"
     }
 }
