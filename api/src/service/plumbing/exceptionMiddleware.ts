@@ -16,16 +16,9 @@ class ExceptionMiddleware {
         // Process the error
         const serverError = ErrorHandler.fromException(handler.error);
         const [statusCode, clientError] = ErrorHandler.handleError(serverError);
-        const response = ResponseHandler.objectResponse(statusCode, clientError);
 
-        // Set the error object to return from the lambda
-        handler.response = response;
-
-        // Set the error object to return from the API gateway
-        // The errorResponse property is double serialized against the context
-        // The DEFAULT_5XX properties in Serverless.yml reference this object
-        const context = handler.context as any;
-        context.errorResponse = JSON.stringify(response.body);
+        // Set a custom 500 error response in a manner that gets through API gateway
+        handler.response = ResponseHandler.exceptionErrorResponse(statusCode, clientError, handler.context);
         return next();
     }
 

@@ -29,30 +29,17 @@ export class CompanyController {
         const id = parseInt(event.pathParameters.id, 10);
         ApiLogger.info('CompanyController', `Returning transactions for company ${id}`);
 
+        // Get transactions, which will return null if the user is unauthorized
         const transactions =  await repository.getCompanyTransactions(id);
         if (transactions) {
             return ResponseHandler.objectResponse(200, transactions);
         }
 
-        return CompanyController._unauthorizedError(context);
-    }
-
-    /*
-     * Return an unauthorized error
-     */
-    private static _unauthorizedError(context: any) {
-
-        // Set the error object to return from the lambda
+        // Set a custom unauthorized response in a manner that gets through API gateway
         const error = {
             area: 'Authorization',
             message: 'The user is unauthorized to access the requested data',
         };
-        const response = ResponseHandler.objectResponse(403, error);
-
-        // Set the error object to return from the API gateway
-        // The errorResponse property is double serialized against the context
-        // The DEFAULT_4XX properties in Serverless.yml reference this object
-        context.errorResponse = JSON.stringify(response.body);
-        return response;
+        return ResponseHandler.validationErrorResponse(403, error, context);
     }
 }
