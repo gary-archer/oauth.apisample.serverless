@@ -89,6 +89,7 @@ resources:
         ResponseTemplates:
           application/json: |
             {
+              "area": "Authentication",
               "message": "Missing, invalid or expired access token"
             }
         RestApiId:
@@ -108,6 +109,7 @@ resources:
         ResponseTemplates:
           application/json: |
             {
+              "area": "Authentication",
               "message": "Missing, invalid or expired access token"
             }
         RestApiId:
@@ -115,7 +117,7 @@ resources:
         StatusCode: '401'
 
     # Handle AUTHORIZER_CONFIGURATION_ERROR errors, meaning a technical problem during token validation
-    ErrorGatewayResponse:
+    AuthenticationErrorResponse:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
         ResponseParameters:
@@ -124,18 +126,63 @@ resources:
 
         ResponseType: AUTHORIZER_CONFIGURATION_ERROR
         
-        # AWS does not support setting runtime context for error responses
+        # AWS does not support setting runtime context for authentication error responses
         # We can however customize the status code and supply a hard coded error object
         # See comments in responseHandler.ts for further details
         ResponseTemplates:
           application/json: |
             {
-              "area": "Authorization",
+              "area": "Authentication",
               "message": "Problem encountered during authorization"
             }
         RestApiId:
           Ref: 'ApiGatewayRestApi'
         StatusCode: '500'
+
+    # Handle general 500 errors, meaning a technical problem in a lambda
+    ServerErrorResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+
+        ResponseType: DEFAULT_5XX
+        
+        # When there is a 500 error we return contextual error data from API Gateway
+        ResponseTemplates:
+          application/json: |
+            {
+              "area" : "$context.errorResponse.area",
+              "message" : "$context.errorResponse.message",
+              "id": "$context.errorResponse.id"
+            }
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '500'
+
+    # Handle errors for invalid paths within our API, such as /api/xxx
+    InvalidApiSubPathResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+
+        ResponseType: MISSING_AUTHENTICATION_TOKEN
+        
+        # AWS does not support setting runtime context for authentication error responses
+        # We can however customize the status code and supply a hard coded error object
+        # See comments in responseHandler.ts for further details
+        ResponseTemplates:
+          application/json: |
+            {
+              "area": "Path",
+              "message": "An invalid API method or path was accessed"
+            }
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '404'
 
 # By default all files are included so remove files we don't need for any lambda
 # The custom packager does the rest of the work in code, including adding node_modules

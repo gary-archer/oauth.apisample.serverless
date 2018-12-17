@@ -1,6 +1,7 @@
 import middy from 'middy';
 import {ErrorHandler} from '../../shared/plumbing/errorHandler';
 import {ResponseHandler} from './responseHandler';
+import { isContext } from 'vm';
 
 /*
  * The middleware coded in a class based manner
@@ -15,7 +16,16 @@ class ExceptionMiddleware {
 
         const serverError = ErrorHandler.fromException(handler.error);
         const [statusCode, clientError] = ErrorHandler.handleError(serverError);
-        handler.response = ResponseHandler.objectResponse(statusCode, clientError);
+        const response = ResponseHandler.objectResponse(statusCode, clientError);
+
+        // Set the error response to return from the lambda
+        // In AWS this is passed through to the API gateway
+        handler.response = response;
+
+        // The error response for API Gateway needs to be double serialized
+        // The response template for DEFAULT_5XX errors captures the errorResponse object properties
+        const context = handler.context as any;
+        context.errorResponse = JSON.stringify(response.body);
         return next();
     }
 

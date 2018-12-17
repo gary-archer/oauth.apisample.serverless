@@ -1,5 +1,4 @@
 {
-    "httpMethod": "GET",
     "pathParameters": {
         "id": "2"
     },

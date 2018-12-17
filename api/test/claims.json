@@ -1,5 +1,4 @@
 {
-    "httpMethod": "GET",
     "requestContext": {
         "authorizer": {
             "claims": {

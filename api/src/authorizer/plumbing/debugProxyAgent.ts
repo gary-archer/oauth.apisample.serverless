@@ -16,7 +16,7 @@ export class DebugProxyAgent {
 
             // Use a dynamic import so that this dependency is only used on a developer PC
             await import('tunnel-agent');
-        
+
             const opts = Url.parse(process.env.HTTPS_PROXY as string);
             DebugProxyAgent.proxyAgent = TunnelAgent.httpsOverHttp({
                 proxy: opts,
