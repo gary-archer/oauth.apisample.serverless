@@ -25,7 +25,6 @@ export class CompanyController {
      */
     public static async getCompanyTransactions(event: any, context: Context): Promise<any> {
 
-        // Create a repository
         const repository = new CompanyRepository(event.claims);
         const id = parseInt(event.pathParameters.id, 10);
         ApiLogger.info('CompanyController', `Returning transactions for company ${id}`);
@@ -35,11 +34,25 @@ export class CompanyController {
             return ResponseHandler.objectResponse(200, transactions);
         }
 
-        // Handle returning a 400 error, which requires updating context
+        return CompanyController._unauthorizedError(context);
+    }
+
+    /*
+     * Return an unauthorized error
+     */
+    private static _unauthorizedError(context: any) {
+
+        // Set the error object to return from the lambda
         const error = {
             area: 'Authorization',
             message: 'The user is unauthorized to access the requested data',
         };
-        return ResponseHandler.validationErrorResponse(403, error, context);
+        const response = ResponseHandler.objectResponse(403, error);
+
+        // Set the error object to return from the API gateway
+        // The errorResponse property is double serialized against the context
+        // The DEFAULT_4XX properties in Serverless.yml reference this object
+        context.errorResponse = JSON.stringify(response.body);
+        return response;
     }
 }
