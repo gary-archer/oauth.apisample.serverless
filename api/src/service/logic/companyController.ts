@@ -1,5 +1,6 @@
 import {Context} from 'aws-lambda';
 import {ApiLogger} from '../../shared/plumbing/apiLogger';
+import {ResponseHandler} from '../plumbing/responseHandler';
 import {CompanyRepository} from './companyRepository';
 
 /*
@@ -16,10 +17,7 @@ export class CompanyController {
         ApiLogger.info('CompanyController', 'Returning company list');
 
         const data = await repository.getCompanyList();
-        return {
-            statusCode: 200,
-            body: JSON.stringify(data),
-        };
+        return ResponseHandler.objectResponse(200, data);
     }
 
     /*
@@ -34,15 +32,14 @@ export class CompanyController {
 
         const transactions =  await repository.getCompanyTransactions(id);
         if (transactions) {
-            return {
-                statusCode: 200,
-                body: JSON.stringify(transactions),
-            };
-        } else {
-            return {
-                statusCode: 403,
-                body: JSON.stringify('The user is unauthorized to access the requested data'),
-            };
+            return ResponseHandler.objectResponse(200, transactions);
         }
+
+        // Handle returning a 400 error, which requires updating context
+        const error = {
+            area: 'Authorization',
+            message: 'The user is unauthorized to access the requested data',
+        };
+        return ResponseHandler.validationErrorResponse(403, error, context);
     }
 }

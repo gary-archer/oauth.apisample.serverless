@@ -1,5 +1,6 @@
 import {Context} from 'aws-lambda';
 import {ApiLogger} from '../../shared/plumbing/apiLogger';
+import {ResponseHandler} from '../plumbing/responseHandler';
 
 /*
  * A simple API controller to return user info
@@ -13,10 +14,6 @@ export class UserInfoController {
 
         ApiLogger.info('UserInfoController', 'Returning user info');
         const userInfo = event.claims.userInfo;
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify(userInfo),
-        };
+        return ResponseHandler.objectResponse(200, userInfo);
     }
 }

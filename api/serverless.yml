@@ -161,6 +161,27 @@ resources:
           Ref: 'ApiGatewayRestApi'
         StatusCode: '500'
 
+    # Handle general 400 errors, meaning some kind of invalid request
+    ValidationErrorResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+
+        ResponseType: DEFAULT_4XX
+        
+        # When there is a 400 error we return contextual error data from API Gateway
+        ResponseTemplates:
+          application/json: |
+            {
+              "area" : "$context.errorResponse.area",
+              "message" : "$context.errorResponse.message"
+            }
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '400'
+
     # Handle errors for invalid paths within our API, such as /api/xxx
     InvalidApiSubPathResponse:
       Type: 'AWS::ApiGateway::GatewayResponse'
