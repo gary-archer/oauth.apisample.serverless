@@ -1,7 +1,8 @@
 import {Context} from 'aws-lambda';
 import middy from 'middy';
-import {cors, ICorsOptions} from 'middy/middlewares';
+import {cors} from 'middy/middlewares';
 import {AppConfiguration} from '../../shared/configuration/appConfiguration';
+import {customHeaderMiddleware} from '../../shared/plumbing/customHeaderMiddleware';
 import {exceptionMiddleware} from '../../shared/plumbing/exceptionMiddleware';
 import {requestLoggerMiddleware} from '../../shared/plumbing/requestLoggerMiddleware';
 
@@ -24,6 +25,7 @@ export class Middleware {
         })
         .use(exceptionMiddleware())
         .use(requestLoggerMiddleware())
+        .use(customHeaderMiddleware('lambda'))
         .use(cors(corsConfig));
     }
 

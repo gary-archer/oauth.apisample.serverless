@@ -1,5 +1,6 @@
 import {Context} from 'aws-lambda';
 import middy from 'middy';
+import {customHeaderMiddleware} from '../../shared/plumbing/customHeaderMiddleware';
 import {exceptionMiddleware} from '../../shared/plumbing/exceptionMiddleware';
 import {requestLoggerMiddleware} from '../../shared/plumbing/requestLoggerMiddleware';
 
@@ -14,6 +15,7 @@ export class Middleware {
             return await operation(event, context);
         })
         .use(exceptionMiddleware())
-        .use(requestLoggerMiddleware());
+        .use(requestLoggerMiddleware())
+        .use(customHeaderMiddleware('authorizer'));
     }
 }

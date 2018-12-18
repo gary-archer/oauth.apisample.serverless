@@ -1,4 +1,7 @@
 {
+    "headers": {
+        "X-Test-Exception": "lambdaXXX"
+    },
     "requestContext": {
         "authorizer": {
             "claims": {

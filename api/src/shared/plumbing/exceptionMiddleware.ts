@@ -28,7 +28,7 @@ class ExceptionMiddleware {
         // Set the context error object to return from the API gateway
         // The DEFAULT_4XX and DEFAULT_5XX properties in Serverless.yml reference this object
         (handler.context as any).errorResponse = clientError.asSerializable();
-        return next();
+        next();
     }
 
     /*
