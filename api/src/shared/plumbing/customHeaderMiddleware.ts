@@ -18,7 +18,7 @@ class CustomHeaderMiddleware {
     public before(handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): any {
 
         if (handler.event.headers) {
-            if (handler.event.headers['X-Test-Exception'] === this._operationType) {
+            if (handler.event.headers['x-test-exception'] === this._operationType) {
                 throw new Error(`Simulating an exception for operation type ${this._operationType}`);
             }
         }

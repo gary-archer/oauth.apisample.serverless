@@ -1,6 +1,6 @@
 {
     "headers": {
-        "X-Test-Exception": "lambdaXXX"
+        "x-test-exception": "lambdaXXX"
     },
     "pathParameters": {
         "id": "2"
