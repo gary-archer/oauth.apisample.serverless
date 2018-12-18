@@ -1,6 +1,6 @@
 import middy from 'middy';
-import {ErrorHandler} from '../../shared/plumbing/errorHandler';
-import {ResponseHandler} from './responseHandler';
+import {ResponseHandler} from '../../shared/plumbing/responseHandler';
+import {ErrorHandler} from './errorHandler';
 
 /*
  * The exception middleware coded in a class based manner
@@ -11,14 +11,23 @@ class ExceptionMiddleware {
         this._setupCallbacks();
     }
 
+    /*
+     * All exceptions are caught and returned from AWS here
+     */
     public onError(handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): any {
 
-        // Process the error
+        // Get the error into an object
         const serverError = ErrorHandler.fromException(handler.error);
-        const [statusCode, clientError] = ErrorHandler.handleError(serverError, handler.event.log);
 
-        // Set a custom 500 error response in a manner that gets through API gateway
-        handler.response = ResponseHandler.exceptionErrorResponse(statusCode, clientError, handler.context);
+        // Process it which will add it to the log and return a client error
+        const clientError = ErrorHandler.handleError(serverError, handler.event.log);
+
+        // Set the lambda response
+        handler.response = ResponseHandler.objectResponse(clientError.statusCode, clientError.asSerializable());
+
+        // Set the context error object to return from the API gateway
+        // The DEFAULT_4XX and DEFAULT_5XX properties in Serverless.yml reference this object
+        (handler.context as any).errorResponse = clientError.asSerializable();
         return next();
     }
 

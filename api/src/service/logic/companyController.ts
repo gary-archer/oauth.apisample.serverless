@@ -1,5 +1,6 @@
 import {Context} from 'aws-lambda';
-import {ResponseHandler} from '../plumbing/responseHandler';
+import {ClientError} from '../../shared/entities/clientError';
+import {ResponseHandler} from '../../shared/plumbing/responseHandler';
 import {CompanyRepository} from './companyRepository';
 
 /*
@@ -38,11 +39,7 @@ export class CompanyController {
             return ResponseHandler.objectResponse(200, transactions);
         }
 
-        // Set a custom unauthorized response in a manner that gets through API gateway
-        const error = {
-            area: 'Authorization',
-            message: 'The user is unauthorized to access the requested data',
-        };
-        return ResponseHandler.validationErrorResponse(403, error, event.log, context);
+        // Throw a custom unauthorized response in a manner that gets through API gateway
+        throw new ClientError(403, 'Authorization', 'The user is unauthorized to access the requested data');
     }
 }

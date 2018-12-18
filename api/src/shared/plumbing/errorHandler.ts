@@ -1,5 +1,6 @@
 import {ApiError} from '../entities/apiError';
 import {ClientError} from '../entities/clientError';
+import {RequestLogger} from './requestLogger';
 
 /*
  * A class to handle composing and reporting errors
@@ -9,29 +10,27 @@ export class ErrorHandler {
     /*
      * Handle the server error and get client details
      */
-    public static handleError(serverError: ApiError, log: any): [number, ClientError] {
+    public static handleError(serverError: ApiError | ClientError, log: RequestLogger): ClientError {
 
-        // Add the error details to the log
-        log.error = serverError.toJson();
+        // Add the error object to the request log in a serializable form
+        log.error(serverError.asSerializable());
 
-        // Create details for the client
-        const clientStatusCode = 500;
-        const clientError = {
-            area: serverError.area,
-            message: serverError.message,
-            id: serverError.instanceId,
-        } as ClientError;
-
-        return [clientStatusCode, clientError];
+        // Create and return details for the client
+        return serverError.toClientError();
     }
 
     /*
-     * Ensure that all errors are of ApiError exception type
+     * Ensure that all errors are of a known type
      */
-    public static fromException(exception: any): ApiError {
+    public static fromException(exception: any): ApiError | ClientError {
 
-        // Already handled
+        // Already handled 500 errors
         if (exception instanceof ApiError) {
+            return exception;
+        }
+
+        // Already handled 4xx errors
+        if (exception instanceof ClientError) {
             return exception;
         }
 

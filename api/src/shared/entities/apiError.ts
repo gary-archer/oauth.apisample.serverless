@@ -1,3 +1,5 @@
+import {ClientError} from './clientError';
+
 /*
  * A range for random error ids
  */
@@ -5,7 +7,7 @@ const MIN_ERROR_ID = 10000;
 const MAX_ERROR_ID = 99999;
 
 /*
- * A simple error class for the API
+ * Data logged in the API when there is a 500 error
  */
 export class ApiError extends Error {
 
@@ -80,9 +82,27 @@ export class ApiError extends Error {
     /*
      * Ensure that the stack trace is included in the logged error
      */
-    public toJson(): string {
-        const copy: any = Object.assign({}, this);
-        copy.stackTrace = this.stack;
-        return JSON.stringify(copy);
+    public asSerializable(): any {
+
+        return {
+            statusCode: this._statusCode,
+            message: this.message,
+            area: this.area,
+            instanceId: this._instanceId,
+            time: this._time,
+            url: this._url,
+            details: this.details,
+            stackTrace: this.stack,
+        };
+    }
+
+    /*
+     * Convert to client fields
+     */
+    public toClientError(): ClientError {
+
+        const error = new ClientError(500, this._area, this.message);
+        error.id = this._instanceId;
+        return error;
     }
 }

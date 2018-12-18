@@ -2,8 +2,8 @@ import {Context} from 'aws-lambda';
 import middy from 'middy';
 import {cors, ICorsOptions} from 'middy/middlewares';
 import {AppConfiguration} from '../../shared/configuration/appConfiguration';
+import {exceptionMiddleware} from '../../shared/plumbing/exceptionMiddleware';
 import {requestLoggerMiddleware} from '../../shared/plumbing/requestLoggerMiddleware';
-import {exceptionMiddleware} from './exceptionMiddleware';
 
 /*
  * Set up middleware for a normal lambda function

@@ -1,7 +1,7 @@
 /*
  * The API log is added built during a request and then output
  */
-export class RequestLog {
+export class RequestLogger {
 
     private _data: any;
 
@@ -14,28 +14,24 @@ export class RequestLog {
      */
     public debug(name: string, info: string): void {
 
-        if (!this._data.info) {
-            this._data.info = [];
+        if (!this._data.debug) {
+            this._data.debug = [];
         }
 
-        this._data.info.push(name, info);
+        this._data.debug.push(name, info);
     }
 
     /*
      * Add error details to the log
      */
-    public error(statusCode: number, error: string): void {
-
-        this._data.error = {
-            statusCode,
-            error,
-        };
+    public error(error: any): void {
+        this._data.error = error;
     }
 
     /*
      * Output data
      */
-    private write() {
+    public write() {
         console.log(JSON.stringify(this._data));
     }
 }

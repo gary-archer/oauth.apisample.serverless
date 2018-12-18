@@ -1,6 +1,5 @@
 import middy from 'middy';
-import {ApiLogger} from './requestLogger';
-import {ErrorHandler} from './errorHandler';
+import {RequestLogger} from './requestLogger';
 
 /*
  * The middleware coded in a class based manner
@@ -15,7 +14,7 @@ class RequestLoggerMiddleware {
      * Create the log object
      */
     public before(handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): any {
-        handler.event.log = {};
+        handler.event.log = new RequestLogger();
         handler.event.log.info = [];
         next();
     }
@@ -24,7 +23,7 @@ class RequestLoggerMiddleware {
      * Log the request after normal completion
      */
     public after(handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): any {
-        ApiLogger.info(JSON.stringify(handler.event.log));
+        handler.event.log.write();
         next();
     }
 
@@ -32,7 +31,7 @@ class RequestLoggerMiddleware {
      * Log the request after failed completion
      */
     public onError(handler: middy.IHandlerLambda<any, object>, next: middy.IMiddyNextFunction): any {
-        ApiLogger.info(JSON.stringify(handler.event.log));
+        handler.event.log.write();
         next();
     }
 
@@ -40,6 +39,8 @@ class RequestLoggerMiddleware {
      * Plumbing to ensure that the this parameter is available in async callbacks
      */
     private _setupCallbacks(): void {
+        this.before = this.before.bind(this);
+        this.after = this.after.bind(this);
         this.onError = this.onError.bind(this);
     }
 }

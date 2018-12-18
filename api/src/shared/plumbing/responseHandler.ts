@@ -1,6 +1,6 @@
-import {ApiClaims} from '../../shared/entities/apiClaims';
-import {ClientError} from '../../shared/entities/clientError';
-import {ApiLogger} from '../../shared/plumbing/requestLogger';
+import {ApiClaims} from '../entities/apiClaims';
+import {ClientError} from '../entities/clientError';
+import {RequestLogger} from './requestLogger';
 
 /*
  * Helper methods to return responses
@@ -86,10 +86,10 @@ export class ResponseHandler {
      *
      * The policy document will be cached and will then be usable for any secured API request
      */
-    private static _getServiceArn(methodArn: string, log: any) {
+    private static _getServiceArn(methodArn: string, log: RequestLogger) {
 
         // Get the last part, such as cqo3riplm6/default/GET/companies
-        log.info.push({PolicyDocument: `Method ARN is ${methodArn}`});
+        log.debug('PolicyDocument', `Method ARN is ${methodArn}`);
         const parts = methodArn.split(':');
         if (parts.length === 6) {
 
@@ -100,7 +100,7 @@ export class ResponseHandler {
                 // Update the final part to a wildcard value such as cqo3riplm6/default/* and then rejoin
                 parts[5] = `${pathParts[0]}/${pathParts[1]}/*`;
                 const result = parts.join(':');
-                log.info.push({PolicyDocument: `Service resource path is ${result}`});
+                log.debug('PolicyDocument', `Service resource path is ${result}`);
                 return result;
             }
         }

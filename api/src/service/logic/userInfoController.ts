@@ -1,5 +1,5 @@
 import {Context} from 'aws-lambda';
-import {ResponseHandler} from '../plumbing/responseHandler';
+import {ResponseHandler} from '../../shared/plumbing/responseHandler';
 
 /*
  * A simple API controller to return user info

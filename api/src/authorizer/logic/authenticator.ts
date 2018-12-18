@@ -4,7 +4,7 @@ import * as OpenIdClient from 'openid-client';
 import {OAuthConfiguration} from '../../shared/configuration/oauthConfiguration';
 import {ApiClaims} from '../../shared/entities/apiClaims';
 import {ErrorHandler} from '../../shared/plumbing/errorHandler';
-import {RequestLog} from '../../shared/plumbing/requestLogger';
+import {RequestLogger} from '../../shared/plumbing/requestLogger';
 import {DebugProxyAgent} from '../plumbing/debugProxyAgent';
 import {TokenValidationResult} from './tokenValidationResult';
 
@@ -22,12 +22,12 @@ export class Authenticator {
      * Instance fields
      */
     private _oauthConfig: OAuthConfiguration;
-    private _log: RequestLog;
+    private _log: RequestLogger;
 
     /*
      * Receive configuration and request metadata
      */
-    public constructor(oauthConfig: OAuthConfiguration, log: RequestLog) {
+    public constructor(oauthConfig: OAuthConfiguration, log: RequestLogger) {
 
         this._oauthConfig = oauthConfig;
         this._log = log;
@@ -183,7 +183,7 @@ export class Authenticator {
         try {
             // Extend token data with central user info
             this._log.debug(
-                'Authenticator':
+                'Authenticator',
                 `Downloading user info from: ${Authenticator._issuer.userinfo_endpoint}`);
             const response = await client.userinfo(accessToken);
             claims.setCentralUserData(response.given_name, response.family_name, response.email);

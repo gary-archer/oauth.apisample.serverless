@@ -1,7 +1,7 @@
 import {Context} from 'aws-lambda';
 import middy from 'middy';
+import {exceptionMiddleware} from '../../shared/plumbing/exceptionMiddleware';
 import {requestLoggerMiddleware} from '../../shared/plumbing/requestLoggerMiddleware';
-import {exceptionMiddleware} from './exceptionMiddleware';
 
 /*
  * Set up middleware for the lambda authorizer
