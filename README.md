@@ -7,8 +7,8 @@
 
 ### Details
 * See the Serverless Sample Overview for a summary of the solution
-* See the [Serverless SPA Setup](https://authguidance.com/2018/12/02/how-to-run-the-cloud-spa/) for instructions on running the API
-* See the [Serverless API Setup](https://authguidance.com/2018/12/16/how-to-run-the-cloud-api/) for instructions on running the Single Page Application
+* See the [Serverless SPA Setup](https://authguidance.com/2018/12/02/how-to-run-the-cloud-spa/) for instructions on running the Single Page Application
+* See the [Serverless API Setup](https://authguidance.com/2018/12/16/how-to-run-the-cloud-api/) for instructions on running the API
 
 ### Programming Languages
 * TypeScript is used for the SPA
