@@ -155,7 +155,7 @@ resources:
             {
               "area" : "$context.errorResponse.area",
               "message" : "$context.errorResponse.message",
-              "id": 123
+              "id": $context.errorResponse.id
             }
         RestApiId:
           Ref: 'ApiGatewayRestApi'

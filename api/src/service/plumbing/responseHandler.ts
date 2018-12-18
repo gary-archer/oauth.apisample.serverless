@@ -15,32 +15,34 @@ export class ResponseHandler {
     }
 
     /*
-     * Return a 4xx error to the caller
+     * Return a 4xx error to the caller from our controller
      */
     public static validationErrorResponse(statusCode: number, error: any, context: any): any {
 
         // Set the error object to return from the lambda
         const response = ResponseHandler.objectResponse(statusCode, error);
 
-        // Set the error object to return from the API gateway
-        // The errorResponse property is double serialized against the context
+        // Set the context error object to return from the API gateway
         // The DEFAULT_4XX properties in Serverless.yml reference this object
-        context.errorResponse = JSON.stringify(response.body);
+        context.errorResponse = response.body;
+
+        // Return the lambda response
         return response;
     }
 
     /*
-     * Return a 5xx error to the caller
+     * Return a 5xx error to the caller from our exception middleware
      */
     public static exceptionErrorResponse(statusCode: number, error: any, context: any): any {
 
         // Set the error object to return from the lambda
         const response = ResponseHandler.objectResponse(statusCode, error);
 
-        // Set the error object to return from the API gateway
-        // The errorResponse property is double serialized against the context
+        // Set the context error object to return from the API gateway
         // The DEFAULT_5XX properties in Serverless.yml reference this object
         context.errorResponse = JSON.stringify(response.body);
+
+        // Return the lambda response
         return response;
     }
 }
