@@ -2,40 +2,35 @@ import {Context} from 'aws-lambda';
 import middy from 'middy';
 import {cors, ICorsOptions} from 'middy/middlewares';
 import {AppConfiguration} from '../../shared/configuration/appConfiguration';
+import {requestLoggerMiddleware} from '../../shared/plumbing/requestLoggerMiddleware';
 import {exceptionMiddleware} from './exceptionMiddleware';
 
 /*
- * Set up middleware
+ * Set up middleware for a normal lambda function
  */
-export class MiddlewareHelper {
-
-    private _corsConfig: ICorsOptions;
+export class Middleware {
 
     /*
-     * Receive dependencies
+     * Add each common middleware to the supplied operation
      */
-    public constructor(apiConfig: AppConfiguration) {
-        this._corsConfig = {origins: apiConfig.trustedOrigins};
-    }
+    public static apply(operation: any, apiConfig: AppConfiguration): middy.IMiddy {
 
-    /*
-     * Add cross cutting concerns to enrich the API operation
-     * Middy works by always calling all middlewares, including the main operation
-     */
-    public enrichApiOperation(operation: any): middy.IMiddy {
+        const corsConfig = {origins: apiConfig.trustedOrigins};
 
         return middy(async (event: any, context: Context) => {
-            this._deserializeClaims(event);
+
+            Middleware._deserializeClaims(event);
             return await operation(event, context);
         })
         .use(exceptionMiddleware())
-        .use(cors(this._corsConfig));
+        .use(requestLoggerMiddleware())
+        .use(cors(corsConfig));
     }
 
     /*
-     * Claims are returned in a serialised form from the authorizer so deserialize here
+     * Deserialize claims received from the API gateway with lambda authorizer results
      */
-    private _deserializeClaims(event: any): void {
+    private static _deserializeClaims(event: any): void {
 
         if (!event.requestContext ||
             !event.requestContext.authorizer ||

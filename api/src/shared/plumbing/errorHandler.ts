@@ -1,6 +1,5 @@
 import {ApiError} from '../entities/apiError';
 import {ClientError} from '../entities/clientError';
-import {ApiLogger} from './apiLogger';
 
 /*
  * A class to handle composing and reporting errors
@@ -10,10 +9,10 @@ export class ErrorHandler {
     /*
      * Handle the server error and get client details
      */
-    public static handleError(serverError: ApiError): [number, ClientError] {
+    public static handleError(serverError: ApiError, log: any): [number, ClientError] {
 
-        // Log the full error to the service
-        ApiLogger.error(serverError.toJson());
+        // Add the error details to the log
+        log.error = serverError.toJson();
 
         // Create details for the client
         const clientStatusCode = 500;

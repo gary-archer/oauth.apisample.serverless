@@ -17,7 +17,7 @@ class Packager {
         await this._excludeFolders('authorize', ['js/service', 'data']);
         await this._excludeFolders('basicapi', ['js/authorizer']);
 
-        await this._installDependencies('authorize', ['middy']);
+        await this._installDependencies('authorize', []);
         await this._installDependencies('basicapi',  ['openid-client', 'jwks-rsa', 'jsonwebtoken']);
 
         await this._rezipPackage('authorize');

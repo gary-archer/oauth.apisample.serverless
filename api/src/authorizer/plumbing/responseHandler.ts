@@ -1,6 +1,6 @@
 import {ApiClaims} from '../../shared/entities/apiClaims';
 import {ClientError} from '../../shared/entities/clientError';
-import {ApiLogger} from '../../shared/plumbing/apiLogger';
+import {ApiLogger} from '../../shared/plumbing/requestLogger';
 
 /*
  * Helper methods to return responses
@@ -28,7 +28,7 @@ export class ResponseHandler {
             claims: JSON.stringify(claims),
         };
 
-        return ResponseHandler._policyDocument(claims.userId, 'Allow', event.methodArn, context);
+        return ResponseHandler._policyDocument(claims.userId, 'Allow', event, context);
     }
 
     /*
@@ -36,7 +36,7 @@ export class ResponseHandler {
      */
     public static invalidTokenResponse(event: any): any {
 
-        return ResponseHandler._policyDocument('*', 'Deny', event.methodArn, {});
+        return ResponseHandler._policyDocument('*', 'Deny', event, {});
     }
 
     /*
@@ -56,9 +56,9 @@ export class ResponseHandler {
     /*
      * Write an authorized or unauthorized policy document
      */
-    private static _policyDocument(userId: string, effect: string, methodArn: string, context: any) {
+    private static _policyDocument(userId: string, effect: string, event: any, context: any) {
 
-        const serviceArn = ResponseHandler._getServiceArn(methodArn);
+        const serviceArn = ResponseHandler._getServiceArn(event.methodArn, event.log);
         const result = {
             principalId: userId,
             policyDocument: {
@@ -86,10 +86,10 @@ export class ResponseHandler {
      *
      * The policy document will be cached and will then be usable for any secured API request
      */
-    private static _getServiceArn(methodArn: string) {
+    private static _getServiceArn(methodArn: string, log: any) {
 
         // Get the last part, such as cqo3riplm6/default/GET/companies
-        ApiLogger.info('PolicyDocument', `Method ARN is ${methodArn}`);
+        log.info.push({PolicyDocument: `Method ARN is ${methodArn}`});
         const parts = methodArn.split(':');
         if (parts.length === 6) {
 
@@ -100,7 +100,7 @@ export class ResponseHandler {
                 // Update the final part to a wildcard value such as cqo3riplm6/default/* and then rejoin
                 parts[5] = `${pathParts[0]}/${pathParts[1]}/*`;
                 const result = parts.join(':');
-                ApiLogger.info('PolicyDocument', `Service resource path is ${result}`);
+                log.info.push({PolicyDocument: `Service resource path is ${result}`});
                 return result;
             }
         }

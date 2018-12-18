@@ -18,7 +18,9 @@ class ExceptionMiddleware {
         const [statusCode, clientError] = ErrorHandler.handleError(serverError, handler.event.log);
 
         // Set a custom 500 error response in a manner that gets through API gateway
-        handler.response = ResponseHandler.exceptionErrorResponse(statusCode, clientError, handler.context);
+
+        // TODO
+        // handler.response = ResponseHandler.exceptionErrorResponse(statusCode, clientError, handler.context);
         return next();
     }
 

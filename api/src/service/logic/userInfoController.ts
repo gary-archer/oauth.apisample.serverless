@@ -1,5 +1,4 @@
 import {Context} from 'aws-lambda';
-import {ApiLogger} from '../../shared/plumbing/apiLogger';
 import {ResponseHandler} from '../plumbing/responseHandler';
 
 /*
@@ -10,9 +9,11 @@ export class UserInfoController {
     /*
      * Return user info to the UI
      */
-    public static async getUserClaims(event: any, context: Context): Promise<any> {
+    public async getUserClaims(event: any, context: Context): Promise<any> {
 
-        ApiLogger.info('UserInfoController', 'Returning user info');
+        // Add to the request log
+        event.log.debug('UserInfoController', 'Getting user claims');
+
         const userInfo = event.claims.userInfo;
         return ResponseHandler.objectResponse(200, userInfo);
     }

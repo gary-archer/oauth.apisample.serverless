@@ -1,7 +1,7 @@
 import {Context} from 'aws-lambda';
 import {OAuthConfiguration} from '../../shared/configuration/oauthConfiguration';
-import {ApiLogger} from '../../shared/plumbing/apiLogger';
 import {ErrorHandler} from '../../shared/plumbing/errorHandler';
+import {RequestLog} from '../../shared/plumbing/requestLogger';
 import {AuthorizationMicroservice} from '../logic/authorizationMicroservice';
 import {DebugProxyAgent} from '../plumbing/debugProxyAgent';
 import {ResponseHandler} from '../plumbing/responseHandler';
@@ -16,13 +16,19 @@ export class ClaimsHandler {
      * Dependencies
      */
     private _oauthConfig: OAuthConfiguration;
+    private _log: RequestLog;
     private _authorizationMicroservice: AuthorizationMicroservice;
 
     /*
      * Receive configuration
      */
-    public constructor(oauthConfig: OAuthConfiguration, authorizationMicroservice: AuthorizationMicroservice) {
+    public constructor(
+        oauthConfig: OAuthConfiguration,
+        event: any,
+        authorizationMicroservice: AuthorizationMicroservice) {
+
         this._oauthConfig = oauthConfig;
+        this._log = event.log;
         this._authorizationMicroservice = authorizationMicroservice;
         this._setupCallbacks();
     }
@@ -39,33 +45,33 @@ export class ClaimsHandler {
             // First read the token from the request header and report missing tokens
             const accessToken = this._readToken(event.authorizationToken);
             if (!accessToken) {
-                ApiLogger.info('ClaimsHandler', 'No access token received');
+                this._log.debug('ClaimsHandler', 'No access token received');
                 return ResponseHandler.invalidTokenResponse(event);
             }
 
             // Start by introspecting the token
-            const authenticator = new Authenticator(this._oauthConfig);
+            const authenticator = new Authenticator(this._oauthConfig, this._log);
             const result = await authenticator.validateTokenAndGetTokenClaims(accessToken);
 
             // Handle invalid or expired tokens
             if (!result.isValid) {
-                ApiLogger.info('ClaimsHandler', 'Invalid or expired access token received');
+                this._log.debug('ClaimsHandler', 'Invalid or expired access token received');
                 return ResponseHandler.invalidTokenResponse(event);
             }
 
             // Next add product user data to claims
-            ApiLogger.info('ClaimsHandler', 'OAuth token validation and user lookup succeeded');
+            this._log.info.push({ClaimsHandler: 'OAuth token validation and user lookup succeeded'});
             await this._authorizationMicroservice.getProductClaims(result.claims!, accessToken);
 
             // Then move onto the API controller to execute business logic
-            ApiLogger.info('ClaimsHandler', 'Claims handler completed successfully');
+            this._log.debug('ClaimsHandler', 'Claims handler completed successfully');
             return ResponseHandler.authorizedResponse(result.claims!, event);
 
         } catch (e) {
 
             // Log errors, then return an error response
             const serverError = ErrorHandler.fromException(e);
-            const [statusCode, clientError] = ErrorHandler.handleError(serverError);
+            const [statusCode, clientError] = ErrorHandler.handleError(serverError, {});
             return ResponseHandler.authorizationErrorResponse(500, clientError);
         }
     }

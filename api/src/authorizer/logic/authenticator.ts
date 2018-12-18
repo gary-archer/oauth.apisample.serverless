@@ -3,8 +3,8 @@ import jwks from 'jwks-rsa';
 import * as OpenIdClient from 'openid-client';
 import {OAuthConfiguration} from '../../shared/configuration/oauthConfiguration';
 import {ApiClaims} from '../../shared/entities/apiClaims';
-import {ApiLogger} from '../../shared/plumbing/apiLogger';
 import {ErrorHandler} from '../../shared/plumbing/errorHandler';
+import {RequestLog} from '../../shared/plumbing/requestLogger';
 import {DebugProxyAgent} from '../plumbing/debugProxyAgent';
 import {TokenValidationResult} from './tokenValidationResult';
 
@@ -22,13 +22,15 @@ export class Authenticator {
      * Instance fields
      */
     private _oauthConfig: OAuthConfiguration;
+    private _log: RequestLog;
 
     /*
      * Receive configuration and request metadata
      */
-    public constructor(oauthConfig: OAuthConfiguration) {
+    public constructor(oauthConfig: OAuthConfiguration, log: RequestLog) {
 
         this._oauthConfig = oauthConfig;
+        this._log = log;
         this._setupCallbacks();
 
         // Configure the HTTP proxy if applicable
@@ -50,7 +52,7 @@ export class Authenticator {
         if (!decoded) {
 
             // Indicate an invalid token if we cannot decode it
-            ApiLogger.warn('Authenticator', 'Unable to decode received JWT');
+            this._log.debug('Authenticator', 'Unable to decode received JWT');
             return {
                 isValid: false,
             } as TokenValidationResult;
@@ -58,7 +60,7 @@ export class Authenticator {
 
         // Get the key identifier from the JWT header
         const keyIdentifier = decoded.header.kid;
-        ApiLogger.info('Authenticator', `Token key identifier is ${keyIdentifier}`);
+        this._log.debug('Authenticator', `Token key identifier is ${keyIdentifier}`);
 
         // Download the token signing public key for the key identifier and we'll return 401 if not found
         const tokenSigningPublicKey = await this._downloadJwksKeyForKeyIdentifier(keyIdentifier);
@@ -68,14 +70,14 @@ export class Authenticator {
             } as TokenValidationResult;
         }
 
-        ApiLogger.info('Authenticator', `Token signing public key for ${keyIdentifier} downloaded successfully`);
+        this._log.debug('Authenticator', `Token signing public key for ${keyIdentifier} downloaded successfully`);
 
         // Use a library to verify the token's signature, issuer, audience and that it is not expired
         const [isValid, result] = this._validateTokenAndReadClaims(accessToken, tokenSigningPublicKey);
 
         // Indicate an invalid token if it failed verification
         if (!isValid) {
-            ApiLogger.warn('Authenticator', `JWT verification failed: ${result}`);
+            this._log.debug('Authenticator', `JWT verification failed: ${result}`);
             return {
                 isValid: false,
             } as TokenValidationResult;
@@ -105,7 +107,7 @@ export class Authenticator {
         }
 
         try {
-            ApiLogger.info('Authenticator', `Downloading metadata from: ${this._oauthConfig.authority}`);
+            this._log.debug('Authenticator', `Downloading metadata from: ${this._oauthConfig.authority}`);
             Authenticator._issuer = await OpenIdClient.Issuer.discover(this._oauthConfig.authority);
         } catch (e) {
             throw ErrorHandler.fromMetadataError(e, this._oauthConfig.authority);
@@ -127,7 +129,7 @@ export class Authenticator {
             });
 
             // Make a call to get the signing key
-            ApiLogger.info('Authenticator', `Downloading JWKS key from: ${Authenticator._issuer.jwks_uri}`);
+            this._log.debug('Authenticator', `Downloading JWKS key from: ${Authenticator._issuer.jwks_uri}`);
             client.getSigningKeys((err: any, keys: jwks.Jwk[]) => {
 
                 // Handle errors
@@ -142,7 +144,7 @@ export class Authenticator {
                 }
 
                 // Indicate not found
-                ApiLogger.info('Authenticator', `Failed to find JWKS key with identifier: ${tokenKeyIdentifier}`);
+                this._log.debug('Authenticator', `Failed to find JWKS key with identifier: ${tokenKeyIdentifier}`);
                 return resolve(null);
             });
         });
@@ -180,8 +182,8 @@ export class Authenticator {
 
         try {
             // Extend token data with central user info
-            ApiLogger.info(
-                'Authenticator',
+            this._log.debug(
+                'Authenticator':
                 `Downloading user info from: ${Authenticator._issuer.userinfo_endpoint}`);
             const response = await client.userinfo(accessToken);
             claims.setCentralUserData(response.given_name, response.family_name, response.email);
