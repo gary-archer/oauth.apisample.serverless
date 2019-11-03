@@ -1,0 +1,10 @@
+node_modules
+
+# API build locations
+js
+.serverless
+
+# SPA build locations and temp files
+dist
+.package
+.DS_store

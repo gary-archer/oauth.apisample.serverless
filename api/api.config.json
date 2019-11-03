@@ -1,0 +1,10 @@
+{
+    "app": {
+        "trustedOrigins": [
+            "https://web.authguidance-examples.com"
+        ]
+    },
+    "oauth": {
+        "authority": "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_mZ3NBYpTo"
+    }
+}

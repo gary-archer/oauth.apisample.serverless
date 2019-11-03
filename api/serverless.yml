@@ -1,0 +1,220 @@
+service: basicapi
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: ${self:custom.config.settings.deployRegion}
+  profile: default
+  stage: default
+
+# Custom configuration properties go in their own file
+# We use a custom packager to fully customize lambda packages
+custom:
+  config: ${file(config.yml)}
+  scripts:
+    hooks:
+      'after:package:createDeploymentArtifacts': npm run customPackager
+  customDomain:
+    domainName: api.authguidance-examples.com
+    certificateName: '*.authguidance-examples.com'
+    basePath: api
+    stage: ${self:provider.stage}
+    endpointType: regional
+
+functions:
+  # The custom authorizer has extra OAuth related dependencies
+  authorize:
+    handler: js/authorizer/handler.authorize
+    cors:
+      origin: ${self:custom.config.settings.trustedOrigin}
+      headers:
+        - Content-Type
+        - X-Amz-Date
+        - Authorization
+        - X-Api-Key
+        - X-Amz-Security-Token
+        - X-Amz-User-Agent
+        - x-mycompany-api-client
+        - x-mycompany-correlation-id
+        - x-mycompany-session-id
+        - x-mycompany-test-exception      
+    package:
+      individually: true
+
+  # The other lambdas reference the authorizer lambda
+  getUserClaims:
+    handler: js/service/handler.getUserClaims
+    events:
+      - http: 
+          path: /userclaims/current
+          method: get
+          authorizer:
+            name: authorize
+            resultTtlInSeconds: ${self:custom.config.settings.claimsCacheTtlSeconds}
+          cors:
+            origin: ${self:custom.config.settings.trustedOrigin}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - x-mycompany-api-client
+              - x-mycompany-correlation-id
+              - x-mycompany-session-id
+              - x-mycompany-test-exception            
+
+  getCompanyList:
+    handler: js/service/handler.getCompanyList
+    events:
+      - http: 
+          path: /companies
+          method: get
+          authorizer:
+            name: authorize
+            resultTtlInSeconds: ${self:custom.config.settings.claimsCacheTtlSeconds}
+          cors:
+            origin: ${self:custom.config.settings.trustedOrigin}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - x-mycompany-api-client
+              - x-mycompany-correlation-id
+              - x-mycompany-session-id
+              - x-mycompany-test-exception
+
+  getCompanyTransactions:
+    handler: js/service/handler.getCompanyTransactions
+    events:
+      - http: 
+          path: /companies/{id}/transactions
+          method: get
+          authorizer:
+            name: authorize
+            resultTtlInSeconds: ${self:custom.config.settings.claimsCacheTtlSeconds}
+          cors:
+            origin: ${self:custom.config.settings.trustedOrigin}
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - x-mycompany-api-client
+              - x-mycompany-correlation-id
+              - x-mycompany-session-id
+              - x-mycompany-test-exception            
+          request: 
+            parameters: 
+              paths: 
+                id: true
+
+# By default all files are included so remove files we don't need for any lambda
+# The custom packager does the rest of the work in code, including adding node_modules
+package:
+  exclude:
+  - node_modules/**/*
+  - src/**
+  - scripts/**
+  - test/**
+  - ts*.json
+  - package*.json
+  - config.yml
+
+plugins:
+  - serverless-plugin-scripts
+  - serverless-domain-manager
+
+# Improve status codes and default messages for authentication responses from API gateway
+# We do not try to improve API gateway errors otherwise, since we should rarely receive those errors in normal usage
+# https://docs.aws.amazon.com/apigateway/latest/developerguide/supported-gateway-response-types.html
+# https://gist.github.com/jonatassaraiva/4c33dd8225605c02318cd71a55b2335d
+resources:
+  Resources:
+
+    # Handle missing token for an API path that exists
+    MissingTokenValidPathGatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.WWW-Authenticate: "'Bearer'"
+
+        ResponseType: UNAUTHORIZED
+        
+        ResponseTemplates:
+          application/json: |
+            {
+              "message": "Missing, invalid or expired access token"
+            }
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
+
+    # Handle missing token for an API path that does not exist
+    MissingTokenInvalidPathGatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.WWW-Authenticate: "'Bearer'"
+
+        ResponseType: MISSING_AUTHENTICATION_TOKEN
+        
+        ResponseTemplates:
+          application/json: |
+            {
+              "message": "Missing, invalid or expired access token"
+            }
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'        
+    
+    # Handle invalid or expired tokens
+    InvalidTokenGatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.WWW-Authenticate: "'Bearer'"
+
+        ResponseType: ACCESS_DENIED
+        
+        ResponseTemplates:
+          application/json: |
+            {
+              "message": "Missing, invalid or expired access token"
+            }
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
+
+    # Handle technical errors during token validation and claims handling
+    # Note that for this type of error we cannot customize the response at runtime
+    AuthenticationErrorResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+
+        ResponseType: AUTHORIZER_CONFIGURATION_ERROR
+        
+        ResponseTemplates:
+          application/json: |
+            {
+              "message": "Problem encountered during authorization"
+            }
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '500'
+ 

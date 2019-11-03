@@ -1,0 +1,4 @@
+settings:
+  deployRegion: eu-west-2
+  trustedOrigin: 'https://web.authguidance-examples.com'
+  claimsCacheTtlSeconds: 1800
