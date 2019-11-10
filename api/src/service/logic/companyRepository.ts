@@ -44,7 +44,10 @@ export class CompanyRepository {
 
         // In this case we'll return 404 so that the caller cannot distin
         if (!this._isUserAuthorizedForCompany(id)) {
-            throw new ClientError(404, 'DataAccess', `Transactions for company ${id} were not found for this user`);
+            throw new ClientError(
+                404,
+                'company_not_found',
+                `Transactions for company ${id} were not found for this user`);
         }
 
         // First read companies from the database
@@ -64,7 +67,7 @@ export class CompanyRepository {
             }
         }
 
-        throw new ClientError(404, 'DataAccess', `Transactions for company ${id} were not found for this user`);
+        throw new ClientError(404, 'company_not_found', `Transactions for company ${id} were not found for this user`);
     }
 
     /*

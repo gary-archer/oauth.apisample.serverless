@@ -57,8 +57,8 @@ export class ErrorHandler {
         if (exception instanceof Error) {
 
             const apiError = new ApiError({
+                errorCode: 'server_error',
                 message: `Problem encountered`,
-                area: 'Exception',
                 details: exception.message,
             });
             apiError.stack = exception.stack;
@@ -67,8 +67,8 @@ export class ErrorHandler {
 
         // For other errors we just call toString
         return new ApiError({
+            errorCode: 'server_error',
             message: 'Problem encountered',
-            area: 'Exception',
             details: exception.toString(),
         });
     }
@@ -79,10 +79,9 @@ export class ErrorHandler {
     public static fromMetadataError(responseError: any, url: string): ApiError {
 
         const apiError = new ApiError({
-            statusCode: 500,
-            area: 'Metadata Lookup',
-            url,
+            errorCode: 'metadata_lookup',
             message: 'Metadata lookup failed',
+            url,
         });
         ErrorHandler._updateErrorFromHttpResponse(apiError, responseError);
         return apiError;
@@ -94,10 +93,9 @@ export class ErrorHandler {
     public static fromSigningKeyDownloadError(responseError: any, url: string): ApiError {
 
         return new ApiError({
-            statusCode: 500,
-            area: 'Signing Key Download',
-            url,
+            errorCode: 'signing_key_download',
             message: 'Signing key download failed',
+            url,
             details: responseError,
         });
     }
@@ -113,10 +111,9 @@ export class ErrorHandler {
         }
 
         const apiError = new ApiError({
-            statusCode: 500,
-            area: 'User Info',
-            url,
+            errorCode: 'user_info_lookup',
             message: 'User info lookup failed',
+            url,
         });
         ErrorHandler._updateErrorFromHttpResponse(apiError, responseError);
         return apiError;

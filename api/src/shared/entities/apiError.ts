@@ -11,11 +11,8 @@ const MAX_ERROR_ID = 99999;
  */
 export class ApiError extends Error {
 
-    /*
-     * Fields
-     */
     private _statusCode: number;
-    private _area: string;
+    private _errorCode: string;
     private _instanceId: number;
     private _url: string;
     private _time: string;
@@ -27,7 +24,7 @@ export class ApiError extends Error {
     public constructor({
         message = '',
         statusCode = 500,
-        area = '',
+        errorCode = '',
         instanceId = Math.floor(Math.random() * (MAX_ERROR_ID - MIN_ERROR_ID + 1) + MIN_ERROR_ID),
         url = '',
         time = new Date().toUTCString(),
@@ -40,7 +37,7 @@ export class ApiError extends Error {
         Object.setPrototypeOf(this, new.target.prototype);
 
         this._statusCode = statusCode;
-        this._area = area;
+        this._errorCode = errorCode;
         this._instanceId = instanceId;
         this._url = url;
         this._time = time;
@@ -51,12 +48,12 @@ export class ApiError extends Error {
         return this._statusCode;
     }
 
-    public get area(): string {
-        return this._area;
+    public get errorCode(): string {
+        return this._errorCode;
     }
 
-    public set area(area) {
-        this._area = area;
+    public set errorCode(value) {
+        this._errorCode = value;
     }
 
     get instanceId() {
@@ -87,7 +84,7 @@ export class ApiError extends Error {
         return {
             statusCode: this._statusCode,
             message: this.message,
-            area: this.area,
+            errorCode: this._errorCode,
             instanceId: this._instanceId,
             time: this._time,
             url: this._url,
@@ -101,7 +98,7 @@ export class ApiError extends Error {
      */
     public toClientError(): ClientError {
 
-        const error = new ClientError(this._statusCode, this._area, this.message);
+        const error = new ClientError(this._statusCode, this._errorCode, this.message);
         error.id = this._instanceId;
         return error;
     }

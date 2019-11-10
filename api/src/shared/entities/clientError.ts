@@ -4,13 +4,13 @@
 export class ClientError extends Error {
 
     private _statusCode: number;
-    private _area: string;
+    private _errorCode: string;
     private _id: number | null;
 
-    public constructor(statusCode: number, area: string, message: string) {
+    public constructor(statusCode: number, errorCode: string, message: string) {
         super(message);
         this._statusCode = statusCode;
-        this._area = area;
+        this._errorCode = errorCode;
         this._id = null;
 
         // Ensure that instanceof works for this class
@@ -21,8 +21,8 @@ export class ClientError extends Error {
         return this._statusCode;
     }
 
-    public get area(): string {
-        return this._area;
+    public get errorCode(): string {
+        return this._errorCode;
     }
 
     public get id(): number | null {
@@ -39,7 +39,7 @@ export class ClientError extends Error {
     public toResponseFormat(): any {
 
         const body: any = {
-            area: this._area,
+            code: this._errorCode,
             message: this.message,
         };
 

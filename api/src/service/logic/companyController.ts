@@ -1,4 +1,5 @@
 import {Context} from 'aws-lambda';
+import {ClientError} from '../../shared/entities/clientError';
 import {ResponseHandler} from '../../shared/plumbing/responseHandler';
 import {CompanyRepository} from './companyRepository';
 
@@ -39,6 +40,16 @@ export class CompanyController {
 
         // Add to the request log
         const id = parseInt(event.pathParameters.id, 10);
+        if (isNaN(id) || id <= 0) {
+
+            // Throw a 400 error if we have an invalid id
+            throw new ClientError(
+                400,
+                'invalid_company_id',
+                'The company id must be a positive numeric integer');
+        }
+
+        // Add to the request log
         event.log.debug('CompanyController', `Returning transactions for company ${id}`);
 
         // Get transactions, which will throw an error if the user in the access token is unauthorized
