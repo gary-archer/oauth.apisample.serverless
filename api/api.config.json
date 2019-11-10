@@ -1,7 +1,7 @@
 {
     "app": {
         "trustedOrigins": [
-            "https://web.authguidance-examples.com"
+            "*"
         ]
     },
     "oauth": {
