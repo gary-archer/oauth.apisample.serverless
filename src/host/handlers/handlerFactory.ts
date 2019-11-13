@@ -11,6 +11,7 @@ import {AsyncHandler,
         RequestContextAuthorizerMiddleware,
         ResponseHandler} from '../../framework-api-base';
 import {OAuthAuthorizerBuilder} from '../../framework-api-oauth';
+import {CompositionRoot} from '../configuration/compositionRoot';
 import {Configuration} from '../configuration/configuration';
 
 /*
@@ -38,6 +39,9 @@ export class HandlerFactory {
             // Register framework dependencies
             const framework = new FrameworkBuilder(this._container, configuration.framework, this._loggerFactory);
             framework.register();
+
+            // Register application dependencies
+            CompositionRoot.registerDependencies(this._container);
 
             // Configure middleware for error handling and logging as early as possible
             const enrichedHandler = framework.configureMiddleware(baseHandler, false);
