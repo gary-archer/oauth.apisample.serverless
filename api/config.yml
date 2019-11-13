@@ -1,8 +1,0 @@
-settings:
-  deployRegion: eu-west-2
-  claimsCacheTtlSeconds: 1800
-
-  # Our deployed SPA uses domain web.authguidance-examples.com
-  # Our local SPA uses domain web.mycompany.com
-  # Multiple CORS domains are not supported so we will use a wildcard
-  trustedOrigin: '*'

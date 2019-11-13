@@ -3,113 +3,80 @@ service: basicapi
 provider:
   name: aws
   runtime: nodejs8.10
-  region: ${self:custom.config.settings.deployRegion}
-  profile: default
-  stage: default
+  region: ${self:custom.environment.settings.deployRegion}
+  stage: ${self:custom.environment.settings.stage}
+  profile: ${self:custom.environment.settings.profile}
 
-# Custom configuration properties go in their own file
-# We use a custom packager to fully customize lambda packages
+# Environment specific configuration properties go in their own file
+# Settings common to all environments are configured in this file
 custom:
-  config: ${file(config.yml)}
-  scripts:
-    hooks:
-      'after:package:createDeploymentArtifacts': npm run customPackager
+  environment: ${file(environment.yml)}
   customDomain:
     domainName: api.authguidance-examples.com
     certificateName: '*.authguidance-examples.com'
     basePath: api
-    stage: ${self:provider.stage}
+    stage: ${self:custom.environment.settings.stage}
     endpointType: regional
+  allowedHeaders:
+    - Content-Type
+    - X-Amz-Date
+    - Authorization
+    - X-Api-Key
+    - X-Amz-Security-Token
+    - X-Amz-User-Agent
+    - x-mycompany-api-client
+    - x-mycompany-correlation-id
+    - x-mycompany-session-id
+    - x-mycompany-test-exception
+  scripts:
+    hooks:
+      'after:package:createDeploymentArtifacts': npm run customPackager
 
 functions:
   # The custom authorizer has extra OAuth related dependencies
   authorize:
-    handler: js/authorizer/handler.authorize
+    handler: js/host/handlers/authorizer.handler
     cors:
-      origin: ${self:custom.config.settings.trustedOrigin}
-      headers:
-        - Content-Type
-        - X-Amz-Date
-        - Authorization
-        - X-Api-Key
-        - X-Amz-Security-Token
-        - X-Amz-User-Agent
-        - x-mycompany-api-client
-        - x-mycompany-correlation-id
-        - x-mycompany-session-id
-        - x-mycompany-test-exception      
+      origin: ${self:custom.environment.settings.trustedOrigin}
     package:
       individually: true
 
   # The other lambdas reference the authorizer lambda
   getUserClaims:
-    handler: js/service/handler.getUserClaims
+    handler: js/host/handlers/getUserClaims.handler
     events:
       - http: 
           path: /userclaims/current
           method: get
           authorizer:
             name: authorize
-            resultTtlInSeconds: ${self:custom.config.settings.claimsCacheTtlSeconds}
+            resultTtlInSeconds: ${self:custom.environment.settings.claimsCacheTtlSeconds}
           cors:
-            origin: ${self:custom.config.settings.trustedOrigin}
-            headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
-              - x-mycompany-api-client
-              - x-mycompany-correlation-id
-              - x-mycompany-session-id
-              - x-mycompany-test-exception            
+            origin: ${self:custom.environment.settings.trustedOrigin}
 
   getCompanyList:
-    handler: js/service/handler.getCompanyList
+    handler: js/host/handlers/getCompanyList.handler
     events:
       - http: 
           path: /companies
           method: get
           authorizer:
             name: authorize
-            resultTtlInSeconds: ${self:custom.config.settings.claimsCacheTtlSeconds}
+            resultTtlInSeconds: ${self:custom.environment.settings.claimsCacheTtlSeconds}
           cors:
-            origin: ${self:custom.config.settings.trustedOrigin}
-            headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
-              - x-mycompany-api-client
-              - x-mycompany-correlation-id
-              - x-mycompany-session-id
-              - x-mycompany-test-exception
+            origin: ${self:custom.environment.settings.trustedOrigin}
 
   getCompanyTransactions:
-    handler: js/service/handler.getCompanyTransactions
+    handler: js/host/handlers/getCompanyTransactions.handler
     events:
       - http: 
           path: /companies/{id}/transactions
           method: get
           authorizer:
             name: authorize
-            resultTtlInSeconds: ${self:custom.config.settings.claimsCacheTtlSeconds}
+            resultTtlInSeconds: ${self:custom.environment.settings.claimsCacheTtlSeconds}
           cors:
-            origin: ${self:custom.config.settings.trustedOrigin}
-            headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
-              - x-mycompany-api-client
-              - x-mycompany-correlation-id
-              - x-mycompany-session-id
-              - x-mycompany-test-exception            
+            origin: ${self:custom.environment.settings.trustedOrigin}
           request: 
             parameters: 
               paths: 
@@ -143,8 +110,8 @@ resources:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
         ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.environment.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.environment.settings.trustedOrigin}'"
           gatewayresponse.header.WWW-Authenticate: "'Bearer'"
 
         ResponseType: UNAUTHORIZED
@@ -163,8 +130,8 @@ resources:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
         ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.environment.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.environment.settings.trustedOrigin}'"
           gatewayresponse.header.WWW-Authenticate: "'Bearer'"
 
         ResponseType: MISSING_AUTHENTICATION_TOKEN
@@ -183,8 +150,8 @@ resources:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
         ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.environment.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.environment.settings.trustedOrigin}'"
           gatewayresponse.header.WWW-Authenticate: "'Bearer'"
 
         ResponseType: ACCESS_DENIED
@@ -204,8 +171,8 @@ resources:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
         ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.environment.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.environment.settings.trustedOrigin}'"
 
         ResponseType: AUTHORIZER_CONFIGURATION_ERROR
         

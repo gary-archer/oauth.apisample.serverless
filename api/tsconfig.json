@@ -2,10 +2,13 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es2017",
+    "outDir": "js",
+    "lib": ["es2017"],
     "strict": true,
     "esModuleInterop": true,
-    "outDir": "js",
-    "lib": ["es2017"]
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true
   },
   "include": [
     "src/**/*.ts"
