@@ -1,1 +1,19 @@
-iclienterror: refactor and update tslint interface name to ppevent i prefix
+TODO
+----
+1. getCompanyTransactions and getUserClaims to complete
+   Use better named test json files
+
+2. Set up launch.json debugging with 4 options
+
+3. Gradually update classes from main node sample - direct copies as much as possible
+   Each framework should have a src folder and a package.json file
+   Base framework requires inversify
+
+4. Fill in all logging fields
+   Use only console logging, which will be simplified due to no child entry for authorizer
+
+5. Get packaging working
+   Use a deployment project root folder so that API dependencies are simplified
+
+6. Support file logging from a developer PC and shipping via FileBeat
+   Use winston for logging and add dependencies
