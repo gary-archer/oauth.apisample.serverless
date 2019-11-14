@@ -1,0 +1,19 @@
+{
+  "name": "serverless-deployment",
+  "version": "1.0.0",
+  "description": "Serverless deployment logic and dependencies",
+  "main": "index.ts",
+  "keywords": [],
+  "author": "Gary Archer",
+  "license": "ISC",
+  "dependencies": {
+    "adm-zip": "^0.4.13",
+    "aws-sdk": "^2.368.0",
+    "child-process-es6-promise": "^1.2.1",
+    "rimraf": "^2.6.2",
+    "serverless": "^1.56.1",
+    "serverless-domain-manager": "^2.6.6",
+    "serverless-plugin-scripts": "^1.0.2",
+    "ts-node": "^6.2.0"
+  }
+}

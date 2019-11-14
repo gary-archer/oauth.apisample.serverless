@@ -11,34 +11,27 @@
     "getCompanyList": "sls invoke local -f getCompanyList -p test/getCompanyList.json",
     "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
     "package": "rimraf .serverless && sls package",
-    "customPackager": "ts-node scripts/customPackager.ts",
+    "customPackager": "ts-node deployment/customPackager.ts",
     "deploy": "sls deploy -p .serverless"
   },
   "author": "Gary Archer",
   "license": "ISC",
   "dependencies": {
+    "framework-api-base": "file:src/framework-api-base",
+    "framework-api-oauth": "file:src/framework-api-oauth",
     "fs-extra": "^8.1.0",
     "inversify": "^5.0.1",
-    "jsonwebtoken": "^8.4.0",
-    "jwks-rsa": "^1.3.0",
     "middy": "^0.30.2",
-    "openid-client": "^2.4.5",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.15",
     "@types/fs-extra": "^8.0.1",
     "@types/node": "^12.11.7",
-    "adm-zip": "^0.4.13",
-    "aws-sdk": "^2.368.0",
-    "child-process-es6-promise": "^1.2.1",
     "rimraf": "^2.6.2",
     "serverless": "^1.56.1",
-    "serverless-domain-manager": "^2.6.6",
-    "serverless-plugin-scripts": "^1.0.2",
-    "ts-node": "^6.2.0",
+    "serverless-deployment": "file:deployment",
     "tslint": "^5.15.0",
-    "tunnel-agent": "^0.6.0",
     "typescript": "^3.4.3"
   }
 }
