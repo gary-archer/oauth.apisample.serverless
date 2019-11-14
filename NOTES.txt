@@ -1,24 +1,28 @@
 TODO
 ----
-1. Get packaging working and get file sizes similar to master branch
-   Record file sizes here for both old and new
-
-2. Gradually update classes from main node sample - direct copies as much as possible
+1. Error handling and utility classes for OAuth errors and normal logic errors
    getCompanyTransactions not handling company=3 or company=5 errors
-   Get logging working to a basic level, and including 400 and 500 errors
+   Get logging working to a basic level, where 400 and 500 errors are captured
 
-3. Redeploy to AWS
-   API has been renamed to sampleapi so run sls remove on the old basicapi branch first
-   Then merge to master
-   Update to node 10
+2. Monitor packaging file sizes and record file sizes for feature v master branch
 
-4. Set up launch.json debugging with 4 options
-   Possibly use webpack with source maps - but exclude source maps from upload packages
-   Maybe use separate webpack production and development modes
-
-5. Fill in all logging fields
-   Use only console logging, which will be simplified due to no child entry for authorizer
-
-6. Why do I need module=commonjs in tsconfig and is this the most standard option?
+3. Why do I need module=commonjs in tsconfig and is this the most standard option?
    Can I use ts-node somehow?
    https://github.com/serverless/serverless/tree/master/lib/plugins/create/templates/aws-nodejs-typescript
+
+4. Get launch.json TypeScript debugging working, with an option for each of the 4 operations
+   
+5. Look into webpack with source maps - including watch
+   Improve imports so that I get small file sizes
+   Exclude source maps from upload packages via development and production modes
+
+6. Redeploy to AWS and merge
+   API has been renamed to sampleapi so run sls remove on the old basicapi branch first
+   Then merge to master and update to node 10
+
+7. Fill in all logging fields
+   Use only console logging, which will be simplified due to no child entry for authorizer
+   
+8. Refine other API solutions based on results
+
+9. Cloud blog write ups to revamp
