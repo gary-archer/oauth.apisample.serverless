@@ -38,6 +38,7 @@ functions:
     handler: js/host/handlers/authorizer.handler
     cors:
       origin: ${self:custom.environment.settings.trustedOrigin}
+      headers: ${self:custom.allowedHeaders}
     package:
       individually: true
 
@@ -53,6 +54,7 @@ functions:
             resultTtlInSeconds: ${self:custom.environment.settings.claimsCacheTtlSeconds}
           cors:
             origin: ${self:custom.environment.settings.trustedOrigin}
+            headers: ${self:custom.allowedHeaders}
 
   getCompanyList:
     handler: js/host/handlers/getCompanyList.handler
@@ -65,6 +67,7 @@ functions:
             resultTtlInSeconds: ${self:custom.environment.settings.claimsCacheTtlSeconds}
           cors:
             origin: ${self:custom.environment.settings.trustedOrigin}
+            headers: ${self:custom.allowedHeaders}
 
   getCompanyTransactions:
     handler: js/host/handlers/getCompanyTransactions.handler
@@ -77,6 +80,7 @@ functions:
             resultTtlInSeconds: ${self:custom.environment.settings.claimsCacheTtlSeconds}
           cors:
             origin: ${self:custom.environment.settings.trustedOrigin}
+            headers: ${self:custom.allowedHeaders}
           request: 
             parameters: 
               paths: 
