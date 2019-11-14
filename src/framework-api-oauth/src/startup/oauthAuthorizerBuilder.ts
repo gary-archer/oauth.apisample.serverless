@@ -56,8 +56,13 @@ export class OAuthAuthorizerBuilder<TClaims extends CoreApiClaims> {
         // Register OAuth types
         this._container.bind<OAuthConfiguration>(OAUTHINTERNALTYPES.Configuration).toConstantValue(this._configuration);
         this._container.bind<OAuthAuthenticator>(OAUTHINTERNALTYPES.OAuthAuthenticator).to(OAuthAuthenticator);
-        this._container.bind<OAuthAuthorizer<TClaims>>(OAUTHINTERNALTYPES.OAuthAuthorizer).to(OAuthAuthorizer);
-        this._container.bind<ClaimsSupplier<TClaims>>(OAUTHINTERNALTYPES.ClaimsSupplier).toConstantValue(claimsSupplier);
+
+        this._container.bind<OAuthAuthorizer<TClaims>>(
+            OAUTHINTERNALTYPES.OAuthAuthorizer).to(OAuthAuthorizer);
+
+        this._container.bind<ClaimsSupplier<TClaims>>(
+            OAUTHINTERNALTYPES.ClaimsSupplier).toConstantValue(claimsSupplier);
+
         return this;
     }
 

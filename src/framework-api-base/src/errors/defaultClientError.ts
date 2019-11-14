@@ -2,7 +2,7 @@ import {ClientError} from './clientError';
 
 /*
  * The default error object to return to the client
- * Business logic can also throw its own error types that implement ClientError
+ * Business logic can also throw its own error types that implement IClientError
  */
 export class DefaultClientError extends Error implements ClientError {
 

@@ -5,13 +5,11 @@ const MIN_ERROR_ID = 10000;
 const MAX_ERROR_ID = 99999;
 
 /*
- * An error entity that the API will log
+ * Represents a 500 error, which will be handled in a supportable manner
  */
 export class ApiError extends Error {
 
-    /*
-     * Error properties
-     */
+    // Standard exception properties to log
     private readonly _statusCode: number;
     private readonly _errorCode: string;
     private readonly _instanceId: number;
@@ -20,7 +18,7 @@ export class ApiError extends Error {
     private _stackFrames: string[];
 
     /*
-     * Errors are categorized by error code
+     * Construct an error from known fields
      */
     public constructor(errorCode: string, userMessage: string) {
 

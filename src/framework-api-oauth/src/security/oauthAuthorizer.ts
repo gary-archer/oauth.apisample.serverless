@@ -1,6 +1,6 @@
 import {Context} from 'aws-lambda';
 import {inject, injectable} from 'inversify';
-import {CoreApiClaims, ResponseHandler} from '../../../framework-api-base';
+import {CoreApiClaims, DefaultClientError, ResponseHandler} from '../../../framework-api-base';
 import {ClaimsSupplier} from '../claims/claimsSupplier';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
 import {OAuthAuthenticator} from '../security/oauthAuthenticator';
@@ -27,28 +27,36 @@ import {OAuthAuthenticator} from '../security/oauthAuthenticator';
      */
     public async execute(event: any, context: Context): Promise<any> {
 
-        // First read the token from the request header and report missing tokens
-        const accessToken = this._readAccessToken(event.authorizationToken);
-        if (!accessToken) {
-            return ResponseHandler.invalidTokenResponse(event);
+        try {
+
+            // First read the token from the request header and report missing tokens
+            const accessToken = this._readAccessToken(event.authorizationToken);
+            if (!accessToken) {
+                throw DefaultClientError.create401('No access token was supplied in the bearer header');
+            }
+
+            // Create new claims which we will then populate
+            const claims = this._claimsSupplier.createEmptyClaims();
+
+            // Make OAuth calls to validate the token and get user info
+            await this._authenticator.authenticateAndSetClaims(accessToken, claims);
+
+            // Add any custom product specific custom claims if required
+            await this._claimsSupplier.createCustomClaimsProvider().addCustomClaims(accessToken, claims);
+
+            // Return the success result
+            return ResponseHandler.authorizedResponse(claims, event);
+
+        } catch (e) {
+
+            // Write a 401 policy document
+            if (e instanceof DefaultClientError) {
+                return ResponseHandler.invalidTokenResponse(event);
+            }
+
+            // Rethrow otherwise
+            throw e;
         }
-
-        // Create new claims which we will then populate
-        const claims = this._claimsSupplier.createEmptyClaims();
-
-        // Make OAuth calls to validate the token and get user info
-        const result = await this._authenticator.authenticateAndSetClaims(accessToken);
-
-        // Handle invalid or expired tokens
-        if (!result.isValid) {
-            return ResponseHandler.invalidTokenResponse(event);
-        }
-
-        // Add any custom product specific custom claims if required
-        await this._claimsSupplier.createCustomClaimsProvider().addCustomClaims(accessToken, claims);
-
-        // Return the success result
-        return ResponseHandler.authorizedResponse(result.claims!, event);
     }
 
     /*
