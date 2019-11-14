@@ -4,7 +4,10 @@
 
 import {APIFRAMEWORKTYPES} from './src/configuration/apiFrameworkTypes';
 import {FrameworkConfiguration} from './src/configuration/frameworkConfiguration';
+import {ApiError} from './src/errors/apiError';
+import {ApplicationExceptionHandler} from './src/errors/applicationExceptionHandler';
 import {ClientError} from './src/errors/clientError';
+import {DefaultClientError} from './src/errors/defaultClientError';
 import {ErrorHandler} from './src/errors/errorHandler';
 import {ExceptionMiddleware} from './src/errors/exceptionMiddleware';
 import {LoggerFactory} from './src/logging/loggerFactory';
@@ -20,8 +23,11 @@ import {ResponseHandler} from './src/utilities/responseHandler';
 
 export {
     FrameworkConfiguration,
+    ApiError,
     APIFRAMEWORKTYPES,
+    ApplicationExceptionHandler,
     ClientError,
+    DefaultClientError,
     ErrorHandler,
     ExceptionMiddleware,
     LoggerFactory,

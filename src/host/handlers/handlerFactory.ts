@@ -13,6 +13,7 @@ import {AsyncHandler,
 import {OAuthAuthorizerBuilder} from '../../framework-api-oauth';
 import {CompositionRoot} from '../configuration/compositionRoot';
 import {Configuration} from '../configuration/configuration';
+import {RestErrorTranslator} from '../errors/restErrorTranslator';
 
 /*
  * A class to manage common lambda startup behaviour and injecting cross cutting concerns
@@ -37,8 +38,9 @@ export class HandlerFactory {
             const configuration = this._loadConfiguration();
 
             // Register framework dependencies
-            const framework = new FrameworkBuilder(this._container, configuration.framework, this._loggerFactory);
-            framework.register();
+            const framework = new FrameworkBuilder(this._container, configuration.framework, this._loggerFactory)
+                .withApplicationExceptionHandler(new RestErrorTranslator())
+                .register();
 
             // Register application dependencies
             CompositionRoot.registerDependencies(this._container);
@@ -72,10 +74,15 @@ export class HandlerFactory {
             const configuration = this._loadConfiguration();
 
             // Register base framework dependencies
-            const framework = new FrameworkBuilder(this._container, configuration.framework, this._loggerFactory);
-            framework.register();
+            const framework = new FrameworkBuilder(this._container, configuration.framework, this._loggerFactory)
+                .register();
 
             // Register OAuth framework dependencies
+/*const authorizerBuilder = new OAuthAuthorizerBuilder<SampleApiClaims>(this._container, configuration.oauth)
+                .withClaimsSupplier(SampleApiClaims)
+                .withCustomClaimsProviderSupplier(SampleApiClaimsProvider)
+                .register();*/
+
             const authorizerBuilder = new OAuthAuthorizerBuilder(this._container, configuration.oauth);
             authorizerBuilder.register();
 

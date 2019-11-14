@@ -1,6 +1,6 @@
 import {LogEntryImpl} from '../logging/logEntryImpl';
 import {ApiError} from './apiError';
-import {IClientError} from './iclientError';
+import {ClientError} from './clientError';
 
 /*
  * A class to handle composing and reporting errors
@@ -12,7 +12,7 @@ export class ErrorHandler {
     /*
      * Special logic for startup errors
      */
-    public static handleStartupError(exception: any): IClientError {
+    public static handleStartupError(exception: any): ClientError {
 
         const log = new LogEntryImpl();
         const apiError = ErrorHandler.createApiError(exception);
@@ -25,7 +25,7 @@ export class ErrorHandler {
     /*
      * Return or create a typed error
      */
-    public static handleError(exception: any, log: LogEntryImpl): ApiError | IClientError {
+    public static handleError(exception: any, log: LogEntryImpl): ApiError | ClientError {
 
         let apiError = this.tryConvertToApiError(exception);
         if (apiError !== null) {
@@ -81,10 +81,10 @@ export class ErrorHandler {
      * Try to convert an exception to an interface
      * We have to use a TypeScript specific method of checking for known members
      */
-    public static tryConvertToClientError(exception: any): IClientError | null {
+    public static tryConvertToClientError(exception: any): ClientError | null {
 
         if (exception.getStatusCode && exception.toResponseFormat && exception.toLogFormat) {
-            return exception as IClientError;
+            return exception as ClientError;
         }
 
         return null;

@@ -1,7 +1,7 @@
 import {Context} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {ApiClaims, APIFRAMEWORKTYPES, ClientError, ResponseHandler} from '../../framework-api-base';
+import {ApiClaims, APIFRAMEWORKTYPES, DefaultClientError, ResponseHandler} from '../../framework-api-base';
 import {LOGICTYPES} from '../../logic/configuration/logicTypes';
 import {CompanyService} from '../../logic/services/companyService';
 import {HandlerFactory} from './handlerFactory';
@@ -18,7 +18,7 @@ const baseHandler = async (event: any, context: Context) => {
     const id = parseInt(event.pathParameters.id, 10);
     if (isNaN(id) || id <= 0) {
 
-        throw new ClientError(
+        throw new DefaultClientError(
             400,
             'invalid_company_id',
             'The company id must be a positive numeric integer');

@@ -1,4 +1,4 @@
-import {ClientError} from './clientError';
+import {DefaultClientError} from './defaultClientError';
 
 // Ranges for random error ids
 const MIN_ERROR_ID = 10000;
@@ -91,10 +91,10 @@ export class ApiError extends Error {
     /*
      * Translate to a supportable error response to return to the API caller
      */
-    public toClientError(apiName: string): ClientError {
+    public toClientError(apiName: string): DefaultClientError {
 
         // Return the error code to the client
-        const error = new ClientError(this._statusCode, this._errorCode, this.message);
+        const error = new DefaultClientError(this._statusCode, this._errorCode, this.message);
 
         // Also indicate which API, where in logs and when the error occurred
         error.setExceptionDetails(apiName, this._instanceId, this._utcTime);

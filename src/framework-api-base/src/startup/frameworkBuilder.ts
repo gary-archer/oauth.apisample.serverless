@@ -4,6 +4,7 @@ import middy from 'middy';
 import {Middy} from 'middy';
 import {BASEFRAMEWORKTYPES, LogEntry} from '../../../framework-base';
 import {FrameworkConfiguration} from '../configuration/frameworkConfiguration';
+import {ApplicationExceptionHandler} from '../errors/applicationExceptionHandler';
 import {ExceptionMiddleware} from '../errors/exceptionMiddleware';
 import {LogEntryImpl} from '../logging/logEntryImpl';
 import {LoggerFactory} from '../logging/loggerFactory';
@@ -20,10 +21,21 @@ export class FrameworkBuilder {
     private readonly _configuration: FrameworkConfiguration;
     private readonly _loggerFactory: LoggerFactory;
 
+    private _applicationExceptionHandler: ApplicationExceptionHandler | null;
+
     public constructor(container: Container, configuration: FrameworkConfiguration, loggerFactory: LoggerFactory) {
         this._container = container;
         this._configuration = configuration;
         this._loggerFactory = loggerFactory;
+        this._applicationExceptionHandler = null;
+    }
+
+    /*
+     * Allow an application handler to translate errors before the framework handler runs
+     */
+    public withApplicationExceptionHandler(appExceptionHandler: ApplicationExceptionHandler): FrameworkBuilder {
+        this._applicationExceptionHandler = appExceptionHandler;
+        return this;
     }
 
     /*

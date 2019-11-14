@@ -1,4 +1,4 @@
-import {ClientError} from '../errors/clientError';
+import {DefaultClientError} from '../errors/defaultClientError';
 import {ApiClaims} from '../security/apiClaims';
 
 /*
@@ -47,7 +47,7 @@ export class ResponseHandler {
      * Responses without a policy document returns an AUTHORIZER_CONFIGURATION_ERROR that are not runtime customizable
      * https://forums.aws.amazon.com/thread.jspa?threadID=226689
      */
-    public static authorizationErrorResponse(statusCode: number, error: ClientError): any {
+    public static authorizationErrorResponse(statusCode: number, error: DefaultClientError): any {
         return ResponseHandler.objectResponse(statusCode, error);
     }
 
