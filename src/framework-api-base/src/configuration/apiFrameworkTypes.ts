@@ -1,6 +1,6 @@
 /*
  * Framework types used with dependency injection
  */
-export const FRAMEWORKTYPES = {
+export const APIFRAMEWORKTYPES = {
     ApiClaims: Symbol.for('ApiClaims'),
 };

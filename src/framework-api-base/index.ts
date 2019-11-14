@@ -2,8 +2,8 @@
  * Export framework public types but not internal classes
  */
 
+import {APIFRAMEWORKTYPES} from './src/configuration/apiFrameworkTypes';
 import {FrameworkConfiguration} from './src/configuration/frameworkConfiguration';
-import {FRAMEWORKTYPES} from './src/configuration/frameworkTypes';
 import {ClientError} from './src/errors/clientError';
 import {ErrorHandler} from './src/errors/errorHandler';
 import {ExceptionMiddleware} from './src/errors/exceptionMiddleware';
@@ -20,7 +20,7 @@ import {ResponseHandler} from './src/utilities/responseHandler';
 
 export {
     FrameworkConfiguration,
-    FRAMEWORKTYPES,
+    APIFRAMEWORKTYPES,
     ClientError,
     ErrorHandler,
     ExceptionMiddleware,

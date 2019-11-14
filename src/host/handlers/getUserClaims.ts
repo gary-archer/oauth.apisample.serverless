@@ -1,7 +1,7 @@
 import {Context} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {ApiClaims, FRAMEWORKTYPES, ResponseHandler} from '../../framework-api-base';
+import {ApiClaims, APIFRAMEWORKTYPES, ResponseHandler} from '../../framework-api-base';
 import {HandlerFactory} from './handlerFactory';
 
 // Create the container
@@ -13,7 +13,7 @@ const container = new Container();
 const baseHandler = async (event: any, context: Context) => {
 
     // Get claims produced by the authorizer
-    const claims = container.get<ApiClaims>(FRAMEWORKTYPES.ApiClaims);
+    const claims = container.get<ApiClaims>(APIFRAMEWORKTYPES.ApiClaims);
 
     // Return user info in the response
     return ResponseHandler.objectResponse(200, claims.userInfo);
