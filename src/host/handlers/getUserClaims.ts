@@ -1,7 +1,9 @@
 import {Context} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {ApiClaims, APIFRAMEWORKTYPES, ResponseHandler} from '../../framework-api-base';
+import {APIFRAMEWORKTYPES, ResponseHandler} from '../../framework-api-base';
+import {SampleApiClaims} from '../claims/sampleApiClaims';
+import {UserInfoClaims} from '../claims/userInfoClaims';
 import {HandlerFactory} from './handlerFactory';
 
 // Create the container
@@ -13,10 +15,18 @@ const container = new Container();
 const baseHandler = async (event: any, context: Context) => {
 
     // Get claims produced by the authorizer
-    const claims = container.get<ApiClaims>(APIFRAMEWORKTYPES.ApiClaims);
+    const claims = container.get<SampleApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims);
+    const userInfo = {
+        givenName: claims.givenName,
+        familyName: claims.familyName,
+        email: claims.email,
+    } as UserInfoClaims;
+
+    console.log('*** DEBUG');
+    console.log(userInfo.email);
 
     // Return user info in the response
-    return ResponseHandler.objectResponse(200, claims.userInfo);
+    return ResponseHandler.objectResponse(200, userInfo);
 };
 
 // Create an enriched handler, which wires up framework handling to run before the above handler

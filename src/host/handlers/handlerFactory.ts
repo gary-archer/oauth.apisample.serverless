@@ -11,6 +11,8 @@ import {AsyncHandler,
         RequestContextAuthorizerMiddleware,
         ResponseHandler} from '../../framework-api-base';
 import {OAuthAuthorizerBuilder} from '../../framework-api-oauth';
+import {SampleApiClaimsProvider} from '../authorization/sampleApiClaimsProvider';
+import {SampleApiClaims} from '../claims/sampleApiClaims';
 import {CompositionRoot} from '../configuration/compositionRoot';
 import {Configuration} from '../configuration/configuration';
 import {RestErrorTranslator} from '../errors/restErrorTranslator';
@@ -78,13 +80,10 @@ export class HandlerFactory {
                 .register();
 
             // Register OAuth framework dependencies
-/*const authorizerBuilder = new OAuthAuthorizerBuilder<SampleApiClaims>(this._container, configuration.oauth)
+            const authorizerBuilder = new OAuthAuthorizerBuilder<SampleApiClaims>(this._container, configuration.oauth)
                 .withClaimsSupplier(SampleApiClaims)
                 .withCustomClaimsProviderSupplier(SampleApiClaimsProvider)
-                .register();*/
-
-            const authorizerBuilder = new OAuthAuthorizerBuilder(this._container, configuration.oauth);
-            authorizerBuilder.register();
+                .register();
 
             // Configure middleware for error handling and logging as early as possible
             const enrichedHandler = framework.configureMiddleware(baseHandler, true);

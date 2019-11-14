@@ -1,5 +1,5 @@
 import {DefaultClientError} from '../errors/defaultClientError';
-import {ApiClaims} from '../security/apiClaims';
+import {CoreApiClaims} from '../security/coreApiClaims';
 
 /*
  * Helper methods to return responses
@@ -21,7 +21,7 @@ export class ResponseHandler {
      * The authorized response includes an aws policy document
      * We also add our custom claims to the context
      */
-    public static authorizedResponse(claims: ApiClaims, event: any): object {
+    public static authorizedResponse(claims: CoreApiClaims, event: any): object {
 
         const context = {
             claims: JSON.stringify(claims),

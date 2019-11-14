@@ -1,3 +1,4 @@
+import {Request} from 'express';
 import {CoreApiClaims} from '../../../framework-api-base';
 
 /*
@@ -5,5 +6,5 @@ import {CoreApiClaims} from '../../../framework-api-base';
  */
 export interface CustomClaimsProvider<TClaims extends CoreApiClaims> {
 
-    addCustomClaims(accessToken: string, claims: TClaims): Promise<void>;
+    addCustomClaims(accessToken: string, request: Request, claims: TClaims): Promise<void>;
 }

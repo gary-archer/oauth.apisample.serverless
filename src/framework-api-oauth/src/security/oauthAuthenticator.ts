@@ -2,7 +2,7 @@ import {inject, injectable} from 'inversify';
 import * as jwt from 'jsonwebtoken';
 import jwks from 'jwks-rsa';
 import * as OpenIdClient from 'openid-client';
-import {ApiClaims, DebugProxyAgent, ErrorHandler} from '../../../framework-api-base';
+import {CoreApiClaims, DebugProxyAgent, ErrorHandler} from '../../../framework-api-base';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
 import {TokenValidationResult} from './tokenValidationResult';
@@ -13,14 +13,14 @@ import {TokenValidationResult} from './tokenValidationResult';
 @injectable()
 export class OAuthAuthenticator {
 
-    private _oauthConfig: OAuthConfiguration;
+    private _configuration: OAuthConfiguration;
 
     /*
      * Receive configuration and request metadata
      */
-    public constructor(@inject(OAUTHINTERNALTYPES.Configuration) oauthConfig: OAuthConfiguration) {
+    public constructor(@inject(OAUTHINTERNALTYPES.Configuration) configuration: OAuthConfiguration) {
 
-        this._oauthConfig = oauthConfig;
+        this._configuration = configuration;
         this._setupCallbacks();
 
         // Configure the HTTP proxy if applicable
@@ -69,7 +69,8 @@ export class OAuthAuthenticator {
         }
 
         // Get claims and use the immutable user id as the subject claim
-        const apiClaims = new ApiClaims(result.sub, result.client_id, result.scope);
+        const apiClaims = new CoreApiClaims();
+        apiClaims.setTokenInfo(result.sub, result.client_id, result.scope);
 
         // Look up user info to get the name and email
         await this._lookupCentralUserDataClaims(issuer, apiClaims, accessToken);
@@ -88,10 +89,10 @@ export class OAuthAuthenticator {
 
         try {
             return await OpenIdClient.Issuer.discover(
-                `${this._oauthConfig.authority}/.well-known/openid-configuration`);
+                `${this._configuration.authority}/.well-known/openid-configuration`);
 
         } catch (e) {
-            throw ErrorHandler.fromMetadataError(e, this._oauthConfig.authority);
+            throw ErrorHandler.fromMetadataError(e, this._configuration.authority);
         }
     }
 
@@ -155,15 +156,17 @@ export class OAuthAuthenticator {
      * We will read central user data by calling the Open Id Connect User Info endpoint
      * For many companies it may instead make sense to call a Central User Info API
      */
-    private async _lookupCentralUserDataClaims(issuer: any, claims: ApiClaims, accessToken: string): Promise<void> {
+    private async _lookupCentralUserDataClaims(issuer: any, claims: CoreApiClaims, accessToken: string): Promise<void> {
 
-        // Create the Authorization Server client
-        const client = new issuer.Client();
+        // Create the Authorization Server client, which requires a client id
+        const client = new issuer.Client({
+            client_id: 'userinfoclient',
+        });
 
         try {
             // Extend token data with central user info
             const response = await client.userinfo(accessToken);
-            claims.setCentralUserData(response.given_name, response.family_name, response.email);
+            claims.setCentralUserInfo(response.given_name, response.family_name, response.email);
 
         } catch (e) {
 

@@ -1,9 +1,10 @@
 import {Context} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {ApiClaims, APIFRAMEWORKTYPES, DefaultClientError, ResponseHandler} from '../../framework-api-base';
+import {APIFRAMEWORKTYPES, CoreApiClaims, DefaultClientError, ResponseHandler} from '../../framework-api-base';
 import {LOGICTYPES} from '../../logic/configuration/logicTypes';
 import {CompanyService} from '../../logic/services/companyService';
+import {SampleApiClaims} from '../claims/sampleApiClaims';
 import {HandlerFactory} from './handlerFactory';
 
 // Create the container
@@ -25,7 +26,7 @@ const baseHandler = async (event: any, context: Context) => {
     }
 
     // Get claims produced by the authorizer
-    const claims = container.get<ApiClaims>(APIFRAMEWORKTYPES.ApiClaims);
+    const claims = container.get<SampleApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims);
 
     // Execute the logic
     const service = container.get<CompanyService>(LOGICTYPES.CompanyService);

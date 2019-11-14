@@ -1,22 +1,25 @@
 import {Context} from 'aws-lambda';
 import {inject, injectable} from 'inversify';
-import {ResponseHandler} from '../../../framework-api-base';
+import {CoreApiClaims, ResponseHandler} from '../../../framework-api-base';
+import {ClaimsSupplier} from '../claims/claimsSupplier';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
-import {AuthorizationMicroservice} from '../security/authorizationMicroservice';
 import {OAuthAuthenticator} from '../security/oauthAuthenticator';
 
 /*
  * The entry point for OAuth and claims processing logic
  */
 @injectable()
- export class OAuthAuthorizer {
+ export class OAuthAuthorizer<TClaims extends CoreApiClaims> {
 
     private _authenticator: OAuthAuthenticator;
-    private _authorizationMicroservice: AuthorizationMicroservice;
+    private _claimsSupplier: ClaimsSupplier<TClaims>;
 
-    public constructor(@inject(OAUTHINTERNALTYPES.OAuthAuthenticator) authenticator: OAuthAuthenticator) {
+    public constructor(
+        @inject(OAUTHINTERNALTYPES.OAuthAuthenticator) authenticator: OAuthAuthenticator,
+        @inject(OAUTHINTERNALTYPES.ClaimsSupplier) claimsSupplier: ClaimsSupplier<TClaims>) {
+
         this._authenticator = authenticator;
-        this._authorizationMicroservice = new AuthorizationMicroservice();
+        this._claimsSupplier = claimsSupplier;
     }
 
     /*
@@ -30,6 +33,9 @@ import {OAuthAuthenticator} from '../security/oauthAuthenticator';
             return ResponseHandler.invalidTokenResponse(event);
         }
 
+        // Create new claims which we will then populate
+        const claims = this._claimsSupplier.createEmptyClaims();
+
         // Make OAuth calls to validate the token and get user info
         const result = await this._authenticator.authenticateAndSetClaims(accessToken);
 
@@ -38,8 +44,8 @@ import {OAuthAuthenticator} from '../security/oauthAuthenticator';
             return ResponseHandler.invalidTokenResponse(event);
         }
 
-        // Next add product user data to claims
-        await this._authorizationMicroservice.getProductClaims(result.claims!, accessToken);
+        // Add any custom product specific custom claims if required
+        await this._claimsSupplier.createCustomClaimsProvider().addCustomClaims(accessToken, claims);
 
         // Return the success result
         return ResponseHandler.authorizedResponse(result.claims!, event);

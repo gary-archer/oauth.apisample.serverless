@@ -1,7 +1,7 @@
 import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {APIFRAMEWORKTYPES} from '../configuration/apiFrameworkTypes';
-import {ApiClaims} from '../security/apiClaims';
+import {CoreApiClaims} from '../security/coreApiClaims';
 import {RequestContextAuthorizer} from './requestContextAuthorizer';
 
 /*
@@ -25,8 +25,8 @@ export class RequestContextAuthorizerMiddleware implements MiddlewareObject<any,
         const authorizer = new RequestContextAuthorizer();
         const claims = authorizer.execute(handler.event, handler.context);
 
-        // Make then available for injection into business logic
-        this._container.bind<ApiClaims>(APIFRAMEWORKTYPES.ApiClaims).toConstantValue(claims);
+        // Make them available for injection into business logic
+        this._container.bind<CoreApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims).toConstantValue(claims);
 
         next();
     }

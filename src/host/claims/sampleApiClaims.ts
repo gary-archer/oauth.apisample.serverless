@@ -1,19 +1,19 @@
 import {injectable} from 'inversify';
-import {ApiClaims} from '../../framework-api-base';
+import {CoreApiClaims} from '../../framework-api-base';
 
 /*
  * Override the core claims to support additional custom claims
  */
 @injectable()
-export class SampleApiClaims extends ApiClaims {
+export class SampleApiClaims extends CoreApiClaims {
 
-    private _regionsCovered2!: string[];
+    private _regionsCovered!: string[];
 
-    public get regionsCovered2(): string[] {
-        return this._regionsCovered2;
+    public get regionsCovered(): string[] {
+        return this._regionsCovered;
     }
 
-    public set regionsCovered2(regionsCovered: string[]) {
-        this._regionsCovered2 = regionsCovered;
+    public set regionsCovered(regionsCovered: string[]) {
+        this._regionsCovered = regionsCovered;
     }
 }

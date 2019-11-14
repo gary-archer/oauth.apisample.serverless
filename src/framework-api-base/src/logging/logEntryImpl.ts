@@ -19,8 +19,8 @@ export class LogEntryImpl implements LogEntry {
      */
     public start(): void {
 
-        this._data.requestVerb = 'GET';
-        this._data.requestPath = '/companies';
+        this._data.requestVerb = 'PATCH';
+        this._data.requestPath = '/whatevar';
     }
 
     /*

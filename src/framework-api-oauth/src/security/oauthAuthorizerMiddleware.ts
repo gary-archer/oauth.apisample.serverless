@@ -1,5 +1,6 @@
 import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
+import {CoreApiClaims} from '../../../framework-api-base';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
 import {OAUTHPUBLICTYPES} from '../configuration/oauthPublicTypes';
 import {OAuthAuthorizer} from './oauthAuthorizer';
@@ -7,7 +8,7 @@ import {OAuthAuthorizer} from './oauthAuthorizer';
 /*
  * A middleware for the lambda authorizer, which does token processing and claims lookup
  */
-export class OAuthAuthorizerMiddleware implements MiddlewareObject<any, any> {
+export class OAuthAuthorizerMiddleware<TClaims extends CoreApiClaims> implements MiddlewareObject<any, any> {
 
     private readonly _container: Container;
 
@@ -22,15 +23,15 @@ export class OAuthAuthorizerMiddleware implements MiddlewareObject<any, any> {
     public async before(handler: HandlerLambda<any, any>, next: NextFunction): Promise<void> {
 
         // Resolve the authorizer
-        const authorizer = this._container.get<OAuthAuthorizer>(OAUTHINTERNALTYPES.OAuthAuthorizer);
+        const authorizer = this._container.get<OAuthAuthorizer<TClaims>>(OAUTHINTERNALTYPES.OAuthAuthorizer);
 
         // Get it to do the work
         const policyDocument = await authorizer.execute(handler.event, handler.context);
 
-        // Make claims available so that they can be returned by the lambda
+        // Claims must be forwarded from the lambda authorizer via a policy document
         this._container.bind<any>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue(policyDocument);
 
-        // For async middleware middy calls next for us, so do not call it here
+        // For async middleware, middy calls next for us, so do not call it here
     }
 
     private _setupCallbacks(): void {

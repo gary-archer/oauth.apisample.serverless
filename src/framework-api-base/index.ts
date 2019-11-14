@@ -13,7 +13,7 @@ import {ExceptionMiddleware} from './src/errors/exceptionMiddleware';
 import {LoggerFactory} from './src/logging/loggerFactory';
 import {RequestLoggerMiddleware} from './src/logging/requestLoggerMiddleware';
 import {CustomHeaderMiddleware} from './src/middleware/customHeaderMiddleware';
-import {ApiClaims} from './src/security/apiClaims';
+import {CoreApiClaims} from './src/security/coreApiClaims';
 import {RequestContextAuthorizerMiddleware} from './src/security/RequestContextAuthorizerMiddleware';
 import {FrameworkBuilder} from './src/startup/frameworkBuilder';
 import {AsyncHandler} from './src/utilities/asyncHandler';
@@ -33,7 +33,7 @@ export {
     LoggerFactory,
     RequestLoggerMiddleware,
     CustomHeaderMiddleware,
-    ApiClaims,
+    CoreApiClaims,
     RequestContextAuthorizerMiddleware,
     FrameworkBuilder,
     AsyncHandler,

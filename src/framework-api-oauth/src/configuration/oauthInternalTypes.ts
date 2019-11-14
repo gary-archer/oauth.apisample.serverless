@@ -5,4 +5,5 @@ export const OAUTHINTERNALTYPES = {
     Configuration: Symbol.for('OAuthConfiguration'),
     OAuthAuthenticator: Symbol.for('OAuthAuthenticator'),
     OAuthAuthorizer: Symbol.for('OAuthAuthorizer'),
+    ClaimsSupplier: Symbol.for('ClaimsSupplier'),
 };

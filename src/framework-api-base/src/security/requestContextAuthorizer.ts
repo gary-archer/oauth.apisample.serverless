@@ -1,5 +1,5 @@
 import {Context} from 'aws-lambda';
-import {ApiClaims} from '../security/apiClaims';
+import {CoreApiClaims} from '../security/coreApiClaims';
 
 /*
  * A simple authorizer to extract claims from the request context
@@ -9,7 +9,7 @@ export class RequestContextAuthorizer {
     /*
      * Execute the simple logic to return claims
      */
-    public execute(event: any, context: Context): ApiClaims {
+    public execute(event: any, context: Context): CoreApiClaims {
 
         if (!event.requestContext ||
             !event.requestContext.authorizer ||
