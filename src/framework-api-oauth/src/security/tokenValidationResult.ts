@@ -1,4 +1,4 @@
-import {ApiClaims} from '../../framework-api-base';
+import {ApiClaims} from '../../../framework-api-base';
 
 /*
  * The result of trying to validate a token

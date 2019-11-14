@@ -1,6 +1,6 @@
 import {injectable} from 'inversify';
-import {LogEntry, PerformanceBreakdown} from '../../framework-base';
-import { PerformanceBreakdownImpl } from './performanceBreakdownImpl';
+import {LogEntry, PerformanceBreakdown} from '../../../framework-base';
+import {PerformanceBreakdownImpl} from './performanceBreakdownImpl';
 
 /*
  * An entry to log the request

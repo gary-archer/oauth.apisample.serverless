@@ -1,6 +1,6 @@
 import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
-import {BASEFRAMEWORKTYPES} from '../../framework-base';
+import {BASEFRAMEWORKTYPES} from '../../../framework-base';
 import {LogEntryImpl} from './logEntryImpl';
 
 /*

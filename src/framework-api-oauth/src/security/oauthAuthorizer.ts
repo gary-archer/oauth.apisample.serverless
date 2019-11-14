@@ -1,6 +1,6 @@
 import {Context} from 'aws-lambda';
 import {inject, injectable} from 'inversify';
-import {ResponseHandler} from '../../framework-api-base';
+import {ResponseHandler} from '../../../framework-api-base';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
 import {AuthorizationMicroservice} from '../security/authorizationMicroservice';
 import {OAuthAuthenticator} from '../security/oauthAuthenticator';

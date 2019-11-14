@@ -1,4 +1,4 @@
 import {Context, ProxyResult} from 'aws-lambda';
 
-// A convenience overload
+// A type definition to aid readability
 export type AsyncHandler = (event: any, context: Context) => Promise<ProxyResult | void>;

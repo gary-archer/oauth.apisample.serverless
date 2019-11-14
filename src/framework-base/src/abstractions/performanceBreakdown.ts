@@ -1,4 +1,4 @@
-import {Disposable} from '../../../framework-base';
+import {Disposable} from '../utilities/disposable';
 
 /*
  * Represents a time measurement within an API operation

@@ -2,7 +2,7 @@ import {inject, injectable} from 'inversify';
 import * as jwt from 'jsonwebtoken';
 import jwks from 'jwks-rsa';
 import * as OpenIdClient from 'openid-client';
-import {ApiClaims, DebugProxyAgent, ErrorHandler} from '../../framework-api-base';
+import {ApiClaims, DebugProxyAgent, ErrorHandler} from '../../../framework-api-base';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
 import {TokenValidationResult} from './tokenValidationResult';

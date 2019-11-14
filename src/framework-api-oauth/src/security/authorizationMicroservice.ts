@@ -1,4 +1,4 @@
-import {ApiClaims} from '../../framework-api-base';
+import {ApiClaims} from '../../../framework-api-base';
 
 /*
  * A repository class for returning domain specific authorization rules

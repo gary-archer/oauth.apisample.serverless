@@ -2,7 +2,7 @@ import {Context} from 'aws-lambda';
 import {Container} from 'inversify';
 import middy from 'middy';
 import {Middy} from 'middy';
-import {BASEFRAMEWORKTYPES, LogEntry} from '../../framework-base';
+import {BASEFRAMEWORKTYPES, LogEntry} from '../../../framework-base';
 import {FrameworkConfiguration} from '../configuration/frameworkConfiguration';
 import {ExceptionMiddleware} from '../errors/exceptionMiddleware';
 import {LogEntryImpl} from '../logging/logEntryImpl';
