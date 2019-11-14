@@ -7,7 +7,7 @@ import {IClientError} from './iclientError';
  */
 export class ErrorHandler {
 
-    public static readonly apiName = 'BasicApi';
+    public static readonly apiName = 'SampleApi';
 
     /*
      * Special logic for startup errors

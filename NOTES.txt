@@ -1,17 +1,20 @@
 TODO
 ----
-1. Set up launch.json debugging with 4 options
+1. Get packaging working and look at file sizes compared to old branch
 
-2. Gradually update classes from main node sample - direct copies as much as possible
-   API and OAuth frameworks have a src folder and a package.json file
+2. Set up launch.json debugging with 4 options
+
+3. Gradually update classes from main node sample - direct copies as much as possible
    getCompanyTransactions not handling company=3 or company=5 errors
+   Get logging working to a basic level, to include 400 and 500 errors
 
-3. Fill in all logging fields
+4. Redeploy to AWS
+   API has been renamed to sampleapi so run sls remove on the old basicapi branch first
+   Then merge to master
+
+5. Fill in all logging fields
    Use only console logging, which will be simplified due to no child entry for authorizer
 
-4. Get packaging working
-   Add a package.json to the deployment folder so that API dependencies are expressed cleanly
-
-5. Why do async I need module=commonjs and is this the most standard option?
+6. Why do I need module=commonjs in tsconfig and is this the most standard option?
    Can I use ts-node somehow?
    https://github.com/serverless/serverless/tree/master/lib/plugins/create/templates/aws-nodejs-typescript

@@ -12,16 +12,16 @@ class Packager {
     public async execute(): Promise<void> {
 
         await this._unzipPackage('authorize');
-        await this._unzipPackage('basicapi');
+        await this._unzipPackage('sampleapi');
 
         await this._excludeFolders('authorize', ['js/service', 'data']);
-        await this._excludeFolders('basicapi', ['js/authorizer']);
+        await this._excludeFolders('sampleapi', ['js/authorizer']);
 
         await this._installDependencies('authorize', []);
-        await this._installDependencies('basicapi',  ['openid-client', 'jwks-rsa', 'jsonwebtoken']);
+        await this._installDependencies('sampleapi',  ['openid-client', 'jwks-rsa', 'jsonwebtoken']);
 
         await this._rezipPackage('authorize');
-        await this._rezipPackage('basicapi');
+        await this._rezipPackage('sampleapi');
     }
 
     /*

@@ -6,7 +6,7 @@
   "scripts": {
     "lint": "tslint -c tslint.json 'src/**/*.ts' && tslint -c tslint.json 'scripts/**/*.ts'",
     "build": "rimraf build && tsc",
-    "authorizer": "sls invoke local -f authorize -p test/authorizer.json",
+    "authorizer": "sls invoke local -f authorizer -p test/authorizer.json",
     "getUserClaims": "sls invoke local -f getUserClaims -p test/getUserClaims.json",
     "getCompanyList": "sls invoke local -f getCompanyList -p test/getCompanyList.json",
     "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",

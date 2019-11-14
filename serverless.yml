@@ -1,4 +1,4 @@
-service: basicapi
+service: sampleapi
 
 provider:
   name: aws
@@ -28,13 +28,13 @@ custom:
     - x-mycompany-correlation-id
     - x-mycompany-session-id
     - x-mycompany-test-exception
-  scripts:
-    hooks:
-      'after:package:createDeploymentArtifacts': npm run customPackager
+  #scripts:
+  #  hooks:
+  #    'after:package:createDeploymentArtifacts': npm run customPackager
 
 functions:
   # The custom authorizer has extra OAuth related dependencies
-  authorize:
+  authorizer:
     handler: js/host/handlers/authorizer.handler
     cors:
       origin: ${self:custom.environment.settings.trustedOrigin}
@@ -49,7 +49,7 @@ functions:
           path: /userclaims/current
           method: get
           authorizer:
-            name: authorize
+            name: authorizer
             resultTtlInSeconds: ${self:custom.environment.settings.claimsCacheTtlSeconds}
           cors:
             origin: ${self:custom.environment.settings.trustedOrigin}
@@ -61,7 +61,7 @@ functions:
           path: /companies
           method: get
           authorizer:
-            name: authorize
+            name: authorizer
             resultTtlInSeconds: ${self:custom.environment.settings.claimsCacheTtlSeconds}
           cors:
             origin: ${self:custom.environment.settings.trustedOrigin}
@@ -73,7 +73,7 @@ functions:
           path: /companies/{id}/transactions
           method: get
           authorizer:
-            name: authorize
+            name: authorizer
             resultTtlInSeconds: ${self:custom.environment.settings.claimsCacheTtlSeconds}
           cors:
             origin: ${self:custom.environment.settings.trustedOrigin}
