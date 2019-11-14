@@ -11,16 +11,20 @@ class Packager {
      */
     public async execute(): Promise<void> {
 
-        await this._unzipPackage('authorize');
+        // Unzip the default packages created by sls package
+        await this._unzipPackage('authorizer');
         await this._unzipPackage('sampleapi');
 
-        await this._excludeFolders('authorize', ['js/service', 'data']);
-        await this._excludeFolders('sampleapi', ['js/authorizer']);
+        // Exclude the service logic and data from the authorizer
+        await this._excludeFolders('authorizer', ['js/logic', 'data']);
+        await this._installDependencies('authorizer', []);
 
-        await this._installDependencies('authorize', []);
-        await this._installDependencies('sampleapi',  ['openid-client', 'jwks-rsa', 'jsonwebtoken']);
+        // Exclude the OAuth logic from the service lambdas, and remove OAuth dependencies
+        await this._excludeFolders('sampleapi', ['js/framework-api-oauth']);
+        await this._installDependencies('sampleapi',  ['framework-api-oauth']);
 
-        await this._rezipPackage('authorize');
+        // Rezip the packages
+        await this._rezipPackage('authorizer');
         await this._rezipPackage('sampleapi');
     }
 
@@ -48,9 +52,11 @@ class Packager {
      */
     private async _installDependencies(packageName: string, removeDependencies: string[]) {
 
-        // Copy in files
+        // Copy in package.json files
         await FileSystem.copy('package.json', `.serverless/${packageName}/package.json`);
         await FileSystem.copy('package-lock.json', `.serverless/${packageName}/package-lock.json`);
+        await FileSystem.copy('src/framework-api-base/package.json', `.serverless/${packageName}/src/framework-api-base/package.json`);
+        await FileSystem.copy('src/framework-api-oauth/package.json', `.serverless/${packageName}/src/framework-api-oauth/package.json`);
 
         // Remove passed in dependencies and development dependencies
         const pkg = await FileSystem.readJson(`.serverless/${packageName}/package.json`);
@@ -66,8 +72,14 @@ class Packager {
         // Do the work of installing node modules
         await this._installNodeModules(packageName);
 
-        // Remove package-lock.json from the temporary folder
+        // Remove package.json files from the temporary folder
+        await FileSystem.remove(`.serverless/${packageName}/package.json`);
         await FileSystem.remove(`.serverless/${packageName}/package-lock.json`);
+        await FileSystem.remove(`.serverless/${packageName}/src`);
+
+        // Remove symbolic links caused by package.json framework links
+        await FileSystem.remove(`.serverless/${packageName}/node_modules/framework-api-base`);
+        await FileSystem.remove(`.serverless/${packageName}/node_modules/framework-api-oauth`);
     }
 
     /*

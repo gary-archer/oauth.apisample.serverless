@@ -5,7 +5,7 @@
   "main": "handler.ts",
   "scripts": {
     "lint": "tslint -c tslint.json 'src/**/*.ts' && tslint -c tslint.json 'scripts/**/*.ts'",
-    "build": "rimraf build && tsc",
+    "build": "rimraf js && tsc",
     "authorizer": "sls invoke local -f authorizer -p test/authorizer.json",
     "getUserClaims": "sls invoke local -f getUserClaims -p test/getUserClaims.json",
     "getCompanyList": "sls invoke local -f getCompanyList -p test/getCompanyList.json",

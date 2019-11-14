@@ -6,7 +6,7 @@
   "keywords": [],
   "author": "Gary Archer",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "adm-zip": "^0.4.13",
     "aws-sdk": "^2.368.0",
     "child-process-es6-promise": "^1.2.1",

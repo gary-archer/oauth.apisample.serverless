@@ -28,9 +28,9 @@ custom:
     - x-mycompany-correlation-id
     - x-mycompany-session-id
     - x-mycompany-test-exception
-  #scripts:
-  #  hooks:
-  #    'after:package:createDeploymentArtifacts': npm run customPackager
+  scripts:
+    hooks:
+      'after:package:createDeploymentArtifacts': npm run customPackager
 
 functions:
   # The custom authorizer has extra OAuth related dependencies
@@ -86,13 +86,15 @@ functions:
 # The custom packager does the rest of the work in code, including adding node_modules
 package:
   exclude:
-  - node_modules/**/*
   - src/**
-  - scripts/**
   - test/**
+  - node_modules/**
+  - deployment/**
   - ts*.json
   - package*.json
-  - config.yml
+  - environment.yml
+  - .vscode/**
+  - README.md
 
 plugins:
   - serverless-plugin-scripts
