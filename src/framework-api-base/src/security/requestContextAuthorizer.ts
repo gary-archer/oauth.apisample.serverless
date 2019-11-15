@@ -30,7 +30,7 @@ export class RequestContextAuthorizer
         const claims = authenticator.authorizeRequestAndGetClaims(handler.event, handler.context);
 
         // Make them available for injection into business logic
-        this.container.bind<CoreApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims).toConstantValue(claims);
+        this.container.rebind<CoreApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims).toConstantValue(claims);
 
         // Include identity details in logs
         super.logIdentity(claims);

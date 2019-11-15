@@ -1,4 +1,5 @@
 import {CoreApiClaims} from '../../../framework-api-base';
+import {PolicyDocument} from './policyDocument';
 
 /*
  * Helper methods to return responses
@@ -9,13 +10,14 @@ export class PolicyDocumentWriter {
      * The authorized response includes an aws policy document
      * We also add our custom claims to the context
      */
-    public static authorizedResponse(claims: CoreApiClaims, event: any): object {
+    public static authorizedResponse(claims: CoreApiClaims, event: any): PolicyDocument {
 
         const context = {
-            claims,
+            claims: JSON.stringify(claims),
         };
 
-        return PolicyDocumentWriter._policyDocument(claims.userId, 'Allow', event, context);
+        const data = PolicyDocumentWriter._policyDocument(claims.userId, 'Allow', event, context);
+        return new PolicyDocument(data);
     }
 
     /*
@@ -23,9 +25,10 @@ export class PolicyDocumentWriter {
      * Note that 500 technical errors are not handled via a policy document and do not support runtime customization
      * https://forums.aws.amazon.com/thread.jspa?threadID=226689
      */
-    public static invalidTokenResponse(event: any): any {
+    public static invalidTokenResponse(event: any): PolicyDocument {
 
-        return PolicyDocumentWriter._policyDocument('*', 'Deny', event, {});
+        const data = PolicyDocumentWriter._policyDocument('*', 'Deny', event, {});
+        return new PolicyDocument(data);
     }
 
     /*
@@ -34,6 +37,7 @@ export class PolicyDocumentWriter {
     private static _policyDocument(userId: string, effect: string, event: any, context: any): any {
 
         const serviceArn = PolicyDocumentWriter._getServiceArn(event.methodArn);
+
         return {
             principalId: userId,
             policyDocument: {

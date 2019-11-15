@@ -161,18 +161,20 @@ export class LogEntryImpl implements LogEntry {
      */
     private _calculateResponseStatus(response: any): void {
 
-        if (response.statusCode) {
+        if (response) {
+            if (response.statusCode) {
 
-            // For normal response bodies log the status code
-            this._data.statusCode = response.statusCode;
+                // For normal response bodies log the status code
+                this._data.statusCode = response.statusCode;
 
-        } else if (response.policyDocument) {
+            } else if (response.policyDocument) {
 
-            // For policy document responses log 401 or 200
-            if (this._data.errorCode) {
-                this._data.statusCode = 401;
-            } else {
-                this._data.statusCode = 200;
+                // For policy document responses log 401 or 200
+                if (this._data.errorCode) {
+                    this._data.statusCode = 401;
+                } else {
+                    this._data.statusCode = 200;
+                }
             }
         }
     }

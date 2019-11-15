@@ -33,7 +33,9 @@ export class HandlerFactory {
         try {
             // Load our JSON configuration then configure the framework
             const configuration = this._loadConfiguration();
-            framework.configure(configuration.framework);
+            framework
+                .configure(configuration.framework)
+                .register();
 
             // Register OAuth framework dependencies
             const authorizerBuilder = new OAuthAuthorizerBuilder<SampleApiClaims>(this._container, configuration.oauth)

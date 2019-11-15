@@ -1,7 +1,7 @@
 import {Context} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {OAUTHPUBLICTYPES} from '../../framework-api-oauth';
+import {OAUTHPUBLICTYPES, PolicyDocument} from '../../framework-api-oauth';
 import {HandlerFactory} from './handlerFactory';
 
 // Create the container
@@ -12,10 +12,8 @@ const container = new Container();
  */
 const baseHandler = async (event: any, context: Context) => {
 
-    console.log('*** OUTPUT AWS POLICY DOCUMENT');
-    const doc = container.get<any>(OAUTHPUBLICTYPES.PolicyDocument);
-    console.log(JSON.stringify(doc, null, 2));
-    return doc;
+    const document = container.get<PolicyDocument>(OAUTHPUBLICTYPES.PolicyDocument);
+    return document.data;
 };
 
 // Create an enriched handler, which wires up OAuth handling to run before the above handler

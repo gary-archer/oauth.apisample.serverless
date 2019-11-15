@@ -5,6 +5,7 @@ import {BaseAuthorizerMiddleware, CoreApiClaims, DefaultClientError } from '../.
 import {ClaimsSupplier} from '../claims/claimsSupplier';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
 import {OAUTHPUBLICTYPES} from '../configuration/oauthPublicTypes';
+import {PolicyDocument} from '../utilities/policyDocument';
 import {PolicyDocumentWriter} from '../utilities/policyDocumentWriter';
 import {OAuthAuthenticator} from './oauthAuthenticator';
 
@@ -24,6 +25,7 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
      */
     public async before(handler: HandlerLambda<any, any>, next: NextFunction): Promise<void> {
 
+        let policyDocument: PolicyDocument;
         try {
 
             // Ask the authorizer to do the work and return claims
@@ -33,9 +35,7 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
             super.logIdentity(claims);
 
             // We must write an authorized policy document to enable the REST call to continue to the lambda
-            // This is returned as the actual handler response later
-            const policyDocument = PolicyDocumentWriter.authorizedResponse(claims, handler.event);
-            this.container.rebind<any>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue(policyDocument);
+            policyDocument = PolicyDocumentWriter.authorizedResponse(claims, handler.event);
 
         } catch (e) {
 
@@ -48,9 +48,11 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
             super.logUnauthorized(e);
 
             // We must return write an unauthorized policy document in order to return a 401 to the caller
-            const policyDocument = PolicyDocumentWriter.invalidTokenResponse(handler.event);
-            this.container.rebind<any>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue(policyDocument);
+            policyDocument = PolicyDocumentWriter.invalidTokenResponse(handler.event);
         }
+
+        // Add the policy document to the container, which will be retrieved by the handler
+        this.container.rebind<PolicyDocument>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue(policyDocument);
 
         // For async middleware, middy calls next for us, so do not call it here
     }

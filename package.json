@@ -12,7 +12,8 @@
     "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
     "package": "rimraf .serverless && sls package",
     "customPackager": "ts-node deployment/customPackager.ts",
-    "deploy": "sls deploy -p .serverless"
+    "deploy": "sls deploy -p .serverless",
+    "remove": "sls remove"
   },
   "author": "Gary Archer",
   "license": "ISC",

@@ -36,7 +36,8 @@ export class HandlerFactory {
             const configuration = this._loadConfiguration();
             framework
                 .configure(configuration.framework)
-                .withApplicationExceptionHandler(new RestErrorTranslator());
+                .withApplicationExceptionHandler(new RestErrorTranslator())
+                .register();
 
             // Register authorization related dependencies
             const authorizerBuilder = new RequestContextAuthorizerBuilder(this._container)

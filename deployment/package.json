@@ -1,12 +1,12 @@
 {
-  "name": "serverless-deployment",
+  "name": "deployment",
   "version": "1.0.0",
-  "description": "Serverless deployment logic and dependencies",
+  "description": "Serverless deployment dependencies",
   "main": "index.ts",
   "keywords": [],
   "author": "Gary Archer",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "adm-zip": "^0.4.13",
     "aws-sdk": "^2.368.0",
     "child-process-es6-promise": "^1.2.1",

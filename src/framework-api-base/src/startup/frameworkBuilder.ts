@@ -3,6 +3,7 @@ import {Container} from 'inversify';
 import middy from 'middy';
 import {Middy} from 'middy';
 import {BASEFRAMEWORKTYPES, LogEntry} from '../../../framework-base';
+import {APIFRAMEWORKTYPES} from '../configuration/apiFrameworkTypes';
 import {FrameworkConfiguration} from '../configuration/frameworkConfiguration';
 import {ApplicationExceptionHandler} from '../errors/applicationExceptionHandler';
 import {ClientError} from '../errors/clientError';
@@ -11,6 +12,7 @@ import {LogEntryImpl} from '../logging/logEntryImpl';
 import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
 import {LoggerMiddleware} from '../logging/loggerMiddleware';
 import {CustomHeaderMiddleware} from '../middleware/customHeaderMiddleware';
+import {CoreApiClaims} from '../security/coreApiClaims';
 import {AsyncHandler} from '../utilities/asyncHandler';
 
 /*
@@ -41,6 +43,17 @@ export class FrameworkBuilder {
      */
     public configure(configuration: FrameworkConfiguration): FrameworkBuilder {
         this._loggerFactory.configure(configuration);
+        return this;
+    }
+
+    /*
+     * Register base framework dependencies
+     */
+    public register(): FrameworkBuilder {
+
+        // Register a dummy value that is overridden by the authorizer middleware later
+        // This prevents a 'Ambiguous match found for serviceIdentifier' error from inversify
+        this._container.bind<CoreApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims).toConstantValue({} as any);
         return this;
     }
 

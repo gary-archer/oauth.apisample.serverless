@@ -8,6 +8,7 @@ import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
 import {OAUTHPUBLICTYPES} from '../configuration/oauthPublicTypes';
 import {OAuthAuthenticator} from '../security/oauthAuthenticator';
 import {OAuthAuthorizer} from '../security/oauthAuthorizer';
+import {PolicyDocument} from '../utilities/policyDocument';
 
 /*
  * Create the classes needed by our lambda authorizer
@@ -61,7 +62,7 @@ export class OAuthAuthorizerBuilder<TClaims extends CoreApiClaims> {
 
         // Register a dummy value that is overridden by the authorizer middleware later
         // This prevents a 'Ambiguous match found for serviceIdentifier' error from inversify
-        this._container.bind<any>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue({} as any);
+        this._container.bind<PolicyDocument>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue({} as any);
         return this;
     }
 
