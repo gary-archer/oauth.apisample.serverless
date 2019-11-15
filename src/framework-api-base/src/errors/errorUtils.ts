@@ -46,6 +46,16 @@ export class ErrorUtils {
     }
 
     /*
+     * The error thrown if we cannot find an expected claim during security handling
+     */
+    public static fromMissingClaim(claimName: string): ApiError {
+
+        const apiError = new ApiError('claims_failure', 'Authorization Data Not Found');
+        apiError.details = `An empty value was found for the expected claim ${claimName}`;
+        return apiError;
+    }
+
+    /*
      * Try to convert an exception to an API error
      */
     private static tryConvertToApiError(exception: any): ApiError | null {
@@ -68,16 +78,6 @@ export class ErrorUtils {
         }
 
         return null;
-    }
-
-    /*
-     * The error thrown if we cannot find an expected claim during security handling
-     */
-    public static fromMissingClaim(claimName: string): ApiError {
-
-        const apiError = new ApiError('claims_failure', 'Authorization Data Not Found');
-        apiError.details = `An empty value was found for the expected claim ${claimName}`;
-        return apiError;
     }
 
     /*

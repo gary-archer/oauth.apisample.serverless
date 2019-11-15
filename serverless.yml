@@ -35,7 +35,7 @@ custom:
 functions:
   # The custom authorizer has extra OAuth related dependencies
   authorizer:
-    handler: js/host/handlers/authorizer.handler
+    handler: js/host/authorizer/authorizer.handler
     cors:
       origin: ${self:custom.environment.settings.trustedOrigin}
       headers: ${self:custom.allowedHeaders}
@@ -44,7 +44,7 @@ functions:
 
   # The other lambdas reference the authorizer lambda
   getUserClaims:
-    handler: js/host/handlers/getUserClaims.handler
+    handler: js/host/lambda/getUserClaims.handler
     events:
       - http: 
           path: /userclaims/current
@@ -57,7 +57,7 @@ functions:
             headers: ${self:custom.allowedHeaders}
 
   getCompanyList:
-    handler: js/host/handlers/getCompanyList.handler
+    handler: js/host/lambda/getCompanyList.handler
     events:
       - http: 
           path: /companies
@@ -70,7 +70,7 @@ functions:
             headers: ${self:custom.allowedHeaders}
 
   getCompanyTransactions:
-    handler: js/host/handlers/getCompanyTransactions.handler
+    handler: js/host/lambda/getCompanyTransactions.handler
     events:
       - http: 
           path: /companies/{id}/transactions

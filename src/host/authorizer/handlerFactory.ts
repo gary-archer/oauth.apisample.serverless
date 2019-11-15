@@ -6,14 +6,11 @@ import {cors} from 'middy/middlewares';
 import {AsyncHandler,
         DebugProxyAgentMiddleware,
         FrameworkBuilder,
-        RequestContextAuthorizerBuilder,
         ResponseWriter} from '../../framework-api-base';
 import {OAuthAuthorizerBuilder} from '../../framework-api-oauth';
-import {SampleApiClaimsProvider} from '../authorization/sampleApiClaimsProvider';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
-import {CompositionRoot} from '../configuration/compositionRoot';
 import {Configuration} from '../configuration/configuration';
-import {RestErrorTranslator} from '../errors/restErrorTranslator';
+import {SampleApiClaimsProvider} from './sampleApiClaimsProvider';
 
 /*
  * A class to manage common lambda startup behaviour and injecting cross cutting concerns
@@ -27,47 +24,9 @@ export class HandlerFactory {
     }
 
     /*
-     * Create a handler for a normal lambda function
+     * Enrich a handler for a lambda authorizer
      */
-    public createLambdaHandler(baseHandler: AsyncHandler): Handler {
-
-        const framework = new FrameworkBuilder(this._container);
-
-        try {
-
-            // Load our JSON configuration then configure the framework and register dependencies
-            const configuration = this._loadConfiguration();
-            framework
-                .configure(configuration.framework)
-                .withApplicationExceptionHandler(new RestErrorTranslator());
-
-            // Register authorization related dependencies
-            const authorizerBuilder = new RequestContextAuthorizerBuilder(this._container)
-                .register();
-
-            // Register application dependencies
-            CompositionRoot.registerDependencies(this._container);
-
-            // Configure middleware for error handling and logging
-            const enrichedHandler = framework.configureMiddleware(baseHandler, false);
-
-            // Create the authorization middleware
-            const authorizerMiddleware = authorizerBuilder.createAuthorizer();
-
-            // Add final middleware, and configure CORS and HTTPS debugging before the authorizer
-            return this._applyApplicationMiddleware(enrichedHandler, configuration, authorizerMiddleware);
-
-        } catch (e) {
-
-            // Handle any startup exceptions
-            return this._handleStartupError(framework, e);
-        }
-    }
-
-    /*
-     * Create a handler for a lambda authorizer
-     */
-    public createLambdaAuthorizerHandler(baseHandler: AsyncHandler): Handler {
+    public enrichHandler(baseHandler: AsyncHandler): Handler {
 
         const framework = new FrameworkBuilder(this._container);
 
