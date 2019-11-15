@@ -2,7 +2,6 @@ TODO
 ----
 1. POLISH
    Fill in log fields as best I can - including performance - and update config
-   Separation of lambda and authorizer into separate folders
 
 2. Monitor packaging file sizes and record file sizes for feature v master branch
 
