@@ -9,6 +9,20 @@
     "framework": {
         "apiName": "SampleApi",
         "logging": {
+            "development": {
+                "level": "info",
+                "overrideLevels": {
+                    "ClaimsCache": "info"
+                }
+            },
+            "production": {
+                "performanceThresholdsMilliseconds": {
+                    "default": 250,
+                    "operationOverrides": {
+                        "authorizer": 1000
+                    }
+                }
+            }
         }
     },
     "oauth": {

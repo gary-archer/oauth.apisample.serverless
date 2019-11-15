@@ -6,6 +6,7 @@ import {ApiError} from '../errors/apiError';
 import {ClientError} from '../errors/clientError';
 import {CoreApiClaims} from '../security/coreApiClaims';
 import {LogEntryData} from './logEntryData';
+import {PerformanceThreshold} from './performanceThreshold';
 
 /*
  * A class to manage logging of a lambda request
@@ -14,6 +15,8 @@ import {LogEntryData} from './logEntryData';
 export class LogEntryImpl implements LogEntry {
 
     private _data: LogEntryData;
+    private _defaultThresholdMilliseconds!: number;
+    private _performanceThresholdOverrides!: PerformanceThreshold[];
 
     public constructor(apiName: string) {
 
@@ -22,12 +25,24 @@ export class LogEntryImpl implements LogEntry {
     }
 
     /*
+     * Set default performance details after creation
+     */
+    public setPerformanceThresholds(defaultMilliseconds: number, overrides: PerformanceThreshold[]) {
+        this._defaultThresholdMilliseconds = defaultMilliseconds;
+        this._data.performanceThresholdMilliseconds = this._defaultThresholdMilliseconds;
+        this._performanceThresholdOverrides = overrides;
+    }
+
+    /*
      * Start logging and read data from the context where possible
      */
     public start(event: any, context: Context): void {
 
         this._data.performance.start();
+
+        // Get the operation name and its performance threshold
         this._calculateOperationName(context.functionName);
+        this._data.performanceThresholdMilliseconds = this._getPerformanceThreshold(this._data.operationName);
 
         // Our callers can supply a custom header so that we can keep track of who is calling each API
         const callingApplicationName = this._getHeader(event, 'x-mycompany-api-client');
@@ -145,14 +160,14 @@ export class LogEntryImpl implements LogEntry {
      * Try to calculate the response status
      */
     private _calculateResponseStatus(response: any): void {
-        
+
         if (response.statusCode) {
-            
+
             // For normal response bodies log the status code
             this._data.statusCode = response.statusCode;
 
         } else if (response.policyDocument) {
-            
+
             // For policy document responses log 401 or 200
             if (this._data.errorCode) {
                 this._data.statusCode = 401;
@@ -175,5 +190,18 @@ export class LogEntryImpl implements LogEntry {
         }
 
         return null;
+    }
+
+    /*
+     * Given an operation name, set its performance threshold
+     */
+    private _getPerformanceThreshold(name: string): number {
+
+        const found = this._performanceThresholdOverrides.find((o) => o.name.toLowerCase() === name.toLowerCase());
+        if (found) {
+            return found.milliseconds;
+        }
+
+        return this._defaultThresholdMilliseconds;
     }
 }

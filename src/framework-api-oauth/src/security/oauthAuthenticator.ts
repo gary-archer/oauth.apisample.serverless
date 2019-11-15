@@ -3,6 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import jwks from 'jwks-rsa';
 import {Client, custom, Issuer} from 'openid-client';
 import {CoreApiClaims, DebugProxyAgent, DefaultClientError} from '../../../framework-api-base';
+import {BASEFRAMEWORKTYPES, LogEntry, using} from '../../../framework-base';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
 import {ErrorUtils} from '../errors/errorUtils';
@@ -13,16 +14,19 @@ import {ErrorUtils} from '../errors/errorUtils';
 @injectable()
 export class OAuthAuthenticator {
 
-    private _configuration: OAuthConfiguration;
+    private readonly _configuration: OAuthConfiguration;
+    private readonly _logEntry: LogEntry;
     private _issuer: Issuer<Client> | null;
 
     /*
      * Receive configuration and request metadata
      */
     public constructor(
-        @inject(OAUTHINTERNALTYPES.Configuration) configuration: OAuthConfiguration) {
+        @inject(OAUTHINTERNALTYPES.Configuration) configuration: OAuthConfiguration,
+        @inject(BASEFRAMEWORKTYPES.LogEntry) logEntry: LogEntry) {
 
         this._configuration = configuration;
+        this._logEntry = logEntry;
         this._issuer = null;
         this._setupCallbacks();
 
@@ -56,7 +60,7 @@ export class OAuthAuthenticator {
         const tokenSigningPublicKey = await this._downloadJwksKeyForKeyIdentifier(keyIdentifier);
 
         // Use a library to verify the token's signature, issuer, audience and that it is not expired
-        const tokenData = this._validateTokenInMemory(accessToken, tokenSigningPublicKey);
+        const tokenData = await this._validateTokenInMemory(accessToken, tokenSigningPublicKey);
 
         // Read protocol claims and we will use the immutable user id as the subject claim
         const userId = this._getStringClaim(tokenData.sub, 'userId');
@@ -75,12 +79,16 @@ export class OAuthAuthenticator {
      */
     private  async _loadMetadata(): Promise<void> {
 
-        try {
-            const endpoint = `${this._configuration.authority}/.well-known/openid-configuration`;
-            this._issuer = await Issuer.discover(endpoint);
-        } catch (e) {
-            throw ErrorUtils.fromMetadataError(e, this._configuration.authority);
-        }
+        return using (this._logEntry.createPerformanceBreakdown('loadMetadata'), async () => {
+
+            try {
+                const endpoint = `${this._configuration.authority}/.well-known/openid-configuration`;
+                this._issuer = await Issuer.discover(endpoint);
+
+            } catch (e) {
+                throw ErrorUtils.fromMetadataError(e, this._configuration.authority);
+            }
+        });
     }
 
     /*
@@ -90,31 +98,34 @@ export class OAuthAuthenticator {
 
         return new Promise<string>((resolve, reject) => {
 
-            // Create the client to download the signing key
-            const client = jwks({
-                strictSsl: DebugProxyAgent.isDebuggingActive() ? false : true,
-                cache: false,
-                jwksUri: this._issuer!.metadata.jwks_uri!,
-            });
+            return using (this._logEntry.createPerformanceBreakdown('downloadJwksKey'), async () => {
 
-            // Make a call to get the signing key
-            client.getSigningKeys((err: any, keys: any[]) => {
+                // Create the client to download the signing key
+                const client = jwks({
+                    strictSsl: DebugProxyAgent.isDebuggingActive() ? false : true,
+                    cache: false,
+                    jwksUri: this._issuer!.metadata.jwks_uri!,
+                });
 
-                // Handle errors
-                if (err) {
-                    return reject(ErrorUtils.fromSigningKeyDownloadError(err, this._issuer!.metadata.jwks_uri!));
-                }
+                // Make a call to get the signing key
+                client.getSigningKeys((err: any, keys: any[]) => {
 
-                // Find the key in the download
-                const key = keys.find((k) => k.kid === tokenKeyIdentifier);
-                if (key) {
-                    return resolve(key.publicKey || key.rsaPublicKey);
-                }
+                    // Handle errors
+                    if (err) {
+                        return reject(ErrorUtils.fromSigningKeyDownloadError(err, this._issuer!.metadata.jwks_uri!));
+                    }
 
-                // Indicate not found
-                return reject(
-                    DefaultClientError.create401(
-                        `Key with identifier: ${tokenKeyIdentifier} not found in JWKS download`));
+                    // Find the key in the download
+                    const key = keys.find((k) => k.kid === tokenKeyIdentifier);
+                    if (key) {
+                        return resolve(key.publicKey || key.rsaPublicKey);
+                    }
+
+                    // Indicate not found
+                    return reject(
+                        DefaultClientError.create401(
+                            `Key with identifier: ${tokenKeyIdentifier} not found in JWKS download`));
+                });
             });
         });
     }
@@ -122,27 +133,31 @@ export class OAuthAuthenticator {
     /*
      * Call a third party library to do the token validation, and return token claims
      */
-    private _validateTokenInMemory(accessToken: string, tokenSigningPublicKey: string): any {
+    private async _validateTokenInMemory(accessToken: string, tokenSigningPublicKey: string): Promise<any> {
 
-        try {
-            // Verify the token's signature, issuer, audience and that it is not expired
-            const options = {
-                issuer: this._issuer!.metadata.issuer,
-            };
+        return using (this._logEntry.createPerformanceBreakdown('validateTokenInMemory'), async () => {
+        
+            try {
 
-            // On success return the claims JSON data
-            return jwt.verify(accessToken, tokenSigningPublicKey, options);
+                // Verify the token's signature, issuer, audience and that it is not expired
+                const options = {
+                    issuer: this._issuer!.metadata.issuer,
+                };
 
-        } catch (e) {
+                // On success return the claims JSON data
+                return jwt.verify(accessToken, tokenSigningPublicKey, options);
 
-            // Handle failures and capture the details
-            let details = 'JWT verification failed';
-            if (e.message) {
-                details += ` : ${e.message}`;
+            } catch (e) {
+
+                // Handle failures and capture the details
+                let details = 'JWT verification failed';
+                if (e.message) {
+                    details += ` : ${e.message}`;
+                }
+
+                throw DefaultClientError.create401(details);
             }
-
-            throw DefaultClientError.create401(details);
-        }
+        });
     }
 
     /*
@@ -151,26 +166,29 @@ export class OAuthAuthenticator {
      */
     private async _lookupCentralUserDataClaims(claims: CoreApiClaims, accessToken: string): Promise<void> {
 
-        // Create the Authorization Server client, which requires a dummy client id
-        const client = new this._issuer!.Client({
-            client_id: 'userinfo',
+        return using (this._logEntry.createPerformanceBreakdown('userInfoLookup'), async () => {
+
+            // Create the Authorization Server client, which requires a dummy client id
+            const client = new this._issuer!.Client({
+                client_id: 'userinfo',
+            });
+
+            try {
+                // Extend token data with central user info
+                const userData = await client.userinfo(accessToken);
+
+                // Sanity check the values before accepting them
+                const givenName = this._getStringClaim(userData.given_name, 'given_name');
+                const familyName = this._getStringClaim(userData.family_name, 'family_name');
+                const email = this._getStringClaim(userData.email, 'email');
+                claims.setCentralUserInfo(givenName, familyName, email);
+
+            } catch (e) {
+
+                // Report errors clearly
+                throw ErrorUtils.fromUserInfoError(e, this._issuer!.metadata.userinfo_endpoint!);
+            }
         });
-
-        try {
-            // Extend token data with central user info
-            const userData = await client.userinfo(accessToken);
-
-            // Sanity check the values before accepting them
-            const givenName = this._getStringClaim(userData.given_name, 'given_name');
-            const familyName = this._getStringClaim(userData.family_name, 'family_name');
-            const email = this._getStringClaim(userData.email, 'email');
-            claims.setCentralUserInfo(givenName, familyName, email);
-
-        } catch (e) {
-
-            // Report errors clearly
-            throw ErrorUtils.fromUserInfoError(e, this._issuer!.metadata.userinfo_endpoint!);
-        }
     }
 
     /*
