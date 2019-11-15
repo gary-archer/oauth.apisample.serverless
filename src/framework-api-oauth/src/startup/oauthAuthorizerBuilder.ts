@@ -5,6 +5,7 @@ import {ClaimsSupplier} from '../claims/claimsSupplier';
 import {CustomClaimsProvider} from '../claims/customClaimsProvider';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
+import {OAUTHPUBLICTYPES} from '../configuration/oauthPublicTypes';
 import {OAuthAuthenticator} from '../security/oauthAuthenticator';
 import {OAuthAuthorizer} from '../security/oauthAuthorizer';
 
@@ -58,6 +59,9 @@ export class OAuthAuthorizerBuilder<TClaims extends CoreApiClaims> {
         this._container.bind<ClaimsSupplier<TClaims>>(
             OAUTHINTERNALTYPES.ClaimsSupplier).toConstantValue(claimsSupplier);
 
+        // Register a dummy value that is overridden by the authorizer middleware later
+        // This prevents a 'Ambiguous match found for serviceIdentifier' error from inversify
+        this._container.bind<any>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue({} as any);
         return this;
     }
 

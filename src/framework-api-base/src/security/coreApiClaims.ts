@@ -7,61 +7,43 @@ import {injectable} from 'inversify';
 export class CoreApiClaims {
 
     // The immutable user id from the access token, which may exist in the API's database
-    private _userId!: string;
+    public userId: string;
 
     // The client id, which typically represents the calling application
-    private _clientId!: string;
+    public clientId: string;
 
     // OAuth scopes can represent high level areas of the business
-    private _scopes!: string[];
+    public scopes: string[];
 
     // Data from the OAuth user info endpoint
-    private _givenName!: string;
-    private _familyName!: string;
-    private _email!: string;
+    public givenName: string;
+    public familyName: string;
+    public email: string;
 
-    /*
-     * Accessors
-     */
-    public get userId(): string {
-        return this._userId;
-    }
-
-    public get clientId(): string {
-        return this._clientId;
-    }
-
-    public get scopes(): string[] {
-        return this._scopes;
-    }
-
-    public get givenName(): string {
-        return this._givenName;
-    }
-
-    public get familyName(): string {
-        return this._familyName;
-    }
-
-    public get email(): string {
-        return this._email;
+    public constructor() {
+        this.userId = '';
+        this.clientId = '';
+        this.scopes = [];
+        this.givenName = '';
+        this.familyName = '';
+        this.email = '';
     }
 
     /*
      * Set token claims after introspection
      */
     public setTokenInfo(userId: string, clientId: string, scopes: string[]) {
-        this._userId = userId;
-        this._clientId = clientId;
-        this._scopes = scopes;
+        this.userId = userId;
+        this.clientId = clientId;
+        this.scopes = scopes;
     }
 
     /*
      * Set informational fields after user info lookup
      */
     public setCentralUserInfo(givenName: string, familyName: string, email: string) {
-        this._givenName = givenName;
-        this._familyName = familyName;
-        this._email = email;
+        this.givenName = givenName;
+        this.familyName = familyName;
+        this.email = email;
     }
 }

@@ -2,7 +2,7 @@ service: sampleapi
 
 provider:
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs10.x
   region: ${self:custom.environment.settings.deployRegion}
   stage: ${self:custom.environment.settings.stage}
   profile: ${self:custom.environment.settings.profile}
@@ -14,7 +14,7 @@ custom:
   customDomain:
     domainName: api.authguidance-examples.com
     certificateName: '*.authguidance-examples.com'
-    basePath: api
+    basePath: api2
     stage: ${self:custom.environment.settings.stage}
     endpointType: regional
   allowedHeaders:
@@ -125,32 +125,13 @@ resources:
         ResponseTemplates:
           application/json: |
             {
+              "code": "unauthorized",
               "message": "Missing, invalid or expired access token"
             }
         RestApiId:
           Ref: 'ApiGatewayRestApi'
         StatusCode: '401'
 
-    # Handle missing token for an API path that does not exist
-    MissingTokenInvalidPathGatewayResponse:
-      Type: 'AWS::ApiGateway::GatewayResponse'
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.environment.settings.trustedOrigin}'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.environment.settings.trustedOrigin}'"
-          gatewayresponse.header.WWW-Authenticate: "'Bearer'"
-
-        ResponseType: MISSING_AUTHENTICATION_TOKEN
-        
-        ResponseTemplates:
-          application/json: |
-            {
-              "message": "Missing, invalid or expired access token"
-            }
-        RestApiId:
-          Ref: 'ApiGatewayRestApi'
-        StatusCode: '401'        
-    
     # Handle invalid or expired tokens
     InvalidTokenGatewayResponse:
       Type: 'AWS::ApiGateway::GatewayResponse'
@@ -165,6 +146,7 @@ resources:
         ResponseTemplates:
           application/json: |
             {
+              "code": "unauthorized",
               "message": "Missing, invalid or expired access token"
             }
         RestApiId:
@@ -185,6 +167,7 @@ resources:
         ResponseTemplates:
           application/json: |
             {
+              "code": "server_error"
               "message": "Problem encountered during authorization"
             }
         RestApiId:

@@ -11,7 +11,11 @@ const container = new Container();
  * Our handler just returns the AWS policy document produced by framework middleware
  */
 const baseHandler = async (event: any, context: Context) => {
-    return container.get<any>(OAUTHPUBLICTYPES.PolicyDocument);
+
+    console.log('*** OUTPUT AWS POLICY DOCUMENT');
+    const doc = container.get<any>(OAUTHPUBLICTYPES.PolicyDocument);
+    console.log(JSON.stringify(doc, null, 2));
+    return doc;
 };
 
 // Create an enriched handler, which wires up OAuth handling to run before the above handler

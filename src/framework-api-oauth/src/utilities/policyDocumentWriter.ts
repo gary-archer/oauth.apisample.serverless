@@ -12,7 +12,7 @@ export class PolicyDocumentWriter {
     public static authorizedResponse(claims: CoreApiClaims, event: any): object {
 
         const context = {
-            claims: JSON.stringify(claims),
+            claims,
         };
 
         return PolicyDocumentWriter._policyDocument(claims.userId, 'Allow', event, context);

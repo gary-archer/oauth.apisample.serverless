@@ -41,12 +41,25 @@ export class RequestContextAuthenticator {
 
         if (typeof event.requestContext.authorizer.claims === 'string') {
 
+            console.log('*** OUTPUT AWS REQUEST CONTEXT');
+            console.log(event.requestContext.authorizer.claims);
+            console.log('*** PART 1 DONE');
+            console.log(event.requestContext.authorizer);
+            console.log('*** PART 2 DONE');
+            console.log(event.requestContext);
+            console.log('*** PART 3 DONE');
+
             // In AWS we receive a serialized object
             return JSON.parse(event.requestContext.authorizer.claims);
 
         } else {
 
             // On a local PC we have configured an object in our test/*.json files
+            console.log('*** OUTPUT DEVELOPER REQUEST CONTEXT');
+            console.log(event.requestContext.authorizer);
+            console.log('*** PART 1 DONE');
+            console.log(event.requestContext);
+            console.log('*** PART 2 DONE');
             return event.requestContext.authorizer.claims;
         }
     }

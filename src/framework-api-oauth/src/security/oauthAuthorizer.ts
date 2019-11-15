@@ -35,7 +35,7 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
             // We must write an authorized policy document to enable the REST call to continue to the lambda
             // This is returned as the actual handler response later
             const policyDocument = PolicyDocumentWriter.authorizedResponse(claims, handler.event);
-            this.container.bind<any>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue(policyDocument);
+            this.container.rebind<any>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue(policyDocument);
 
         } catch (e) {
 
@@ -49,7 +49,7 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
 
             // We must return write an unauthorized policy document in order to return a 401 to the caller
             const policyDocument = PolicyDocumentWriter.invalidTokenResponse(handler.event);
-            this.container.bind<any>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue(policyDocument);
+            this.container.rebind<any>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue(policyDocument);
         }
 
         // For async middleware, middy calls next for us, so do not call it here

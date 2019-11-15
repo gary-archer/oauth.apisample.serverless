@@ -7,13 +7,10 @@ import {CoreApiClaims} from '../../framework-api-base';
 @injectable()
 export class SampleApiClaims extends CoreApiClaims {
 
-    private _regionsCovered!: string[];
+    public regionsCovered: string[];
 
-    public get regionsCovered(): string[] {
-        return this._regionsCovered;
-    }
-
-    public set regionsCovered(regionsCovered: string[]) {
-        this._regionsCovered = regionsCovered;
+    public constructor() {
+        super();
+        this.regionsCovered = [];
     }
 }

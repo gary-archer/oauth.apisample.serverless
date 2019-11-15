@@ -136,7 +136,7 @@ export class OAuthAuthenticator {
     private async _validateTokenInMemory(accessToken: string, tokenSigningPublicKey: string): Promise<any> {
 
         return using (this._logEntry.createPerformanceBreakdown('validateTokenInMemory'), async () => {
-        
+
             try {
 
                 // Verify the token's signature, issuer, audience and that it is not expired
