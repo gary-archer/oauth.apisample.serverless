@@ -1,7 +1,7 @@
 import {Context} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {APIFRAMEWORKTYPES, ResponseHandler} from '../../framework-api-base';
+import {APIFRAMEWORKTYPES, ResponseWriter} from '../../framework-api-base';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
 import {UserInfoClaims} from '../claims/userInfoClaims';
 import {HandlerFactory} from './handlerFactory';
@@ -23,7 +23,7 @@ const baseHandler = async (event: any, context: Context) => {
     } as UserInfoClaims;
 
     // Return user info in the response
-    return ResponseHandler.objectResponse(200, userInfo);
+    return ResponseWriter.objectResponse(200, userInfo);
 };
 
 // Create an enriched handler, which wires up framework handling to run before the above handler

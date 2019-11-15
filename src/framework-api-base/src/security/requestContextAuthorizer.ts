@@ -1,31 +1,44 @@
-import {Context} from 'aws-lambda';
-import {CoreApiClaims} from '../security/coreApiClaims';
+import {Container} from 'inversify';
+import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
+import {APIFRAMEWORKTYPES} from '../configuration/apiFrameworkTypes';
+import {INTERNALTYPES} from '../configuration/internalTypes';
+import {BaseAuthorizerMiddleware} from './baseAuthorizerMiddleware';
+import {CoreApiClaims} from './coreApiClaims';
+import {RequestContextAuthenticator} from './requestContextAuthenticator';
 
 /*
- * A simple authorizer to extract claims from the request context
+ * A simple middleware to extract claims from the request context written by the lambda authorizer
  */
-export class RequestContextAuthorizer {
+export class RequestContextAuthorizer
+       extends BaseAuthorizerMiddleware implements MiddlewareObject<any, any> {
+
+    public constructor(container: Container) {
+        super(container);
+        this._setupCallbacks();
+    }
 
     /*
-     * Execute the simple logic to return claims
+     * Return claims that were provided by our lambda authorizer
      */
-    public execute(event: any, context: Context): CoreApiClaims {
+    public before(handler: HandlerLambda<any, any>, next: NextFunction): void {
 
-        if (!event.requestContext ||
-            !event.requestContext.authorizer ||
-            !event.requestContext.authorizer.claims) {
+        // Resolve the class that does the work
+        const authenticator =
+            this.container.get<RequestContextAuthenticator>(INTERNALTYPES.RequestContextAuthenticator);
 
-            throw new Error('Unable to resolve authorizer claims from request context');
-        }
+        // Read claims from the request context
+        const claims = authenticator.authorizeRequestAndGetClaims(handler.event, handler.context);
 
-        if (typeof event.requestContext.authorizer.claims === 'string') {
+        // Make them available for injection into business logic
+        this.container.bind<CoreApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims).toConstantValue(claims);
 
-            // In AWS we receive a serialized object
-            return JSON.parse(event.requestContext.authorizer.claims);
-        } else {
+        // Include identity details in logs
+        super.logIdentity(claims);
 
-            // On a local PC we have an object
-            return event.requestContext.authorizer.claims;
-        }
+        next();
+    }
+
+    private _setupCallbacks(): void {
+        this.before = this.before.bind(this);
     }
 }

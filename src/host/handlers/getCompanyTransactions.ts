@@ -1,7 +1,7 @@
 import {Context} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {APIFRAMEWORKTYPES, CoreApiClaims, DefaultClientError, ResponseHandler} from '../../framework-api-base';
+import {APIFRAMEWORKTYPES, DefaultClientError, ResponseWriter} from '../../framework-api-base';
 import {LOGICTYPES} from '../../logic/configuration/logicTypes';
 import {CompanyService} from '../../logic/services/companyService';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
@@ -33,7 +33,7 @@ const baseHandler = async (event: any, context: Context) => {
     const companies = await service.getCompanyTransactions(id, claims.regionsCovered);
 
     // Write the response
-    return ResponseHandler.objectResponse(200, companies);
+    return ResponseWriter.objectResponse(200, companies);
 };
 
 // Create an enriched handler, which wires up framework handling to run before the above handler

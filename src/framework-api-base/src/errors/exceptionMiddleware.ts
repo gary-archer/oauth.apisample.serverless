@@ -1,6 +1,6 @@
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {LogEntryImpl} from '../logging/logEntryImpl';
-import {ResponseHandler} from '../utilities/responseHandler';
+import {ResponseWriter} from '../utilities/responseWriter';
 import {ApiError} from './apiError';
 import {ApplicationExceptionHandler} from './applicationExceptionHandler';
 import {ErrorUtils} from './errorUtils';
@@ -24,6 +24,8 @@ export class ExceptionMiddleware implements MiddlewareObject<any, any> {
      */
     public onError(handler: HandlerLambda<any, any>, next: NextFunction): void {
 
+        console.log('*** EXCEPTION MIDDLEWARE ERROR');
+
         // Get the exception to handle and allow the application to implement its own error logic first
         let exceptionToHandle = handler.error;
         if (this._applicationExceptionHandler) {
@@ -44,7 +46,7 @@ export class ExceptionMiddleware implements MiddlewareObject<any, any> {
         }
 
         // Set the client error as the lambda response error, which will be serialized and returned via the API gateway
-        handler.response = ResponseHandler.objectResponse(clientError.getStatusCode(), clientError.toResponseFormat());
+        handler.response = ResponseWriter.objectResponse(clientError.getStatusCode(), clientError.toResponseFormat());
 
         // With middy we always move to the next
         next();

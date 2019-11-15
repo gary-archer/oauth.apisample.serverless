@@ -1,9 +1,14 @@
 TODO
 ----
-1. Get logging working to a basic level, where 400 and 500 errors are captured
-   getCompanyTransactions not handling company=3 or company=5 errors
+0. NEXT
+   Get the LogEntryImpl and add identity on success - in base authorizer
+   Get the LogEntryImpl and add the ClientError on failure
+   getUserClaim to be made safer
 
-1a. Move OAuth policy writing to a separate file
+1. POLISH
+   Test all OAuth error cases - and use get claim - and check error utils are all used
+   Fill in log fields as best I can - including performance - and update config
+
 
 2. Monitor packaging file sizes and record file sizes for feature v master branch
 

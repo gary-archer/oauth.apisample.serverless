@@ -6,8 +6,8 @@ import {cors} from 'middy/middlewares';
 import {AsyncHandler,
         DebugProxyAgentMiddleware,
         FrameworkBuilder,
-        RequestContextAuthorizerMiddleware,
-        ResponseHandler} from '../../framework-api-base';
+        RequestContextAuthorizerBuilder,
+        ResponseWriter} from '../../framework-api-base';
 import {OAuthAuthorizerBuilder} from '../../framework-api-oauth';
 import {SampleApiClaimsProvider} from '../authorization/sampleApiClaimsProvider';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
@@ -35,11 +35,15 @@ export class HandlerFactory {
 
         try {
 
-            // Load our JSON configuration then configure the framework
+            // Load our JSON configuration then configure the framework and register dependencies
             const configuration = this._loadConfiguration();
             framework
                 .configure(configuration.framework)
                 .withApplicationExceptionHandler(new RestErrorTranslator());
+
+            // Register authorization related dependencies
+            const authorizerBuilder = new RequestContextAuthorizerBuilder(this._container)
+                .register();
 
             // Register application dependencies
             CompositionRoot.registerDependencies(this._container);
@@ -48,7 +52,7 @@ export class HandlerFactory {
             const enrichedHandler = framework.configureMiddleware(baseHandler, false);
 
             // Create the authorization middleware
-            const authorizerMiddleware = new RequestContextAuthorizerMiddleware(this._container);
+            const authorizerMiddleware = authorizerBuilder.createAuthorizer();
 
             // Add final middleware, and configure CORS and HTTPS debugging before the authorizer
             return this._applyApplicationMiddleware(enrichedHandler, configuration, authorizerMiddleware);
@@ -82,7 +86,7 @@ export class HandlerFactory {
             const enrichedHandler = framework.configureMiddleware(baseHandler, true);
 
             // Create the authorization middleware
-            const authorizerMiddleware = authorizerBuilder.createMiddleware();
+            const authorizerMiddleware = authorizerBuilder.createAuthorizer();
 
             // Add final middleware, and configure CORS and HTTPS debugging before the authorizer
             return this._applyApplicationMiddleware(enrichedHandler, configuration, authorizerMiddleware);
@@ -124,7 +128,7 @@ export class HandlerFactory {
 
         const clientError = framework.handleStartupError(error);
         return async (e: any, c: Context) => {
-            return ResponseHandler.objectResponse(500, clientError.toResponseFormat());
+            return ResponseWriter.objectResponse(500, clientError.toResponseFormat());
         };
     }
 }

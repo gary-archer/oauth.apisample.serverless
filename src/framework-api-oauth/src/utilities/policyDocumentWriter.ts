@@ -1,21 +1,9 @@
-import {DefaultClientError} from '../errors/defaultClientError';
-import {CoreApiClaims} from '../security/coreApiClaims';
+import {CoreApiClaims} from '../../../framework-api-base';
 
 /*
  * Helper methods to return responses
  */
-export class ResponseHandler {
-
-    /*
-     * Return data to the caller, which could be a success or error object
-     */
-    public static objectResponse(statusCode: number, data: any): any {
-
-        return {
-            statusCode,
-            body: JSON.stringify(data),
-        };
-    }
+export class PolicyDocumentWriter {
 
     /*
      * The authorized response includes an aws policy document
@@ -27,28 +15,17 @@ export class ResponseHandler {
             claims: JSON.stringify(claims),
         };
 
-        return ResponseHandler._policyDocument(claims.userId, 'Allow', event, context);
+        return PolicyDocumentWriter._policyDocument(claims.userId, 'Allow', event, context);
     }
 
     /*
-     * Return an invalid token policy response to the caller which is an AWS ACCESS_DENIED gateway response
+     * Return a 401 invalid token policy response to the caller which is an AWS ACCESS_DENIED gateway response
+     * Note that 500 technical errors are not handled via a policy document and do not support runtime customization
+     * https://forums.aws.amazon.com/thread.jspa?threadID=226689
      */
     public static invalidTokenResponse(event: any): any {
 
-        return ResponseHandler._policyDocument('*', 'Deny', event, {});
-    }
-
-    /*
-     * I would like to return a 500 error and this error object to the caller
-     * Unfortunately this is not supported via any of these methods:
-     * - Returning a policy document
-     * - Setting a context error object or calling context.fail
-     *
-     * Responses without a policy document returns an AUTHORIZER_CONFIGURATION_ERROR that are not runtime customizable
-     * https://forums.aws.amazon.com/thread.jspa?threadID=226689
-     */
-    public static authorizationErrorResponse(statusCode: number, error: DefaultClientError): any {
-        return ResponseHandler.objectResponse(statusCode, error);
+        return PolicyDocumentWriter._policyDocument('*', 'Deny', event, {});
     }
 
     /*
@@ -56,7 +33,7 @@ export class ResponseHandler {
      */
     private static _policyDocument(userId: string, effect: string, event: any, context: any): any {
 
-        const serviceArn = ResponseHandler._getServiceArn(event.methodArn);
+        const serviceArn = PolicyDocumentWriter._getServiceArn(event.methodArn);
         return {
             principalId: userId,
             policyDocument: {

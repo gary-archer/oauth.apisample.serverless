@@ -1,62 +1,87 @@
 import {Context} from 'aws-lambda';
-import {inject, injectable} from 'inversify';
-import {CoreApiClaims, DefaultClientError, ResponseHandler} from '../../../framework-api-base';
+import {Container} from 'inversify';
+import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
+import {BaseAuthorizerMiddleware, CoreApiClaims, DefaultClientError } from '../../../framework-api-base';
 import {ClaimsSupplier} from '../claims/claimsSupplier';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
-import {OAuthAuthenticator} from '../security/oauthAuthenticator';
+import {OAUTHPUBLICTYPES} from '../configuration/oauthPublicTypes';
+import {PolicyDocumentWriter} from '../utilities/policyDocumentWriter';
+import {OAuthAuthenticator} from './oauthAuthenticator';
 
 /*
- * The entry point for OAuth and claims processing logic
+ * A middleware for the lambda authorizer, which does token processing and claims lookup
  */
-@injectable()
- export class OAuthAuthorizer<TClaims extends CoreApiClaims> {
+export class OAuthAuthorizer<TClaims extends CoreApiClaims>
+       extends BaseAuthorizerMiddleware implements MiddlewareObject<any, any> {
 
-    private _authenticator: OAuthAuthenticator;
-    private _claimsSupplier: ClaimsSupplier<TClaims>;
-
-    public constructor(
-        @inject(OAUTHINTERNALTYPES.OAuthAuthenticator) authenticator: OAuthAuthenticator,
-        @inject(OAUTHINTERNALTYPES.ClaimsSupplier) claimsSupplier: ClaimsSupplier<TClaims>) {
-
-        this._authenticator = authenticator;
-        this._claimsSupplier = claimsSupplier;
+    public constructor(container: Container) {
+        super(container);
+        this._setupCallbacks();
     }
 
     /*
-     * Do the authorization and set claims, or return an unauthorized response
+     * The entry point does the OAuth work as well as AWS specific processing
      */
-    public async execute(event: any, context: Context): Promise<any> {
+    public async before(handler: HandlerLambda<any, any>, next: NextFunction): Promise<void> {
 
         try {
 
-            // First read the token from the request header and report missing tokens
-            const accessToken = this._readAccessToken(event.authorizationToken);
-            if (!accessToken) {
-                throw DefaultClientError.create401('No access token was supplied in the bearer header');
-            }
+            // Ask the authorizer to do the work and return claims
+            const claims = await this._execute(handler.event, handler.context);
 
-            // Create new claims which we will then populate
-            const claims = this._claimsSupplier.createEmptyClaims();
+            // Include identity details in logs
+            super.logIdentity(claims);
 
-            // Make OAuth calls to validate the token and get user info
-            await this._authenticator.authenticateAndSetClaims(accessToken, claims);
-
-            // Add any custom product specific custom claims if required
-            await this._claimsSupplier.createCustomClaimsProvider().addCustomClaims(accessToken, claims);
-
-            // Return the success result
-            return ResponseHandler.authorizedResponse(claims, event);
+            // We must write an authorized policy document to enable the REST call to continue to the lambda
+            // This is returned as the actual handler response later
+            const policyDocument = PolicyDocumentWriter.authorizedResponse(claims, handler.event);
+            this.container.bind<any>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue(policyDocument);
 
         } catch (e) {
 
             // Write a 401 policy document
             if (e instanceof DefaultClientError) {
-                return ResponseHandler.invalidTokenResponse(event);
+
+                // Include failure details in logs
+                super.logUnauthorized(e);
+
+                // We must return write an unauthorized policy document in order to return a 401 to the caller
+                const policyDocument = PolicyDocumentWriter.invalidTokenResponse(handler.event);
+                this.container.bind<any>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue(policyDocument);
             }
 
             // Rethrow otherwise
             throw e;
         }
+
+        // For async middleware, middy calls next for us, so do not call it here
+    }
+
+    /*
+     * Do the token validation and claims lookup
+     */
+    private async _execute(event: any, context: Context): Promise<TClaims> {
+
+        // Resolve dependencies
+        const claimsSupplier = this.container.get<ClaimsSupplier<TClaims>>(OAUTHINTERNALTYPES.ClaimsSupplier);
+        const authenticator = this.container.get<OAuthAuthenticator>(OAUTHINTERNALTYPES.OAuthAuthenticator);
+
+        // First read the token from the request header and report missing tokens
+        const accessToken = this._readAccessToken(event.authorizationToken);
+        if (!accessToken) {
+            console.log('*** AUTHORIZER MISSING AT');
+            throw DefaultClientError.create401('No access token was supplied in the bearer header');
+        }
+
+        // Create new claims which we will then populate
+        const claims = claimsSupplier.createEmptyClaims();
+
+        // Make OAuth calls to validate the token and get user info
+        await authenticator.authenticateAndSetClaims(accessToken, claims);
+
+        // Add any custom product specific custom claims if required
+        await claimsSupplier.createCustomClaimsProvider().addCustomClaims(accessToken, claims);
+        return claims;
     }
 
     /*
@@ -72,5 +97,9 @@ import {OAuthAuthenticator} from '../security/oauthAuthenticator';
         }
 
         return null;
+    }
+
+    private _setupCallbacks(): void {
+        this.before = this.before.bind(this);
     }
 }

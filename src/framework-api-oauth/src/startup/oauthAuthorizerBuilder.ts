@@ -7,10 +7,9 @@ import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
 import {OAuthAuthenticator} from '../security/oauthAuthenticator';
 import {OAuthAuthorizer} from '../security/oauthAuthorizer';
-import {OAuthAuthorizerMiddleware} from '../security/oauthAuthorizerMiddleware';
 
 /*
- * A factory class that runs at lambda startup to set up
+ * Create the classes needed by our lambda authorizer
  */
 export class OAuthAuthorizerBuilder<TClaims extends CoreApiClaims> {
 
@@ -56,11 +55,6 @@ export class OAuthAuthorizerBuilder<TClaims extends CoreApiClaims> {
         // Register OAuth types
         this._container.bind<OAuthConfiguration>(OAUTHINTERNALTYPES.Configuration).toConstantValue(this._configuration);
         this._container.bind<OAuthAuthenticator>(OAUTHINTERNALTYPES.OAuthAuthenticator).to(OAuthAuthenticator);
-
-        // Register OAuth types that supply customised claims
-        this._container.bind<OAuthAuthorizer<TClaims>>(
-            OAUTHINTERNALTYPES.OAuthAuthorizer).to(OAuthAuthorizer);
-
         this._container.bind<ClaimsSupplier<TClaims>>(
             OAUTHINTERNALTYPES.ClaimsSupplier).toConstantValue(claimsSupplier);
 
@@ -70,7 +64,7 @@ export class OAuthAuthorizerBuilder<TClaims extends CoreApiClaims> {
     /*
      * Create the middleware which triggers the OAuth work
      */
-    public createMiddleware(): MiddlewareObject<any, any> {
-        return new OAuthAuthorizerMiddleware<TClaims>(this._container);
+    public createAuthorizer(): MiddlewareObject<any, any> {
+        return new OAuthAuthorizer<TClaims>(this._container);
     }
 }
