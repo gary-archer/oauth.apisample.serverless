@@ -1,14 +1,8 @@
 TODO
 ----
-0. NEXT
-   Get the LogEntryImpl and add identity on success - in base authorizer
-   Get the LogEntryImpl and add the ClientError on failure
-   getUserClaim to be made safer
-
 1. POLISH
-   Test all OAuth error cases - and use get claim - and check error utils are all used
    Fill in log fields as best I can - including performance - and update config
-
+   Separation of lambda and authorizer into separate folders
 
 2. Monitor packaging file sizes and record file sizes for feature v master branch
 

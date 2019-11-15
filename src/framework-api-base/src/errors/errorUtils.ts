@@ -71,6 +71,16 @@ export class ErrorUtils {
     }
 
     /*
+     * The error thrown if we cannot find an expected claim during security handling
+     */
+    public static fromMissingClaim(claimName: string): ApiError {
+
+        const apiError = new ApiError('claims_failure', 'Authorization Data Not Found');
+        apiError.details = `An empty value was found for the expected claim ${claimName}`;
+        return apiError;
+    }
+
+    /*
      * Get the message from an exception and avoid returning [object Object]
      */
     private static _getExceptionDetailsMessage(e: any): string {

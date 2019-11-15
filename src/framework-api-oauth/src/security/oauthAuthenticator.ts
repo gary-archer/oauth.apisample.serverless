@@ -56,14 +56,18 @@ export class OAuthAuthenticator {
         const tokenSigningPublicKey = await this._downloadJwksKeyForKeyIdentifier(keyIdentifier);
 
         // Use a library to verify the token's signature, issuer, audience and that it is not expired
-        const result = this._validateTokenInMemory(accessToken, tokenSigningPublicKey);
+        const tokenData = this._validateTokenInMemory(accessToken, tokenSigningPublicKey);
+
+        // Read protocol claims and we will use the immutable user id as the subject claim
+        const userId = this._getStringClaim(tokenData.sub, 'userId');
+        const clientId = this._getStringClaim(tokenData.client_id, 'clientId');
+        const scope = this._getStringClaim(tokenData.scope, 'scope');
 
         // Get claims and use the immutable user id as the subject claim
-        const apiClaims = new CoreApiClaims();
-        apiClaims.setTokenInfo(result.sub, result.client_id, result.scope);
+        claims.setTokenInfo(userId, clientId, scope.split(' '));
 
         // Look up user info to get the name and email
-        await this._lookupCentralUserDataClaims(apiClaims, accessToken);
+        await this._lookupCentralUserDataClaims(claims, accessToken);
     }
 
     /*
@@ -136,9 +140,6 @@ export class OAuthAuthenticator {
             if (e.message) {
                 details += ` : ${e.message}`;
             }
-            if (e.stack) {
-                details += ` : ${e.stack}`;
-            }
 
             throw DefaultClientError.create401(details);
         }
@@ -157,14 +158,31 @@ export class OAuthAuthenticator {
 
         try {
             // Extend token data with central user info
-            const response = await client.userinfo(accessToken);
-            claims.setCentralUserInfo(response.given_name!, response.family_name!, response.email!);
+            const userData = await client.userinfo(accessToken);
+
+            // Sanity check the values before accepting them
+            const givenName = this._getStringClaim(userData.given_name, 'given_name');
+            const familyName = this._getStringClaim(userData.family_name, 'family_name');
+            const email = this._getStringClaim(userData.email, 'email');
+            claims.setCentralUserInfo(givenName, familyName, email);
 
         } catch (e) {
 
             // Report errors clearly
             throw ErrorUtils.fromUserInfoError(e, this._issuer!.metadata.userinfo_endpoint!);
         }
+    }
+
+    /*
+     * Sanity checks when receiving claims to avoid failing later with a cryptic error
+     */
+    private _getStringClaim(claim: string | undefined, name: string): string {
+
+        if (!claim) {
+            throw ErrorUtils.fromMissingClaim(name);
+        }
+
+        return claim;
     }
 
     /*

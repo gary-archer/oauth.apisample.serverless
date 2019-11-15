@@ -92,10 +92,10 @@ export class LogEntryData {
         this.userId = '';
         this.userName = '';
         this.statusCode = 0;
-        this.millisecondsTaken = 0;
-        this.performanceThresholdMilliseconds = 0;
         this.errorCode = '';
         this.errorId = 0;
+        this.millisecondsTaken = 0;
+        this.performanceThresholdMilliseconds = 0;
         this.correlationId = '';
         this.sessionId = '';
 
@@ -157,7 +157,7 @@ export class LogEntryData {
      * Add a string to the output unless empty
      */
     private _outputString(setter: (val: string) => void, value: string): void {
-        if (value.length > 0) {
+        if (value && value.length > 0) {
             setter(value);
         }
     }

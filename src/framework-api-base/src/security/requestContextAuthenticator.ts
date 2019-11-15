@@ -1,5 +1,6 @@
 import {Context} from 'aws-lambda';
 import {injectable} from 'inversify';
+import {ErrorUtils} from '../errors/errorUtils';
 import {CoreApiClaims} from '../security/coreApiClaims';
 
 /*
@@ -20,6 +21,24 @@ export class RequestContextAuthenticator {
             throw new Error('Unable to resolve authorizer claims from request context');
         }
 
+        // Get claims
+        const claims = this._getClaimsObject(event);
+
+        // Make some sanity checks before returning the result
+        this._checkClaim(claims, (c) => c.userId, 'userId');
+        this._checkClaim(claims, (c) => c.clientId, 'clientId');
+        this._checkArrayClaim(claims, (c) => c.scopes, 'scope');
+        this._checkClaim(claims, (c) => c.givenName, 'givenName');
+        this._checkClaim(claims, (c) => c.familyName, 'familyName');
+        this._checkClaim(claims, (c) => c.email, 'email');
+        return claims;
+    }
+
+    /*
+     * Return the claims
+     */
+    private _getClaimsObject(event: any): CoreApiClaims {
+
         if (typeof event.requestContext.authorizer.claims === 'string') {
 
             // In AWS we receive a serialized object
@@ -29,6 +48,28 @@ export class RequestContextAuthenticator {
 
             // On a local PC we have configured an object in our test/*.json files
             return event.requestContext.authorizer.claims;
+        }
+    }
+
+    /*
+     * Try to read a claim from the supplied object
+     */
+    private _checkClaim(claims: CoreApiClaims, accessor: (c: CoreApiClaims) => string, claimName: string): void {
+
+        const result = accessor(claims);
+        if (!result) {
+            throw ErrorUtils.fromMissingClaim(claimName);
+        }
+    }
+
+    /*
+     * Try to read an array claim from the supplied object
+     */
+    private _checkArrayClaim(claims: CoreApiClaims, accessor: (c: CoreApiClaims) => string[], claimName: string): void {
+
+        const result = accessor(claims);
+        if (!result) {
+            throw ErrorUtils.fromMissingClaim(claimName);
         }
     }
 }

@@ -24,8 +24,6 @@ export class ExceptionMiddleware implements MiddlewareObject<any, any> {
      */
     public onError(handler: HandlerLambda<any, any>, next: NextFunction): void {
 
-        console.log('*** EXCEPTION MIDDLEWARE ERROR');
-
         // Get the exception to handle and allow the application to implement its own error logic first
         let exceptionToHandle = handler.error;
         if (this._applicationExceptionHandler) {

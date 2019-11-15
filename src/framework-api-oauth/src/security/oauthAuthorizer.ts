@@ -39,19 +39,17 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
 
         } catch (e) {
 
-            // Write a 401 policy document
-            if (e instanceof DefaultClientError) {
-
-                // Include failure details in logs
-                super.logUnauthorized(e);
-
-                // We must return write an unauthorized policy document in order to return a 401 to the caller
-                const policyDocument = PolicyDocumentWriter.invalidTokenResponse(handler.event);
-                this.container.bind<any>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue(policyDocument);
+            // Rethrow exceptions and we will handle 401s specially
+            if (!(e instanceof DefaultClientError)) {
+                throw e;
             }
 
-            // Rethrow otherwise
-            throw e;
+            // Include 401 failure details in logs
+            super.logUnauthorized(e);
+
+            // We must return write an unauthorized policy document in order to return a 401 to the caller
+            const policyDocument = PolicyDocumentWriter.invalidTokenResponse(handler.event);
+            this.container.bind<any>(OAUTHPUBLICTYPES.PolicyDocument).toConstantValue(policyDocument);
         }
 
         // For async middleware, middy calls next for us, so do not call it here
@@ -69,7 +67,6 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
         // First read the token from the request header and report missing tokens
         const accessToken = this._readAccessToken(event.authorizationToken);
         if (!accessToken) {
-            console.log('*** AUTHORIZER MISSING AT');
             throw DefaultClientError.create401('No access token was supplied in the bearer header');
         }
 
