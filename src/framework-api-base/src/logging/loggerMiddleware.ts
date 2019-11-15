@@ -27,7 +27,7 @@ export class LoggerMiddleware implements MiddlewareObject<any, any> {
      */
     public after(handler: HandlerLambda<any, any>, next: NextFunction): void {
 
-        this._logEntry.end(handler.event, handler.context);
+        this._logEntry.end(handler.response);
         this._logEntry.write();
         next();
     }
@@ -37,7 +37,7 @@ export class LoggerMiddleware implements MiddlewareObject<any, any> {
      */
     public onError(handler: HandlerLambda<any, any>, next: NextFunction): void {
 
-        this._logEntry.end(handler.event, handler.context);
+        this._logEntry.end(handler.response);
         this._logEntry.write();
         next();
     }

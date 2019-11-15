@@ -1,7 +1,6 @@
 import {Context} from 'aws-lambda';
 import {Guid} from 'guid-typescript';
 import {injectable} from 'inversify';
-import * as os from 'os';
 import {LogEntry, PerformanceBreakdown} from '../../../framework-base';
 import {ApiError} from '../errors/apiError';
 import {ClientError} from '../errors/clientError';
@@ -20,15 +19,15 @@ export class LogEntryImpl implements LogEntry {
 
         this._data = new LogEntryData();
         this._data.apiName = apiName;
-        this._data.hostName = os.hostname();
     }
 
     /*
-     * Start logging
+     * Start logging and read data from the context where possible
      */
     public start(event: any, context: Context): void {
 
         this._data.performance.start();
+        this._calculateOperationName(context.functionName);
 
         // Our callers can supply a custom header so that we can keep track of who is calling each API
         const callingApplicationName = this._getHeader(event, 'x-mycompany-api-client');
@@ -40,6 +39,8 @@ export class LogEntryImpl implements LogEntry {
         const correlationId = this._getHeader(event, 'x-mycompany-correlation-id');
         if (correlationId) {
             this._data.correlationId = correlationId;
+        } else if (context.awsRequestId) {
+            this._data.correlationId = context.awsRequestId;
         } else {
             this._data.correlationId = Guid.create().toString();
         }
@@ -108,17 +109,12 @@ export class LogEntryImpl implements LogEntry {
     }
 
     /*
-     * Output data
+     * Finish writing output data by adding response details
      */
-    public end(event: any, context: Context) {
+    public end(response: any) {
 
-        // Finish performance measurements
         this._data.performance.dispose();
-
-        // Record response details
-        // this._data.statusCode = response.statusCode;
-
-        // Finalise this log entry
+        this._calculateResponseStatus(response);
         this._data.finalise();
     }
 
@@ -127,6 +123,43 @@ export class LogEntryImpl implements LogEntry {
      */
     public write(): void {
         console.log(JSON.stringify(this._data.toLogFormat(), null, 2));
+    }
+
+    /*
+     * Calculate the operation name from the AWS function name
+     * This is a value such as 'sampleapi-default-getCompanyList'
+     */
+    private _calculateOperationName(awsFunctionName: string | undefined) {
+        if (awsFunctionName) {
+            const parts = awsFunctionName.split('-');
+            if (parts.length > 0) {
+               const operationName =  parts[parts.length - 1];
+               if (operationName) {
+                    this._data.operationName = operationName.trim();
+               }
+            }
+        }
+    }
+
+    /*
+     * Try to calculate the response status
+     */
+    private _calculateResponseStatus(response: any): void {
+        
+        if (response.statusCode) {
+            
+            // For normal response bodies log the status code
+            this._data.statusCode = response.statusCode;
+
+        } else if (response.policyDocument) {
+            
+            // For policy document responses log 401 or 200
+            if (this._data.errorCode) {
+                this._data.statusCode = 401;
+            } else {
+                this._data.statusCode = 200;
+            }
+        }
     }
 
     /*
