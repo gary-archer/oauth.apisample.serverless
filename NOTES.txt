@@ -1,38 +1,33 @@
 TODO
 ----
-0. Redeploy to AWS and merge
-   API has been renamed to sampleapi so run sls remove on the old basicapi branch first
-   Then merge to master and update to node 10
+1. Get AWS working
+   API has been renamed to sampleapi so run sls remove on old then new then redeploy new to /api
+   Then merge to master
+   Current problems:
+   * Wrap the PolicyDocument in an unambiguous type
+   * Try bind instead of rebind
 
-1. Get launch.json TypeScript debugging working, with an option for each of the 4 operations
+2. Get launch.json TypeScript debugging working, with an option for each of the 4 operations
    DefaultClientError 401 to move to OAuth framework
 
-1. See if I can set these logging fields in AWS:
-   requestVerb, resourceId, requestPath, hostName
+3. Reduce package file sizes, which are currently:
+   * sample:     1296 KB
+   * authorizer: 3530 KB
 
-2. Reduce package file sizes, which are currently:
-   sample:     1296 KB
-   authorizer: 3530 KB
-
-3. Why do I need module=commonjs in tsconfig and is this the most standard option?
-   Can I use ts-node somehow?
-   https://github.com/serverless/serverless/tree/master/lib/plugins/create/templates/aws-nodejs-typescript
-
-
-   
-5. Look into webpack with source maps - including watch
+   Look into webpack with source maps - including watch
    Improve imports so that I get small file sizes
    Exclude source maps from upload packages via development and production modes
 
+   Why do I need module=commonjs in tsconfig and is this the most standard option?
+   Can I use ts-node somehow?
+   https://github.com/serverless/serverless/tree/master/lib/plugins/create/templates/aws-nodejs-typescript
 
-7. Fill in all logging fields
-   Use only console logging, which will be simplified due to no child entry for authorizer
+4. See if I can set these logging fields in AWS:
+   requestVerb, resourceId, requestPath, hostName
    
-8. Refine other API solutions based on results
-
-9. Cloud blog write ups to revamp
-
+5. Cloud blog write ups to revamp
 
 IMPROVE IN NODEJS SAMPLE
 ------------------------
 Constructor in LoggerFactoryImpl
+General comparison and use of loggerFactory at startup
