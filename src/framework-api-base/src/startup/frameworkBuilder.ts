@@ -5,10 +5,11 @@ import {Middy} from 'middy';
 import {BASEFRAMEWORKTYPES, LogEntry} from '../../../framework-base';
 import {FrameworkConfiguration} from '../configuration/frameworkConfiguration';
 import {ApplicationExceptionHandler} from '../errors/applicationExceptionHandler';
+import {ClientError} from '../errors/clientError';
 import {ExceptionMiddleware} from '../errors/exceptionMiddleware';
 import {LogEntryImpl} from '../logging/logEntryImpl';
-import {LoggerFactory} from '../logging/loggerFactory';
-import {RequestLoggerMiddleware} from '../logging/requestLoggerMiddleware';
+import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
+import {LoggerMiddleware} from '../logging/loggerMiddleware';
 import {CustomHeaderMiddleware} from '../middleware/customHeaderMiddleware';
 import {AsyncHandler} from '../utilities/asyncHandler';
 
@@ -18,16 +19,29 @@ import {AsyncHandler} from '../utilities/asyncHandler';
 export class FrameworkBuilder {
 
     private readonly _container: Container;
-    private readonly _configuration: FrameworkConfiguration;
-    private readonly _loggerFactory: LoggerFactory;
-
+    private readonly _loggerFactory: LoggerFactoryImpl;
+    private readonly _logEntry: LogEntryImpl;
     private _applicationExceptionHandler: ApplicationExceptionHandler | null;
 
-    public constructor(container: Container, configuration: FrameworkConfiguration, loggerFactory: LoggerFactory) {
+    public constructor(container: Container) {
+
         this._container = container;
-        this._configuration = configuration;
-        this._loggerFactory = loggerFactory;
         this._applicationExceptionHandler = null;
+
+        // Do initial safe setup to create logging objects
+        this._loggerFactory = new LoggerFactoryImpl();
+        this._logEntry = this._loggerFactory.getLogEntry();
+
+        // Bind the log entry early, so that it is always available for logging
+        this._container.bind<LogEntry>(BASEFRAMEWORKTYPES.LogEntry).toConstantValue(this._logEntry);
+    }
+
+    /*
+     * Configure logging when the JSON configuration is provided
+     */
+    public configure(configuration: FrameworkConfiguration): FrameworkBuilder {
+        this._loggerFactory.configure(configuration);
+        return this;
     }
 
     /*
@@ -35,14 +49,6 @@ export class FrameworkBuilder {
      */
     public withApplicationExceptionHandler(appExceptionHandler: ApplicationExceptionHandler): FrameworkBuilder {
         this._applicationExceptionHandler = appExceptionHandler;
-        return this;
-    }
-
-    /*
-     * Add framework dependencies to the container
-     */
-    public register(): FrameworkBuilder {
-        this._container.bind<LogEntry>(BASEFRAMEWORKTYPES.LogEntry).toConstantValue(new LogEntryImpl());
         return this;
     }
 
@@ -57,11 +63,18 @@ export class FrameworkBuilder {
             return await baseHandler(event, context);
 
         })
-        .use(new ExceptionMiddleware())
-        .use(new RequestLoggerMiddleware(this._container))
+        .use(new ExceptionMiddleware(this._logEntry, this._applicationExceptionHandler))
+        .use(new LoggerMiddleware(this._logEntry))
         .use(new CustomHeaderMiddleware(isLambdaAuthorizer));
 
         // Return the base handler wrapped in cross cutting concerns
         return wrappedHandler;
+    }
+
+    /*
+     * Ask our logger factory to log the startup error and return a response
+     */
+    public handleStartupError(error: any): ClientError {
+        return this._loggerFactory.logStartupError(error);
     }
 }

@@ -1,47 +1,44 @@
-import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
-import {BASEFRAMEWORKTYPES} from '../../../framework-base';
 import {LogEntryImpl} from './logEntryImpl';
 
 /*
  * The middleware coded in a class based manner
  */
-export class RequestLoggerMiddleware implements MiddlewareObject<any, any> {
+export class LoggerMiddleware implements MiddlewareObject<any, any> {
 
-    private readonly _container: Container;
+    private readonly _logEntry: LogEntryImpl;
 
-    public constructor(container: Container) {
-        this._container = container;
+    public constructor(logEntry: LogEntryImpl) {
+        this._logEntry = logEntry;
         this._setupCallbacks();
     }
 
     /*
-     * Create the log object
+     * Start logging when a request begins
      */
     public before(handler: HandlerLambda<any, any>, next: NextFunction): void {
 
-        // Create the log entry for this request
-        const logEntry = this._container.get<LogEntryImpl>(BASEFRAMEWORKTYPES.LogEntry);
-
-        // Start logging
-        handler.event.log = logEntry;
-        handler.event.log.start();
+        this._logEntry.start(handler.event, handler.context);
         next();
     }
 
     /*
-     * Log the request after normal completion
+     * Finish logging after normal completion
      */
     public after(handler: HandlerLambda<any, any>, next: NextFunction): void {
-        handler.event.log.end();
+
+        this._logEntry.end(handler.event, handler.context);
+        this._logEntry.write();
         next();
     }
 
     /*
-     * Log the request after failed completion
+     * Finish logging after failed completion
      */
     public onError(handler: HandlerLambda<any, any>, next: NextFunction): void {
-        handler.event.log.end();
+
+        this._logEntry.end(handler.event, handler.context);
+        this._logEntry.write();
         next();
     }
 

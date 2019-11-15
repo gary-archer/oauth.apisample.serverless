@@ -8,11 +8,7 @@ import {ApiError} from './src/errors/apiError';
 import {ApplicationExceptionHandler} from './src/errors/applicationExceptionHandler';
 import {ClientError} from './src/errors/clientError';
 import {DefaultClientError} from './src/errors/defaultClientError';
-import {ErrorHandler} from './src/errors/errorHandler';
 import {ExceptionMiddleware} from './src/errors/exceptionMiddleware';
-import {LoggerFactory} from './src/logging/loggerFactory';
-import {RequestLoggerMiddleware} from './src/logging/requestLoggerMiddleware';
-import {CustomHeaderMiddleware} from './src/middleware/customHeaderMiddleware';
 import {CoreApiClaims} from './src/security/coreApiClaims';
 import {RequestContextAuthorizerMiddleware} from './src/security/RequestContextAuthorizerMiddleware';
 import {FrameworkBuilder} from './src/startup/frameworkBuilder';
@@ -28,11 +24,7 @@ export {
     ApplicationExceptionHandler,
     ClientError,
     DefaultClientError,
-    ErrorHandler,
     ExceptionMiddleware,
-    LoggerFactory,
-    RequestLoggerMiddleware,
-    CustomHeaderMiddleware,
     CoreApiClaims,
     RequestContextAuthorizerMiddleware,
     FrameworkBuilder,

@@ -1,8 +1,9 @@
 TODO
 ----
-1. Error handling and utility classes for OAuth errors and normal logic errors
+1. Get logging working to a basic level, where 400 and 500 errors are captured
    getCompanyTransactions not handling company=3 or company=5 errors
-   Get logging working to a basic level, where 400 and 500 errors are captured
+
+1a. Move OAuth policy writing to a separate file
 
 2. Monitor packaging file sizes and record file sizes for feature v master branch
 
@@ -26,3 +27,8 @@ TODO
 8. Refine other API solutions based on results
 
 9. Cloud blog write ups to revamp
+
+
+IMPROVE IN NODEJS SAMPLE
+------------------------
+Constructor in LoggerFactoryImpl

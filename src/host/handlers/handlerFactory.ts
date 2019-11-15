@@ -5,9 +5,7 @@ import {MiddlewareObject, Middy} from 'middy';
 import {cors} from 'middy/middlewares';
 import {AsyncHandler,
         DebugProxyAgentMiddleware,
-        ErrorHandler,
         FrameworkBuilder,
-        LoggerFactory,
         RequestContextAuthorizerMiddleware,
         ResponseHandler} from '../../framework-api-base';
 import {OAuthAuthorizerBuilder} from '../../framework-api-oauth';
@@ -23,11 +21,9 @@ import {RestErrorTranslator} from '../errors/restErrorTranslator';
 export class HandlerFactory {
 
     private readonly _container: Container;
-    private readonly _loggerFactory: LoggerFactory;
 
     public constructor(container: Container) {
         this._container = container;
-        this._loggerFactory = new LoggerFactory();
     }
 
     /*
@@ -35,19 +31,20 @@ export class HandlerFactory {
      */
     public createLambdaHandler(baseHandler: AsyncHandler): Handler {
 
-        try {
-            // First load our JSON configuration
-            const configuration = this._loadConfiguration();
+        const framework = new FrameworkBuilder(this._container);
 
-            // Register framework dependencies
-            const framework = new FrameworkBuilder(this._container, configuration.framework, this._loggerFactory)
-                .withApplicationExceptionHandler(new RestErrorTranslator())
-                .register();
+        try {
+
+            // Load our JSON configuration then configure the framework
+            const configuration = this._loadConfiguration();
+            framework
+                .configure(configuration.framework)
+                .withApplicationExceptionHandler(new RestErrorTranslator());
 
             // Register application dependencies
             CompositionRoot.registerDependencies(this._container);
 
-            // Configure middleware for error handling and logging as early as possible
+            // Configure middleware for error handling and logging
             const enrichedHandler = framework.configureMiddleware(baseHandler, false);
 
             // Create the authorization middleware
@@ -56,13 +53,10 @@ export class HandlerFactory {
             // Add final middleware, and configure CORS and HTTPS debugging before the authorizer
             return this._applyApplicationMiddleware(enrichedHandler, configuration, authorizerMiddleware);
 
-        } catch (ex) {
+        } catch (e) {
 
-            // Return a handler that returns a startup error
-            const clientError = ErrorHandler.handleStartupError(ex);
-            return async (e: any, c: Context) => {
-                return ResponseHandler.objectResponse(500, clientError);
-            };
+            // Handle any startup exceptions
+            return this._handleStartupError(framework, e);
         }
     }
 
@@ -71,13 +65,12 @@ export class HandlerFactory {
      */
     public createLambdaAuthorizerHandler(baseHandler: AsyncHandler): Handler {
 
-        try {
-            // First load our JSON configuration
-            const configuration = this._loadConfiguration();
+        const framework = new FrameworkBuilder(this._container);
 
-            // Register base framework dependencies
-            const framework = new FrameworkBuilder(this._container, configuration.framework, this._loggerFactory)
-                .register();
+        try {
+            // Load our JSON configuration then configure the framework
+            const configuration = this._loadConfiguration();
+            framework.configure(configuration.framework);
 
             // Register OAuth framework dependencies
             const authorizerBuilder = new OAuthAuthorizerBuilder<SampleApiClaims>(this._container, configuration.oauth)
@@ -94,13 +87,10 @@ export class HandlerFactory {
             // Add final middleware, and configure CORS and HTTPS debugging before the authorizer
             return this._applyApplicationMiddleware(enrichedHandler, configuration, authorizerMiddleware);
 
-        } catch (ex) {
+        } catch (e) {
 
-            // Return a handler that returns a startup error
-            const clientError = ErrorHandler.handleStartupError(ex);
-            return async (e: any, c: Context) => {
-                return ResponseHandler.objectResponse(500, clientError);
-            };
+            // Handle any startup exceptions
+            return this._handleStartupError(framework, e);
         }
     }
 
@@ -125,5 +115,16 @@ export class HandlerFactory {
             .use(cors({origins: configuration.api.trustedOrigins}))
             .use(new DebugProxyAgentMiddleware(configuration.api.useProxy, configuration.api.proxyUrl))
             .use(authorizerMiddleware);
+    }
+
+    /*
+     * Ensure that any startup errors are logged and then return a handler that will provide the client response
+     */
+    private _handleStartupError(framework: FrameworkBuilder, error: any): Handler {
+
+        const clientError = framework.handleStartupError(error);
+        return async (e: any, c: Context) => {
+            return ResponseHandler.objectResponse(500, clientError.toResponseFormat());
+        };
     }
 }

@@ -2,7 +2,7 @@ import {inject, injectable} from 'inversify';
 import * as jwt from 'jsonwebtoken';
 import jwks from 'jwks-rsa';
 import {Client, custom, Issuer} from 'openid-client';
-import {CoreApiClaims, DebugProxyAgent, DefaultClientError, ErrorHandler} from '../../../framework-api-base';
+import {CoreApiClaims, DebugProxyAgent, DefaultClientError} from '../../../framework-api-base';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
 import {ErrorUtils} from '../errors/errorUtils';
@@ -98,7 +98,7 @@ export class OAuthAuthenticator {
 
                 // Handle errors
                 if (err) {
-                    return reject(ErrorHandler.fromSigningKeyDownloadError(err, this._issuer!.metadata.jwks_uri!));
+                    return reject(ErrorUtils.fromSigningKeyDownloadError(err, this._issuer!.metadata.jwks_uri!));
                 }
 
                 // Find the key in the download
@@ -163,7 +163,7 @@ export class OAuthAuthenticator {
         } catch (e) {
 
             // Report errors clearly
-            throw ErrorHandler.fromUserInfoError(e, this._issuer!.metadata.userinfo_endpoint!);
+            throw ErrorUtils.fromUserInfoError(e, this._issuer!.metadata.userinfo_endpoint!);
         }
     }
 

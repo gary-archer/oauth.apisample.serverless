@@ -1,5 +1,8 @@
+import {ClientError} from '../errors/clientError';
+
 /*
- * A simple logger class
+ * An interface that allows business logic to access logging objects
  */
-export class LoggerFactory {
+export interface LoggerFactory {
+    logStartupError(exception: any): ClientError;
 }

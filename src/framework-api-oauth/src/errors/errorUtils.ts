@@ -16,6 +16,16 @@ export class ErrorUtils {
     }
 
     /*
+     * Handle the error for key identifier lookups
+     */
+    public static fromSigningKeyDownloadError(responseError: any, url: string): ApiError {
+
+        const apiError = new ApiError('signing_key_download', 'Signing key download failed');
+        ErrorUtils._setErrorDetails(apiError, null, responseError, url);
+        return apiError;
+    }
+
+    /*
      * Handle user info lookup failures
      */
     public static fromUserInfoError(responseError: any, url: string): ApiError {

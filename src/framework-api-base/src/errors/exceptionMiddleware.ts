@@ -1,14 +1,21 @@
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
+import {LogEntryImpl} from '../logging/logEntryImpl';
 import {ResponseHandler} from '../utilities/responseHandler';
 import {ApiError} from './apiError';
-import {ErrorHandler} from './errorHandler';
+import {ApplicationExceptionHandler} from './applicationExceptionHandler';
+import {ErrorUtils} from './errorUtils';
 
 /*
  * The exception middleware coded in a class based manner
  */
 export class ExceptionMiddleware implements MiddlewareObject<any, any> {
 
-    public constructor() {
+    private readonly _logEntry: LogEntryImpl;
+    private readonly _applicationExceptionHandler: ApplicationExceptionHandler | null;
+
+    public constructor(logEntry: LogEntryImpl, appExceptionHandler: ApplicationExceptionHandler | null) {
+        this._logEntry = logEntry;
+        this._applicationExceptionHandler = appExceptionHandler;
         this._setupCallbacks();
     }
 
@@ -17,14 +24,22 @@ export class ExceptionMiddleware implements MiddlewareObject<any, any> {
      */
     public onError(handler: HandlerLambda<any, any>, next: NextFunction): void {
 
+        // Get the exception to handle and allow the application to implement its own error logic first
+        let exceptionToHandle = handler.error;
+        if (this._applicationExceptionHandler) {
+            exceptionToHandle = this._applicationExceptionHandler.translate(exceptionToHandle);
+        }
+
         // Get the error into a known object
-        const error = ErrorHandler.handleError(handler.error, handler.event.log);
-        let clientError;
+        const error = ErrorUtils.fromException(exceptionToHandle);
 
         // Convert to the client error
+        let clientError;
         if (error instanceof ApiError) {
-            clientError = error.toClientError(ErrorHandler.apiName);
+            this._logEntry.setApiError(error);
+            clientError = error.toClientError('SampleApi');
         } else {
+            this._logEntry.setClientError(error);
             clientError = error;
         }
 

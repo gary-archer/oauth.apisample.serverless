@@ -8,8 +8,8 @@ import {OAUTHPUBLICTYPES} from './src/configuration/oauthPublicTypes';
 import {OAuthAuthorizerBuilder} from './src/startup/oauthAuthorizerBuilder';
 
 export {
-    CustomClaimsProvider,
-    OAuthConfiguration,
     OAUTHPUBLICTYPES,
+    OAuthConfiguration,
+    CustomClaimsProvider,
     OAuthAuthorizerBuilder,
 };

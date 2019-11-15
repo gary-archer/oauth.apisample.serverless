@@ -57,6 +57,7 @@ export class OAuthAuthorizerBuilder<TClaims extends CoreApiClaims> {
         this._container.bind<OAuthConfiguration>(OAUTHINTERNALTYPES.Configuration).toConstantValue(this._configuration);
         this._container.bind<OAuthAuthenticator>(OAUTHINTERNALTYPES.OAuthAuthenticator).to(OAuthAuthenticator);
 
+        // Register OAuth types that supply customised claims
         this._container.bind<OAuthAuthorizer<TClaims>>(
             OAUTHINTERNALTYPES.OAuthAuthorizer).to(OAuthAuthorizer);
 

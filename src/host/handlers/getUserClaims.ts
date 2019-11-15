@@ -22,9 +22,6 @@ const baseHandler = async (event: any, context: Context) => {
         email: claims.email,
     } as UserInfoClaims;
 
-    console.log('*** DEBUG');
-    console.log(userInfo.email);
-
     // Return user info in the response
     return ResponseHandler.objectResponse(200, userInfo);
 };

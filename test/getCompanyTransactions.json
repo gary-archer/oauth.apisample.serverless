@@ -3,7 +3,7 @@
         "x-test-exception": "false"
     },
     "pathParameters": {
-        "id": "2"
+        "id": "3"
     },
     "requestContext": {
         "authorizer": {
