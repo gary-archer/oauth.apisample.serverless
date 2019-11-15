@@ -1,16 +1,10 @@
 TODO
 ----
-1. Get AWS working
-   API has been renamed to sampleapi so run sls remove on old then new then redeploy new to /api
-   Then merge to master
-   Current problems:
-   * Wrap the PolicyDocument in an unambiguous type
-   * Try bind instead of rebind
-
-2. Get launch.json TypeScript debugging working, with an option for each of the 4 operations
+1. Get launch.json TypeScript debugging working, with an option for each of the 4 operations
    DefaultClientError 401 to move to OAuth framework
+   Look into sls offline and see if I can run a local server
 
-3. Reduce package file sizes, which are currently:
+2. See if I can reduce package file sizes, which are currently:
    * sample:     1296 KB
    * authorizer: 3530 KB
 
@@ -22,12 +16,13 @@ TODO
    Can I use ts-node somehow?
    https://github.com/serverless/serverless/tree/master/lib/plugins/create/templates/aws-nodejs-typescript
 
-4. See if I can set these logging fields in AWS:
+3. See if I can set these logging fields in AWS:
    requestVerb, resourceId, requestPath, hostName
    
-5. Cloud blog write ups to revamp
+4. Cloud blog write ups to revamp
 
-IMPROVE IN NODEJS SAMPLE
-------------------------
+IMPROVE IN NODEJS / JAVA SAMPLES
+--------------------------------
 Constructor in LoggerFactoryImpl
 General comparison and use of loggerFactory at startup
+DefaultClientError 401 to move to OAuth framework

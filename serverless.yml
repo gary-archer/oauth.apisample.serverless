@@ -14,7 +14,7 @@ custom:
   customDomain:
     domainName: api.authguidance-examples.com
     certificateName: '*.authguidance-examples.com'
-    basePath: api2
+    basePath: api
     stage: ${self:custom.environment.settings.stage}
     endpointType: regional
   allowedHeaders:
