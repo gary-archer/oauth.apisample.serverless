@@ -1,0 +1,37 @@
+{
+  "name": "sampleapi",
+  "version": "4.0.0",
+  "description": "An OAuth secured API using AWS Serverless Hosting via lambdas, and a portable coding model",
+  "main": "handler.ts",
+  "scripts": {
+    "lint": "tslint -c tslint.json 'src/**/*.ts' && tslint -c tslint.json 'scripts/**/*.ts'",
+    "build": "rimraf dist && tsc --sourceMap true",
+    "start": "sls offline",
+    "package": "npm run buildRelease && rimraf .serverless && sls package --stage deployed",
+    "buildRelease": "rimraf dist && tsc",
+    "customPackager": "ts-node deployment/customPackager.ts",
+    "deploy": "sls deploy --stage deployed --package .serverless",
+    "remove": "sls remove --stage deployed"
+  },
+  "author": "Gary Archer",
+  "license": "ISC",
+  "dependencies": {
+    "framework-api-base": "file:src/framework-api-base",
+    "framework-api-oauth": "file:src/framework-api-oauth",
+    "fs-extra": "^8.1.0",
+    "inversify": "^5.0.1",
+    "middy": "^0.30.2",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.15",
+    "@types/fs-extra": "^8.0.1",
+    "@types/node": "^12.11.7",
+    "rimraf": "^2.6.2",
+    "serverless": "^1.57.0",
+    "serverless-deployment": "file:deployment",
+    "serverless-offline": "6.0.0-alpha.46",
+    "tslint": "^5.20.1",
+    "typescript": "^3.7.2"
+  }
+}

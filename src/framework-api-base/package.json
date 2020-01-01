@@ -1,0 +1,20 @@
+{
+  "name": "framework-api-base",
+  "version": "1.0.0",
+  "description": "Common code for the Base API Framework",
+  "main": "index.ts",
+  "keywords": [],
+  "author": "Gary Archer",
+  "license": "ISC",
+  "dependencies": {
+    "guid-typescript": "^1.0.9",
+    "inversify": "^5.0.1",
+    "middy": "^0.30.2",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.15",
+    "@types/node": "^12.11.7",
+    "tunnel-agent": "^0.6.0"
+  }
+}
