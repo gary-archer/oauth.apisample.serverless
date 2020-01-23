@@ -1,4 +1,5 @@
-import {ApiError, DefaultClientError, ResponseWriter} from '../../../framework-api-base';
+import {ApiError, BaseErrorCodes, ErrorFactory} from '../../../framework-api-base';
+import { OAuthErrorCodes } from './oauthErrorCodes';
 
 /*
  * OAuth specific error processing
@@ -10,8 +11,8 @@ export class ErrorUtils {
      */
     public static fromMetadataError(responseError: any, url: string): ApiError {
 
-        const apiError = new ApiError(
-            'metadata_lookup_failure',
+        const apiError = ErrorFactory.createApiError(
+            OAuthErrorCodes.metadataLookupFailure,
             'Metadata lookup failed',
             responseError.stack);
 
@@ -24,8 +25,8 @@ export class ErrorUtils {
      */
     public static fromSigningKeyDownloadError(responseError: any, url: string): ApiError {
 
-        const apiError = new ApiError(
-            'signing_key_download',
+        const apiError = ErrorFactory.createApiError(
+            OAuthErrorCodes.signingKeyDownloadFailure,
             'Signing key download failed',
             responseError.stack);
 
@@ -40,7 +41,7 @@ export class ErrorUtils {
 
         // Handle a race condition where the access token expires during user info lookup
         if (responseError.error && responseError.error === 'invalid_token') {
-            throw DefaultClientError.create401('Access token expired during user info lookup');
+            throw ErrorFactory.create401Error('Access token expired during user info lookup');
         }
 
         // Avoid reprocessing
@@ -50,7 +51,7 @@ export class ErrorUtils {
 
         const [code, description] = ErrorUtils._readOAuthErrorResponse(responseError);
         const apiError = ErrorUtils._createOAuthApiError(
-            'userinfo_failure',
+            OAuthErrorCodes.userinfoFailure,
             'User info lookup failed',
             code,
             responseError.stack);
@@ -63,8 +64,8 @@ export class ErrorUtils {
      */
     public static fromMissingClaim(claimName: string): ApiError {
 
-        const apiError = new ApiError('claims_failure', 'Authorization Data Not Found');
-        apiError.details = `An empty value was found for the expected claim ${claimName}`;
+        const apiError = ErrorFactory.createApiError(BaseErrorCodes.claimsFailure, 'Authorization Data Not Found');
+        apiError.setDetails(`An empty value was found for the expected claim ${claimName}`);
         return apiError;
     }
 
@@ -102,7 +103,7 @@ export class ErrorUtils {
             message += ` : ${oauthErrorCode}`;
         }
 
-        return new ApiError(errorCode, message, stack);
+        return ErrorFactory.createApiError(errorCode, message, stack);
     }
 
     /*
@@ -125,7 +126,7 @@ export class ErrorUtils {
         if (url) {
             detailsText += `, URL: ${url}`;
         }
-        error.details = detailsText;
+        error.setDetails(detailsText);
     }
 
     /*

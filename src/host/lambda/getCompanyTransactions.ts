@@ -1,7 +1,8 @@
 import {Context} from 'aws-lambda';
 import 'reflect-metadata';
-import {APIFRAMEWORKTYPES, ContainerHelper, DefaultClientError, ResponseWriter} from '../../framework-api-base';
+import {APIFRAMEWORKTYPES, ContainerHelper, ErrorFactory, ResponseWriter} from '../../framework-api-base';
 import {LOGICTYPES} from '../../logic/configuration/logicTypes';
+import {ErrorCodes} from '../../logic/errors/errorCodes';
 import {CompanyService} from '../../logic/services/companyService';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
 import {HandlerFactory} from './handlerFactory';
@@ -15,9 +16,9 @@ const baseHandler = async (event: any, context: Context) => {
     const id = parseInt(event.pathParameters.id, 10);
     if (isNaN(id) || id <= 0) {
 
-        throw new DefaultClientError(
+        throw ErrorFactory.createClientError(
             400,
-            'invalid_company_id',
+            ErrorCodes.invalidCompanyId,
             'The company id must be a positive numeric integer');
     }
 

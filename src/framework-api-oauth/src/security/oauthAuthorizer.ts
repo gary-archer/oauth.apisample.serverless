@@ -1,9 +1,10 @@
 import {Context, CustomAuthorizerResult} from 'aws-lambda';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {BaseAuthorizerMiddleware,
+        ClientError,
         ContainerHelper,
         CoreApiClaims,
-        DefaultClientError} from '../../../framework-api-base';
+        ErrorFactory} from '../../../framework-api-base';
 import {ClaimsSupplier} from '../claims/claimsSupplier';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
 import {OAUTHPUBLICTYPES} from '../configuration/oauthPublicTypes';
@@ -44,7 +45,7 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
         } catch (e) {
 
             // Rethrow exceptions and we will handle 401s specially
-            if (!(e instanceof DefaultClientError)) {
+            if (!(e instanceof ClientError)) {
                 throw e;
             }
 
@@ -74,7 +75,7 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
         // First read the token from the request header and report missing tokens
         const accessToken = this._readAccessToken(event);
         if (!accessToken) {
-            throw DefaultClientError.create401('No access token was supplied in the bearer header');
+            throw ErrorFactory.create401Error('No access token was supplied in the bearer header');
         }
 
         // Create new claims which we will then populate

@@ -103,8 +103,8 @@ export class LogEntryImpl implements LogEntry {
      */
     public setApiError(error: ApiError): void {
         this._data.errorData = error.toLogFormat(this._data.apiName);
-        this._data.errorCode = error.code;
-        this._data.errorId = error.instanceId;
+        this._data.errorCode = error.getErrorCode();
+        this._data.errorId = error.getInstanceId();
     }
 
     /*

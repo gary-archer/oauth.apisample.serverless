@@ -3,6 +3,7 @@ import {LOGICTYPES} from '../configuration/logicTypes';
 import {Company} from '../entities/company';
 import {CompanyTransactions} from '../entities/companyTransactions';
 import {BusinessError} from '../errors/businessError';
+import {ErrorCodes} from '../errors/errorCodes';
 import {CompanyRepository} from '../repositories/companyRepository';
 
 /*
@@ -59,6 +60,6 @@ export class CompanyService {
      * Requests for both unauthorized and non existent data are treated the same
      */
     private _unauthorizedError(companyId: number): BusinessError {
-        return new BusinessError('company_not_found', `Company ${companyId} was not found for this user`);
+        return new BusinessError(ErrorCodes.companyNotFound, `Company ${companyId} was not found for this user`);
     }
 }

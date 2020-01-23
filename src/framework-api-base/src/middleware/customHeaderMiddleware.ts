@@ -1,5 +1,5 @@
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
-import {ApiError} from '../errors/apiError';
+import {ErrorFactory} from '../errors/errorFactory';
 
 /*
  * A middleware for special header processing, used to simulate exceptions and check deployed error handling
@@ -24,7 +24,7 @@ export class CustomHeaderMiddleware implements MiddlewareObject<any, any> {
             const exceptionHeader = handler.event.headers[textExceptionHeaderName];
             if (exceptionHeader) {
                 if (exceptionHeader.toLowerCase() === this._apiName.toLowerCase()) {
-                    throw new ApiError('exception_simulation', 'An unexpected exception occurred in the API');
+                    throw ErrorFactory.createApiError('exception_simulation', 'An unexpected exception occurred in the API');
                 }
             }
         }

@@ -1,3 +1,5 @@
+import {BaseErrorCodes, ErrorFactory} from '../../../framework-api-base';
+import {ExtendedError} from '../../../framework-base';
 import {ApiError} from './apiError';
 import {ClientError} from './clientError';
 
@@ -30,15 +32,15 @@ export class ErrorUtils {
     public static createApiError(exception: any, errorCode?: string, message?: string): ApiError {
 
         // Default details
-        const defaultErrorCode = 'server_error';
+        const defaultErrorCode = BaseErrorCodes.serverError;
         const defaultMessage = 'An unexpected exception occurred in the API';
 
         // Create the error
-        const error = new ApiError(
+        const error = ErrorFactory.createApiError(
             errorCode || defaultErrorCode,
             message || defaultMessage,
             exception.stack);
-        error.details = ErrorUtils._getExceptionDetailsMessage(exception);
+        error.setDetails(ErrorUtils._getExceptionDetailsMessage(exception));
         return error;
     }
 
@@ -47,8 +49,8 @@ export class ErrorUtils {
      */
     public static fromMissingClaim(claimName: string): ApiError {
 
-        const apiError = new ApiError('claims_failure', 'Authorization Data Not Found');
-        apiError.details = `An empty value was found for the expected claim ${claimName}`;
+        const apiError = ErrorFactory.createApiError(BaseErrorCodes.claimsFailure, 'Authorization Data Not Found');
+        apiError.setDetails(`An empty value was found for the expected claim ${claimName}`);
         return apiError;
     }
 
@@ -59,6 +61,22 @@ export class ErrorUtils {
 
         if (exception instanceof ApiError) {
             return exception as ApiError;
+        }
+
+        // Convert from our technology neutral custom exception to an API specific error
+        if (exception instanceof ExtendedError) {
+            const error = exception as ExtendedError;
+
+            const apiError = ErrorFactory.createApiError(
+                error.code,
+                error.message,
+                error.stack);
+
+            if (error.details) {
+                apiError.setDetails(error.details);
+            }
+
+            return apiError;
         }
 
         return null;

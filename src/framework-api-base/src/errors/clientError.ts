@@ -2,17 +2,20 @@
 /*
  * An interface to represent client error behaviour
  */
-export interface ClientError {
+export abstract class ClientError extends Error {
+
+    // Set additional details returned for API 500 errors
+    public abstract setExceptionDetails(area: string, instanceId: number, utcTime: string): void;
 
     // Return the HTTP status code
-    getStatusCode(): number;
+    public abstract getStatusCode(): number;
 
     // Return the error code
-    getErrorCode(): string;
+    public abstract getErrorCode(): string;
 
     // Return the JSON response format
-    toResponseFormat(): any;
+    public abstract toResponseFormat(): any;
 
     // Return the JSON log format
-    toLogFormat(): any;
+    public abstract toLogFormat(): any;
 }

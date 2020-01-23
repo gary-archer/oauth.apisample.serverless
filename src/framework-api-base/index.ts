@@ -6,8 +6,9 @@ import {APIFRAMEWORKTYPES} from './src/configuration/apiFrameworkTypes';
 import {FrameworkConfiguration} from './src/configuration/frameworkConfiguration';
 import {ApiError} from './src/errors/apiError';
 import {ApplicationExceptionHandler} from './src/errors/applicationExceptionHandler';
+import {BaseErrorCodes} from './src/errors/baseErrorCodes';
 import {ClientError} from './src/errors/clientError';
-import {DefaultClientError} from './src/errors/defaultClientError';
+import {ErrorFactory} from './src/errors/errorFactory';
 import {ServerlessOfflineUnauthorizedError} from './src/errors/serverlessOfflineUnauthorizedError';
 import {BaseAuthorizerMiddleware} from './src/security/baseAuthorizerMiddleware';
 import {CoreApiClaims} from './src/security/coreApiClaims';
@@ -24,8 +25,9 @@ export {
     FrameworkConfiguration,
     ApiError,
     ApplicationExceptionHandler,
+    BaseErrorCodes,
     ClientError,
-    DefaultClientError,
+    ErrorFactory,
     ServerlessOfflineUnauthorizedError,
     BaseAuthorizerMiddleware,
     CoreApiClaims,

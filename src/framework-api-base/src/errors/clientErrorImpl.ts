@@ -1,19 +1,9 @@
 import {ClientError} from './clientError';
 
 /*
- * The default error object to return to the client
- * Business logic can also throw its own error types that implement IClientError
+ * The default implementation of a client error
  */
-export class DefaultClientError extends Error implements ClientError {
-
-    /*
-     * A helper method to return a 401 error
-     */
-    public static create401(reason: string): DefaultClientError {
-        const error = new DefaultClientError(401, 'unauthorized', 'Missing, invalid or expired access token');
-        error.LogContext = reason;
-        return error;
-    }
+export class ClientErrorImpl extends ClientError {
 
     /*
      * Fields in all client errors
@@ -60,7 +50,7 @@ export class DefaultClientError extends Error implements ClientError {
     /*
      * A 4xx error can be thrown with additional data that is logged for support purposes
      */
-    public set LogContext(value: any) {
+    public set logContext(value: any) {
         this._logContext = value;
     }
 

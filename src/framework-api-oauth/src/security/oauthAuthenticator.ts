@@ -2,7 +2,7 @@ import {inject, injectable} from 'inversify';
 import jsonwebtoken from 'jsonwebtoken';
 import jwkToPem from 'jwk-to-pem';
 import {Client, custom, Issuer} from 'openid-client';
-import {CoreApiClaims, DebugProxyAgent, DefaultClientError} from '../../../framework-api-base';
+import {CoreApiClaims, DebugProxyAgent, ErrorFactory} from '../../../framework-api-base';
 import {BASEFRAMEWORKTYPES, LogEntry, using} from '../../../framework-base';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
@@ -50,7 +50,7 @@ export class OAuthAuthenticator {
         if (!decoded) {
 
             // Indicate an invalid token if we cannot decode it
-            throw DefaultClientError.create401('Unable to decode received JWT');
+            throw ErrorFactory.create401Error('Unable to decode received JWT');
         }
 
         // Get the key identifier from the JWT header
@@ -118,7 +118,7 @@ export class OAuthAuthenticator {
             }
 
             // Indicate not found
-            throw DefaultClientError.create401(
+            throw ErrorFactory.create401Error(
                 `Key with identifier: ${tokenKeyIdentifier} not found in JWKS download`);
         });
     }
@@ -148,7 +148,7 @@ export class OAuthAuthenticator {
                     details += ` : ${e.message}`;
                 }
 
-                throw DefaultClientError.create401(details);
+                throw ErrorFactory.create401Error(details);
             }
         });
     }

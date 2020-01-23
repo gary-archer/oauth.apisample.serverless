@@ -1,6 +1,6 @@
-import {ApiError, ApplicationExceptionHandler, DefaultClientError} from '../../framework-api-base';
+import {ApplicationExceptionHandler, ErrorFactory} from '../../framework-api-base';
 import {BusinessError} from '../../logic/errors/businessError';
-import {CustomException} from '../../logic/errors/customException';
+import { ErrorCodes } from '../../logic/errors/errorCodes';
 
 /*
  * A class to perform application level error translation
@@ -17,27 +17,10 @@ export class RestErrorTranslator implements ApplicationExceptionHandler {
             const businessError = ex as BusinessError;
 
             // Return a REST specific error
-            return new DefaultClientError(
+            return ErrorFactory.createClientError(
                     this._getStatusCode(businessError),
                     businessError.code,
                     businessError.message);
-        }
-
-        // Catch errors that will be returned with a 500 status
-        if (ex instanceof CustomException) {
-            const customException = ex as CustomException;
-
-            // Return a REST specific error
-            const apiError = new ApiError(
-                    customException.code,
-                    customException.message,
-                    customException.stack);
-
-            if (customException.details) {
-                apiError.details = customException.details;
-            }
-
-            return apiError;
         }
 
         return ex;
@@ -51,7 +34,7 @@ export class RestErrorTranslator implements ApplicationExceptionHandler {
         switch (error.code) {
 
             // Use 404 for these errors
-            case 'company_not_found':
+            case ErrorCodes.companyNotFound:
                 return 404;
 
             // Return 400 by default

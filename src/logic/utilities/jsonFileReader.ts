@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import {injectable} from 'inversify';
-import {CustomException} from '../errors/customException';
+import {ExtendedError} from '../../framework-base';
 
 /*
  * A simple utility to deal with the infrastructure of reading JSON files
@@ -22,8 +22,18 @@ export class JsonFileReader {
         } catch (e) {
 
             // Report the error including an error code and exception details
-            const error = new CustomException('file_read_error', 'Problem encountered reading data');
-            error.details = e;
+            const error = new ExtendedError(
+                'file_read_error',
+                'Problem encountered reading data',
+                e.stack);
+
+            // File system errors are a JSON object with the error number
+            if (e instanceof Error) {
+                error.details = e.message;
+            } else {
+                error.details = e;
+            }
+
             throw error;
         }
     }
