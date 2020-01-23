@@ -108,6 +108,16 @@ functions:
           method: get
           cors:
             origin: ${self:custom.config.settings.trustedOrigin}
+      - http: 
+          path: /desktop/{proxy+}
+          method: get
+          cors:
+            origin: ${self:custom.config.settings.trustedOrigin}
+      - http: 
+          path: /mobile/{proxy+}
+          method: get
+          cors:
+            origin: ${self:custom.config.settings.trustedOrigin}
 
 # By default all files are included so remove files we don't need for any lambda
 # The custom packager does the rest of the work in code, including adding node_modules

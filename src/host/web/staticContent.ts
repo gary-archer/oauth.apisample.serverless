@@ -1,5 +1,5 @@
 import {Context} from 'aws-lambda';
-import {DevlopmentStaticContentLoader} from './developmentStaticContentLoader';
+import {WebStaticContent} from './webStaticContent';
 
 /*
  * This handler is a primitive web server that runs on a developer PC
@@ -10,7 +10,7 @@ const handler = async (event: any, context: Context) => {
     try {
 
         // Try to load the file
-        const loader = new DevlopmentStaticContentLoader();
+        const loader = new WebStaticContent();
         const [data, mimeType] = await loader.loadFile(event.path);
 
         // Return the web file as bytes
