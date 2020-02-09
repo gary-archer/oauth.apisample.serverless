@@ -1,5 +1,6 @@
 import {ApiError} from './apiError';
 import {ApiErrorImpl} from './apiErrorImpl';
+import {BaseErrorCodes} from './baseErrorCodes';
 import {ClientError} from './clientError';
 import {ClientErrorImpl} from './clientErrorImpl';
 
@@ -41,7 +42,10 @@ export class ErrorFactory {
      */
     public static create401Error(reason: string): ClientError {
 
-        const error = new ClientErrorImpl(401, 'unauthorized', 'Missing, invalid or expired access token');
+        const error = new ClientErrorImpl(
+            401,
+            BaseErrorCodes.unauthorizedRequest,
+            'Missing, invalid or expired access token');
         error.logContext = reason;
         return error;
     }

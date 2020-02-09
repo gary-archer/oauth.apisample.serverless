@@ -6,7 +6,7 @@ import {CoreApiClaims, DebugProxyAgent, ErrorFactory} from '../../../framework-a
 import {BASEFRAMEWORKTYPES, LogEntry, using} from '../../../framework-base';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
-import {ErrorUtils} from '../errors/errorUtils';
+import {OAuthErrorUtils} from '../errors/oauthErrorUtils';
 
 /*
  * A class to manage the calls to the Authorization Server
@@ -86,7 +86,7 @@ export class OAuthAuthenticator {
                 this._issuer = await Issuer.discover(endpoint);
 
             } catch (e) {
-                throw ErrorUtils.fromMetadataError(e, this._configuration.authority);
+                throw OAuthErrorUtils.fromMetadataError(e, this._configuration.authority);
             }
         });
     }
@@ -114,7 +114,7 @@ export class OAuthAuthenticator {
             } catch (e) {
 
                 // Report errors clearly
-                throw ErrorUtils.fromSigningKeyDownloadError(e, this._issuer!.metadata.jwks_uri!);
+                throw OAuthErrorUtils.fromSigningKeyDownloadError(e, this._issuer!.metadata.jwks_uri!);
             }
 
             // Indicate not found
@@ -179,7 +179,7 @@ export class OAuthAuthenticator {
             } catch (e) {
 
                 // Report errors clearly
-                throw ErrorUtils.fromUserInfoError(e, this._issuer!.metadata.userinfo_endpoint!);
+                throw OAuthErrorUtils.fromUserInfoError(e, this._issuer!.metadata.userinfo_endpoint!);
             }
         });
     }
@@ -190,7 +190,7 @@ export class OAuthAuthenticator {
     private _getStringClaim(claim: string | undefined, name: string): string {
 
         if (!claim) {
-            throw ErrorUtils.fromMissingClaim(name);
+            throw OAuthErrorUtils.fromMissingClaim(name);
         }
 
         return claim;

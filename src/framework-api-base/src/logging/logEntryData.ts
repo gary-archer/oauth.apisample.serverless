@@ -71,7 +71,7 @@ export class LogEntryData {
     public errorData: any;
 
     // Can be populated in scenarios when extra text is useful
-    public infoData: string[];
+    public infoData: any[];
 
     /*
      * Give fields default values

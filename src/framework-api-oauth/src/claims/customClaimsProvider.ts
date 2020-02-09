@@ -1,9 +1,10 @@
 import {CoreApiClaims} from '../../../framework-api-base';
 
 /*
- * An interface for providing custom claims that the business logic can implement
+ * Concrete APIs can override this class to add custom claims to the cache after OAuth processing
  */
-export interface CustomClaimsProvider<TClaims extends CoreApiClaims> {
+export class CustomClaimsProvider<TClaims extends CoreApiClaims> {
 
-    addCustomClaims(accessToken: string, claims: TClaims): Promise<void>;
+    public async addCustomClaims(accessToken: string, claims: TClaims): Promise<void> {
+    }
 }

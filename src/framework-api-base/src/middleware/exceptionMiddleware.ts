@@ -1,12 +1,12 @@
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {BASEFRAMEWORKTYPES} from '../../../framework-base';
+import {ApiError} from '../errors/apiError';
+import {ApplicationExceptionHandler} from '../errors/applicationExceptionHandler';
+import {ErrorUtils} from '../errors/errorUtils';
+import {ServerlessOfflineUnauthorizedError} from '../errors/serverlessOfflineUnauthorizedError';
 import {LogEntryImpl} from '../logging/logEntryImpl';
 import {ContainerHelper} from '../utilities/containerHelper';
 import {ResponseWriter} from '../utilities/responseWriter';
-import {ApiError} from './apiError';
-import {ApplicationExceptionHandler} from './applicationExceptionHandler';
-import {ErrorUtils} from './errorUtils';
-import {ServerlessOfflineUnauthorizedError} from './serverlessOfflineUnauthorizedError';
 
 /*
  * The exception middleware coded in a class based manner

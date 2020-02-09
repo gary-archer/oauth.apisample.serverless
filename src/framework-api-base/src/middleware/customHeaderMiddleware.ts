@@ -1,4 +1,5 @@
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
+import {BaseErrorCodes} from '../errors/baseErrorCodes';
 import {ErrorFactory} from '../errors/errorFactory';
 
 /*
@@ -21,10 +22,12 @@ export class CustomHeaderMiddleware implements MiddlewareObject<any, any> {
         const textExceptionHeaderName = 'x-mycompany-test-exception';
 
         if (handler.event.headers) {
-            const exceptionHeader = handler.event.headers[textExceptionHeaderName];
-            if (exceptionHeader) {
-                if (exceptionHeader.toLowerCase() === this._apiName.toLowerCase()) {
-                    throw ErrorFactory.createApiError('exception_simulation', 'An unexpected exception occurred in the API');
+            const apiToBreak = handler.event.headers[textExceptionHeaderName];
+            if (apiToBreak) {
+                if (apiToBreak.toLowerCase() === this._apiName.toLowerCase()) {
+                    throw ErrorFactory.createApiError(
+                        BaseErrorCodes.exceptionSimulation,
+                        'An unexpected exception occurred in the API');
                 }
             }
         }

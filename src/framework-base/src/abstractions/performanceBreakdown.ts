@@ -8,5 +8,5 @@ export interface PerformanceBreakdown extends Disposable {
 
     // Set details to associate with the performance breakdown
     // One use case would be to log SQL with input parameters
-    setDetails(value: string): void;
+    setDetails(value: any): void;
 }

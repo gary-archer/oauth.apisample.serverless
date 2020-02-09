@@ -8,8 +8,8 @@ import {BaseAuthorizerMiddleware,
 import {ClaimsSupplier} from '../claims/claimsSupplier';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
 import {OAUTHPUBLICTYPES} from '../configuration/oauthPublicTypes';
-import {PolicyDocumentWriter} from '../utilities/policyDocumentWriter';
 import {OAuthAuthenticator} from './oauthAuthenticator';
+import {PolicyDocumentWriter} from './policyDocumentWriter';
 
 /*
  * A middleware for the lambda authorizer, which does token processing and claims lookup

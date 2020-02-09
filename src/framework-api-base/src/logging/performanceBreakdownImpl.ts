@@ -8,7 +8,7 @@ export class PerformanceBreakdownImpl implements PerformanceBreakdown {
     private _name: string;
     private _startTime!: [number, number];
     private _millisecondsTaken: number;
-    private _details: string;
+    private _details: any;
     private _children: PerformanceBreakdownImpl[];
 
     /*
@@ -32,7 +32,7 @@ export class PerformanceBreakdownImpl implements PerformanceBreakdown {
      * Set details to associate with the performance breakdown
      * One use case would be to log SQL with input parameters
      */
-    public setDetails(value: string): void {
+    public setDetails(value: any): void {
         this._details = value;
     }
 
@@ -69,7 +69,7 @@ export class PerformanceBreakdownImpl implements PerformanceBreakdown {
             millisecondsTaken: this._millisecondsTaken,
         };
 
-        if (this._details.length > 0) {
+        if (this._details) {
             data.details = this._details;
         }
 

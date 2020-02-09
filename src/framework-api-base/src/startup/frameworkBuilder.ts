@@ -7,11 +7,11 @@ import {APIFRAMEWORKTYPES} from '../configuration/apiFrameworkTypes';
 import {FrameworkConfiguration} from '../configuration/frameworkConfiguration';
 import {ApplicationExceptionHandler} from '../errors/applicationExceptionHandler';
 import {ClientError} from '../errors/clientError';
-import {ExceptionMiddleware} from '../errors/exceptionMiddleware';
 import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
-import {LoggerMiddleware} from '../logging/loggerMiddleware';
 import {ChildContainerMiddleware} from '../middleware/childContainerMiddleware';
 import {CustomHeaderMiddleware} from '../middleware/customHeaderMiddleware';
+import {ExceptionMiddleware} from '../middleware/exceptionMiddleware';
+import {LoggerMiddleware} from '../middleware/loggerMiddleware';
 import {CoreApiClaims} from '../security/coreApiClaims';
 import {AsyncHandler} from '../utilities/asyncHandler';
 
@@ -23,12 +23,12 @@ export class FrameworkBuilder {
     private readonly _container: Container;
     private readonly _loggerFactory: LoggerFactoryImpl;
     private _configuration: FrameworkConfiguration | null;
-    private _applicationExceptionHandler: ApplicationExceptionHandler | null;
+    private _applicationExceptionHandler: ApplicationExceptionHandler;
 
     public constructor(container: Container) {
         this._container = container;
         this._configuration = null;
-        this._applicationExceptionHandler = null;
+        this._applicationExceptionHandler = new ApplicationExceptionHandler();
         this._loggerFactory = new LoggerFactoryImpl();
     }
 
@@ -38,17 +38,6 @@ export class FrameworkBuilder {
     public configure(configuration: FrameworkConfiguration): FrameworkBuilder {
         this._configuration = configuration;
         this._loggerFactory.configure(configuration);
-        return this;
-    }
-
-    /*
-     * Register base framework dependencies
-     */
-    public register(): FrameworkBuilder {
-
-        // Register default values for these per request objects against the parent container
-        this._container.bind<LogEntry>(BASEFRAMEWORKTYPES.LogEntry).toConstantValue({} as any);
-        this._container.bind<CoreApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims).toConstantValue({} as any);
         return this;
     }
 
@@ -78,6 +67,17 @@ export class FrameworkBuilder {
 
         // Return the base handler wrapped in cross cutting concerns
         return wrappedHandler;
+    }
+
+    /*
+     * Register base framework dependencies
+     */
+    public register(): FrameworkBuilder {
+
+        // Register default values for these per request objects against the parent container
+        this._container.bind<LogEntry>(BASEFRAMEWORKTYPES.LogEntry).toConstantValue({} as any);
+        this._container.bind<CoreApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims).toConstantValue({} as any);
+        return this;
     }
 
     /*

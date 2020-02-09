@@ -4,7 +4,7 @@ import { OAuthErrorCodes } from './oauthErrorCodes';
 /*
  * OAuth specific error processing
  */
-export class ErrorUtils {
+export class OAuthErrorUtils {
 
     /*
      * Handle metadata lookup failures
@@ -16,7 +16,7 @@ export class ErrorUtils {
             'Metadata lookup failed',
             responseError.stack);
 
-        ErrorUtils._setErrorDetails(apiError, null, responseError, url);
+        OAuthErrorUtils._setErrorDetails(apiError, null, responseError, url);
         return apiError;
     }
 
@@ -30,7 +30,7 @@ export class ErrorUtils {
             'Signing key download failed',
             responseError.stack);
 
-        ErrorUtils._setErrorDetails(apiError, null, responseError, url);
+        OAuthErrorUtils._setErrorDetails(apiError, null, responseError, url);
         return apiError;
     }
 
@@ -49,13 +49,14 @@ export class ErrorUtils {
             return responseError;
         }
 
-        const [code, description] = ErrorUtils._readOAuthErrorResponse(responseError);
-        const apiError = ErrorUtils._createOAuthApiError(
+        const [code, description] = OAuthErrorUtils._readOAuthErrorResponse(responseError);
+        const apiError = OAuthErrorUtils._createOAuthApiError(
             OAuthErrorCodes.userinfoFailure,
             'User info lookup failed',
             code,
             responseError.stack);
-        ErrorUtils._setErrorDetails(apiError, description, responseError, url);
+
+        OAuthErrorUtils._setErrorDetails(apiError, description, responseError, url);
         return apiError;
     }
 
@@ -120,7 +121,7 @@ export class ErrorUtils {
         if (oauthDetails) {
             detailsText += oauthDetails;
         } else {
-            detailsText += ErrorUtils._getExceptionDetailsMessage(responseError);
+            detailsText += OAuthErrorUtils._getExceptionDetailsMessage(responseError);
         }
 
         if (url) {

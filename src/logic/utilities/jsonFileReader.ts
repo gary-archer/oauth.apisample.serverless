@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import {injectable} from 'inversify';
 import {ExtendedError} from '../../framework-base';
+import {ErrorCodes} from '../errors/errorCodes';
 
 /*
  * A simple utility to deal with the infrastructure of reading JSON files
@@ -23,7 +24,7 @@ export class JsonFileReader {
 
             // Report the error including an error code and exception details
             const error = new ExtendedError(
-                'file_read_error',
+                ErrorCodes.fileReadError,
                 'Problem encountered reading data',
                 e.stack);
 

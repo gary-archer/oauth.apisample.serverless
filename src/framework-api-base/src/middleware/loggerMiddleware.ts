@@ -1,8 +1,8 @@
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {BASEFRAMEWORKTYPES} from '../../../framework-base';
+import {LogEntryImpl} from '../logging/logEntryImpl';
+import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
 import {ContainerHelper} from '../utilities/containerHelper';
-import {LogEntryImpl} from './logEntryImpl';
-import {LoggerFactoryImpl} from './loggerFactoryImpl';
 
 /*
  * The middleware coded in a class based manner
