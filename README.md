@@ -2,7 +2,7 @@
 
 ### Overview
 * The cloud API sample using OAuth 2.0 and Open Id Connect, referenced in my blog at https://authguidance.com
-* **The goals of this sample are zero maintenance hosting and a portable coding model** 
+* **The goal of this sample is to implement our** [API Platform Architecture](https://authguidance.com/2019/03/24/api-platform-design/) **via Serverless Lambdas**
 
 ### Details
 * See the [Serverless API Setup](https://authguidance.com/2018/12/11/serverless-api-overview) for an overview and how to run the API
