@@ -15,31 +15,19 @@ export class LoggerFactoryImpl implements LoggerFactory {
     private _defaultPerformanceThresholdMilliseconds: number;
     private _thresholdOverrides: PerformanceThreshold[];
 
-    /*
-     * Create the logger factory before reading configuration and set defaults
-     */
     public constructor() {
         this._logConfiguration = null;
         this._apiName = 'api';
         this._defaultPerformanceThresholdMilliseconds = 1000;
         this._thresholdOverrides = [];
+        this._setupCallbacks();
     }
 
     /*
      * Create the log entry and return it to the framework
      */
     public createLogEntry(): LogEntryImpl {
-
-        // Create the log entry
-        const logEntry = new LogEntryImpl(this._apiName);
-        logEntry.setApiName(this._apiName);
-
-        // Update performance thresholds
-        logEntry.setPerformanceThresholds(
-            this._defaultPerformanceThresholdMilliseconds,
-            this._thresholdOverrides);
-
-        return logEntry;
+        return new LogEntryImpl(this._apiName, this._getPerformanceThreshold);
     }
 
     /*
@@ -52,7 +40,7 @@ export class LoggerFactoryImpl implements LoggerFactory {
         this._apiName = configuration.apiName;
 
         // Initialise logging behaviour from configuration
-        this._loadConfiguration();
+        this._loadPerformanceThresholds();
     }
 
     /*
@@ -76,7 +64,7 @@ export class LoggerFactoryImpl implements LoggerFactory {
     /*
      * Extract performance details from the log configuration, for use later when creating log entries
      */
-    private _loadConfiguration() {
+    private _loadPerformanceThresholds() {
 
         // Read the default performance threshold
         const thresholds = this._logConfiguration.production.performanceThresholdsMilliseconds;
@@ -100,5 +88,25 @@ export class LoggerFactoryImpl implements LoggerFactory {
                 }
             }
         }
+    }
+
+    /*
+     * Given an operation name, return its performance threshold
+     */
+    private _getPerformanceThreshold(name: string): number {
+
+        const found = this._thresholdOverrides.find((o) => o.name.toLowerCase() === name.toLowerCase());
+        if (found) {
+            return found.milliseconds;
+        }
+
+        return this._defaultPerformanceThresholdMilliseconds;
+    }
+
+    /*
+     * Plumbing to ensure the this parameter is available
+     */
+    private _setupCallbacks(): void {
+        this._getPerformanceThreshold = this._getPerformanceThreshold.bind(this);
     }
 }

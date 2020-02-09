@@ -8,7 +8,6 @@ import {ClientError} from '../errors/clientError';
 import {ServerlessOfflineUnauthorizedError} from '../errors/serverlessOfflineUnauthorizedError';
 import {CoreApiClaims} from '../security/coreApiClaims';
 import {LogEntryData} from './logEntryData';
-import {PerformanceThreshold} from './performanceThreshold';
 
 /*
  * A class to manage logging of a lambda request
@@ -16,24 +15,15 @@ import {PerformanceThreshold} from './performanceThreshold';
 @injectable()
 export class LogEntryImpl implements LogEntry {
 
-    private _data: LogEntryData;
-    private _defaultThresholdMilliseconds!: number;
-    private _performanceThresholdOverrides!: PerformanceThreshold[];
+    private readonly _data: LogEntryData;
+    private readonly _getPerformanceThreshold: ((op: string) => number) | null;
 
-    public constructor(apiName: string) {
+    public constructor(apiName: string, getPerformanceThreshold: ((op: string) => number) | null) {
 
         this._data = new LogEntryData();
         this._data.apiName = apiName;
         this._data.hostName = os.hostname();
-    }
-
-    /*
-     * Set default performance details after creation
-     */
-    public setPerformanceThresholds(defaultMilliseconds: number, overrides: PerformanceThreshold[]) {
-        this._defaultThresholdMilliseconds = defaultMilliseconds;
-        this._data.performanceThresholdMilliseconds = this._defaultThresholdMilliseconds;
-        this._performanceThresholdOverrides = overrides;
+        this._getPerformanceThreshold = getPerformanceThreshold;
     }
 
     /*
@@ -45,7 +35,7 @@ export class LogEntryImpl implements LogEntry {
 
         // Get the operation name and its performance threshold
         this._calculateOperationName(event, context);
-        this._data.performanceThresholdMilliseconds = this._getPerformanceThreshold(this._data.operationName);
+        this._data.performanceThresholdMilliseconds = this._getPerformanceThreshold!(this._data.operationName);
 
         // Record REST path details
         this._calculateRequestLocationFields(event);
@@ -73,13 +63,6 @@ export class LogEntryImpl implements LogEntry {
         this._data.clientId = claims.clientId;
         this._data.userId = claims.userId;
         this._data.userName = `${claims.givenName} ${claims.familyName}`;
-    }
-
-    /*
-     * An internal method for setting the api name
-     */
-    public setApiName(name: string): void {
-        this._data.apiName = name;
     }
 
     /*
@@ -139,9 +122,11 @@ export class LogEntryImpl implements LogEntry {
     }
 
     /*
-     * Output the log data which will be written to CloudWatch in AWS
+     * Output the log data
      */
     public write(event: any): void {
+
+        // Use console.log which will be written to CloudWatch in AWS when deployed
         console.log(JSON.stringify(this._data.toLogFormat(), null, 2));
 
         // Special handling for Serverless offline after log entry completion
@@ -234,11 +219,6 @@ export class LogEntryImpl implements LogEntry {
             // Use the client supplied value
             this._data.correlationId = correlationId;
 
-        } else if (context.awsRequestId) {
-
-            // Use the AWS generated value otherwise
-            this._data.correlationId = context.awsRequestId;
-
         } else {
 
             // Otherwise generate a value
@@ -271,18 +251,5 @@ export class LogEntryImpl implements LogEntry {
         }
 
         return null;
-    }
-
-    /*
-     * Given an operation name, set its performance threshold
-     */
-    private _getPerformanceThreshold(name: string): number {
-
-        const found = this._performanceThresholdOverrides.find((o) => o.name.toLowerCase() === name.toLowerCase());
-        if (found) {
-            return found.milliseconds;
-        }
-
-        return this._defaultThresholdMilliseconds;
     }
 }
