@@ -28,7 +28,7 @@
     "@types/fs-extra": "^8.0.1",
     "@types/node": "^12.11.7",
     "rimraf": "^2.6.2",
-    "serverless": "^1.57.0",
+    "serverless": "1.57.0",
     "serverless-deployment": "file:deployment",
     "serverless-offline": "6.0.0-alpha.46",
     "tslint": "^5.20.1",

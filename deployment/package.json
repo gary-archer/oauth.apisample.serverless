@@ -12,7 +12,7 @@
     "child-process-es6-promise": "^1.2.1",
     "rimraf": "^2.6.2",
     "serverless": "^1.57.0",
-    "serverless-domain-manager": "^2.6.6",
+    "serverless-domain-manager": "2.6.6",
     "serverless-plugin-scripts": "^1.0.2",
     "ts-node": "^8.5.2"
   }
