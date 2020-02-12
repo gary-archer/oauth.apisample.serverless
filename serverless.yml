@@ -53,7 +53,7 @@ functions:
     handler: dist/host/lambda/getUserClaims.handler
     events:
       - http: 
-          path: ${self:custom.config.settings.apiBasePath}/userclaims/current
+          path: /userclaims/current
           method: get
           authorizer:
             name: authorizer
@@ -67,7 +67,7 @@ functions:
     handler: dist/host/lambda/getCompanyList.handler
     events:
       - http: 
-          path: ${self:custom.config.settings.apiBasePath}/companies
+          path: /companies
           method: get
           authorizer:
             name: authorizer
@@ -81,7 +81,7 @@ functions:
     handler: dist/host/lambda/getCompanyTransactions.handler
     events:
       - http: 
-          path: ${self:custom.config.settings.apiBasePath}/companies/{id}/transactions
+          path: /companies/{id}/transactions
           method: get
           authorizer:
             name: authorizer

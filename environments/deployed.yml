@@ -8,11 +8,4 @@ settings:
   # Host names for this stage, which run in AWS
   apiHostName: 'api.authguidance-examples.com'
   certificateDomainName: 'authguidance-examples.com'
-
-  # When deployed our SPA uses the cloud domain of web.authguidance-examples.com
-  # We also want to run our SPA locally with our local domain of web.mycompany.com
-  # Multiple CORS domains are not supported in serverless so we use a wildcard
-  trustedOrigin: '*'
-
-  # In deployed environments the API prefix for the custom domain is used
-  apiBasePath: ''
+  trustedOrigin: 'https://web.authguidance-examples.com'

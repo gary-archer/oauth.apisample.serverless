@@ -8,11 +8,4 @@ settings:
   # Host names for this stage, which run on the local PC
   apiHostName: 'api.mycompany.com'
   certificateDomainName: 'mycompany.com'
-
-  # When deployed our SPA uses the cloud domain of web.authguidance-examples.com
-  # We also want to run our SPA locally with our local domain of web.mycompany.com
-  # Multiple CORS domains are not supported in serverless so we use a wildcard
-  trustedOrigin: '*'
-
-  # Use an API prefix, but only for API routes
-  apiBasePath: '/api'
+  trustedOrigin: 'https://web.mycompany.com'
