@@ -16,13 +16,11 @@ class Packager {
         await this._unzipPackage('sampleapi');
 
         // Exclude the service from the authorizer
-        await this._excludeFolders('authorizer',
-            ['data', 'dist/logic', 'dist/host/lambda', 'dist/host/web']);
+        await this._excludeFolders('authorizer', ['data', 'dist/logic', 'dist/host/lambda']);
         await this._installDependencies('authorizer', []);
 
         // Exclude the OAuth logic from the service lambdas, and remove OAuth dependencies
-        await this._excludeFolders('sampleapi',
-            ['dist/host/authorizer', 'dist/host/web', 'dist/framework-api-oauth']);
+        await this._excludeFolders('sampleapi', ['dist/host/authorizer', 'dist/framework-api-oauth']);
         await this._installDependencies('sampleapi',  ['framework-api-oauth']);
 
         // Rezip the packages
