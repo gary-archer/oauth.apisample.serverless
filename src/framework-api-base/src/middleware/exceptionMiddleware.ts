@@ -1,5 +1,6 @@
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {BASEFRAMEWORKTYPES} from '../../../framework-base';
+import {FrameworkConfiguration} from '../configuration/frameworkConfiguration';
 import {ApiError} from '../errors/apiError';
 import {ApplicationExceptionHandler} from '../errors/applicationExceptionHandler';
 import {ErrorUtils} from '../errors/errorUtils';
@@ -12,9 +13,11 @@ import {ResponseWriter} from '../utilities/responseWriter';
  */
 export class ExceptionMiddleware implements MiddlewareObject<any, any> {
 
+    private readonly _configuration: FrameworkConfiguration;
     private readonly _applicationExceptionHandler: ApplicationExceptionHandler;
 
-    public constructor(appExceptionHandler: ApplicationExceptionHandler) {
+    public constructor(configuration: FrameworkConfiguration, appExceptionHandler: ApplicationExceptionHandler) {
+        this._configuration = configuration;
         this._applicationExceptionHandler = appExceptionHandler;
         this._setupCallbacks();
     }
@@ -38,7 +41,7 @@ export class ExceptionMiddleware implements MiddlewareObject<any, any> {
         let clientError;
         if (error instanceof ApiError) {
             logEntry.setApiError(error);
-            clientError = error.toClientError('SampleApi');
+            clientError = error.toClientError(this._configuration.apiName);
         } else {
             logEntry.setClientError(error);
             clientError = error;

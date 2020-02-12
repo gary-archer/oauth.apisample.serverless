@@ -1,5 +1,5 @@
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
-import {DebugProxyAgent} from './debugProxyAgent';
+import {DebugProxyAgent} from '../utilities/debugProxyAgent';
 
 /*
  * A middleware to handle HTTP debugging configuration on a developer PC

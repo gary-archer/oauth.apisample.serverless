@@ -30,7 +30,7 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
         // Get the container for this request
         const container = ContainerHelper.current(handler.event);
 
-        let authResponse: CustomAuthorizerResult;
+        let authorizerResult: CustomAuthorizerResult;
         try {
 
             // Ask the authorizer to do the work and return claims
@@ -40,7 +40,7 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
             super.logIdentity(container, claims);
 
             // We must write an authorized policy document to enable the REST call to continue to the lambda
-            authResponse = PolicyDocumentWriter.authorizedResponse(claims, handler.event);
+            authorizerResult = PolicyDocumentWriter.authorizedResponse(claims, handler.event);
 
         } catch (e) {
 
@@ -53,11 +53,11 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
             super.logUnauthorized(container, e);
 
             // We must return write an unauthorized policy document in order to return a 401 to the caller
-            authResponse = PolicyDocumentWriter.invalidTokenResponse(handler.event);
+            authorizerResult = PolicyDocumentWriter.invalidTokenResponse(handler.event);
         }
 
         // Add the policy document to the container, which will be retrieved by the handler
-        container.bind<CustomAuthorizerResult>(OAUTHPUBLICTYPES.AuthResponse).toConstantValue(authResponse);
+        container.bind<CustomAuthorizerResult>(OAUTHPUBLICTYPES.AuthorizerResult).toConstantValue(authorizerResult);
 
         // For async middleware, middy calls next for us, so do not call it here
     }

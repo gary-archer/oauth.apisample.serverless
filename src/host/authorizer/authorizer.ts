@@ -10,7 +10,7 @@ import {HandlerFactory} from './handlerFactory';
 const baseHandler = async (event: any, context: Context) => {
 
     const container = ContainerHelper.current(event);
-    return container.get<CustomAuthorizerResult>(OAUTHPUBLICTYPES.AuthResponse);
+    return container.get<CustomAuthorizerResult>(OAUTHPUBLICTYPES.AuthorizerResult);
 };
 
 // Create an enriched handler, which wires up OAuth handling to run before the above handler

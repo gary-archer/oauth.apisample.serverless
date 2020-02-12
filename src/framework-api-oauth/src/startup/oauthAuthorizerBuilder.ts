@@ -65,7 +65,7 @@ export class OAuthAuthorizerBuilder<TClaims extends CoreApiClaims> {
                        .to(OAuthAuthenticator).inTransientScope();
 
         // Register a dummy value that is overridden by the authorizer middleware later
-        this._container.bind<CustomAuthorizerResult>(OAUTHPUBLICTYPES.AuthResponse)
+        this._container.bind<CustomAuthorizerResult>(OAUTHPUBLICTYPES.AuthorizerResult)
                        .toConstantValue({} as any);
 
         return this;

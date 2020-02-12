@@ -9,6 +9,7 @@ import {ApplicationExceptionHandler} from './src/errors/applicationExceptionHand
 import {BaseErrorCodes} from './src/errors/baseErrorCodes';
 import {ClientError} from './src/errors/clientError';
 import {ErrorFactory} from './src/errors/errorFactory';
+import {DebugProxyAgentMiddleware} from './src/middleware/debugProxyAgentMiddleware';
 import {BaseAuthorizerMiddleware} from './src/security/baseAuthorizerMiddleware';
 import {CoreApiClaims} from './src/security/coreApiClaims';
 import {FrameworkBuilder} from './src/startup/frameworkBuilder';
@@ -16,7 +17,6 @@ import {RequestContextAuthorizerBuilder} from './src/startup/requestContextAutho
 import {AsyncHandler} from './src/utilities/asyncHandler';
 import {ContainerHelper} from './src/utilities/containerHelper';
 import {DebugProxyAgent} from './src/utilities/debugProxyAgent';
-import {DebugProxyAgentMiddleware} from './src/utilities/debugProxyAgentMiddleware';
 import {ResponseWriter} from './src/utilities/responseWriter';
 
 export {
@@ -27,6 +27,7 @@ export {
     BaseErrorCodes,
     ClientError,
     ErrorFactory,
+    DebugProxyAgentMiddleware,
     BaseAuthorizerMiddleware,
     CoreApiClaims,
     FrameworkBuilder,
@@ -34,6 +35,5 @@ export {
     AsyncHandler,
     ContainerHelper,
     DebugProxyAgent,
-    DebugProxyAgentMiddleware,
     ResponseWriter,
 };

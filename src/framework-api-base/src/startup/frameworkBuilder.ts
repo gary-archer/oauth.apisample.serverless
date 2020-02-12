@@ -62,7 +62,7 @@ export class FrameworkBuilder {
         })
         .use(new ChildContainerMiddleware(this._container))
         .use(new LoggerMiddleware(this._loggerFactory))
-        .use(new ExceptionMiddleware(this._applicationExceptionHandler))
+        .use(new ExceptionMiddleware(this._configuration!, this._applicationExceptionHandler))
         .use(new CustomHeaderMiddleware(this._configuration!.apiName));
 
         // Return the base handler wrapped in cross cutting concerns

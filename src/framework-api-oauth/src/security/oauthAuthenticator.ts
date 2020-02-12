@@ -104,7 +104,7 @@ export class OAuthAuthenticator {
 
                 // Extend token data with central user info
                 const keys = keyStore.all();
-                const key = keys.find((k) => k.kid === tokenKeyIdentifier);
+                const key = keys.find((k: any) => k.kid === tokenKeyIdentifier);
                 if (key) {
 
                     // Convert to PEM format
