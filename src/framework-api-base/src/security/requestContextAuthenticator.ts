@@ -21,8 +21,16 @@ export class RequestContextAuthenticator {
             throw new Error('Unable to resolve authorizer claims from request context');
         }
 
-        // Get claims
-        const claims = JSON.parse(event.requestContext.authorizer.customClaims);
+        let claims: CoreApiClaims;
+        if (typeof event.requestContext.authorizer.customClaims === 'string') {
+
+            // In AWS we receive a serialized object
+            claims = JSON.parse(event.requestContext.authorizer.customClaims);
+        } else {
+
+            // On a local PC we have an object
+            claims = event.requestContext.authorizer.customClaims;
+        }
 
         // Make some sanity checks before returning the result
         this._checkClaim(claims, (c) => c.userId, 'userId');

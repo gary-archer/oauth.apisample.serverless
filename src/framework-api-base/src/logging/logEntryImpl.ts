@@ -5,7 +5,6 @@ import os from 'os';
 import {LogEntry, PerformanceBreakdown} from '../../../framework-base';
 import {ApiError} from '../errors/apiError';
 import {ClientError} from '../errors/clientError';
-import {ServerlessOfflineUnauthorizedError} from '../errors/serverlessOfflineUnauthorizedError';
 import {CoreApiClaims} from '../security/coreApiClaims';
 import {LogEntryData} from './logEntryData';
 
@@ -128,9 +127,6 @@ export class LogEntryImpl implements LogEntry {
 
         // Use console.log which will be written to CloudWatch in AWS when deployed
         console.log(JSON.stringify(this._data.toLogFormat(), null, 2));
-
-        // Special handling for Serverless offline after log entry completion
-        ServerlessOfflineUnauthorizedError.throwIfRequired(event, this._data.statusCode);
     }
 
     /*

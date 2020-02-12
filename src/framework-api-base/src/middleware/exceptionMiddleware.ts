@@ -3,7 +3,6 @@ import {BASEFRAMEWORKTYPES} from '../../../framework-base';
 import {ApiError} from '../errors/apiError';
 import {ApplicationExceptionHandler} from '../errors/applicationExceptionHandler';
 import {ErrorUtils} from '../errors/errorUtils';
-import {ServerlessOfflineUnauthorizedError} from '../errors/serverlessOfflineUnauthorizedError';
 import {LogEntryImpl} from '../logging/logEntryImpl';
 import {ContainerHelper} from '../utilities/containerHelper';
 import {ResponseWriter} from '../utilities/responseWriter';
@@ -13,9 +12,9 @@ import {ResponseWriter} from '../utilities/responseWriter';
  */
 export class ExceptionMiddleware implements MiddlewareObject<any, any> {
 
-    private readonly _applicationExceptionHandler: ApplicationExceptionHandler | null;
+    private readonly _applicationExceptionHandler: ApplicationExceptionHandler;
 
-    public constructor(appExceptionHandler: ApplicationExceptionHandler | null) {
+    public constructor(appExceptionHandler: ApplicationExceptionHandler) {
         this._applicationExceptionHandler = appExceptionHandler;
         this._setupCallbacks();
     }
@@ -29,17 +28,8 @@ export class ExceptionMiddleware implements MiddlewareObject<any, any> {
         const container = ContainerHelper.current(handler.event);
         const logEntry = container.get<LogEntryImpl>(BASEFRAMEWORKTYPES.LogEntry);
 
-        // Special handling for Serverless Offline
-        if (ServerlessOfflineUnauthorizedError.catch(handler.error)) {
-            next(handler.error);
-            return;
-        }
-
         // Get the exception to handle and allow the application to implement its own error logic first
-        let exceptionToHandle = handler.error;
-        if (this._applicationExceptionHandler) {
-            exceptionToHandle = this._applicationExceptionHandler.translate(exceptionToHandle);
-        }
+        const exceptionToHandle = this._applicationExceptionHandler.translate(handler.error);
 
         // Get the error into a known object
         const error = ErrorUtils.fromException(exceptionToHandle);

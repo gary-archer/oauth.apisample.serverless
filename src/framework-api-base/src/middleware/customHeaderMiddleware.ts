@@ -27,7 +27,7 @@ export class CustomHeaderMiddleware implements MiddlewareObject<any, any> {
                 if (apiToBreak.toLowerCase() === this._apiName.toLowerCase()) {
                     throw ErrorFactory.createApiError(
                         BaseErrorCodes.exceptionSimulation,
-                        'An unexpected exception occurred in the API');
+                        'An exception was simulated in the API');
                 }
             }
         }

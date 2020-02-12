@@ -6,7 +6,10 @@
   "scripts": {
     "lint": "tslint -c tslint.json 'src/**/*.ts' && tslint -c tslint.json 'scripts/**/*.ts'",
     "build": "rimraf dist && tsc --sourceMap true",
-    "start": "sls offline",
+    "authorizer": "sls invoke local -f authorizer -p test/authorizer.json",
+    "getUserClaims": "sls invoke local -f getUserClaims -p test/getUserClaims.json",
+    "getCompanyList": "sls invoke local -f getCompanyList -p test/getCompanyList.json",
+    "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
     "package": "npm run buildRelease && rimraf .serverless && sls package --stage deployed",
     "buildRelease": "rimraf dist && tsc",
     "customPackager": "ts-node deployment/customPackager.ts",
@@ -30,7 +33,6 @@
     "rimraf": "^2.6.2",
     "serverless": "1.57.0",
     "serverless-deployment": "file:deployment",
-    "serverless-offline": "6.0.0-alpha.46",
     "tslint": "^5.20.1",
     "typescript": "^3.7.2"
   }

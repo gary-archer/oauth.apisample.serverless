@@ -9,7 +9,6 @@ import {ApplicationExceptionHandler} from './src/errors/applicationExceptionHand
 import {BaseErrorCodes} from './src/errors/baseErrorCodes';
 import {ClientError} from './src/errors/clientError';
 import {ErrorFactory} from './src/errors/errorFactory';
-import {ServerlessOfflineUnauthorizedError} from './src/errors/serverlessOfflineUnauthorizedError';
 import {BaseAuthorizerMiddleware} from './src/security/baseAuthorizerMiddleware';
 import {CoreApiClaims} from './src/security/coreApiClaims';
 import {FrameworkBuilder} from './src/startup/frameworkBuilder';
@@ -28,7 +27,6 @@ export {
     BaseErrorCodes,
     ClientError,
     ErrorFactory,
-    ServerlessOfflineUnauthorizedError,
     BaseAuthorizerMiddleware,
     CoreApiClaims,
     FrameworkBuilder,

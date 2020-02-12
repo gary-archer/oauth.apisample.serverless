@@ -12,11 +12,6 @@ custom:
   # Each environment can have its own configuration file
   config: ${file(environments/${opt:stage, 'local'}.yml)}
   
-  # Settings when running on a developer PC
-  serverless-offline:
-    httpsProtocol: 'certs'
-    port: 443
-
   # AWS deployed details
   customDomain:
     domainName: ${self:custom.config.settings.apiHostName}
@@ -100,31 +95,11 @@ functions:
               paths: 
                 id: true
 
-  webStaticContent:
-    handler: dist/host/web/staticContent.handler
-    events:
-      - http: 
-          path: /spa/{proxy+}
-          method: get
-          cors:
-            origin: ${self:custom.config.settings.trustedOrigin}
-      - http: 
-          path: /desktop/{proxy+}
-          method: get
-          cors:
-            origin: ${self:custom.config.settings.trustedOrigin}
-      - http: 
-          path: /mobile/{proxy+}
-          method: get
-          cors:
-            origin: ${self:custom.config.settings.trustedOrigin}
-
 # By default all files are included so remove files we don't need for any lambda
 # The custom packager does the rest of the work in code, including adding node_modules
 package:
   exclude:
   - .vscode/**
-  - certs/**
   - deployment/**
   - environments/**
   - node_modules/**
@@ -134,7 +109,6 @@ package:
   - README.md
 
 plugins:
-  - serverless-offline
   - serverless-plugin-scripts
   - serverless-domain-manager
 

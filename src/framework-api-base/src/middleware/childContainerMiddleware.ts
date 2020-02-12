@@ -2,7 +2,7 @@ import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 
 /*
- * A middleware to create a child container per request, which is only needed for Serverless Offline
+ * A middleware to create a child container per request
  */
 export class ChildContainerMiddleware implements MiddlewareObject<any, any> {
 
