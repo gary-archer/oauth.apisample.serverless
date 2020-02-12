@@ -1,3 +1,4 @@
+import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {BASEFRAMEWORKTYPES} from '../../../framework-base';
 import {FrameworkConfiguration} from '../configuration/frameworkConfiguration';
@@ -5,7 +6,6 @@ import {ApiError} from '../errors/apiError';
 import {ApplicationExceptionHandler} from '../errors/applicationExceptionHandler';
 import {ErrorUtils} from '../errors/errorUtils';
 import {LogEntryImpl} from '../logging/logEntryImpl';
-import {ContainerHelper} from '../utilities/containerHelper';
 import {ResponseWriter} from '../utilities/responseWriter';
 
 /*
@@ -13,10 +13,16 @@ import {ResponseWriter} from '../utilities/responseWriter';
  */
 export class ExceptionMiddleware implements MiddlewareObject<any, any> {
 
+    private readonly _container: Container;
     private readonly _configuration: FrameworkConfiguration;
     private readonly _applicationExceptionHandler: ApplicationExceptionHandler;
 
-    public constructor(configuration: FrameworkConfiguration, appExceptionHandler: ApplicationExceptionHandler) {
+    public constructor(
+        container: Container,
+        configuration: FrameworkConfiguration,
+        appExceptionHandler: ApplicationExceptionHandler) {
+
+        this._container = container;
         this._configuration = configuration;
         this._applicationExceptionHandler = appExceptionHandler;
         this._setupCallbacks();
@@ -28,8 +34,7 @@ export class ExceptionMiddleware implements MiddlewareObject<any, any> {
     public onError(handler: HandlerLambda<any, any>, next: NextFunction): void {
 
         // Get the log entry
-        const container = ContainerHelper.current(handler.event);
-        const logEntry = container.get<LogEntryImpl>(BASEFRAMEWORKTYPES.LogEntry);
+        const logEntry = this._container.get<LogEntryImpl>(BASEFRAMEWORKTYPES.LogEntry);
 
         // Get the exception to handle and allow the application to implement its own error logic first
         const exceptionToHandle = this._applicationExceptionHandler.translate(handler.error);

@@ -18,8 +18,8 @@ export class HandlerFactory {
 
     private readonly _container: Container;
 
-    public constructor() {
-        this._container = new Container();
+    public constructor(container: Container) {
+        this._container = container;
     }
 
     /*

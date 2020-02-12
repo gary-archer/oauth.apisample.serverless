@@ -1,10 +1,7 @@
 import {Context, CustomAuthorizerResult} from 'aws-lambda';
+import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
-import {BaseAuthorizerMiddleware,
-        ClientError,
-        ContainerHelper,
-        CoreApiClaims,
-        ErrorFactory} from '../../../framework-api-base';
+import {BaseAuthorizerMiddleware, ClientError, CoreApiClaims, ErrorFactory} from '../../../framework-api-base';
 import {ClaimsSupplier} from '../claims/claimsSupplier';
 import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
 import {OAUTHPUBLICTYPES} from '../configuration/oauthPublicTypes';
@@ -17,8 +14,11 @@ import {PolicyDocumentWriter} from './policyDocumentWriter';
 export class OAuthAuthorizer<TClaims extends CoreApiClaims>
        extends BaseAuthorizerMiddleware implements MiddlewareObject<any, any> {
 
-    public constructor() {
+    private readonly _container: Container;
+
+    public constructor(container: Container) {
         super();
+        this._container = container;
         this._setupCallbacks();
     }
 
@@ -27,9 +27,6 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
      */
     public async before(handler: HandlerLambda<any, any>, next: NextFunction): Promise<void> {
 
-        // Get the container for this request
-        const container = ContainerHelper.current(handler.event);
-
         let authorizerResult: CustomAuthorizerResult;
         try {
 
@@ -37,7 +34,7 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
             const claims = await this._execute(handler.event, handler.context);
 
             // Include identity details in logs
-            super.logIdentity(container, claims);
+            super.logIdentity(this._container, claims);
 
             // We must write an authorized policy document to enable the REST call to continue to the lambda
             authorizerResult = PolicyDocumentWriter.authorizedResponse(claims, handler.event);
@@ -50,14 +47,15 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
             }
 
             // Include 401 failure details in logs
-            super.logUnauthorized(container, e);
+            super.logUnauthorized(this._container, e);
 
             // We must return write an unauthorized policy document in order to return a 401 to the caller
             authorizerResult = PolicyDocumentWriter.invalidTokenResponse(handler.event);
         }
 
         // Add the policy document to the container, which will be retrieved by the handler
-        container.bind<CustomAuthorizerResult>(OAUTHPUBLICTYPES.AuthorizerResult).toConstantValue(authorizerResult);
+        this._container.rebind<CustomAuthorizerResult>(OAUTHPUBLICTYPES.AuthorizerResult)
+            .toConstantValue(authorizerResult);
 
         // For async middleware, middy calls next for us, so do not call it here
     }
@@ -68,9 +66,8 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
     private async _execute(event: any, context: Context): Promise<TClaims> {
 
         // Resolve dependencies
-        const container = ContainerHelper.current(event);
-        const claimsSupplier = container.get<ClaimsSupplier<TClaims>>(OAUTHINTERNALTYPES.ClaimsSupplier);
-        const authenticator = container.get<OAuthAuthenticator>(OAUTHINTERNALTYPES.OAuthAuthenticator);
+        const claimsSupplier = this._container.get<ClaimsSupplier<TClaims>>(OAUTHINTERNALTYPES.ClaimsSupplier);
+        const authenticator = this._container.get<OAuthAuthenticator>(OAUTHINTERNALTYPES.OAuthAuthenticator);
 
         // First read the token from the request header and report missing tokens
         const accessToken = this._readAccessToken(event);

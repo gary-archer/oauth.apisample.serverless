@@ -1,7 +1,7 @@
+import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {APIFRAMEWORKTYPES} from '../configuration/apiFrameworkTypes';
 import {INTERNALTYPES} from '../configuration/internalTypes';
-import {ContainerHelper} from '../utilities/containerHelper';
 import {BaseAuthorizerMiddleware} from './baseAuthorizerMiddleware';
 import {CoreApiClaims} from './coreApiClaims';
 import {RequestContextAuthenticator} from './requestContextAuthenticator';
@@ -12,8 +12,11 @@ import {RequestContextAuthenticator} from './requestContextAuthenticator';
 export class RequestContextAuthorizer
        extends BaseAuthorizerMiddleware implements MiddlewareObject<any, any> {
 
-    public constructor() {
+    private readonly _container: Container;
+
+    public constructor(container: Container) {
         super();
+        this._container = container;
         this._setupCallbacks();
     }
 
@@ -23,18 +26,17 @@ export class RequestContextAuthorizer
     public before(handler: HandlerLambda<any, any>, next: NextFunction): void {
 
         // Resolve the class that does the work
-        const container = ContainerHelper.current(handler.event);
         const authenticator =
-            container.get<RequestContextAuthenticator>(INTERNALTYPES.RequestContextAuthenticator);
+            this._container.get<RequestContextAuthenticator>(INTERNALTYPES.RequestContextAuthenticator);
 
         // Read claims from the request context
         const claims = authenticator.authorizeRequestAndGetClaims(handler.event, handler.context);
 
         // Make them available for injection into business logic
-        container.bind<CoreApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims).toConstantValue(claims);
+        this._container.rebind<CoreApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims).toConstantValue(claims);
 
         // Include identity details in logs
-        super.logIdentity(container, claims);
+        super.logIdentity(this._container, claims);
 
         next();
     }

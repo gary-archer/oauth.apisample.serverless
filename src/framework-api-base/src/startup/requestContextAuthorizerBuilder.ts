@@ -28,6 +28,6 @@ export class RequestContextAuthorizerBuilder {
      * Create the middleware which triggers the OAuth work
      */
     public createAuthorizer(): MiddlewareObject<any, any> {
-        return new RequestContextAuthorizer();
+        return new RequestContextAuthorizer(this._container);
     }
 }

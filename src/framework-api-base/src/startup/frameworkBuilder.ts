@@ -8,7 +8,6 @@ import {FrameworkConfiguration} from '../configuration/frameworkConfiguration';
 import {ApplicationExceptionHandler} from '../errors/applicationExceptionHandler';
 import {ClientError} from '../errors/clientError';
 import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
-import {ChildContainerMiddleware} from '../middleware/childContainerMiddleware';
 import {CustomHeaderMiddleware} from '../middleware/customHeaderMiddleware';
 import {ExceptionMiddleware} from '../middleware/exceptionMiddleware';
 import {LoggerMiddleware} from '../middleware/loggerMiddleware';
@@ -60,9 +59,8 @@ export class FrameworkBuilder {
             return await baseHandler(event, context);
 
         })
-        .use(new ChildContainerMiddleware(this._container))
-        .use(new LoggerMiddleware(this._loggerFactory))
-        .use(new ExceptionMiddleware(this._configuration!, this._applicationExceptionHandler))
+        .use(new LoggerMiddleware(this._container, this._loggerFactory))
+        .use(new ExceptionMiddleware(this._container, this._configuration!, this._applicationExceptionHandler))
         .use(new CustomHeaderMiddleware(this._configuration!.apiName));
 
         // Return the base handler wrapped in cross cutting concerns

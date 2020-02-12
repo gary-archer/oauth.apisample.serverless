@@ -1,17 +1,19 @@
+import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {BASEFRAMEWORKTYPES} from '../../../framework-base';
 import {LogEntryImpl} from '../logging/logEntryImpl';
 import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
-import {ContainerHelper} from '../utilities/containerHelper';
 
 /*
  * The middleware coded in a class based manner
  */
 export class LoggerMiddleware implements MiddlewareObject<any, any> {
 
+    private readonly _container: Container;
     private readonly _loggerFactory: LoggerFactoryImpl;
 
-    public constructor(loggerFactory: LoggerFactoryImpl) {
+    public constructor(container: Container, loggerFactory: LoggerFactoryImpl) {
+        this._container = container;
         this._loggerFactory = loggerFactory;
         this._setupCallbacks();
     }
@@ -25,8 +27,7 @@ export class LoggerMiddleware implements MiddlewareObject<any, any> {
         const logEntry = this._loggerFactory.createLogEntry();
 
         // Bind it to the container
-        const container = ContainerHelper.current(handler.event);
-        container.bind<LogEntryImpl>(BASEFRAMEWORKTYPES.LogEntry).toConstantValue(logEntry);
+        this._container.rebind<LogEntryImpl>(BASEFRAMEWORKTYPES.LogEntry).toConstantValue(logEntry);
 
         // Start request logging
         logEntry.start(handler.event, handler.context);
@@ -39,8 +40,7 @@ export class LoggerMiddleware implements MiddlewareObject<any, any> {
     public after(handler: HandlerLambda<any, any>, next: NextFunction): void {
 
         // Get the log entry
-        const container = ContainerHelper.current(handler.event);
-        const logEntry = container.get<LogEntryImpl>(BASEFRAMEWORKTYPES.LogEntry);
+        const logEntry = this._container.get<LogEntryImpl>(BASEFRAMEWORKTYPES.LogEntry);
 
         // End logging
         logEntry.end(handler.response);

@@ -1,11 +1,14 @@
 import {Context} from 'aws-lambda';
+import {Container} from 'inversify';
 import 'reflect-metadata';
-import {APIFRAMEWORKTYPES, ContainerHelper, ErrorFactory, ResponseWriter} from '../../framework-api-base';
+import {APIFRAMEWORKTYPES, ErrorFactory, ResponseWriter} from '../../framework-api-base';
 import {LOGICTYPES} from '../../logic/configuration/logicTypes';
 import {ErrorCodes} from '../../logic/errors/errorCodes';
 import {CompanyService} from '../../logic/services/companyService';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
 import {HandlerFactory} from './handlerFactory';
+
+const container = new Container();
 
 /*
  * Our handler acts as a REST controller
@@ -23,7 +26,6 @@ const baseHandler = async (event: any, context: Context) => {
     }
 
     // Get claims produced by the authorizer
-    const container = ContainerHelper.current(event);
     const claims = container.get<SampleApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims);
 
     // Execute the logic
@@ -35,7 +37,7 @@ const baseHandler = async (event: any, context: Context) => {
 };
 
 // Create an enriched handler, which wires up framework handling to run before the above handler
-const factory = new HandlerFactory();
+const factory = new HandlerFactory(container);
 const handler = factory.enrichHandler(baseHandler);
 
 // Export the handler to serverless.yml

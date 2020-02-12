@@ -75,6 +75,6 @@ export class OAuthAuthorizerBuilder<TClaims extends CoreApiClaims> {
      * Create the middleware which triggers the OAuth work
      */
     public createAuthorizer(): MiddlewareObject<any, any> {
-        return new OAuthAuthorizer<TClaims>();
+        return new OAuthAuthorizer<TClaims>(this._container);
     }
 }

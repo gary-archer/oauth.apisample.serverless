@@ -15,7 +15,6 @@ import {CoreApiClaims} from './src/security/coreApiClaims';
 import {FrameworkBuilder} from './src/startup/frameworkBuilder';
 import {RequestContextAuthorizerBuilder} from './src/startup/requestContextAuthorizerBuilder';
 import {AsyncHandler} from './src/utilities/asyncHandler';
-import {ContainerHelper} from './src/utilities/containerHelper';
 import {DebugProxyAgent} from './src/utilities/debugProxyAgent';
 import {ResponseWriter} from './src/utilities/responseWriter';
 
@@ -33,7 +32,6 @@ export {
     FrameworkBuilder,
     RequestContextAuthorizerBuilder,
     AsyncHandler,
-    ContainerHelper,
     DebugProxyAgent,
     ResponseWriter,
 };
