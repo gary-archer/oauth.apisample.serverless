@@ -8,4 +8,4 @@ settings:
   # Host names for this stage, which run on the local PC
   apiHostName: 'api.mycompany.com'
   certificateDomainName: 'mycompany.com'
-  trustedOrigin: 'https://web.mycompany.com'
+  trustedOrigin: '*'

@@ -8,4 +8,7 @@ settings:
   # Host names for this stage, which run in AWS
   apiHostName: 'api.authguidance-examples.com'
   certificateDomainName: 'authguidance-examples.com'
-  trustedOrigin: 'https://web.authguidance-examples.com'
+  
+  # We use the wildcard value to support both a deployed and development web URL
+  # trustedOrigin: 'https://web.authguidance-examples.com'
+  trustedOrigin: '*'
