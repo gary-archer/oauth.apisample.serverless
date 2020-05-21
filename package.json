@@ -33,7 +33,7 @@
     "rimraf": "^2.6.2",
     "serverless": "1.57.0",
     "serverless-deployment": "file:deployment",
-    "tslint": "^5.20.1",
-    "typescript": "^3.7.2"
+    "tslint": "^6.1.2",
+    "typescript": "^3.8.3"
   }
 }
