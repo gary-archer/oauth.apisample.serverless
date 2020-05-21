@@ -8,8 +8,8 @@ import {AsyncHandler,
         ResponseWriter} from '../../plumbing-base';
 import {OAuthAuthorizerBuilder} from '../../plumbing-oauth';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
+import {SampleApiClaimsProvider} from '../claims/sampleApiClaimsProvider';
 import {Configuration} from '../configuration/configuration';
-import {SampleApiClaimsProvider} from './sampleApiClaimsProvider';
 
 /*
  * A class to manage common lambda startup behaviour and injecting cross cutting concerns

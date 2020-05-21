@@ -2,7 +2,7 @@ import {Context} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
 import {LOGICTYPES} from '../../logic/configuration/logicTypes';
-import {ErrorCodes} from '../../logic/errors/errorCodes';
+import {SampleErrorCodes} from '../../logic/errors/sampleErrorCodes';
 import {CompanyService} from '../../logic/services/companyService';
 import {BASETYPES, ErrorFactory, ResponseWriter} from '../../plumbing-base';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
@@ -21,7 +21,7 @@ const baseHandler = async (event: any, context: Context) => {
 
         throw ErrorFactory.createClientError(
             400,
-            ErrorCodes.invalidCompanyId,
+            SampleErrorCodes.invalidCompanyId,
             'The company id must be a positive numeric integer');
     }
 

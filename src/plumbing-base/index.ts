@@ -4,9 +4,8 @@
 
 import {CoreApiClaims} from './src/claims/coreApiClaims';
 import {BASETYPES} from './src/configuration/BASETYPES';
-import {FrameworkConfiguration} from './src/configuration/frameworkConfiguration';
+import {LoggingConfiguration} from './src/configuration/loggingConfiguration';
 import {ApiError} from './src/errors/apiError';
-import {ApplicationExceptionHandler} from './src/errors/applicationExceptionHandler';
 import {BaseErrorCodes} from './src/errors/baseErrorCodes';
 import {ClientError} from './src/errors/clientError';
 import {ErrorFactory} from './src/errors/errorFactory';
@@ -25,7 +24,6 @@ import {using} from './src/utilities/using';
 
 export {
     ApiError,
-    ApplicationExceptionHandler,
     AsyncHandler,
     BASETYPES,
     BaseAuthorizerMiddleware,
@@ -38,7 +36,7 @@ export {
     ErrorFactory,
     ExtendedError,
     FrameworkBuilder,
-    FrameworkConfiguration,
+    LoggingConfiguration,
     LogEntry,
     PerformanceBreakdown,
     RequestContextAuthorizerBuilder,

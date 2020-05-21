@@ -1,9 +1,8 @@
 import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {BASETYPES} from '../configuration/BASETYPES';
-import {FrameworkConfiguration} from '../configuration/frameworkConfiguration';
+import {LoggingConfiguration} from '../configuration/loggingConfiguration';
 import {ApiError} from '../errors/apiError';
-import {ApplicationExceptionHandler} from '../errors/applicationExceptionHandler';
 import {ErrorUtils} from '../errors/errorUtils';
 import {LogEntryImpl} from '../logging/logEntryImpl';
 import {ResponseWriter} from '../utilities/responseWriter';
@@ -14,17 +13,12 @@ import {ResponseWriter} from '../utilities/responseWriter';
 export class ExceptionMiddleware implements MiddlewareObject<any, any> {
 
     private readonly _container: Container;
-    private readonly _configuration: FrameworkConfiguration;
-    private readonly _applicationExceptionHandler: ApplicationExceptionHandler;
+    private readonly _configuration: LoggingConfiguration;
 
-    public constructor(
-        container: Container,
-        configuration: FrameworkConfiguration,
-        appExceptionHandler: ApplicationExceptionHandler) {
+    public constructor(container: Container, configuration: LoggingConfiguration) {
 
         this._container = container;
         this._configuration = configuration;
-        this._applicationExceptionHandler = appExceptionHandler;
         this._setupCallbacks();
     }
 
@@ -36,11 +30,8 @@ export class ExceptionMiddleware implements MiddlewareObject<any, any> {
         // Get the log entry
         const logEntry = this._container.get<LogEntryImpl>(BASETYPES.LogEntry);
 
-        // Get the exception to handle and allow the application to implement its own error logic first
-        const exceptionToHandle = this._applicationExceptionHandler.translate(handler.error);
-
         // Get the error into a known object
-        const error = ErrorUtils.fromException(exceptionToHandle);
+        const error = ErrorUtils.fromException(handler.error);
 
         // Log the error and convert to the client error
         let clientError;

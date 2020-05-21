@@ -12,7 +12,7 @@ export class ErrorFactory {
     /*
      * Create a server error
      */
-    public static createApiError(errorCode: string, userMessage: string, stack?: string | undefined): ApiError {
+    public static createServerError(errorCode: string, userMessage: string, stack?: string | undefined): ApiError {
         return new ApiErrorImpl(errorCode, userMessage, stack);
     }
 

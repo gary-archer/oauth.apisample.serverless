@@ -10,7 +10,6 @@ import {AsyncHandler,
         ResponseWriter} from '../../plumbing-base';
 import {CompositionRoot} from '../configuration/compositionRoot';
 import {Configuration} from '../configuration/configuration';
-import {RestErrorTranslator} from '../errors/restErrorTranslator';
 
 /*
  * A class to manage common lambda startup behaviour and injecting cross cutting concerns
@@ -36,7 +35,6 @@ export class HandlerFactory {
             const configuration = this._loadConfiguration();
             framework
                 .configure(configuration.framework)
-                .withApplicationExceptionHandler(new RestErrorTranslator())
                 .register();
 
             // Register authorization related dependencies

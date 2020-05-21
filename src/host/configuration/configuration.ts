@@ -1,4 +1,4 @@
-import {FrameworkConfiguration} from '../../plumbing-base';
+import {LoggingConfiguration} from '../../plumbing-base';
 import {OAuthConfiguration} from '../../plumbing-oauth';
 import {ApiConfiguration} from './apiConfiguration';
 
@@ -7,6 +7,6 @@ import {ApiConfiguration} from './apiConfiguration';
  */
 export interface Configuration {
     api: ApiConfiguration;
-    framework: FrameworkConfiguration;
+    logging: LoggingConfiguration;
     oauth: OAuthConfiguration;
 }

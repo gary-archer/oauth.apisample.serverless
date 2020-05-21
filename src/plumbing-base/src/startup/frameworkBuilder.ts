@@ -4,8 +4,7 @@ import middy from 'middy';
 import {Middy} from 'middy';
 import {CoreApiClaims} from '../claims/coreApiClaims';
 import {BASETYPES} from '../configuration/BASETYPES';
-import {FrameworkConfiguration} from '../configuration/frameworkConfiguration';
-import {ApplicationExceptionHandler} from '../errors/applicationExceptionHandler';
+import {LoggingConfiguration} from '../configuration/loggingConfiguration';
 import {ClientError} from '../errors/clientError';
 import {LogEntry} from '../logging/LogEntry';
 import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
@@ -21,30 +20,20 @@ export class FrameworkBuilder {
 
     private readonly _container: Container;
     private readonly _loggerFactory: LoggerFactoryImpl;
-    private _configuration: FrameworkConfiguration | null;
-    private _applicationExceptionHandler: ApplicationExceptionHandler;
+    private _configuration: LoggingConfiguration | null;
 
     public constructor(container: Container) {
         this._container = container;
         this._configuration = null;
-        this._applicationExceptionHandler = new ApplicationExceptionHandler();
         this._loggerFactory = new LoggerFactoryImpl();
     }
 
     /*
      * Configure logging when the JSON configuration is provided
      */
-    public configure(configuration: FrameworkConfiguration): FrameworkBuilder {
+    public configure(configuration: LoggingConfiguration): FrameworkBuilder {
         this._configuration = configuration;
         this._loggerFactory.configure(configuration);
-        return this;
-    }
-
-    /*
-     * Allow an application handler to translate errors before the framework handler runs
-     */
-    public withApplicationExceptionHandler(appExceptionHandler: ApplicationExceptionHandler): FrameworkBuilder {
-        this._applicationExceptionHandler = appExceptionHandler;
         return this;
     }
 
@@ -60,7 +49,7 @@ export class FrameworkBuilder {
 
         })
         .use(new LoggerMiddleware(this._container, this._loggerFactory))
-        .use(new ExceptionMiddleware(this._container, this._configuration!, this._applicationExceptionHandler))
+        .use(new ExceptionMiddleware(this._container, this._configuration!))
         .use(new CustomHeaderMiddleware(this._configuration!.apiName));
 
         // Return the base handler wrapped in cross cutting concerns

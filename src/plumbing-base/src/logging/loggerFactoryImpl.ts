@@ -1,4 +1,4 @@
-import {FrameworkConfiguration} from '../configuration/frameworkConfiguration';
+import {LoggingConfiguration} from '../configuration/loggingConfiguration';
 import {ClientError} from '../errors/clientError';
 import {ErrorUtils} from '../errors/errorUtils';
 import {LogEntryImpl} from './logEntryImpl';
@@ -33,10 +33,10 @@ export class LoggerFactoryImpl implements LoggerFactory {
     /*
      * Update the log entry from JSON configuration, which could potentially fail
      */
-    public configure(configuration: FrameworkConfiguration): void {
+    public configure(configuration: LoggingConfiguration): void {
 
-        // Initialise behaviour
-        this._logConfiguration = configuration.logging;
+        // Initialise data
+        this._logConfiguration = configuration;
         this._apiName = configuration.apiName;
 
         // Initialise logging behaviour from configuration
@@ -49,7 +49,7 @@ export class LoggerFactoryImpl implements LoggerFactory {
     public logStartupError(exception: any): ClientError {
 
         // Get the error into a loggable format
-        const error = ErrorUtils.createApiError(exception);
+        const error = ErrorUtils.createServerError(exception);
 
         // Set error details
         const logEntry = this.createLogEntry();

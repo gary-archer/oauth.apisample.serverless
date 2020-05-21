@@ -11,7 +11,7 @@ export class OAuthErrorUtils {
      */
     public static fromMetadataError(responseError: any, url: string): ApiError {
 
-        const apiError = ErrorFactory.createApiError(
+        const apiError = ErrorFactory.createServerError(
             OAuthErrorCodes.metadataLookupFailure,
             'Metadata lookup failed',
             responseError.stack);
@@ -25,7 +25,7 @@ export class OAuthErrorUtils {
      */
     public static fromSigningKeyDownloadError(responseError: any, url: string): ApiError {
 
-        const apiError = ErrorFactory.createApiError(
+        const apiError = ErrorFactory.createServerError(
             OAuthErrorCodes.signingKeyDownloadFailure,
             'Signing key download failed',
             responseError.stack);
@@ -65,7 +65,7 @@ export class OAuthErrorUtils {
      */
     public static fromMissingClaim(claimName: string): ApiError {
 
-        const apiError = ErrorFactory.createApiError(BaseErrorCodes.claimsFailure, 'Authorization Data Not Found');
+        const apiError = ErrorFactory.createServerError(BaseErrorCodes.claimsFailure, 'Authorization Data Not Found');
         apiError.setDetails(`An empty value was found for the expected claim ${claimName}`);
         return apiError;
     }
@@ -104,7 +104,7 @@ export class OAuthErrorUtils {
             message += ` : ${oauthErrorCode}`;
         }
 
-        return ErrorFactory.createApiError(errorCode, message, stack);
+        return ErrorFactory.createServerError(errorCode, message, stack);
     }
 
     /*

@@ -3,9 +3,9 @@
  */
 export class BaseErrorCodes {
 
-    public static readonly unauthorizedRequest = 'unauthorized';
-
     public static readonly serverError = 'server_error';
+
+    public static readonly unauthorizedRequest = 'unauthorized';
 
     public static readonly claimsFailure = 'claims_failure';
 

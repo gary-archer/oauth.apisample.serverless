@@ -1,5 +1,12 @@
 1. Update logging configuration as for other samples
 
-2. Remove crap classes for error handling - BusinessError / ExtendedException
+2. Get rid of framework builder
 
-3. CompositionRoot classes --> call each other perhaps?
+3. Rename framework authorizer builder to composition root
+
+3. Search for and remove the word 'framework'
+   Look in index.ts files for anything leftover
+
+4. Check packaging
+
+5. Deploy to AWS and test SPA

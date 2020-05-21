@@ -1,7 +1,7 @@
 /*
  * A list of API specific error codes
  */
-export class ErrorCodes {
+export class SampleErrorCodes {
 
     public static readonly invalidCompanyId = 'invalid_company_id';
 

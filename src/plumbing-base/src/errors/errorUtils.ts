@@ -24,20 +24,20 @@ export class ErrorUtils {
             return clientError;
         }
 
-        return ErrorUtils.createApiError(exception);
+        return ErrorUtils.createServerError(exception);
     }
 
     /*
      * Create an error from an exception
      */
-    public static createApiError(exception: any, errorCode?: string, message?: string): ApiError {
+    public static createServerError(exception: any, errorCode?: string, message?: string): ApiError {
 
         // Default details
         const defaultErrorCode = BaseErrorCodes.serverError;
         const defaultMessage = 'An unexpected exception occurred in the API';
 
         // Create the error
-        const error = ErrorFactory.createApiError(
+        const error = ErrorFactory.createServerError(
             errorCode || defaultErrorCode,
             message || defaultMessage,
             exception.stack);
@@ -50,7 +50,7 @@ export class ErrorUtils {
      */
     public static fromMissingClaim(claimName: string): ApiError {
 
-        const apiError = ErrorFactory.createApiError(BaseErrorCodes.claimsFailure, 'Authorization Data Not Found');
+        const apiError = ErrorFactory.createServerError(BaseErrorCodes.claimsFailure, 'Authorization Data Not Found');
         apiError.setDetails(`An empty value was found for the expected claim ${claimName}`);
         return apiError;
     }
@@ -68,7 +68,7 @@ export class ErrorUtils {
         if (exception instanceof ExtendedError) {
             const error = exception as ExtendedError;
 
-            const apiError = ErrorFactory.createApiError(
+            const apiError = ErrorFactory.createServerError(
                 error.code,
                 error.message,
                 error.stack);
