@@ -6,7 +6,7 @@ import {CoreApiClaims} from '../claims/coreApiClaims';
 import {RequestContextAuthenticator} from '../claims/requestContextAuthenticator';
 import {RequestContextAuthorizer} from '../claims/requestContextAuthorizer';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration';
-import {BASETYPES} from '../dependencies/BASETYPES';
+import {BASETYPES} from '../dependencies/baseTypes';
 import {LogEntry} from '../logging/LogEntry';
 import {LoggerFactory} from '../logging/loggerFactory';
 import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';

@@ -1,6 +1,6 @@
 import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
-import {BASETYPES} from '../dependencies/BASETYPES';
+import {BASETYPES} from '../dependencies/baseTypes';
 import {LogEntryImpl} from '../logging/logEntryImpl';
 import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
 

@@ -6,7 +6,7 @@ import {BaseAuthorizerMiddleware} from './src/claims/baseAuthorizerMiddleware';
 import {CoreApiClaims} from './src/claims/coreApiClaims';
 import {LoggingConfiguration} from './src/configuration/loggingConfiguration';
 import {BaseCompositionRoot} from './src/dependencies/baseCompositionRoot';
-import {BASETYPES} from './src/dependencies/BASETYPES';
+import {BASETYPES} from './src/dependencies/baseTypes';
 import {BaseErrorCodes} from './src/errors/baseErrorCodes';
 import {ClientError} from './src/errors/clientError';
 import {ErrorFactory} from './src/errors/errorFactory';
