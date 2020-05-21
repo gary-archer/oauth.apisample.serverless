@@ -1,6 +1,6 @@
 import {inject, injectable} from 'inversify';
 import {BASETYPES, LogEntry, using} from '../../plumbing-base';
-import {LOGICTYPES} from '../configuration/logicTypes';
+import {SAMPLETYPES} from '../dependencies/sampleTypes';
 import {Company} from '../entities/company';
 import {CompanyTransactions} from '../entities/companyTransactions';
 import {JsonFileReader} from '../utilities/jsonFileReader';
@@ -18,7 +18,7 @@ export class CompanyRepository {
     private readonly _logEntry: LogEntry;
 
     public constructor(
-        @inject(LOGICTYPES.JsonFileReader) jsonReader: JsonFileReader,
+        @inject(SAMPLETYPES.JsonFileReader) jsonReader: JsonFileReader,
         @inject(BASETYPES.LogEntry) logEntry: LogEntry) {
 
         this._jsonReader = jsonReader;

@@ -1,18 +1,17 @@
 import {Context} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {LOGICTYPES} from '../../logic/configuration/logicTypes';
+import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes';
 import {SampleErrorCodes} from '../../logic/errors/sampleErrorCodes';
 import {CompanyService} from '../../logic/services/companyService';
 import {BASETYPES, ErrorFactory, ResponseWriter} from '../../plumbing-base';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
-import {HandlerFactory} from './handlerFactory';
-
-const container = new Container();
+import {LambdaConfiguration} from './startup/lambdaConfiguration';
 
 /*
  * Our handler acts as a REST controller
  */
+const container = new Container();
 const baseHandler = async (event: any, context: Context) => {
 
     // First get the supplied id and ensure it is a valid integer
@@ -29,16 +28,16 @@ const baseHandler = async (event: any, context: Context) => {
     const claims = container.get<SampleApiClaims>(BASETYPES.CoreApiClaims);
 
     // Execute the logic
-    const service = container.get<CompanyService>(LOGICTYPES.CompanyService);
+    const service = container.get<CompanyService>(SAMPLETYPES.CompanyService);
     const companies = await service.getCompanyTransactions(id, claims.regionsCovered);
 
     // Write the response
     return ResponseWriter.objectResponse(200, companies);
 };
 
-// Create an enriched handler, which wires up framework handling to run before the above handler
-const factory = new HandlerFactory(container);
-const handler = factory.enrichHandler(baseHandler);
+// Create an enriched handler, which wires up middleware to run before the above handler
+const configuration = new LambdaConfiguration(container);
+const handler = configuration.enrichHandler(baseHandler);
 
 // Export the handler to serverless.yml
 export {handler};

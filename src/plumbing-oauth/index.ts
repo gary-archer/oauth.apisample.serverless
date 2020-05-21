@@ -4,12 +4,12 @@
 
 import {CustomClaimsProvider} from './src/claims/customClaimsProvider';
 import {OAuthConfiguration} from './src/configuration/oauthConfiguration';
-import {OAUTHPUBLICTYPES} from './src/configuration/oauthPublicTypes';
-import {OAuthAuthorizerBuilder} from './src/startup/oauthAuthorizerBuilder';
+import {OAuthCompositionRoot} from './src/dependencies/oauthCompositionRoot';
+import {OAUTHTYPES} from './src/dependencies/oauthTypes';
 
 export {
-    OAUTHPUBLICTYPES,
+    OAUTHTYPES,
+    OAuthCompositionRoot,
     OAuthConfiguration,
     CustomClaimsProvider,
-    OAuthAuthorizerBuilder,
 };

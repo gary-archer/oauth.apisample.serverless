@@ -4,17 +4,18 @@ import {Container} from 'inversify';
 import {MiddlewareObject, Middy} from 'middy';
 import {cors} from 'middy/middlewares';
 import {AsyncHandler,
+        BaseCompositionRoot,
         DebugProxyAgentMiddleware,
-        FrameworkBuilder,
-        RequestContextAuthorizerBuilder,
-        ResponseWriter} from '../../plumbing-base';
-import {CompositionRoot} from '../configuration/compositionRoot';
-import {Configuration} from '../configuration/configuration';
+        LoggerFactory,
+        LoggerFactoryBuilder,
+        ResponseWriter} from '../../../plumbing-base';
+import {Configuration} from '../../configuration/configuration';
+import {CompositionRoot} from '../../dependencies/compositionRoot';
 
 /*
- * A class to manage common lambda startup behaviour and injecting cross cutting concerns
+ * A class to configure the lambda and manage cross cutting concerns
  */
-export class HandlerFactory {
+export class LambdaConfiguration {
 
     private readonly _container: Container;
 
@@ -23,40 +24,33 @@ export class HandlerFactory {
     }
 
     /*
-     * Enrich a handler for a normal lambda function
+     * Apply cross cutting concerns to a normal lambda
      */
     public enrichHandler(baseHandler: AsyncHandler): Handler {
 
-        const framework = new FrameworkBuilder(this._container);
-
+        const loggerFactory = LoggerFactoryBuilder.create();
         try {
 
-            // Load our JSON configuration then configure the framework and register dependencies
+            // Load our JSON configuration
             const configuration = this._loadConfiguration();
-            framework
+
+            // Register base dependencies from common code
+            const baseCompositionRoot = new BaseCompositionRoot(this._container, loggerFactory)
                 .configure(configuration.logging)
                 .register();
 
-            // Register authorization related dependencies
-            const authorizerBuilder = new RequestContextAuthorizerBuilder(this._container)
-                .register();
+            // Register API specific dependencies
+            CompositionRoot.register(this._container);
 
-            // Register application dependencies
-            CompositionRoot.registerDependencies(this._container);
-
-            // Configure middleware for error handling and logging
-            const enrichedHandler = framework.configureMiddleware(baseHandler);
-
-            // Create the authorization middleware
-            const authorizerMiddleware = authorizerBuilder.createAuthorizer();
-
-            // Add final middleware, and configure CORS and HTTPS debugging before the authorizer
+            // Add middy middleware classes to manage error handling, logging and security
+            const enrichedHandler = baseCompositionRoot.configureMiddleware(baseHandler);
+            const authorizerMiddleware = baseCompositionRoot.getAuthorizerMiddleware();
             return this._applyApplicationMiddleware(enrichedHandler, configuration, authorizerMiddleware);
 
         } catch (e) {
 
             // Handle any startup exceptions
-            return this._handleStartupError(framework, e);
+            return this._handleStartupError(loggerFactory, e);
         }
     }
 
@@ -86,9 +80,9 @@ export class HandlerFactory {
     /*
      * Ensure that any startup errors are logged and then return a handler that will provide the client response
      */
-    private _handleStartupError(framework: FrameworkBuilder, error: any): Handler {
+    private _handleStartupError(loggerFactory: LoggerFactory, error: any): Handler {
 
-        const clientError = framework.handleStartupError(error);
+        const clientError = loggerFactory.logStartupError(error);
         return async (e: any, c: Context) => {
             return ResponseWriter.objectResponse(500, clientError.toResponseFormat());
         };

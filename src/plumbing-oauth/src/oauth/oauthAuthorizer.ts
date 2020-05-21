@@ -6,8 +6,7 @@ import {BaseAuthorizerMiddleware,
         CoreApiClaims,
         ErrorFactory} from '../../../plumbing-base';
 import {ClaimsSupplier} from '../claims/claimsSupplier';
-import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
-import {OAUTHPUBLICTYPES} from '../configuration/oauthPublicTypes';
+import {OAUTHTYPES} from '../dependencies/oauthTypes';
 import {OAuthAuthenticator} from './oauthAuthenticator';
 import {PolicyDocumentWriter} from './policyDocumentWriter';
 
@@ -57,7 +56,7 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
         }
 
         // Add the policy document to the container, which will be retrieved by the handler
-        this._container.rebind<CustomAuthorizerResult>(OAUTHPUBLICTYPES.AuthorizerResult)
+        this._container.rebind<CustomAuthorizerResult>(OAUTHTYPES.AuthorizerResult)
             .toConstantValue(authorizerResult);
 
         // For async middleware, middy calls next for us, so do not call it here
@@ -69,8 +68,8 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
     private async _execute(event: any, context: Context): Promise<TClaims> {
 
         // Resolve dependencies
-        const claimsSupplier = this._container.get<ClaimsSupplier<TClaims>>(OAUTHINTERNALTYPES.ClaimsSupplier);
-        const authenticator = this._container.get<OAuthAuthenticator>(OAUTHINTERNALTYPES.OAuthAuthenticator);
+        const claimsSupplier = this._container.get<ClaimsSupplier<TClaims>>(OAUTHTYPES.ClaimsSupplier);
+        const authenticator = this._container.get<OAuthAuthenticator>(OAUTHTYPES.OAuthAuthenticator);
 
         // First read the token from the request header and report missing tokens
         const accessToken = this._readAccessToken(event);

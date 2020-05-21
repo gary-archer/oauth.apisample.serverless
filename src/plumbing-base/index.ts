@@ -1,20 +1,21 @@
 /*
- * Export public types
+ * Export public types from common code
  */
 
+import {BaseAuthorizerMiddleware} from './src/claims/baseAuthorizerMiddleware';
 import {CoreApiClaims} from './src/claims/coreApiClaims';
-import {BASETYPES} from './src/configuration/BASETYPES';
 import {LoggingConfiguration} from './src/configuration/loggingConfiguration';
+import {BaseCompositionRoot} from './src/dependencies/baseCompositionRoot';
+import {BASETYPES} from './src/dependencies/BASETYPES';
 import {BaseErrorCodes} from './src/errors/baseErrorCodes';
 import {ClientError} from './src/errors/clientError';
 import {ErrorFactory} from './src/errors/errorFactory';
 import {ServerError} from './src/errors/ServerError';
 import {LogEntry} from './src/logging/logEntry';
+import {LoggerFactory} from './src/logging/loggerFactory';
+import {LoggerFactoryBuilder} from './src/logging/loggerFactoryBuilder';
 import {PerformanceBreakdown} from './src/logging/performanceBreakdown';
 import {DebugProxyAgentMiddleware} from './src/middleware/debugProxyAgentMiddleware';
-import {BaseAuthorizerMiddleware} from './src/oauth/baseAuthorizerMiddleware';
-import {FrameworkBuilder} from './src/startup/frameworkBuilder';
-import {RequestContextAuthorizerBuilder} from './src/startup/requestContextAuthorizerBuilder';
 import {AsyncHandler} from './src/utilities/asyncHandler';
 import {DebugProxyAgent} from './src/utilities/debugProxyAgent';
 import {Disposable} from './src/utilities/disposable';
@@ -22,10 +23,10 @@ import {ResponseWriter} from './src/utilities/responseWriter';
 import {using} from './src/utilities/using';
 
 export {
-    ServerError,
     AsyncHandler,
     BASETYPES,
     BaseAuthorizerMiddleware,
+    BaseCompositionRoot,
     BaseErrorCodes,
     ClientError,
     CoreApiClaims,
@@ -33,11 +34,12 @@ export {
     DebugProxyAgentMiddleware,
     Disposable,
     ErrorFactory,
-    FrameworkBuilder,
-    LoggingConfiguration,
     LogEntry,
+    LoggerFactory,
+    LoggerFactoryBuilder,
+    LoggingConfiguration,
     PerformanceBreakdown,
-    RequestContextAuthorizerBuilder,
     ResponseWriter,
+    ServerError,
     using,
 };

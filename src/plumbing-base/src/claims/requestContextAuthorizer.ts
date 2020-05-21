@@ -1,8 +1,7 @@
 import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {CoreApiClaims} from '../claims/coreApiClaims';
-import {BASETYPES} from '../configuration/baseTypes';
-import {INTERNALTYPES} from '../configuration/internalTypes';
+import {BASETYPES} from '../dependencies/baseTypes';
 import {BaseAuthorizerMiddleware} from './baseAuthorizerMiddleware';
 import {RequestContextAuthenticator} from './requestContextAuthenticator';
 
@@ -27,7 +26,7 @@ export class RequestContextAuthorizer
 
         // Resolve the class that does the work
         const authenticator =
-            this._container.get<RequestContextAuthenticator>(INTERNALTYPES.RequestContextAuthenticator);
+            this._container.get<RequestContextAuthenticator>(BASETYPES.RequestContextAuthenticator);
 
         // Read claims from the request context
         const claims = authenticator.authorizeRequestAndGetClaims(handler.event, handler.context);

@@ -10,7 +10,7 @@ import {ErrorUtils} from '../errors/errorUtils';
 export class RequestContextAuthenticator {
 
     /*
-     * Read claims passed into the request context as a result of the previously returned policy document
+     * Read claims passed into the request context as a result of returning the policy document from an authorizer
      */
     public authorizeRequestAndGetClaims(event: any, context: Context): CoreApiClaims {
 

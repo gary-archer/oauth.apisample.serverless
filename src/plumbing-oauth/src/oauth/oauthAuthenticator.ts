@@ -9,7 +9,7 @@ import {BASETYPES,
         LogEntry,
         using} from '../../../plumbing-base';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
-import {OAUTHINTERNALTYPES} from '../configuration/oauthInternalTypes';
+import {OAUTHTYPES} from '../dependencies/oauthTypes';
 import {OAuthErrorUtils} from '../errors/oauthErrorUtils';
 
 /*
@@ -26,7 +26,7 @@ export class OAuthAuthenticator {
      * Receive configuration and request metadata
      */
     public constructor(
-        @inject(OAUTHINTERNALTYPES.Configuration) configuration: OAuthConfiguration,
+        @inject(OAUTHTYPES.Configuration) configuration: OAuthConfiguration,
         @inject(BASETYPES.LogEntry) logEntry: LogEntry) {
 
         this._configuration = configuration;

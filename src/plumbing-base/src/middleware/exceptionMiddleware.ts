@@ -1,7 +1,7 @@
 import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
-import {BASETYPES} from '../configuration/BASETYPES';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration';
+import {BASETYPES} from '../dependencies/BASETYPES';
 import {ErrorUtils} from '../errors/errorUtils';
 import {ServerError} from '../errors/ServerError';
 import {LogEntryImpl} from '../logging/logEntryImpl';

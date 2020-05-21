@@ -1,6 +1,6 @@
 import {Container} from 'inversify';
 import {CoreApiClaims} from '../claims/coreApiClaims';
-import {BASETYPES} from '../configuration/BASETYPES';
+import {BASETYPES} from '../dependencies/BASETYPES';
 import {ClientError} from '../errors/clientError';
 import {LogEntryImpl} from '../logging/logEntryImpl';
 
