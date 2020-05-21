@@ -54,7 +54,7 @@ export class OAuthAuthenticator {
         if (!decoded) {
 
             // Indicate an invalid token if we cannot decode it
-            throw ErrorFactory.create401Error('Unable to decode received JWT');
+            throw ErrorFactory.createClient401Error('Unable to decode received JWT');
         }
 
         // Get the key identifier from the JWT header
@@ -122,7 +122,7 @@ export class OAuthAuthenticator {
             }
 
             // Indicate not found
-            throw ErrorFactory.create401Error(
+            throw ErrorFactory.createClient401Error(
                 `Key with identifier: ${tokenKeyIdentifier} not found in JWKS download`);
         });
     }
@@ -152,7 +152,7 @@ export class OAuthAuthenticator {
                     details += ` : ${e.message}`;
                 }
 
-                throw ErrorFactory.create401Error(details);
+                throw ErrorFactory.createClient401Error(details);
             }
         });
     }

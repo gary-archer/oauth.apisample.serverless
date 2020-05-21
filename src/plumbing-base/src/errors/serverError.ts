@@ -1,7 +1,7 @@
 /*
  * An interface for errors internal to the API
  */
-export abstract class ApiError extends Error {
+export abstract class ServerError extends Error {
 
     // Return the error code
     public abstract getErrorCode(): string;
@@ -18,6 +18,6 @@ export abstract class ApiError extends Error {
     // Return the log format
     public abstract toLogFormat(apiName: string): any;
 
-    // Return the client error for the API error
+    // Return the client error for the server error
     public abstract toClientError(apiName: string): any;
 }

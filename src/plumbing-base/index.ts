@@ -5,11 +5,10 @@
 import {CoreApiClaims} from './src/claims/coreApiClaims';
 import {BASETYPES} from './src/configuration/BASETYPES';
 import {LoggingConfiguration} from './src/configuration/loggingConfiguration';
-import {ApiError} from './src/errors/apiError';
 import {BaseErrorCodes} from './src/errors/baseErrorCodes';
 import {ClientError} from './src/errors/clientError';
 import {ErrorFactory} from './src/errors/errorFactory';
-import {ExtendedError} from './src/errors/extendedError';
+import {ServerError} from './src/errors/ServerError';
 import {LogEntry} from './src/logging/logEntry';
 import {PerformanceBreakdown} from './src/logging/performanceBreakdown';
 import {DebugProxyAgentMiddleware} from './src/middleware/debugProxyAgentMiddleware';
@@ -23,7 +22,7 @@ import {ResponseWriter} from './src/utilities/responseWriter';
 import {using} from './src/utilities/using';
 
 export {
-    ApiError,
+    ServerError,
     AsyncHandler,
     BASETYPES,
     BaseAuthorizerMiddleware,
@@ -34,7 +33,6 @@ export {
     DebugProxyAgentMiddleware,
     Disposable,
     ErrorFactory,
-    ExtendedError,
     FrameworkBuilder,
     LoggingConfiguration,
     LogEntry,

@@ -34,7 +34,7 @@ export class HandlerFactory {
             // Load our JSON configuration then configure the framework and register dependencies
             const configuration = this._loadConfiguration();
             framework
-                .configure(configuration.framework)
+                .configure(configuration.logging)
                 .register();
 
             // Register authorization related dependencies

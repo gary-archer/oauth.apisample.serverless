@@ -54,7 +54,7 @@ export class LoggerFactoryImpl implements LoggerFactory {
         // Set error details
         const logEntry = this.createLogEntry();
         logEntry.setOperationName('startup');
-        logEntry.setApiError(error);
+        logEntry.setServerError(error);
         logEntry.write(null);
 
         // Return an error for the caller of the lambda

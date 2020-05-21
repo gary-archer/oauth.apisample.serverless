@@ -75,7 +75,7 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
         // First read the token from the request header and report missing tokens
         const accessToken = this._readAccessToken(event);
         if (!accessToken) {
-            throw ErrorFactory.create401Error('No access token was supplied in the bearer header');
+            throw ErrorFactory.createClient401Error('No access token was supplied in the bearer header');
         }
 
         // Create new claims which we will then populate

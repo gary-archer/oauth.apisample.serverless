@@ -1,8 +1,7 @@
-import {ApiError} from './apiError';
 import {BaseErrorCodes} from './baseErrorCodes';
 import {ClientError} from './clientError';
 import {ErrorFactory} from './errorFactory';
-import {ExtendedError} from './extendedError';
+import {ServerError} from './ServerError';
 
 /*
  * General error utility functions
@@ -12,11 +11,11 @@ export class ErrorUtils {
     /*
      * Return or create a typed error
      */
-    public static fromException(exception: any): ApiError | ClientError {
+    public static fromException(exception: any): ServerError | ClientError {
 
-        const apiError = this.tryConvertToApiError(exception);
-        if (apiError !== null) {
-            return apiError;
+        const serverError = this.tryConvertToServerError(exception);
+        if (serverError !== null) {
+            return serverError;
         }
 
         const clientError = this.tryConvertToClientError(exception);
@@ -30,7 +29,7 @@ export class ErrorUtils {
     /*
      * Create an error from an exception
      */
-    public static createServerError(exception: any, errorCode?: string, message?: string): ApiError {
+    public static createServerError(exception: any, errorCode?: string, message?: string): ServerError {
 
         // Default details
         const defaultErrorCode = BaseErrorCodes.serverError;
@@ -48,36 +47,20 @@ export class ErrorUtils {
     /*
      * The error thrown if we cannot find an expected claim during security handling
      */
-    public static fromMissingClaim(claimName: string): ApiError {
+    public static fromMissingClaim(claimName: string): ServerError {
 
-        const apiError = ErrorFactory.createServerError(BaseErrorCodes.claimsFailure, 'Authorization Data Not Found');
-        apiError.setDetails(`An empty value was found for the expected claim ${claimName}`);
-        return apiError;
+        const error = ErrorFactory.createServerError(BaseErrorCodes.claimsFailure, 'Authorization Data Not Found');
+        error.setDetails(`An empty value was found for the expected claim ${claimName}`);
+        return error;
     }
 
     /*
-     * Try to convert an exception to an API error
+     * Try to convert an exception to a server error
      */
-    private static tryConvertToApiError(exception: any): ApiError | null {
+    private static tryConvertToServerError(exception: any): ServerError | null {
 
-        if (exception instanceof ApiError) {
-            return exception as ApiError;
-        }
-
-        // Convert from our technology neutral custom exception to an API specific error
-        if (exception instanceof ExtendedError) {
-            const error = exception as ExtendedError;
-
-            const apiError = ErrorFactory.createServerError(
-                error.code,
-                error.message,
-                error.stack);
-
-            if (error.details) {
-                apiError.setDetails(error.details);
-            }
-
-            return apiError;
+        if (exception instanceof ServerError) {
+            return exception as ServerError;
         }
 
         return null;

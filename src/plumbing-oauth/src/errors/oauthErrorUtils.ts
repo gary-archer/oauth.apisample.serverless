@@ -1,4 +1,4 @@
-import {ApiError, BaseErrorCodes, ErrorFactory} from '../../../plumbing-base';
+import {BaseErrorCodes, ErrorFactory, ServerError} from '../../../plumbing-base';
 import {OAuthErrorCodes} from './oauthErrorCodes';
 
 /*
@@ -9,65 +9,65 @@ export class OAuthErrorUtils {
     /*
      * Handle metadata lookup failures
      */
-    public static fromMetadataError(responseError: any, url: string): ApiError {
+    public static fromMetadataError(responseError: any, url: string): ServerError {
 
-        const apiError = ErrorFactory.createServerError(
+        const error = ErrorFactory.createServerError(
             OAuthErrorCodes.metadataLookupFailure,
             'Metadata lookup failed',
             responseError.stack);
 
-        OAuthErrorUtils._setErrorDetails(apiError, null, responseError, url);
-        return apiError;
+        OAuthErrorUtils._setErrorDetails(error, null, responseError, url);
+        return error;
     }
 
     /*
      * Handle the error for key identifier lookups
      */
-    public static fromSigningKeyDownloadError(responseError: any, url: string): ApiError {
+    public static fromSigningKeyDownloadError(responseError: any, url: string): ServerError {
 
-        const apiError = ErrorFactory.createServerError(
+        const error = ErrorFactory.createServerError(
             OAuthErrorCodes.signingKeyDownloadFailure,
             'Signing key download failed',
             responseError.stack);
 
-        OAuthErrorUtils._setErrorDetails(apiError, null, responseError, url);
-        return apiError;
+        OAuthErrorUtils._setErrorDetails(error, null, responseError, url);
+        return error;
     }
 
     /*
      * Handle user info lookup failures
      */
-    public static fromUserInfoError(responseError: any, url: string): ApiError {
+    public static fromUserInfoError(responseError: any, url: string): ServerError {
 
         // Handle a race condition where the access token expires during user info lookup
         if (responseError.error && responseError.error === 'invalid_token') {
-            throw ErrorFactory.create401Error('Access token expired during user info lookup');
+            throw ErrorFactory.createClient401Error('Access token expired during user info lookup');
         }
 
         // Avoid reprocessing
-        if (responseError instanceof ApiError) {
+        if (responseError instanceof ServerError) {
             return responseError;
         }
 
         const [code, description] = OAuthErrorUtils._readOAuthErrorResponse(responseError);
-        const apiError = OAuthErrorUtils._createOAuthApiError(
+        const error = OAuthErrorUtils._createOAuthServerError(
             OAuthErrorCodes.userinfoFailure,
             'User info lookup failed',
             code,
             responseError.stack);
 
-        OAuthErrorUtils._setErrorDetails(apiError, description, responseError, url);
-        return apiError;
+        OAuthErrorUtils._setErrorDetails(error, description, responseError, url);
+        return error;
     }
 
     /*
      * The error thrown if we cannot find an expected claim during security handling
      */
-    public static fromMissingClaim(claimName: string): ApiError {
+    public static fromMissingClaim(claimName: string): ServerError {
 
-        const apiError = ErrorFactory.createServerError(BaseErrorCodes.claimsFailure, 'Authorization Data Not Found');
-        apiError.setDetails(`An empty value was found for the expected claim ${claimName}`);
-        return apiError;
+        const error = ErrorFactory.createServerError(BaseErrorCodes.claimsFailure, 'Authorization Data Not Found');
+        error.setDetails(`An empty value was found for the expected claim ${claimName}`);
+        return error;
     }
 
     /*
@@ -92,11 +92,11 @@ export class OAuthErrorUtils {
     /*
      * Create an error object from an error code and include the OAuth error code in the user message
      */
-    private static _createOAuthApiError(
+    private static _createOAuthServerError(
         errorCode: string,
         userMessage: string,
         oauthErrorCode: string | null,
-        stack: string | undefined): ApiError {
+        stack: string | undefined): ServerError {
 
         // Include the OAuth error code in the short technical message returned
         let message = userMessage;
@@ -108,10 +108,10 @@ export class OAuthErrorUtils {
     }
 
     /*
-     * Update the API error object with technical exception details
+     * Update the server error object with technical exception details
      */
     private static _setErrorDetails(
-        error: ApiError,
+        error: ServerError,
         oauthDetails: string | null,
         responseError: any,
         url: string): void {

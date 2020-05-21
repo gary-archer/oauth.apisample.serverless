@@ -33,7 +33,7 @@ export class HandlerFactory {
             // Load our JSON configuration then configure the framework
             const configuration = this._loadConfiguration();
             framework
-                .configure(configuration.framework)
+                .configure(configuration.logging)
                 .register();
 
             // Register OAuth framework dependencies

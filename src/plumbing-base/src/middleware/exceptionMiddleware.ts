@@ -2,8 +2,8 @@ import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {BASETYPES} from '../configuration/BASETYPES';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration';
-import {ApiError} from '../errors/apiError';
 import {ErrorUtils} from '../errors/errorUtils';
+import {ServerError} from '../errors/ServerError';
 import {LogEntryImpl} from '../logging/logEntryImpl';
 import {ResponseWriter} from '../utilities/responseWriter';
 
@@ -35,8 +35,8 @@ export class ExceptionMiddleware implements MiddlewareObject<any, any> {
 
         // Log the error and convert to the client error
         let clientError;
-        if (error instanceof ApiError) {
-            logEntry.setApiError(error);
+        if (error instanceof ServerError) {
+            logEntry.setServerError(error);
             clientError = error.toClientError(this._configuration.apiName);
         } else {
             logEntry.setClientError(error);

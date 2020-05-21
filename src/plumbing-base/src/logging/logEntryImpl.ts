@@ -3,8 +3,8 @@ import {Guid} from 'guid-typescript';
 import {injectable} from 'inversify';
 import os from 'os';
 import {CoreApiClaims} from '../claims/coreApiClaims';
-import {ApiError} from '../errors/apiError';
 import {ClientError} from '../errors/clientError';
+import {ServerError} from '../errors/ServerError';
 import {LogEntry} from './logEntry';
 import {LogEntryData} from './logEntryData';
 import {PerformanceBreakdown} from './performanceBreakdown';
@@ -84,7 +84,7 @@ export class LogEntryImpl implements LogEntry {
     /*
      * Add error details after they have been processed by the exception handler, including denormalised fields
      */
-    public setApiError(error: ApiError): void {
+    public setServerError(error: ServerError): void {
         this._data.errorData = error.toLogFormat(this._data.apiName);
         this._data.errorCode = error.getErrorCode();
         this._data.errorId = error.getInstanceId();
