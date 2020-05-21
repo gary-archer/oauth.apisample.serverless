@@ -1,4 +1,4 @@
-import {CustomClaimsProvider} from '../../framework-api-oauth';
+import {CustomClaimsProvider} from '../../plumbing-oauth';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
 
 /*

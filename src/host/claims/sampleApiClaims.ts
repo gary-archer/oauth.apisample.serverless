@@ -1,5 +1,5 @@
 import {injectable} from 'inversify';
-import {CoreApiClaims} from '../../framework-api-base';
+import {CoreApiClaims} from '../../plumbing-base';
 
 /*
  * Override the core claims to support additional custom claims

@@ -1,10 +1,10 @@
 import {Context} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {APIFRAMEWORKTYPES, ErrorFactory, ResponseWriter} from '../../framework-api-base';
 import {LOGICTYPES} from '../../logic/configuration/logicTypes';
 import {ErrorCodes} from '../../logic/errors/errorCodes';
 import {CompanyService} from '../../logic/services/companyService';
+import {APIFRAMEWORKTYPES, ErrorFactory, ResponseWriter} from '../../plumbing-base';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
 import {HandlerFactory} from './handlerFactory';
 

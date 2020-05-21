@@ -19,8 +19,8 @@
   "author": "Gary Archer",
   "license": "ISC",
   "dependencies": {
-    "framework-api-base": "file:src/framework-api-base",
-    "framework-api-oauth": "file:src/framework-api-oauth",
+    "plumbing-base": "file:src/plumbing-base",
+    "plumbing-oauth": "file:src/plumbing-oauth",
     "fs-extra": "^8.1.0",
     "inversify": "^5.0.1",
     "middy": "^0.30.2",

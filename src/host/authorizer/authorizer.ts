@@ -1,7 +1,7 @@
 import {Context, CustomAuthorizerResult} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {OAUTHPUBLICTYPES} from '../../framework-api-oauth';
+import {OAUTHPUBLICTYPES} from '../../plumbing-oauth';
 import {HandlerFactory} from './handlerFactory';
 
 const container = new Container();

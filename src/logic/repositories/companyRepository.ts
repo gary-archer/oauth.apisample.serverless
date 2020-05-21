@@ -1,6 +1,5 @@
 import {inject, injectable} from 'inversify';
-import {BASEFRAMEWORKTYPES} from '../../framework-base';
-import {LogEntry, using} from '../../framework-base';
+import {BASEFRAMEWORKTYPES, LogEntry, using} from '../../plumbing-base';
 import {LOGICTYPES} from '../configuration/logicTypes';
 import {Company} from '../entities/company';
 import {CompanyTransactions} from '../entities/companyTransactions';

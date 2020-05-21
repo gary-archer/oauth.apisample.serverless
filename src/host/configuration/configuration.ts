@@ -1,5 +1,5 @@
-import {FrameworkConfiguration} from '../../framework-api-base';
-import {OAuthConfiguration} from '../../framework-api-oauth';
+import {FrameworkConfiguration} from '../../plumbing-base';
+import {OAuthConfiguration} from '../../plumbing-oauth';
 import {ApiConfiguration} from './apiConfiguration';
 
 /*

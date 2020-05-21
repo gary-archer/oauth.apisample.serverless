@@ -7,7 +7,7 @@ import {AsyncHandler,
         DebugProxyAgentMiddleware,
         FrameworkBuilder,
         RequestContextAuthorizerBuilder,
-        ResponseWriter} from '../../framework-api-base';
+        ResponseWriter} from '../../plumbing-base';
 import {CompositionRoot} from '../configuration/compositionRoot';
 import {Configuration} from '../configuration/configuration';
 import {RestErrorTranslator} from '../errors/restErrorTranslator';

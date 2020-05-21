@@ -5,8 +5,8 @@ import {MiddlewareObject, Middy} from 'middy';
 import {AsyncHandler,
         DebugProxyAgentMiddleware,
         FrameworkBuilder,
-        ResponseWriter} from '../../framework-api-base';
-import {OAuthAuthorizerBuilder} from '../../framework-api-oauth';
+        ResponseWriter} from '../../plumbing-base';
+import {OAuthAuthorizerBuilder} from '../../plumbing-oauth';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
 import {Configuration} from '../configuration/configuration';
 import {SampleApiClaimsProvider} from './sampleApiClaimsProvider';
