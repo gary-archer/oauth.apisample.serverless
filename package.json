@@ -19,21 +19,21 @@
   "author": "Gary Archer",
   "license": "ISC",
   "dependencies": {
-    "plumbing-base": "file:src/plumbing-base",
-    "plumbing-oauth": "file:src/plumbing-oauth",
+    "middy": "0.36.0",
     "fs-extra": "^8.1.0",
     "inversify": "^5.0.1",
-    "middy": "^0.30.2",
+    "plumbing-base": "file:src/plumbing-base",
+    "plumbing-oauth": "file:src/plumbing-oauth",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.15",
     "@types/fs-extra": "^8.0.1",
     "@types/node": "^12.11.7",
-    "rimraf": "^2.6.2",
-    "serverless": "1.57.0",
+    "rimraf": "^3.0.2",
+    "serverless": "1.71.3",
     "serverless-deployment": "file:deployment",
     "tslint": "^6.1.2",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.3"
   }
 }

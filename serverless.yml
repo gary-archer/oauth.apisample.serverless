@@ -3,7 +3,7 @@ service: sampleapi
 # Base details for AWS deployment
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs12.x
   region: eu-west-2
   profile: default
   stage: ${self:custom.config.settings.stage}
