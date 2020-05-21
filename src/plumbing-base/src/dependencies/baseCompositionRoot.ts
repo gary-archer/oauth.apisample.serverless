@@ -1,7 +1,6 @@
+import middy from '@middy/core';
 import {Context} from 'aws-lambda';
 import {Container} from 'inversify';
-import middy from 'middy';
-import {MiddlewareObject, Middy} from 'middy';
 import {CoreApiClaims} from '../claims/coreApiClaims';
 import {RequestContextAuthenticator} from '../claims/requestContextAuthenticator';
 import {RequestContextAuthorizer} from '../claims/requestContextAuthorizer';
@@ -73,7 +72,7 @@ export class BaseCompositionRoot {
     /*
      * Wrap the base handler in cross cutting middleware using the middy component
      */
-    public configureMiddleware(baseHandler: AsyncHandler): Middy<any, any> {
+    public configureMiddleware(baseHandler: AsyncHandler): middy.Middy<any, any> {
 
         // Wrap the base handler and add middleware for cross cutting concerns
         // Error handling and logging are injected early so that they work in other middleware classes
@@ -92,7 +91,7 @@ export class BaseCompositionRoot {
     /*
      * Get a default authorizer middleware that looks up claims from the request context
      */
-    public getAuthorizerMiddleware(): MiddlewareObject<any, any> {
+    public getAuthorizerMiddleware(): middy.MiddlewareObject<any, any> {
         return new RequestContextAuthorizer(this._container);
     }
 }

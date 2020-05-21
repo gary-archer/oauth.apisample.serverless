@@ -1,6 +1,6 @@
+import middy from '@middy/core';
 import {CustomAuthorizerResult} from 'aws-lambda';
 import {Container} from 'inversify';
-import {MiddlewareObject} from 'middy';
 import {CoreApiClaims} from '../../../plumbing-base';
 import {ClaimsSupplier} from '../claims/claimsSupplier';
 import {CustomClaimsProvider} from '../claims/customClaimsProvider';
@@ -73,7 +73,7 @@ export class OAuthCompositionRoot<TClaims extends CoreApiClaims> {
     /*
      * Get an authorizer middleware that does OAuth lookups to get claims
      */
-    public getAuthorizerMiddleware(): MiddlewareObject<any, any> {
+    public getAuthorizerMiddleware(): middy.MiddlewareObject<any, any> {
         return new OAuthAuthorizer<TClaims>(this._container);
     }
 }

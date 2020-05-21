@@ -1,6 +1,6 @@
+import middy from '@middy/core';
 import {Context, CustomAuthorizerResult} from 'aws-lambda';
 import {Container} from 'inversify';
-import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {BaseAuthorizerMiddleware,
         ClientError,
         CoreApiClaims,
@@ -14,7 +14,7 @@ import {PolicyDocumentWriter} from './policyDocumentWriter';
  * A middleware for the lambda authorizer, which does token processing and claims lookup
  */
 export class OAuthAuthorizer<TClaims extends CoreApiClaims>
-       extends BaseAuthorizerMiddleware implements MiddlewareObject<any, any> {
+       extends BaseAuthorizerMiddleware implements middy.MiddlewareObject<any, any> {
 
     private readonly _container: Container;
 
@@ -27,7 +27,7 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
     /*
      * The entry point does the OAuth work as well as AWS specific processing
      */
-    public async before(handler: HandlerLambda<any, any>, next: NextFunction): Promise<void> {
+    public async before(handler: middy.HandlerLambda<any, any>, next: middy.NextFunction): Promise<void> {
 
         let authorizerResult: CustomAuthorizerResult;
         try {

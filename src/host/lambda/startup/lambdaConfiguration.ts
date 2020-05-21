@@ -1,8 +1,8 @@
+import middy from '@middy/core';
+import cors from '@middy/http-cors';
 import {Context, Handler} from 'aws-lambda';
 import fs from 'fs-extra';
 import {Container} from 'inversify';
-import {MiddlewareObject, Middy} from 'middy';
-import {cors} from 'middy/middlewares';
 import {AsyncHandler,
         BaseCompositionRoot,
         DebugProxyAgentMiddleware,
@@ -67,9 +67,9 @@ export class LambdaConfiguration {
      * This sequence ensures that the lambda can be debugged locally, and that it returns CORS headers correctly in AWS
      */
     private _applyApplicationMiddleware(
-        handler: Middy<any, any>,
+        handler: middy.Middy<any, any>,
         configuration: Configuration,
-        authorizerMiddleware: MiddlewareObject<any, any>): Middy<any, any> {
+        authorizerMiddleware: middy.MiddlewareObject<any, any>): middy.Middy<any, any> {
 
         return handler
             .use(cors({origins: configuration.api.trustedOrigins}))

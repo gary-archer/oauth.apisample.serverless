@@ -1,7 +1,7 @@
+import middy from '@middy/core';
 import {Context, Handler} from 'aws-lambda';
 import fs from 'fs-extra';
 import {Container} from 'inversify';
-import {MiddlewareObject, Middy} from 'middy';
 import {AsyncHandler,
         BaseCompositionRoot,
         DebugProxyAgentMiddleware,
@@ -71,9 +71,9 @@ export class AuthorizerConfiguration {
      * Apply application specific middleware for HTTP debugging, then add the authorizer middleware
      */
     private _applyApplicationMiddleware(
-        handler: Middy<any, any>,
+        handler: middy.Middy<any, any>,
         configuration: Configuration,
-        authorizerMiddleware: MiddlewareObject<any, any>): Middy<any, any> {
+        authorizerMiddleware: middy.MiddlewareObject<any, any>): middy.Middy<any, any> {
 
         return handler
             .use(new DebugProxyAgentMiddleware(configuration.api.useProxy, configuration.api.proxyUrl))

@@ -1,11 +1,11 @@
-import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
+import middy from '@middy/core';
 import {BaseErrorCodes} from '../errors/baseErrorCodes';
 import {ErrorFactory} from '../errors/errorFactory';
 
 /*
  * A middleware for special header processing, used to simulate exceptions and check deployed error handling
  */
-export class CustomHeaderMiddleware implements MiddlewareObject<any, any> {
+export class CustomHeaderMiddleware implements middy.MiddlewareObject<any, any> {
 
     private readonly _apiName: string;
 
@@ -17,7 +17,7 @@ export class CustomHeaderMiddleware implements MiddlewareObject<any, any> {
     /*
      * Simulate a 500 error if a particular test header is received
      */
-    public before(handler: HandlerLambda<any, any>, next: NextFunction): void {
+    public before(handler: middy.HandlerLambda<any, any>, next: middy.NextFunction): void {
 
         const textExceptionHeaderName = 'x-mycompany-test-exception';
 

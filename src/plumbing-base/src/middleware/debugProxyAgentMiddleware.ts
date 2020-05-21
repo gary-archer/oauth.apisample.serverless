@@ -1,10 +1,10 @@
-import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
+import middy from '@middy/core';
 import {DebugProxyAgent} from '../utilities/debugProxyAgent';
 
 /*
  * A middleware to handle HTTP debugging configuration on a developer PC
  */
-export class DebugProxyAgentMiddleware implements MiddlewareObject<any, any> {
+export class DebugProxyAgentMiddleware implements middy.MiddlewareObject<any, any> {
 
     private readonly _useProxy: boolean;
     private readonly _proxyUrl: string;
@@ -18,7 +18,7 @@ export class DebugProxyAgentMiddleware implements MiddlewareObject<any, any> {
     /*
      * Run the middleware
      */
-    public async before(handler: HandlerLambda, next: NextFunction): Promise<void> {
+    public async before(handler: middy.HandlerLambda, next: middy.NextFunction): Promise<void> {
 
         // Call the utility class
         await DebugProxyAgent.initialize(this._useProxy, this._proxyUrl);

@@ -1,5 +1,5 @@
+import middy from '@middy/core';
 import {Container} from 'inversify';
-import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration';
 import {BASETYPES} from '../dependencies/baseTypes';
 import {ErrorUtils} from '../errors/errorUtils';
@@ -10,7 +10,7 @@ import {ResponseWriter} from '../utilities/responseWriter';
 /*
  * The exception middleware coded in a class based manner
  */
-export class ExceptionMiddleware implements MiddlewareObject<any, any> {
+export class ExceptionMiddleware implements middy.MiddlewareObject<any, any> {
 
     private readonly _container: Container;
     private readonly _configuration: LoggingConfiguration;
@@ -25,7 +25,7 @@ export class ExceptionMiddleware implements MiddlewareObject<any, any> {
     /*
      * All exceptions are caught and returned from AWS here
      */
-    public onError(handler: HandlerLambda<any, any>, next: NextFunction): void {
+    public onError(handler: middy.HandlerLambda<any, any>, next: middy.NextFunction): void {
 
         // Get the log entry
         const logEntry = this._container.get<LogEntryImpl>(BASETYPES.LogEntry);

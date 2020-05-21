@@ -1,5 +1,5 @@
+import middy from '@middy/core';
 import {Container} from 'inversify';
-import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {CoreApiClaims} from '../claims/coreApiClaims';
 import {BASETYPES} from '../dependencies/baseTypes';
 import {BaseAuthorizerMiddleware} from './baseAuthorizerMiddleware';
@@ -9,7 +9,7 @@ import {RequestContextAuthenticator} from './requestContextAuthenticator';
  * Normal lambdas use this to finish setting up authorization aspects
  */
 export class RequestContextAuthorizer
-       extends BaseAuthorizerMiddleware implements MiddlewareObject<any, any> {
+       extends BaseAuthorizerMiddleware implements middy.MiddlewareObject<any, any> {
 
     private readonly _container: Container;
 
@@ -22,7 +22,7 @@ export class RequestContextAuthorizer
     /*
      * Return claims that were provided by our lambda authorizer
      */
-    public before(handler: HandlerLambda<any, any>, next: NextFunction): void {
+    public before(handler: middy.HandlerLambda<any, any>, next: middy.NextFunction): void {
 
         // Resolve the class that does the work
         const authenticator =
