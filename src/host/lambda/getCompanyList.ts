@@ -3,7 +3,7 @@ import {Container} from 'inversify';
 import 'reflect-metadata';
 import {LOGICTYPES} from '../../logic/configuration/logicTypes';
 import {CompanyService} from '../../logic/services/companyService';
-import {APIFRAMEWORKTYPES, ResponseWriter} from '../../plumbing-base';
+import {BASETYPES, ResponseWriter} from '../../plumbing-base';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
 import {HandlerFactory} from './handlerFactory';
 
@@ -15,7 +15,7 @@ const container = new Container();
 const baseHandler = async (event: any, context: Context) => {
 
     // Get claims produced by the authorizer
-    const claims = container.get<SampleApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims);
+    const claims = container.get<SampleApiClaims>(BASETYPES.CoreApiClaims);
 
     // Execute the logic
     const service = container.get<CompanyService>(LOGICTYPES.CompanyService);

@@ -1,7 +1,7 @@
 import {Context} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {APIFRAMEWORKTYPES, ResponseWriter} from '../../plumbing-base';
+import {BASETYPES, ResponseWriter} from '../../plumbing-base';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
 import {UserInfoClaims} from '../claims/userInfoClaims';
 import {HandlerFactory} from './handlerFactory';
@@ -14,7 +14,7 @@ const container = new Container();
 const baseHandler = async (event: any, context: Context) => {
 
     // Get claims produced by the authorizer
-    const claims = container.get<SampleApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims);
+    const claims = container.get<SampleApiClaims>(BASETYPES.CoreApiClaims);
 
     // Create the payload and return it
     const userInfo = {

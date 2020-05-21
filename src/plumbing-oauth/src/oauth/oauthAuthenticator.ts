@@ -2,7 +2,7 @@ import {inject, injectable} from 'inversify';
 import jsonwebtoken from 'jsonwebtoken';
 import jwkToPem from 'jwk-to-pem';
 import {Client, custom, Issuer} from 'openid-client';
-import {BASEFRAMEWORKTYPES,
+import {BASETYPES,
         CoreApiClaims,
         DebugProxyAgent,
         ErrorFactory,
@@ -27,7 +27,7 @@ export class OAuthAuthenticator {
      */
     public constructor(
         @inject(OAUTHINTERNALTYPES.Configuration) configuration: OAuthConfiguration,
-        @inject(BASEFRAMEWORKTYPES.LogEntry) logEntry: LogEntry) {
+        @inject(BASETYPES.LogEntry) logEntry: LogEntry) {
 
         this._configuration = configuration;
         this._logEntry = logEntry;

@@ -1,6 +1,6 @@
 import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
-import {BASEFRAMEWORKTYPES} from '../configuration/baseFrameworkTypes';
+import {BASETYPES} from '../configuration/BASETYPES';
 import {LogEntryImpl} from '../logging/logEntryImpl';
 import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
 
@@ -27,7 +27,7 @@ export class LoggerMiddleware implements MiddlewareObject<any, any> {
         const logEntry = this._loggerFactory.createLogEntry();
 
         // Bind it to the container
-        this._container.rebind<LogEntryImpl>(BASEFRAMEWORKTYPES.LogEntry).toConstantValue(logEntry);
+        this._container.rebind<LogEntryImpl>(BASETYPES.LogEntry).toConstantValue(logEntry);
 
         // Start request logging
         logEntry.start(handler.event, handler.context);
@@ -40,7 +40,7 @@ export class LoggerMiddleware implements MiddlewareObject<any, any> {
     public after(handler: HandlerLambda<any, any>, next: NextFunction): void {
 
         // Get the log entry
-        const logEntry = this._container.get<LogEntryImpl>(BASEFRAMEWORKTYPES.LogEntry);
+        const logEntry = this._container.get<LogEntryImpl>(BASETYPES.LogEntry);
 
         // End logging
         logEntry.end(handler.response);

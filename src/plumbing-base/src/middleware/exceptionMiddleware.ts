@@ -1,6 +1,6 @@
 import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
-import {BASEFRAMEWORKTYPES} from '../configuration/baseFrameworkTypes';
+import {BASETYPES} from '../configuration/BASETYPES';
 import {FrameworkConfiguration} from '../configuration/frameworkConfiguration';
 import {ApiError} from '../errors/apiError';
 import {ApplicationExceptionHandler} from '../errors/applicationExceptionHandler';
@@ -34,7 +34,7 @@ export class ExceptionMiddleware implements MiddlewareObject<any, any> {
     public onError(handler: HandlerLambda<any, any>, next: NextFunction): void {
 
         // Get the log entry
-        const logEntry = this._container.get<LogEntryImpl>(BASEFRAMEWORKTYPES.LogEntry);
+        const logEntry = this._container.get<LogEntryImpl>(BASETYPES.LogEntry);
 
         // Get the exception to handle and allow the application to implement its own error logic first
         const exceptionToHandle = this._applicationExceptionHandler.translate(handler.error);

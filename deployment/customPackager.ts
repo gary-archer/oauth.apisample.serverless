@@ -15,13 +15,13 @@ class Packager {
         await this._unzipPackage('authorizer');
         await this._unzipPackage('sampleapi');
 
-        // Exclude the service from the authorizer
+        // Exclude the service logic from the authorizer
         await this._excludeFolders('authorizer', ['data', 'dist/logic', 'dist/host/lambda']);
         await this._installDependencies('authorizer', []);
 
-        // Exclude the OAuth logic from the service lambdas, and remove OAuth dependencies
+        // Exclude the OAuth plumbing from the service lambdas, and remove OAuth dependencies
         await this._excludeFolders('sampleapi', ['dist/host/authorizer', 'dist/plumbing-oauth']);
-        await this._installDependencies('sampleapi',  ['framework-api-oauth']);
+        await this._installDependencies('sampleapi',  ['plumbing-oauth']);
 
         // Rezip the packages
         await this._rezipPackage('authorizer');
@@ -55,8 +55,8 @@ class Packager {
         // Copy in package.json files
         await FileSystem.copy('package.json', `.serverless/${packageName}/package.json`);
         await FileSystem.copy('package-lock.json', `.serverless/${packageName}/package-lock.json`);
-        await FileSystem.copy('src/framework-api-base/package.json', `.serverless/${packageName}/src/framework-api-base/package.json`);
-        await FileSystem.copy('src/framework-api-oauth/package.json', `.serverless/${packageName}/src/framework-api-oauth/package.json`);
+        await FileSystem.copy('src/plumbing-base/package.json', `.serverless/${packageName}/src/plumbing-base/package.json`);
+        await FileSystem.copy('src/plumbing-oauth/package.json', `.serverless/${packageName}/src/plumbing-oauth/package.json`);
 
         // Remove passed in dependencies and development dependencies
         const pkg = await FileSystem.readJson(`.serverless/${packageName}/package.json`);
@@ -77,9 +77,9 @@ class Packager {
         await FileSystem.remove(`.serverless/${packageName}/package-lock.json`);
         await FileSystem.remove(`.serverless/${packageName}/src`);
 
-        // Remove symbolic links caused by package.json framework links
-        await FileSystem.remove(`.serverless/${packageName}/node_modules/framework-api-base`);
-        await FileSystem.remove(`.serverless/${packageName}/node_modules/framework-api-oauth`);
+        // Remove symbolic links caused by package.json links
+        await FileSystem.remove(`.serverless/${packageName}/node_modules/plumbing-base`);
+        await FileSystem.remove(`.serverless/${packageName}/node_modules/plumbing-oauth`);
     }
 
     /*

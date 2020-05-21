@@ -3,8 +3,7 @@
  */
 
 import {CoreApiClaims} from './src/claims/coreApiClaims';
-import {APIFRAMEWORKTYPES} from './src/configuration/apiFrameworkTypes';
-import {BASEFRAMEWORKTYPES} from './src/configuration/baseFrameworkTypes';
+import {BASETYPES} from './src/configuration/BASETYPES';
 import {FrameworkConfiguration} from './src/configuration/frameworkConfiguration';
 import {ApiError} from './src/errors/apiError';
 import {ApplicationExceptionHandler} from './src/errors/applicationExceptionHandler';
@@ -25,11 +24,10 @@ import {ResponseWriter} from './src/utilities/responseWriter';
 import {using} from './src/utilities/using';
 
 export {
-    APIFRAMEWORKTYPES,
     ApiError,
     ApplicationExceptionHandler,
     AsyncHandler,
-    BASEFRAMEWORKTYPES,
+    BASETYPES,
     BaseAuthorizerMiddleware,
     BaseErrorCodes,
     ClientError,

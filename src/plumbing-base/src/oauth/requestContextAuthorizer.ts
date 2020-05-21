@@ -1,7 +1,7 @@
 import {Container} from 'inversify';
 import {HandlerLambda, MiddlewareObject, NextFunction} from 'middy';
 import {CoreApiClaims} from '../claims/coreApiClaims';
-import {APIFRAMEWORKTYPES} from '../configuration/apiFrameworkTypes';
+import {BASETYPES} from '../configuration/baseTypes';
 import {INTERNALTYPES} from '../configuration/internalTypes';
 import {BaseAuthorizerMiddleware} from './baseAuthorizerMiddleware';
 import {RequestContextAuthenticator} from './requestContextAuthenticator';
@@ -33,7 +33,7 @@ export class RequestContextAuthorizer
         const claims = authenticator.authorizeRequestAndGetClaims(handler.event, handler.context);
 
         // Make them available for injection into business logic
-        this._container.rebind<CoreApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims).toConstantValue(claims);
+        this._container.rebind<CoreApiClaims>(BASETYPES.CoreApiClaims).toConstantValue(claims);
 
         // Include identity details in logs
         super.logIdentity(this._container, claims);

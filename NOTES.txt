@@ -1,0 +1,5 @@
+1. Update logging configuration as for other samples
+
+2. Remove crap classes for error handling - BusinessError / ExtendedException
+
+3. CompositionRoot classes --> call each other perhaps?

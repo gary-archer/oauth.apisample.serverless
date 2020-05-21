@@ -3,8 +3,7 @@ import {Container} from 'inversify';
 import middy from 'middy';
 import {Middy} from 'middy';
 import {CoreApiClaims} from '../claims/coreApiClaims';
-import {APIFRAMEWORKTYPES} from '../configuration/apiFrameworkTypes';
-import {BASEFRAMEWORKTYPES} from '../configuration/baseFrameworkTypes';
+import {BASETYPES} from '../configuration/BASETYPES';
 import {FrameworkConfiguration} from '../configuration/frameworkConfiguration';
 import {ApplicationExceptionHandler} from '../errors/applicationExceptionHandler';
 import {ClientError} from '../errors/clientError';
@@ -74,8 +73,8 @@ export class FrameworkBuilder {
     public register(): FrameworkBuilder {
 
         // Register default values for these per request objects against the parent container
-        this._container.bind<LogEntry>(BASEFRAMEWORKTYPES.LogEntry).toConstantValue({} as any);
-        this._container.bind<CoreApiClaims>(APIFRAMEWORKTYPES.CoreApiClaims).toConstantValue({} as any);
+        this._container.bind<LogEntry>(BASETYPES.LogEntry).toConstantValue({} as any);
+        this._container.bind<CoreApiClaims>(BASETYPES.CoreApiClaims).toConstantValue({} as any);
         return this;
     }
 
