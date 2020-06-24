@@ -1,0 +1,21 @@
+{
+    "headers": {
+        "x-mycompany-test-exception": ""
+    },
+    "pathParameters": {
+        "id": "2"
+    },
+    "requestContext": {
+        "authorizer": {
+            "customClaims": {
+                "userId": "53d99c88-a992-4e1c-9b58-d739c2a20de5",
+                "clientId": "3iojt0uhtp0nqm0lc3rmvj92ck",
+                "scopes": "openid profile email",
+                "givenName": "Guest",
+                "familyName": "User",
+                "email": "guestuser@authguidance.com",
+                "regionsCovered": ["Europe", "USA"]
+            }
+        }
+    }
+}

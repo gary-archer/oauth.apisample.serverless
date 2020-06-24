@@ -1,0 +1,40 @@
+{
+  "name": "sampleapi",
+  "version": "4.0.0",
+  "description": "An OAuth secured API using AWS Serverless Hosting via lambdas, and a portable coding model",
+  "main": "handler.ts",
+  "scripts": {
+    "lint": "tslint -c tslint.json 'src/**/*.ts' && tslint -c tslint.json 'scripts/**/*.ts'",
+    "build": "rimraf dist && tsc --sourceMap true",
+    "authorizer": "sls invoke local -f authorizer -p test/authorizer.json",
+    "getUserClaims": "sls invoke local -f getUserClaims -p test/getUserClaims.json",
+    "getCompanyList": "sls invoke local -f getCompanyList -p test/getCompanyList.json",
+    "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
+    "package": "npm run buildRelease && rimraf .serverless && sls package --stage deployed",
+    "buildRelease": "rimraf dist && tsc",
+    "customPackager": "ts-node deployment/customPackager.ts",
+    "deploy": "sls deploy --stage deployed --package .serverless",
+    "remove": "sls remove --stage deployed"
+  },
+  "author": "Gary Archer",
+  "license": "ISC",
+  "dependencies": {
+    "@middy/core": "1.0.0",
+    "@middy/http-cors": "^1.0.0",
+    "fs-extra": "^8.1.0",
+    "inversify": "^5.0.1",
+    "plumbing-base": "file:src/plumbing-base",
+    "plumbing-oauth": "file:src/plumbing-oauth",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.51",
+    "@types/fs-extra": "^8.0.1",
+    "@types/node": "^14.0.4",
+    "deployment": "file:deployment",
+    "rimraf": "^3.0.2",
+    "serverless": "^1.72.0",
+    "tslint": "^6.1.2",
+    "typescript": "^3.9.3"
+  }
+}

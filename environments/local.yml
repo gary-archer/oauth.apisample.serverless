@@ -1,0 +1,11 @@
+#
+# Specific settings for local development
+#
+settings:
+  # Sets event.requestContext.stage to this value
+  stage: 'local'
+
+  # Host names for this stage, which run on the local PC
+  apiHostName: 'api.mycompany.com'
+  certificateDomainName: 'mycompany.com'
+  trustedOrigin: '*'

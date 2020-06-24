@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        
+      {
+        // To debug on port 443 you  may need to run Visual Studio with elevated permissions.
+        // This can be done from an administrator command prompt or via 'sudo code .'
+        "type": "node",
+        "request": "launch",
+        "name": "Launch API",
+        "program": "${workspaceFolder}/node_modules/serverless/bin/serverless",
+        "args": ["invoke", "local", "-f", "getCompanyList", "-p", "test/getCompanyList.json"]
+      }
+    ]
+  }

@@ -1,0 +1,23 @@
+{
+    "api": {
+        "trustedOrigins": [
+            "*"
+        ],
+        "useProxy": false,
+        "proxyUrl": "http://127.0.0.1:8888"
+    },
+    "oauth": {
+        "authority": "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_mZ3NBYpTo"
+    },
+    "logging": {
+        "apiName": "SampleApi",
+        "production": {
+            "performanceThresholdsMilliseconds": {
+                "default": 250,
+                "operationOverrides": {
+                    "authorizer": 1000
+                }
+            }
+        }
+    }
+}
