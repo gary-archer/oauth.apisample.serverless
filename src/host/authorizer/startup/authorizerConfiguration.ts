@@ -36,7 +36,7 @@ export class AuthorizerConfiguration {
             const configuration = this._loadConfiguration();
 
             // Register common code dependencies for logging and error handling
-            const base= new BaseCompositionRoot(this._container)
+            const base = new BaseCompositionRoot(this._container)
                 .useDiagnostics(configuration.logging, loggerFactory)
                 .register();
 
