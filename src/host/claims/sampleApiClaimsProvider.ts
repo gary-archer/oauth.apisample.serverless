@@ -7,11 +7,33 @@ import {SampleApiClaims} from '../claims/sampleApiClaims';
 export class SampleApiClaimsProvider implements CustomClaimsProvider<SampleApiClaims> {
 
     /*
-     * Our sample will allow the user to access data associated to the below regions but not for Asia
+     * Add details from the API's own database
      */
     public async addCustomClaims(accessToken: string, claims: SampleApiClaims): Promise<void> {
 
-        // We will hard code the coverage, whereas a real scenario would look up the user data
+        // Look up the user id in the API's own database
+        this._lookupDatabaseUserId(claims);
+
+        // Look up the user id in the API's own data
+        this._lookupAuthorizationData(claims);
+    }
+
+    /*
+     * A real implementation would get the subject / email claims and find a match in the API's own data
+     */
+    private _lookupDatabaseUserId(claims: SampleApiClaims): void {
+        claims.userDatabaseId = '10345';
+    }
+
+    /*
+     * A real implementation would look up authorization data from the API's own data
+     * This could include user roles and any data used for enforcing authorization rules
+     */
+    private _lookupAuthorizationData(claims: SampleApiClaims): void {
+
+        // We use a coverage based authorization rule where the user can only use data for these regions
         claims.regionsCovered = ['Europe', 'USA'];
     }
 }
+
+

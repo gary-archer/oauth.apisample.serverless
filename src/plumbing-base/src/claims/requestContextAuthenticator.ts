@@ -33,9 +33,10 @@ export class RequestContextAuthenticator {
         }
 
         // Make some sanity checks before returning the result
-        this._checkClaim(claims, (c) => c.userId, 'userId');
+        this._checkClaim(claims, (c) => c.subject, 'subject');
         this._checkClaim(claims, (c) => c.clientId, 'clientId');
         this._checkArrayClaim(claims, (c) => c.scopes, 'scope');
+        this._checkClaim(claims, (c) => c.expiry.toString(), 'expiry');
         this._checkClaim(claims, (c) => c.givenName, 'givenName');
         this._checkClaim(claims, (c) => c.familyName, 'familyName');
         this._checkClaim(claims, (c) => c.email, 'email');

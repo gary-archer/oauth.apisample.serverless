@@ -66,13 +66,14 @@ export class OAuthAuthenticator {
         // Use a library to verify the token's signature, issuer, audience and that it is not expired
         const tokenData = await this._validateTokenInMemory(accessToken, tokenSigningPublicKey);
 
-        // Read protocol claims and we will use the immutable user id as the subject claim
-        const userId = this._getStringClaim(tokenData.sub, 'userId');
-        const clientId = this._getStringClaim(tokenData.client_id, 'clientId');
-        const scope = this._getStringClaim(tokenData.scope, 'scope');
+        // Read protocol claims and use the immutable user id as the subject claim
+        const subject = this._getClaim(tokenData.sub, 'subject');
+        const clientId = this._getClaim(tokenData.client_id, 'clientId');
+        const scope = this._getClaim(tokenData.scope, 'scope');
+        const expiry = parseInt(this._getClaim((tokenData as any).exp, 'exp'), 10);
 
         // Get claims and use the immutable user id as the subject claim
-        claims.setTokenInfo(userId, clientId, scope.split(' '));
+        claims.setTokenInfo(subject, clientId, scope.split(' '), expiry);
 
         // Look up user info to get the name and email
         await this._lookupCentralUserDataClaims(claims, accessToken);
@@ -175,9 +176,9 @@ export class OAuthAuthenticator {
                 const userData = await client.userinfo(accessToken);
 
                 // Sanity check the values before accepting them
-                const givenName = this._getStringClaim(userData.given_name, 'given_name');
-                const familyName = this._getStringClaim(userData.family_name, 'family_name');
-                const email = this._getStringClaim(userData.email, 'email');
+                const givenName = this._getClaim(userData.given_name, 'given_name');
+                const familyName = this._getClaim(userData.family_name, 'family_name');
+                const email = this._getClaim(userData.email, 'email');
                 claims.setCentralUserInfo(givenName, familyName, email);
 
             } catch (e) {
@@ -191,7 +192,7 @@ export class OAuthAuthenticator {
     /*
      * Sanity checks when receiving claims to avoid failing later with a cryptic error
      */
-    private _getStringClaim(claim: string | undefined, name: string): string {
+    private _getClaim(claim: string | undefined, name: string): string {
 
         if (!claim) {
             throw OAuthErrorUtils.fromMissingClaim(name);

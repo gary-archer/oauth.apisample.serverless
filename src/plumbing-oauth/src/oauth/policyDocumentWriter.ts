@@ -15,7 +15,7 @@ export class PolicyDocumentWriter {
             customClaims: JSON.stringify(claims),
         };
 
-        return PolicyDocumentWriter._policyDocument(claims.userId, 'Allow', event, context);
+        return PolicyDocumentWriter._policyDocument(claims.subject, 'Allow', event, context);
     }
 
     /*

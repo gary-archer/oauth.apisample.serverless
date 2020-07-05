@@ -41,9 +41,9 @@ export class LogEntryImpl implements LogEntry {
         this._calculateRequestLocationFields(event);
 
         // Our callers can supply a custom header so that we can keep track of who is calling each API
-        const callingApplicationName = this._getHeader(event, 'x-mycompany-api-client');
-        if (callingApplicationName) {
-            this._data.callingApplicationName = callingApplicationName;
+        const clientApplicationName = this._getHeader(event, 'x-mycompany-api-client');
+        if (clientApplicationName) {
+            this._data.clientApplicationName = clientApplicationName;
         }
 
         // Log an optional session id if supplied
@@ -60,9 +60,9 @@ export class LogEntryImpl implements LogEntry {
      * Add identity details for secured requests
      */
     public setIdentity(claims: CoreApiClaims): void {
-        this._data.clientId = claims.clientId;
-        this._data.userId = claims.userId;
-        this._data.userName = `${claims.givenName} ${claims.familyName}`;
+        this._data.clientOAuthId = claims.clientId;
+        this._data.userId = claims.userDatabaseId;
+        this._data.userOAuthId = claims.subject;
     }
 
     /*

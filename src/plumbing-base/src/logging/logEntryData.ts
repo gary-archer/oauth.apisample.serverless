@@ -31,17 +31,17 @@ export class LogEntryData {
     // The request path
     public requestPath: string;
 
-    // The application id of the original caller of the consumer API
-    public clientId: string;
-
     // The calling application name
-    public callingApplicationName: string;
+    public clientApplicationName: string;
+
+    // The client id from the OAuth 2.0 access token
+    public clientOAuthId: string;
 
     // The calling user, for secured requests
     public userId: string;
 
-    // The calling user name, for secured requests
-    public userName: string;
+    // The subject claim from the OAuth 2.0 access token
+    public userOAuthId: string;
 
     // The status code returned
     public statusCode: number;
@@ -87,10 +87,10 @@ export class LogEntryData {
         this.requestVerb = '';
         this.resourceId = '';
         this.requestPath = '';
-        this.clientId = '';
-        this.callingApplicationName = '';
+        this.clientApplicationName = '';
+        this.clientOAuthId = '';
         this.userId = '';
-        this.userName = '';
+        this.userOAuthId = '';
         this.statusCode = 200;
         this.errorCode = '';
         this.errorId = 0;
@@ -127,14 +127,14 @@ export class LogEntryData {
         this._outputString((x) => output.requestVerb = x, this.requestVerb);
         this._outputString((x) => output.resourceId = x, this.resourceId);
         this._outputString((x) => output.requestPath = x, this.requestPath);
-        this._outputString((x) => output.clientId = x, this.clientId);
-        this._outputString((x) => output.callingApplicationName = x, this.callingApplicationName);
+        this._outputString((x) => output.clientApplicationName = x, this.clientApplicationName);
+        this._outputString((x) => output.clientOAuthId = x, this.clientOAuthId);
         this._outputString((x) => output.userId = x, this.userId);
-        this._outputString((x) => output.userName = x, this.userName);
+        this._outputString((x) => output.userOAuthId = x, this.userOAuthId);
         this._outputNumber((x) => output.statusCode = x, this.statusCode);
         this._outputString((x) => output.errorCode = x, this.errorCode);
         this._outputNumber((x) => output.errorId = x, this.errorId);
-        this._outputNumber((x) => output.millisecondsTaken = x, this.performance.millisecondsTaken);
+        this._outputNumber((x) => output.millisecondsTaken = x, this.performance.millisecondsTaken, true);
         this._outputNumber((x) => output.millisecondsThreshold = x, this.performanceThresholdMilliseconds, true);
         this._outputString((x) => output.correlationId = x, this.correlationId);
         this._outputString((x) => output.sessionId = x, this.sessionId);

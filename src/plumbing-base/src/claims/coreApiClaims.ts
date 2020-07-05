@@ -6,36 +6,39 @@ import {injectable} from 'inversify';
 @injectable()
 export class CoreApiClaims {
 
-    // The immutable user id from the access token, which may exist in the API's database
-    public userId: string;
-
-    // The client id, which typically represents the calling application
+    // Token claims
+    public subject: string;
     public clientId: string;
-
-    // OAuth scopes can represent high level areas of the business
     public scopes: string[];
+    public expiry: number;
 
     // Data from the OAuth user info endpoint
     public givenName: string;
     public familyName: string;
     public email: string;
 
+    // The database primary key from the API's own database
+    public userDatabaseId: string;
+
     public constructor() {
-        this.userId = '';
+        this.subject = '';
         this.clientId = '';
         this.scopes = [];
+        this.expiry = 0;
         this.givenName = '';
         this.familyName = '';
         this.email = '';
+        this.userDatabaseId = '';
     }
 
     /*
      * Set token claims after introspection
      */
-    public setTokenInfo(userId: string, clientId: string, scopes: string[]) {
-        this.userId = userId;
+    public setTokenInfo(subject: string, clientId: string, scopes: string[], expiry: number) {
+        this.subject = subject;
         this.clientId = clientId;
         this.scopes = scopes;
+        this.expiry = expiry;
     }
 
     /*

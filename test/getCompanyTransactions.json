@@ -1,5 +1,8 @@
 {
     "headers": {
+        "x-mycompany-api-client": "ServerlessTest",
+        "x-mycompany-correlation-id": "9a850020-6407-a97b-5fe7-98b0def07822",
+        "x-mycompany-session-id": "d1270ebf-0323-4e43-c6e1-5458f26c8e23",
         "x-mycompany-test-exception": ""
     },
     "pathParameters": {
@@ -8,12 +11,14 @@
     "requestContext": {
         "authorizer": {
             "customClaims": {
-                "userId": "53d99c88-a992-4e1c-9b58-d739c2a20de5",
+                "subject": "53d99c88-a992-4e1c-9b58-d739c2a20de5",
                 "clientId": "3iojt0uhtp0nqm0lc3rmvj92ck",
                 "scopes": "openid profile email",
+                "expiry": 1590079382,
                 "givenName": "Guest",
                 "familyName": "User",
                 "email": "guestuser@authguidance.com",
+                "userDatabaseId": "10345",
                 "regionsCovered": ["Europe", "USA"]
             }
         }

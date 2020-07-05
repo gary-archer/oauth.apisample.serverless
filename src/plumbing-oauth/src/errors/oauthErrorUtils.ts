@@ -66,7 +66,7 @@ export class OAuthErrorUtils {
     public static fromMissingClaim(claimName: string): ServerError {
 
         const error = ErrorFactory.createServerError(BaseErrorCodes.claimsFailure, 'Authorization Data Not Found');
-        error.setDetails(`An empty value was found for the expected claim ${claimName}`);
+        error.setDetails(`An empty value was found for the expected claim '${claimName}'`);
         return error;
     }
 
