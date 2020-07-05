@@ -1,7 +1,7 @@
 import {CoreApiClaims} from '../../../plumbing-base';
 
 /*
- * Concrete APIs can override this class to add custom claims to the cache after OAuth processing
+ * Concrete APIs can override this class to include custom claims to the AWS cache
  */
 export class CustomClaimsProvider<TClaims extends CoreApiClaims> {
 

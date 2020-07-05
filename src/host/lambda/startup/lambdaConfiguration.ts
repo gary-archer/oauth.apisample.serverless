@@ -34,7 +34,7 @@ export class LambdaConfiguration {
             // Load our JSON configuration
             const configuration = this._loadConfiguration();
 
-            // Register base dependencies from common code
+            // Register common code dependencies for logging and error handling
             const baseCompositionRoot = new BaseCompositionRoot(this._container)
                 .useDiagnostics(configuration.logging, loggerFactory)
                 .register();
@@ -42,9 +42,9 @@ export class LambdaConfiguration {
             // Register API specific dependencies
             CompositionRoot.register(this._container);
 
-            // Add middy middleware classes to manage error handling, logging and security
+            // Add middy middleware classes
             const enrichedHandler = baseCompositionRoot.configureMiddleware(baseHandler);
-            const authorizerMiddleware = baseCompositionRoot.getAuthorizerMiddleware();
+            const authorizerMiddleware = baseCompositionRoot.getRequestContextAuthorizer();
             return this._applyApplicationMiddleware(enrichedHandler, configuration, authorizerMiddleware);
 
         } catch (e) {

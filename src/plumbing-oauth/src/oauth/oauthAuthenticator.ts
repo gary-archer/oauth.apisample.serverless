@@ -57,10 +57,8 @@ export class OAuthAuthenticator {
             throw ErrorFactory.createClient401Error('Unable to decode received JWT');
         }
 
-        // Get the key identifier from the JWT header
-        const keyIdentifier = decoded.header.kid;
-
         // Download the token signing public key for the key identifier and we'll return 401 if not found
+        const keyIdentifier = decoded.header.kid;
         const tokenSigningPublicKey = await this._downloadJwksKeyForKeyIdentifier(keyIdentifier);
 
         // Use a library to verify the token's signature, issuer, audience and that it is not expired
@@ -71,8 +69,6 @@ export class OAuthAuthenticator {
         const clientId = this._getClaim(tokenData.client_id, 'clientId');
         const scope = this._getClaim(tokenData.scope, 'scope');
         const expiry = parseInt(this._getClaim((tokenData as any).exp, 'exp'), 10);
-
-        // Get claims and use the immutable user id as the subject claim
         claims.setTokenInfo(subject, clientId, scope.split(' '), expiry);
 
         // Look up user info to get the name and email
