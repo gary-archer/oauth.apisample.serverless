@@ -35,8 +35,8 @@ export class LambdaConfiguration {
             const configuration = this._loadConfiguration();
 
             // Register base dependencies from common code
-            const baseCompositionRoot = new BaseCompositionRoot(this._container, loggerFactory)
-                .configure(configuration.logging)
+            const baseCompositionRoot = new BaseCompositionRoot(this._container)
+                .useDiagnostics(configuration.logging, loggerFactory)
                 .register();
 
             // Register API specific dependencies

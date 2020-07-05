@@ -19,27 +19,34 @@ import {AsyncHandler} from '../utilities/asyncHandler';
  */
 export class BaseCompositionRoot {
 
+    // Constructor properties
     private readonly _container: Container;
-    private readonly _loggerFactory: LoggerFactoryImpl;
-    private _configuration: LoggingConfiguration | null;
+
+    // Builder properties
+    private _loggingConfiguration: LoggingConfiguration | null;
+    private _loggerFactory: LoggerFactoryImpl | null;
     private _isAuthorizer: boolean;
 
     /*
-     * Initialise global objects
+     * Set initial values
      */
-    public constructor(container: Container, loggerFactory: LoggerFactory) {
+    public constructor(container: Container) {
         this._container = container;
-        this._configuration = null;
-        this._loggerFactory = loggerFactory as LoggerFactoryImpl;
+        this._loggingConfiguration = null;
+        this._loggerFactory = null;
         this._isAuthorizer = false;
     }
 
     /*
-     * Configure logging when the JSON configuration is provided
+     * Receive logging configuration and use common code for logging and error handling
      */
-    public configure(configuration: LoggingConfiguration): BaseCompositionRoot {
-        this._configuration = configuration;
-        this._loggerFactory.configure(configuration);
+    public useDiagnostics(
+        loggingConfiguration: LoggingConfiguration,
+        loggerFactory: LoggerFactory): BaseCompositionRoot {
+
+        this._loggingConfiguration = loggingConfiguration;
+        this._loggerFactory = loggerFactory as LoggerFactoryImpl;
+        this._loggerFactory.configure(loggingConfiguration);
         return this;
     }
 
@@ -80,9 +87,9 @@ export class BaseCompositionRoot {
             return await baseHandler(event, context);
 
         })
-        .use(new LoggerMiddleware(this._container, this._loggerFactory))
-        .use(new ExceptionMiddleware(this._container, this._configuration!))
-        .use(new CustomHeaderMiddleware(this._configuration!.apiName));
+        .use(new LoggerMiddleware(this._container, this._loggerFactory!))
+        .use(new ExceptionMiddleware(this._container, this._loggingConfiguration!))
+        .use(new CustomHeaderMiddleware(this._loggingConfiguration!.apiName));
 
         // Return the base handler wrapped in cross cutting concerns
         return wrappedHandler;

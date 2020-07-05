@@ -35,21 +35,22 @@ export class AuthorizerConfiguration {
             // Load our JSON configuration
             const configuration = this._loadConfiguration();
 
-            // Register base dependencies from common code
-            const baseCompositionRoot = new BaseCompositionRoot(this._container, loggerFactory)
-                .configure(configuration.logging)
+            // Register common code dependencies
+            const base= new BaseCompositionRoot(this._container)
+                .useDiagnostics(configuration.logging, loggerFactory)
                 .asAuthorizer()
                 .register();
 
-            // Register OAuth dependencies
-            const oauthCompositionRoot = new OAuthCompositionRoot<SampleApiClaims>(this._container, configuration.oauth)
-                    .withClaimsSupplier(SampleApiClaims)
-                    .withCustomClaimsProviderSupplier(SampleApiClaimsProvider)
-                    .register();
+            // Register common code OAuth dependencies
+            const oauth = new OAuthCompositionRoot<SampleApiClaims>(this._container)
+                .useOAuth(configuration.oauth)
+                .withClaimsSupplier(SampleApiClaims)
+                .withCustomClaimsProviderSupplier(SampleApiClaimsProvider)
+                .register();
 
             // Add middy middleware classes to manage error handling, logging and security
-            const enrichedHandler = baseCompositionRoot.configureMiddleware(baseHandler);
-            const authorizerMiddleware = oauthCompositionRoot.getAuthorizerMiddleware();
+            const enrichedHandler = base.configureMiddleware(baseHandler);
+            const authorizerMiddleware = oauth.getAuthorizerMiddleware();
             return this._applyApplicationMiddleware(enrichedHandler, configuration, authorizerMiddleware);
 
         } catch (e) {

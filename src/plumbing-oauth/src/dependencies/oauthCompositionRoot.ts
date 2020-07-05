@@ -10,18 +10,32 @@ import {OAuthAuthenticator} from '../oauth/oauthAuthenticator';
 import {OAuthAuthorizer} from '../oauth/oauthAuthorizer';
 
 /*
- * Create dependencies needed to do OAuth authorization
+ * Create dependencies needed to do OAuth processing
  */
 export class OAuthCompositionRoot<TClaims extends CoreApiClaims> {
 
+    // Constructor properties
     private readonly _container: Container;
-    private readonly _configuration: OAuthConfiguration;
+
+    // Builder properties
+    private _configuration: OAuthConfiguration | null;
     private _claimsSupplier!: () => TClaims;
     private _customClaimsProviderSupplier!: () => CustomClaimsProvider<TClaims>;
 
-    public constructor(container: Container, configuration: OAuthConfiguration) {
+    /*
+     * Set initial values
+     */
+    public constructor(container: Container) {
         this._container = container;
+        this._configuration = null;
+    }
+
+    /*
+     * Indicate that we're using OAuth and receive the configuration
+     */
+    public useOAuth(configuration: OAuthConfiguration): OAuthCompositionRoot<TClaims> {
         this._configuration = configuration;
+        return this;
     }
 
     /*
@@ -47,17 +61,26 @@ export class OAuthCompositionRoot<TClaims extends CoreApiClaims> {
      */
     public register(): OAuthCompositionRoot<TClaims> {
 
-        // Create an injectable object to enable the framework to create claims objects of a concrete type at runtime
-        const claimsSupplier = ClaimsSupplier.createInstance<ClaimsSupplier<TClaims>, TClaims>(
-            ClaimsSupplier,
-            this._claimsSupplier,
-            this._customClaimsProviderSupplier);
+        this._registerOAuthDependencies();
+        this._registerClaimsDependencies();
+        return this;
+    }
+
+    /*
+     * Get an authorizer middleware that does OAuth lookups to get claims
+     */
+    public getAuthorizerMiddleware(): middy.MiddlewareObject<any, any> {
+        return new OAuthAuthorizer<TClaims>(this._container);
+    }
+
+    /*
+     * Register OAuth specific dependencies
+     */
+    private _registerOAuthDependencies() {
 
         // Register singletons
         this._container.bind<OAuthConfiguration>(OAUTHTYPES.Configuration)
-                       .toConstantValue(this._configuration);
-        this._container.bind<ClaimsSupplier<TClaims>>(OAUTHTYPES.ClaimsSupplier)
-                       .toConstantValue(claimsSupplier);
+                       .toConstantValue(this._configuration!);
 
         // Register the authenticator to be created on every request, where it is only auto wired once
         this._container.bind<OAuthAuthenticator>(OAUTHTYPES.OAuthAuthenticator)
@@ -68,12 +91,24 @@ export class OAuthCompositionRoot<TClaims extends CoreApiClaims> {
                        .toConstantValue({} as any);
 
         return this;
+
     }
 
     /*
-     * Get an authorizer middleware that does OAuth lookups to get claims
+     * Register claims specific dependencies
      */
-    public getAuthorizerMiddleware(): middy.MiddlewareObject<any, any> {
-        return new OAuthAuthorizer<TClaims>(this._container);
+    private _registerClaimsDependencies() {
+
+        // Create an injectable object to enable the framework to create claims objects of a concrete type at runtime
+        const claimsSupplier = ClaimsSupplier.createInstance<ClaimsSupplier<TClaims>, TClaims>(
+            ClaimsSupplier,
+            this._claimsSupplier,
+            this._customClaimsProviderSupplier);
+
+        // Register singletons
+        this._container.bind<ClaimsSupplier<TClaims>>(OAUTHTYPES.ClaimsSupplier)
+                       .toConstantValue(claimsSupplier);
+
+        return this;
     }
 }
