@@ -44,7 +44,7 @@ export class OAuthAuthenticator {
     /*
      * When we receive a new token, validate it and return token claims
      */
-    public async authenticateAndSetClaims(accessToken: string, claims: CoreApiClaims): Promise<void> {
+    public async validateTokenAndGetClaims(accessToken: string, claims: CoreApiClaims): Promise<void> {
 
         // First load metadata
         await this._loadMetadata();
@@ -205,7 +205,7 @@ export class OAuthAuthenticator {
      * Plumbing to ensure that the this parameter is available in async callbacks
      */
     private _setupCallbacks(): void {
-        this.authenticateAndSetClaims = this.authenticateAndSetClaims.bind(this);
+        this.validateTokenAndGetClaims = this.validateTokenAndGetClaims.bind(this);
         this._loadMetadata = this._loadMetadata.bind(this);
         this._validateTokenInMemory = this._validateTokenInMemory.bind(this);
         this._lookupCentralUserDataClaims = this._lookupCentralUserDataClaims.bind(this);

@@ -38,7 +38,8 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
             // Include identity details in logs
             super.logIdentity(this._container, claims);
 
-            // We must write an authorized policy document to enable the REST call to continue to the lambda
+            // Write an authorized policy document so that the REST call continues to the lambda
+            // AWS will then cache the claims in the policy document for subsequent API requests with the same token
             authorizerResult = PolicyDocumentWriter.authorizedResponse(claims, handler.event);
 
         } catch (e) {
@@ -80,10 +81,10 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
         // Create new claims which we will then populate
         const claims = claimsSupplier.createEmptyClaims();
 
-        // Make OAuth calls to validate the token and get user info
-        await authenticator.authenticateAndSetClaims(accessToken, claims);
+        // Validate the token, read token claims, and do a user info lookup
+        await authenticator.validateTokenAndGetClaims(accessToken, claims);
 
-        // Add any custom product specific custom claims if required
+        // Add custom claims from the API's own data if needed
         await claimsSupplier.createCustomClaimsProvider().addCustomClaims(accessToken, claims);
         return claims;
     }
