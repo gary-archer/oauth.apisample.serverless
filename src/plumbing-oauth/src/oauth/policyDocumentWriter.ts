@@ -48,7 +48,7 @@ export class PolicyDocumentWriter {
                 ],
             },
             context,
-        } as CustomAuthorizerResult;
+        };
     }
 
     /*

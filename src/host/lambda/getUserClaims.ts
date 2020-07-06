@@ -3,7 +3,6 @@ import {Container} from 'inversify';
 import 'reflect-metadata';
 import {BASETYPES, ResponseWriter} from '../../plumbing-base';
 import {SampleApiClaims} from '../claims/sampleApiClaims';
-import {UserInfoClaims} from '../claims/userInfoClaims';
 import {LambdaConfiguration} from './startup/lambdaConfiguration';
 
 /*
@@ -20,7 +19,7 @@ const baseHandler = async (event: any, context: Context) => {
         givenName: claims.givenName,
         familyName: claims.familyName,
         email: claims.email,
-    } as UserInfoClaims;
+    };
 
     return ResponseWriter.objectResponse(200, userInfo);
 };

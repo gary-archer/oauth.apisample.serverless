@@ -1,7 +1,7 @@
 {
     "defaultSeverity": "error",
     "extends": [
-        "tslint:recommended"
+        "tslint:latest"
     ],
     "jsRules": {},
     "rules": {
@@ -9,6 +9,7 @@
         "object-literal-sort-keys": false,
         "variable-name": [true, "allow-leading-underscore"],
         "interface-name": [true, "never-prefix"],
+        "no-implicit-dependencies": false,
         "no-console": false,
         "no-empty": false
     },

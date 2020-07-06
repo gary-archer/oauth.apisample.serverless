@@ -33,8 +33,7 @@ export class CompanyRepository {
 
         return using(this._logEntry.createPerformanceBreakdown('selectCompanyListData'), async () => {
 
-            // Read data from a JSON file into objects
-            return await this._jsonReader.readData<Company[]>('data/companyList.json');
+            return this._jsonReader.readData<Company[]>('data/companyList.json');
         });
     }
 

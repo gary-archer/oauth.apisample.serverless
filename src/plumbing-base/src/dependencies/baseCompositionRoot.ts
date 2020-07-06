@@ -64,7 +64,7 @@ export class BaseCompositionRoot {
         // Wrap the base handler and add middleware for cross cutting concerns
         // Error handling and logging are injected early so that they work in other middleware classes
         const wrappedHandler = middy(async (event: any, context: Context) => {
-            return await baseHandler(event, context);
+            return baseHandler(event, context);
 
         })
         .use(new LoggerMiddleware(this._container, this._loggerFactory!))

@@ -211,16 +211,9 @@ export class LogEntryImpl implements LogEntry {
 
         // See if there is an incoming valid
         const correlationId = this._getHeader(event, 'x-mycompany-correlation-id');
-        if (correlationId) {
 
-            // Use the client supplied value
-            this._data.correlationId = correlationId;
-
-        } else {
-
-            // Otherwise generate a value
-            this._data.correlationId = Guid.create().toString();
-        }
+        // Use the client supplied value or generate a new value
+        this._data.correlationId = correlationId ? correlationId : Guid.create().toString();
     }
 
     /*
