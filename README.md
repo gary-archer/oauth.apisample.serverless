@@ -1,5 +1,11 @@
 # authguidance.apisample.serverless
 
+[![Known Vulnerabilities](https://snyk.io/test/github/gary-archer/authguidance.webreverseproxy/badge.svg?targetFile=package.json)](https://snyk.io/test/github/gary-archer/authguidance.webreverseproxy?targetFile=package.json)
+
+[![Known Vulnerabilities](https://snyk.io/test/github/gary-archer/authguidance.apisample.serverless/badge.svg?targetFile=src/plumbing-base/package.json)](https://snyk.io/test/github/gary-archer/authguidance.apisample.serverless?targetFile=src/plumbing-base/package.json)
+
+[![Known Vulnerabilities](https://snyk.io/test/github/gary-archer/authguidance.apisample.serverless/badge.svg?targetFile=src/plumbing-oauth/package.json)](https://snyk.io/test/github/gary-archer/authguidance.apisample.serverless?targetFile=src/plumbing-oauth/package.json)
+
 ### Overview
 * The cloud API sample using OAuth 2.0 and Open Id Connect, referenced in my blog at https://authguidance.com
 * **The goal of this sample is to implement the blog's** [API Architecture](https://authguidance.com/2019/03/24/api-platform-design/) **via Serverless Lambdas**
