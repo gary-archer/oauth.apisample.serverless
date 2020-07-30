@@ -33,7 +33,7 @@
     "@types/node": "^14.0.4",
     "deployment": "file:deployment",
     "rimraf": "^3.0.2",
-    "serverless": "^1.75.1",
+    "serverless": "^1.77.1",
     "tslint": "^6.1.2",
     "typescript": "^3.9.5"
   }

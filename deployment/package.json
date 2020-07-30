@@ -11,7 +11,7 @@
     "aws-sdk": "^2.368.0",
     "child-process-es6-promise": "^1.2.1",
     "rimraf": "^3.0.2",
-    "serverless": "^1.74.1",
+    "serverless": "^1.77.1",
     "serverless-domain-manager": "4.1.0",
     "serverless-plugin-scripts": "^1.0.2",
     "ts-node": "^8.10.1"
