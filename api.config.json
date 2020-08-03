@@ -18,6 +18,6 @@
         }
     },
     "oauth": {
-        "authority": "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_mZ3NBYpTo"
+        "authority": "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn"
     }
 }
