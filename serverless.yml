@@ -1,4 +1,4 @@
-service: sampleapi
+service: serverlessapi
 
 # Base details for AWS deployment
 provider:
@@ -60,7 +60,9 @@ functions:
             type: request
             resultTtlInSeconds: ${self:custom.claimsCacheTtlSeconds}
           cors:
-            origin: ${self:custom.config.settings.trustedOrigin}
+            origins:
+              - ${self:custom.config.settings.trustedOrigin}
+              - ${self:custom.config.settings.trustedDevOrigin}
             headers: ${self:custom.allowedHeaders}
 
   getCompanyList:
@@ -74,7 +76,9 @@ functions:
             type: request
             resultTtlInSeconds: ${self:custom.claimsCacheTtlSeconds}
           cors:
-            origin: ${self:custom.config.settings.trustedOrigin}
+            origins:
+              - ${self:custom.config.settings.trustedOrigin}
+              - ${self:custom.config.settings.trustedDevOrigin}
             headers: ${self:custom.allowedHeaders}
 
   getCompanyTransactions:
@@ -88,7 +92,9 @@ functions:
             type: request
             resultTtlInSeconds: ${self:custom.claimsCacheTtlSeconds}
           cors:
-            origin: ${self:custom.config.settings.trustedOrigin}
+            origins:
+              - ${self:custom.config.settings.trustedOrigin}
+              - ${self:custom.config.settings.trustedDevOrigin}
             headers: ${self:custom.allowedHeaders}
           request: 
             parameters: 

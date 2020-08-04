@@ -9,6 +9,6 @@ settings:
   apiHostName: 'api.authsamples.com'
   certificateDomainName: 'authsamples.com'
   
-  # We use the wildcard value to support both a deployed and development web URL
-  # trustedOrigin: 'https://web.authsamples.com'
-  trustedOrigin: '*'
+  # We trust either of these origins to make CORS requests
+  trustedOrigin: 'https://web.authsamples.com'
+  trustedDevOrigin: 'https://web.mycompany.com'
