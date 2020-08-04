@@ -125,13 +125,12 @@ resources:
   # https://docs.aws.amazon.com/apigateway/latest/developerguide/supported-gateway-response-types.html
   # https://gist.github.com/jonatassaraiva/4c33dd8225605c02318cd71a55b2335d
 
-  # Handle missing token for an API path that exists
+    # Handle missing token for an API path that exists
     MissingTokenValidPathGatewayResponse:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
         ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
           gatewayresponse.header.WWW-Authenticate: "'Bearer'"
 
         ResponseType: UNAUTHORIZED
@@ -151,8 +150,7 @@ resources:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
         ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
           gatewayresponse.header.WWW-Authenticate: "'Bearer'"
 
         ResponseType: ACCESS_DENIED
@@ -167,14 +165,13 @@ resources:
           Ref: 'ApiGatewayRestApi'
         StatusCode: '401'
 
-    # Handle technical errors during token validation and claims handling
+    # Handle technical errors during OAuth processing
     # Note that for this type of error we cannot customize the response at runtime
     AuthenticationErrorResponse:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
         ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'${self:custom.config.settings.trustedOrigin}'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'${self:custom.config.settings.trustedOrigin}'"
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
 
         ResponseType: AUTHORIZER_CONFIGURATION_ERROR
 

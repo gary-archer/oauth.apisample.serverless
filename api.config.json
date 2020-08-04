@@ -1,7 +1,8 @@
 {
     "api": {
         "trustedOrigins": [
-            "*"
+            "https://web.authsamples.com",
+            "https://web.mycompany.com"
         ],
         "useProxy": false,
         "proxyUrl": "http://127.0.0.1:8888"
