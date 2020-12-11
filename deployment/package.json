@@ -1,0 +1,19 @@
+{
+  "name": "deployment",
+  "version": "1.0.0",
+  "description": "Serverless deployment dependencies",
+  "main": "index.ts",
+  "keywords": [],
+  "author": "Gary Archer",
+  "license": "MIT",
+  "dependencies": {
+    "adm-zip": "^0.4.13",
+    "aws-sdk": "^2.799.0",
+    "child-process-es6-promise": "^1.2.1",
+    "rimraf": "^3.0.2",
+    "serverless": "^2.13.0",
+    "serverless-domain-manager": "4.1.0",
+    "serverless-plugin-scripts": "^1.0.2",
+    "ts-node": "^9.0.0"
+  }
+}

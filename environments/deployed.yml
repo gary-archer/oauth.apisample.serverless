@@ -1,0 +1,14 @@
+#
+# Specific settings per environment
+#
+settings:
+  # Sets event.requestContext.stage to this value
+  stage: 'deployed'
+
+  # Host names for this stage, which run in AWS
+  apiHostName: 'api.authsamples.com'
+  certificateDomainName: 'authsamples.com'
+  
+  # We trust either of these origins to make CORS requests
+  trustedOrigin: 'https://web.authsamples.com'
+  trustedDevOrigin: 'https://web.mycompany.com'

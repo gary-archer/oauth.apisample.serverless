@@ -1,0 +1,20 @@
+{
+  "name": "plumbing-oauth",
+  "version": "1.0.0",
+  "description": "Common code used only by authorizers",
+  "main": "index.ts",
+  "keywords": [],
+  "author": "Gary Archer",
+  "license": "MIT",
+  "dependencies": {
+    "@middy/core": "1.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "jwk-to-pem": "^2.0.3",
+    "inversify": "^5.0.1",
+    "openid-client": "^4.2.1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.64",
+    "@types/node": "^14.14.10"
+  }
+}
