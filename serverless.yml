@@ -1,0 +1,209 @@
+service: serverlessapi
+
+# Base details for AWS deployment
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: eu-west-2
+  profile: default
+  stage: ${self:custom.config.settings.stage}
+  lambdaHashingVersion: '20201221'
+  apiGateway:
+    shouldStartNameWithService: true
+
+custom:
+  # Each environment can have its own configuration file
+  config: ${file(environments/${opt:stage, 'local'}.yml)}
+  
+  # AWS deployed details
+  customDomain:
+    domainName: ${self:custom.config.settings.apiHostName}
+    certificateName: '*.${self:custom.config.settings.certificateDomainName}'
+    basePath: api
+    stage: ${self:custom.config.settings.stage}
+    endpointType: regional
+
+  # CORS headers allowed, including custom headers for logging
+  allowedHeaders:
+    - Content-Type
+    - X-Amz-Date
+    - Authorization
+    - X-Api-Key
+    - X-Amz-Security-Token
+    - X-Amz-User-Agent
+    - x-mycompany-api-client
+    - x-mycompany-correlation-id
+    - x-mycompany-session-id
+    - x-mycompany-test-exception
+
+  # The time for which authorizer results are cached
+  claimsCacheTtlSeconds: 1800
+  
+  # Scripts used when building the AWS deployment package
+  scripts:
+    hooks:
+      'after:package:createDeploymentArtifacts': npm run customPackager
+
+functions:
+  # The custom authorizer is built into its own package containing OAuth dependencies
+  authorizer:
+    handler: dist/host/authorizer/authorizer.handler
+    package:
+      individually: true
+
+  # The other lambdas reference the authorizer lambda
+  getUserClaims:
+    handler: dist/host/lambda/getUserClaims.handler
+    events:
+      - http: 
+          path: /userclaims/current
+          method: get
+          authorizer:
+            name: authorizer
+            type: request
+            resultTtlInSeconds: ${self:custom.claimsCacheTtlSeconds}
+          cors:
+            origins:
+              - ${self:custom.config.settings.trustedOrigin}
+              - ${self:custom.config.settings.trustedDevOrigin}
+            headers: ${self:custom.allowedHeaders}
+
+  getCompanyList:
+    handler: dist/host/lambda/getCompanyList.handler
+    events:
+      - http: 
+          path: /companies
+          method: get
+          authorizer:
+            name: authorizer
+            type: request
+            resultTtlInSeconds: ${self:custom.claimsCacheTtlSeconds}
+          cors:
+            origins:
+              - ${self:custom.config.settings.trustedOrigin}
+              - ${self:custom.config.settings.trustedDevOrigin}
+            headers: ${self:custom.allowedHeaders}
+
+  getCompanyTransactions:
+    handler: dist/host/lambda/getCompanyTransactions.handler
+    events:
+      - http: 
+          path: /companies/{id}/transactions
+          method: get
+          authorizer:
+            name: authorizer
+            type: request
+            resultTtlInSeconds: ${self:custom.claimsCacheTtlSeconds}
+          cors:
+            origins:
+              - ${self:custom.config.settings.trustedOrigin}
+              - ${self:custom.config.settings.trustedDevOrigin}
+            headers: ${self:custom.allowedHeaders}
+          request: 
+            parameters: 
+              paths: 
+                id: true
+
+# By default all files are included so remove files we don't need for any lambda
+# The custom packager does the rest of the work in code, including adding node_modules
+package:
+  exclude:
+  - .vscode/**
+  - deployment/**
+  - environments/**
+  - node_modules/**
+  - src/**
+  - test/**
+  - ts*.json
+  - package*.json
+  - README.md
+  - LICENSE.txt
+
+plugins:
+  - serverless-plugin-scripts
+  - serverless-domain-manager
+
+resources:
+  Resources:
+
+  # Improve status codes and default messages for authentication responses from API gateway
+  # https://docs.aws.amazon.com/apigateway/latest/developerguide/supported-gateway-response-types.html
+  # https://gist.github.com/jonatassaraiva/4c33dd8225605c02318cd71a55b2335d
+
+    # Handle missing token for an API path that exists
+    MissingTokenValidPathGatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.WWW-Authenticate: "'Bearer'"
+
+        ResponseType: UNAUTHORIZED
+        
+        ResponseTemplates:
+          application/json: |
+            {
+              "code": "unauthorized",
+              "message": "Missing, invalid or expired access token"
+            }
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
+
+    # Handle invalid or expired tokens
+    InvalidTokenGatewayResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.WWW-Authenticate: "'Bearer'"
+
+        ResponseType: ACCESS_DENIED
+        
+        ResponseTemplates:
+          application/json: |
+            {
+              "code": "unauthorized",
+              "message": "Missing, invalid or expired access token"
+            }
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '401'
+
+    # Handle technical errors during OAuth processing
+    # Note that for this type of error we cannot customize the response at runtime
+    AuthenticationErrorResponse:
+      Type: 'AWS::ApiGateway::GatewayResponse'
+      Properties:
+        ResponseParameters:
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+
+        ResponseType: AUTHORIZER_CONFIGURATION_ERROR
+
+        ResponseTemplates:
+          application/json: |
+            {
+              "code": "server_error",
+              "message": "Problem encountered during authorization"
+            }
+        RestApiId:
+          Ref: 'ApiGatewayRestApi'
+        StatusCode: '500'
+
+    # Limit cloudwatch log retention 
+    AuthorizerLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'
+    GetUserClaimsLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'
+    GetCompanyListLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'
+    GetCompanyTransactionsLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'
