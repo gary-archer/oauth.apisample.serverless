@@ -1,4 +1,4 @@
-# authguidance.apisample.serverless
+# oauth.apisample.serverless
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/b880a7d88a7547009e950a513bc00046)](https://www.codacy.com/gh/gary-archer/authguidance.apisample.serverless/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gary-archer/authguidance.apisample.serverless&amp;utm_campaign=Badge_Grade)
 
