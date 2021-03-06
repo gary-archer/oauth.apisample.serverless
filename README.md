@@ -1,8 +1,8 @@
 # oauth.apisample.serverless
 
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/b880a7d88a7547009e950a513bc00046)](https://www.codacy.com/gh/gary-archer/authguidance.apisample.serverless/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gary-archer/authguidance.apisample.serverless&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/b880a7d88a7547009e950a513bc00046)](https://www.codacy.com/gh/gary-archer/oauth.apisample.serverless/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gary-archer/oauth.apisample.serverless&amp;utm_campaign=Badge_Grade)
 
-[![Known Vulnerabilities](https://snyk.io/test/github/gary-archer/authguidance.apisample.serverless/badge.svg?targetFile=package.json)](https://snyk.io/test/github/gary-archer/authguidance.apisample.serverless?targetFile=package.json)
+[![Known Vulnerabilities](https://snyk.io/test/github/gary-archer/oauth.apisample.serverless/badge.svg?targetFile=package.json)](https://snyk.io/test/github/gary-archer/oauth.apisample.serverless?targetFile=package.json)
  
 ### Overview
 * A Low Cost Serverless API sample using OAuth and Open Id Connect, referenced in my blog at https://authguidance.com
