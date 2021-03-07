@@ -3,7 +3,7 @@ import {BASETYPES, ClientError, ErrorFactory} from '../../plumbing-base';
 import {SAMPLETYPES} from '../dependencies/sampleTypes';
 import {Company} from '../entities/company';
 import {CompanyTransactions} from '../entities/companyTransactions';
-import {SampleCustomClaims} from '../entities/sampleCustomClaims';
+import {SampleCustomClaimsL} from '../entities/sampleCustomClaimsL';
 import {SampleErrorCodes} from '../errors/sampleErrorCodes';
 import {CompanyRepository} from '../repositories/companyRepository';
 
@@ -14,11 +14,11 @@ import {CompanyRepository} from '../repositories/companyRepository';
 export class CompanyService {
 
     private readonly _repository: CompanyRepository;
-    private readonly _claims: SampleCustomClaims;
+    private readonly _claims: SampleCustomClaimsL;
 
     public constructor(
         @inject(SAMPLETYPES.CompanyRepository) repository: CompanyRepository,
-        @inject(BASETYPES.CustomClaims) claims: SampleCustomClaims) {
+        @inject(BASETYPES.CustomClaims) claims: SampleCustomClaimsL) {
 
         this._repository = repository;
         this._claims = claims;

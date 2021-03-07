@@ -1,6 +1,6 @@
 import {CustomClaims, TokenClaims, UserInfoClaims} from '../../plumbing-base';
 import {CustomClaimsProvider} from '../../plumbing-oauth';
-import {SampleCustomClaims} from '../../logic/entities/sampleCustomClaims';
+import {SampleCustomClaimsA} from './sampleCustomClaimsA';
 
 /*
  * An example of including domain specific details in cached claims
@@ -22,13 +22,6 @@ export class SampleCustomClaimsProvider extends CustomClaimsProvider {
         const isAdmin = email.toLowerCase().indexOf('admin') !== -1;
         const regionsCovered = isAdmin? [] : ['USA'];
 
-        return new SampleCustomClaims(userDatabaseId, isAdmin, regionsCovered);
-    }
-
-    /*
-     * An override to load custom claims when they are read from the cache
-     */
-    protected deserializeCustomClaims(data: any): CustomClaims {
-        return SampleCustomClaims.importData(data);
+        return new SampleCustomClaimsA(userDatabaseId, isAdmin, regionsCovered);
     }
 }
