@@ -11,9 +11,6 @@ export class PerformanceBreakdownImpl implements PerformanceBreakdown {
     private _details: any;
     private _children: PerformanceBreakdownImpl[];
 
-    /*
-     * Set defaults for fields
-     */
     public constructor(name: string) {
         this._name = name;
         this._children = [];

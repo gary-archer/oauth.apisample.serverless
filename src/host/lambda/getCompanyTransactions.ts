@@ -3,8 +3,7 @@ import 'reflect-metadata';
 import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes';
 import {SampleErrorCodes} from '../../logic/errors/sampleErrorCodes';
 import {CompanyService} from '../../logic/services/companyService';
-import {BASETYPES, ErrorFactory, ResponseWriter} from '../../plumbing-base';
-import {SampleApiClaims} from '../claims/sampleApiClaims';
+import {ErrorFactory, ResponseWriter} from '../../plumbing-base';
 import {LambdaConfiguration} from './startup/lambdaConfiguration';
 
 /*
@@ -23,12 +22,9 @@ const baseHandler = async (event: any) => {
             'The company id must be a positive numeric integer');
     }
 
-    // Get claims produced by the authorizer
-    const claims = container.get<SampleApiClaims>(BASETYPES.CoreApiClaims);
-
-    // Execute the logic
+    // Resolve the service and execute the logic
     const service = container.get<CompanyService>(SAMPLETYPES.CompanyService);
-    const companies = await service.getCompanyTransactions(id, claims.isAdmin, claims.regionsCovered);
+    const companies = await service.getCompanyTransactions(id);
 
     // Write the response
     return ResponseWriter.objectResponse(200, companies);

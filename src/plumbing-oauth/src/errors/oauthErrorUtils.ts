@@ -137,13 +137,13 @@ export class OAuthErrorUtils {
 
         if (e.message) {
             return e.message;
-        } else {
-            const details = e.toString();
-            if (details !== {}.toString()) {
-                return details;
-            } else {
-                return '';
-            }
         }
+
+        const details = e.toString();
+        if (details !== {}.toString()) {
+            return details;
+        }
+
+        return '';
     }
 }

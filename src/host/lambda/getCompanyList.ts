@@ -2,8 +2,7 @@ import {Container} from 'inversify';
 import 'reflect-metadata';
 import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes';
 import {CompanyService} from '../../logic/services/companyService';
-import {BASETYPES, ResponseWriter} from '../../plumbing-base';
-import {SampleApiClaims} from '../claims/sampleApiClaims';
+import {ResponseWriter} from '../../plumbing-base';
 import {LambdaConfiguration} from './startup/lambdaConfiguration';
 
 /*
@@ -12,12 +11,9 @@ import {LambdaConfiguration} from './startup/lambdaConfiguration';
 const container = new Container();
 const baseHandler = async () => {
 
-    // Get claims produced by the authorizer
-    const claims = container.get<SampleApiClaims>(BASETYPES.CoreApiClaims);
-
-    // Execute the logic
+    // Resolve the service and execute the logic
     const service = container.get<CompanyService>(SAMPLETYPES.CompanyService);
-    const companies = await service.getCompanyList(claims.isAdmin, claims.regionsCovered);
+    const companies = await service.getCompanyList();
 
     // Write the response
     return ResponseWriter.objectResponse(200, companies);

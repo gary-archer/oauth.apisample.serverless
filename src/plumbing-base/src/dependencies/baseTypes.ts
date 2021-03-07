@@ -3,5 +3,7 @@
  */
 export const BASETYPES = {
     LogEntry: Symbol.for('LogEntry'),
-    CoreApiClaims: Symbol.for('CoreApiClaims'),
+    CustomClaims: Symbol.for('CustomApiClaims'),
+    TokenClaims: Symbol.for('TokenApiClaims'),
+    UserInfoClaims: Symbol.for('UserInfoApiClaims'),
 };

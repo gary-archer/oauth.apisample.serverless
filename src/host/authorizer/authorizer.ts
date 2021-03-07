@@ -5,7 +5,7 @@ import {OAUTHTYPES} from '../../plumbing-oauth';
 import {AuthorizerConfiguration} from './startup/authorizerConfiguration';
 
 /*
- * Our handler just returns the AWS response document produced by OAuth middleware
+ * Our handler just returns the AWS response document produced by our OAuth middleware
  */
 const container = new Container();
 const baseHandler = async () => {

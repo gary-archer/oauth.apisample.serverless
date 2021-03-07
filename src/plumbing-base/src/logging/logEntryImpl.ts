@@ -2,7 +2,7 @@ import {Context} from 'aws-lambda';
 import {Guid} from 'guid-typescript';
 import {injectable} from 'inversify';
 import os from 'os';
-import {CoreApiClaims} from '../claims/coreApiClaims';
+import {TokenClaims} from '../claims/tokenClaims';
 import {ClientError} from '../errors/clientError';
 import {ServerError} from '../errors/ServerError';
 import {LogEntry} from './logEntry';
@@ -59,10 +59,9 @@ export class LogEntryImpl implements LogEntry {
     /*
      * Add identity details for secured requests
      */
-    public setIdentity(claims: CoreApiClaims): void {
-        this._data.clientOAuthId = claims.clientId;
-        this._data.userId = claims.userDatabaseId;
+    public setIdentity(claims: TokenClaims): void {
         this._data.userOAuthId = claims.subject;
+        this._data.clientOAuthId = claims.clientId;
     }
 
     /*

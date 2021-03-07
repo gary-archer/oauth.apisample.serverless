@@ -8,8 +8,8 @@ import {OAuthCompositionRoot} from './src/dependencies/oauthCompositionRoot';
 import {OAUTHTYPES} from './src/dependencies/oauthTypes';
 
 export {
+    CustomClaimsProvider,
     OAUTHTYPES,
     OAuthCompositionRoot,
     OAuthConfiguration,
-    CustomClaimsProvider,
 };

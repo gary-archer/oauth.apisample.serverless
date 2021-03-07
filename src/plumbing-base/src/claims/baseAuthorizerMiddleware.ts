@@ -1,5 +1,5 @@
 import {Container} from 'inversify';
-import {CoreApiClaims} from '../claims/coreApiClaims';
+import {TokenClaims} from '../claims/tokenClaims';
 import {BASETYPES} from '../dependencies/baseTypes';
 import {ClientError} from '../errors/clientError';
 import {LogEntryImpl} from '../logging/logEntryImpl';
@@ -12,7 +12,7 @@ export abstract class BaseAuthorizerMiddleware {
     /*
      * Include identity details in both authorizer and lambda logs
      */
-    protected logIdentity(container: Container, claims: CoreApiClaims): void {
+    protected logIdentity(container: Container, claims: TokenClaims): void {
         const logEntry = container.get<LogEntryImpl>(BASETYPES.LogEntry);
         logEntry.setIdentity(claims);
     }
