@@ -3,6 +3,7 @@ import cors from '@middy/http-cors';
 import {Context, Handler} from 'aws-lambda';
 import fs from 'fs-extra';
 import {Container} from 'inversify';
+import {SampleCustomClaims} from '../../../logic/entities/sampleCustomClaims';
 import {
     AsyncHandler,
     BaseCompositionRoot,
@@ -69,10 +70,13 @@ export class LambdaConfiguration {
         base: BaseCompositionRoot,
         configuration: Configuration): middy.Middy<any, any> {
 
+        // Ensure that claims are deserialized with our specific custom claims class
+        const claimsDeserializer = (data: any) => SampleCustomClaims.importData(data);
+
         // Get framework middleware classes including an authorizer that reads claims from the request context
         const loggerMiddleware = base.getLoggerMiddleware();
         const exceptionMiddleware = base.getExceptionMiddleware();
-        const authorizerMiddleware = base.getRequestContextAuthorizer();
+        const authorizerMiddleware = base.getRequestContextAuthorizer(claimsDeserializer);
         const customHeaderMiddleware = base.getCustomHeaderMiddleware();
 
         // Wrap the base handler and add middleware for cross cutting concerns

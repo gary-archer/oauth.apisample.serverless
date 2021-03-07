@@ -11,10 +11,14 @@ export class PolicyDocumentWriter {
      */
     public static authorizedResponse(claims: ApiClaims, event: any): CustomAuthorizerResult {
 
-        const context = {
+        const claimsData = {
+            token: claims.token.exportData(),
+            userInfo: claims.userInfo.exportData(),
+            custom: claims.custom.exportData(),
+        };
 
-            // TODO: serialize
-            customClaims: JSON.stringify(claims),
+        const context = {
+            apiClaims: JSON.stringify(claimsData),
         };
 
         return PolicyDocumentWriter._policyDocument(claims.token.subject, 'Allow', event, context);

@@ -9,18 +9,7 @@
     },
     "requestContext": {
         "authorizer": {
-            "customClaims": {
-                "subject": "53d99c88-a992-4e1c-9b58-d739c2a20de5",
-                "clientId": "3iojt0uhtp0nqm0lc3rmvj92ck",
-                "scopes": "openid profile email",
-                "expiry": 1590079382,
-                "givenName": "Guest",
-                "familyName": "User",
-                "email": "guestuser@mycompany.com",
-                "userDatabaseId": "10345",
-                "isAdmin": false,
-                "regionsCovered": ["USA"]
-            }
+            "apiClaims": "{\"token\":{\"subject\":\"a6b404b1-98af-41a2-8e7f-e4061dc0bf86\",\"clientId\":\"2tdldo8gk79dsi2lpntntcdug0\",\"scopes\":\"openid profile https://api.authsamples.com/api/default email\",\"expiry\":1615143465},\"userInfo\":{\"givenName\":\"Guest\",\"familyName\":\"User\",\"email\":\"guestuser@mycompany.com\"},\"custom\":{\"userDatabaseId\":\"10345\",\"isAdmin\":false,\"regionsCovered\":[\"USA\"]}}"
         }
     }
 }

@@ -1,7 +1,6 @@
 import middy from '@middy/core';
 import {Container} from 'inversify';
 import {CustomClaims} from '../claims/customClaims';
-import {RequestContextAuthorizer} from '../claims/requestContextAuthorizer';
 import {TokenClaims} from '../claims/tokenClaims';
 import {UserInfoClaims} from '../claims/userInfoClaims';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration';
@@ -12,6 +11,7 @@ import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
 import {CustomHeaderMiddleware} from '../middleware/customHeaderMiddleware';
 import {ExceptionMiddleware} from '../middleware/exceptionMiddleware';
 import {LoggerMiddleware} from '../middleware/loggerMiddleware';
+import {RequestContextAuthorizer} from '../security/requestContextAuthorizer';
 
 /*
  * Register dependencies to manage cross cutting concerns
@@ -64,8 +64,10 @@ export class BaseCompositionRoot {
         return new ExceptionMiddleware(this._container, this._loggingConfiguration!);
     }
 
-    public getRequestContextAuthorizer(): middy.MiddlewareObject<any, any> {
-        return new RequestContextAuthorizer(this._container);
+    public getRequestContextAuthorizer(
+        claimsDeserializer: (data: any) => CustomClaims): middy.MiddlewareObject<any, any> {
+
+        return new RequestContextAuthorizer(this._container, claimsDeserializer);
     }
 
     public getCustomHeaderMiddleware(): middy.MiddlewareObject<any, any> {

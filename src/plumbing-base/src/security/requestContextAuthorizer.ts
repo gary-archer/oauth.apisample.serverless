@@ -14,10 +14,12 @@ import {BaseAuthorizerMiddleware} from './baseAuthorizerMiddleware';
 export class RequestContextAuthorizer extends BaseAuthorizerMiddleware implements middy.MiddlewareObject<any, any> {
 
     private readonly _container: Container;
+    private readonly _claimsDeserializer: (data: any) => CustomClaims;
 
-    public constructor(container: Container) {
+    public constructor(container: Container, claimsDeserializer: (data: any) => CustomClaims) {
         super();
         this._container = container;
+        this._claimsDeserializer = claimsDeserializer;
         this._setupCallbacks();
     }
 
@@ -46,17 +48,20 @@ export class RequestContextAuthorizer extends BaseAuthorizerMiddleware implement
 
         if (!event.requestContext ||
             !event.requestContext.authorizer ||
-            !event.requestContext.authorizer.customClaims) {
+            !event.requestContext.authorizer.apiClaims) {
 
             throw new Error('Unable to resolve authorizer claims from request context');
         }
 
-        // TODO: deserialize
+        // The claims received are a serialized string
+        const data = JSON.parse(event.requestContext.authorizer.apiClaims);
 
-        // In AWS we receive a serialized object whereas on a local PC we have an object already
-        return (typeof event.requestContext.authorizer.customClaims === 'string') ?
-            JSON.parse(event.requestContext.authorizer.customClaims) :
-            event.requestContext.authorizer.customClaims;
+        // Deserialize and use the claims deserializer we were given
+        return new ApiClaims(
+            TokenClaims.importData(data.token),
+            UserInfoClaims.importData(data.userInfo),
+            this._claimsDeserializer(data.custom),
+        );
     }
 
     private _setupCallbacks(): void {

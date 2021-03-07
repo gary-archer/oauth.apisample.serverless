@@ -2,7 +2,6 @@
  * Export public types from common code
  */
 
-import {BaseAuthorizerMiddleware} from './src/claims/baseAuthorizerMiddleware';
 import {ApiClaims} from './src/claims/apiClaims';
 import {LoggingConfiguration} from './src/configuration/loggingConfiguration';
 import {BaseCompositionRoot} from './src/dependencies/baseCompositionRoot';
@@ -17,6 +16,7 @@ import {LoggerFactory} from './src/logging/loggerFactory';
 import {LoggerFactoryBuilder} from './src/logging/loggerFactoryBuilder';
 import {PerformanceBreakdown} from './src/logging/performanceBreakdown';
 import {HttpProxyMiddleware} from './src/middleware/httpProxyMiddleware';
+import {BaseAuthorizerMiddleware} from './src/security/baseAuthorizerMiddleware';
 import {AsyncHandler} from './src/utilities/asyncHandler';
 import {Disposable} from './src/utilities/disposable';
 import {HttpProxy} from './src/utilities/httpProxy';
