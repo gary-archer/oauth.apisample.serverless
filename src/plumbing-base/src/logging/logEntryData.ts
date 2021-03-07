@@ -37,9 +37,6 @@ export class LogEntryData {
     // The client id from the OAuth 2.0 access token
     public clientOAuthId: string;
 
-    // The calling user, for secured requests
-    public userId: string;
-
     // The subject claim from the OAuth 2.0 access token
     public userOAuthId: string;
 
@@ -89,7 +86,6 @@ export class LogEntryData {
         this.requestPath = '';
         this.clientApplicationName = '';
         this.clientOAuthId = '';
-        this.userId = '';
         this.userOAuthId = '';
         this.statusCode = 200;
         this.errorCode = '';
@@ -129,7 +125,6 @@ export class LogEntryData {
         this._outputString((x) => output.requestPath = x, this.requestPath);
         this._outputString((x) => output.clientApplicationName = x, this.clientApplicationName);
         this._outputString((x) => output.clientOAuthId = x, this.clientOAuthId);
-        this._outputString((x) => output.userId = x, this.userId);
         this._outputString((x) => output.userOAuthId = x, this.userOAuthId);
         this._outputNumber((x) => output.statusCode = x, this.statusCode);
         this._outputString((x) => output.errorCode = x, this.errorCode);

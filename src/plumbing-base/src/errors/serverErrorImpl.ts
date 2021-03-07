@@ -70,7 +70,7 @@ export class ServerErrorImpl extends ServerError {
         if (this.stack) {
 
             const frames: string[] = [];
-            const items = this.stack.split('\n').map((x: string) => x.trim()) as string[];
+            const items = this.stack.split('\n').map((x: string) => x.trim());
             items.forEach((i) => {
                 frames.push(i);
             });

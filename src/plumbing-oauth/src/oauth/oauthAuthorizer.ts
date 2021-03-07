@@ -2,11 +2,11 @@ import middy from '@middy/core';
 import {CustomAuthorizerResult} from 'aws-lambda';
 import {Container} from 'inversify';
 import {
+    ApiClaims,
     BaseAuthorizerMiddleware,
     ClientError,
-    CoreApiClaims,
     ErrorFactory} from '../../../plumbing-base';
-import {ClaimsSupplier} from '../claims/claimsSupplier';
+import {CustomClaimsProvider} from '../claims/customClaimsProvider';
 import {OAUTHTYPES} from '../dependencies/oauthTypes';
 import {OAuthAuthenticator} from './oauthAuthenticator';
 import {PolicyDocumentWriter} from './policyDocumentWriter';
@@ -14,14 +14,15 @@ import {PolicyDocumentWriter} from './policyDocumentWriter';
 /*
  * A middleware for the lambda authorizer, which does token processing and claims lookup
  */
-export class OAuthAuthorizer<TClaims extends CoreApiClaims>
-    extends BaseAuthorizerMiddleware implements middy.MiddlewareObject<any, any> {
+export class OAuthAuthorizer extends BaseAuthorizerMiddleware implements middy.MiddlewareObject<any, any> {
 
     private readonly _container: Container;
+    private readonly _customClaimsProvider: CustomClaimsProvider;
 
-    public constructor(container: Container) {
+    public constructor(container: Container, customClaimsProvider: CustomClaimsProvider) {
         super();
         this._container = container;
+        this._customClaimsProvider = customClaimsProvider;
         this._setupCallbacks();
     }
 
@@ -37,7 +38,7 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
             const claims = await this._execute(handler.event);
 
             // Include identity details in logs
-            super.logIdentity(this._container, claims);
+            super.logIdentity(this._container, claims.token);
 
             // Write an authorized policy document so that the REST call continues to the lambda
             // AWS will then cache the claims in the policy document for subsequent API requests with the same token
@@ -67,10 +68,9 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
     /*
      * Do the token validation and claims lookup
      */
-    private async _execute(event: any): Promise<TClaims> {
+    private async _execute(event: any): Promise<ApiClaims> {
 
         // Resolve dependencies
-        const claimsSupplier = this._container.get<ClaimsSupplier<TClaims>>(OAUTHTYPES.ClaimsSupplier);
         const authenticator = this._container.get<OAuthAuthenticator>(OAUTHTYPES.OAuthAuthenticator);
 
         // First read the token from the request header and report missing tokens
@@ -79,15 +79,17 @@ export class OAuthAuthorizer<TClaims extends CoreApiClaims>
             throw ErrorFactory.createClient401Error('No access token was supplied in the bearer header');
         }
 
-        // Create new claims which we will then populate
-        const claims = claimsSupplier.createEmptyClaims();
+        // Validate the token and get token claims
+        const tokenClaims = await authenticator.validateToken(accessToken);
 
-        // Validate the token, read token claims, and do a user info lookup
-        await authenticator.validateTokenAndGetClaims(accessToken, claims);
+        // Look up user info claims
+        const userInfoClaims = await authenticator.getUserInfo(accessToken);
 
         // Add custom claims from the API's own data if needed
-        await claimsSupplier.createCustomClaimsProvider().addCustomClaims(accessToken, claims);
-        return claims;
+        const customClaims = await this._customClaimsProvider.getCustomClaims(tokenClaims, userInfoClaims);
+
+        // Return the result
+        return new ApiClaims(tokenClaims, userInfoClaims, customClaims);
     }
 
     /*

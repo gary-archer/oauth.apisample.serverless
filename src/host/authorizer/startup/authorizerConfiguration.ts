@@ -10,8 +10,7 @@ import {
     LoggerFactoryBuilder,
     ResponseWriter} from '../../../plumbing-base';
 import {OAuthCompositionRoot} from '../../../plumbing-oauth';
-import {SampleApiClaims} from '../../claims/sampleApiClaims';
-import {SampleApiClaimsProvider} from '../../claims/sampleApiClaimsProvider';
+import {SampleCustomClaimsProvider} from '../../claims/sampleCustomClaimsProvider';
 import {Configuration} from '../../configuration/configuration';
 
 /*
@@ -42,10 +41,9 @@ export class AuthorizerConfiguration {
                 .register();
 
             // Register common code OAuth dependencies
-            const oauth = new OAuthCompositionRoot<SampleApiClaims>(this._container)
+            const oauth = new OAuthCompositionRoot(this._container)
                 .useOAuth(configuration.oauth)
-                .withClaimsSupplier(SampleApiClaims)
-                .withCustomClaimsProviderSupplier(SampleApiClaimsProvider)
+                .withCustomClaimsProvider(new SampleCustomClaimsProvider())
                 .register();
 
             // Configure middy middleware classes
@@ -72,7 +70,7 @@ export class AuthorizerConfiguration {
     private _configureMiddleware(
         baseHandler: AsyncHandler,
         base: BaseCompositionRoot,
-        oauth: OAuthCompositionRoot<SampleApiClaims>,
+        oauth: OAuthCompositionRoot,
         configuration: Configuration): middy.Middy<any, any> {
 
         // Get framework middleware classes including an OAuth authorizer

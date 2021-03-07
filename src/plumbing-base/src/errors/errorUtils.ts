@@ -60,7 +60,7 @@ export class ErrorUtils {
     private static tryConvertToServerError(exception: any): ServerError | null {
 
         if (exception instanceof ServerError) {
-            return exception as ServerError;
+            return exception;
         }
 
         return null;
@@ -86,13 +86,13 @@ export class ErrorUtils {
 
         if (e.message) {
             return e.message;
-        } else {
-            const details = e.toString();
-            if (details !== {}.toString()) {
-                return details;
-            } else {
-                return '';
-            }
         }
+
+        const details = e.toString();
+        if (details !== {}.toString()) {
+            return details;
+        }
+
+        return '';
     }
 }

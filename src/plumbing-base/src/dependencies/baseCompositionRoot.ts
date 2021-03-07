@@ -1,15 +1,17 @@
 import middy from '@middy/core';
 import {Container} from 'inversify';
-import {CoreApiClaims} from '../claims/coreApiClaims';
-import {RequestContextAuthorizer} from '../claims/requestContextAuthorizer';
+import {CustomClaims} from '../claims/customClaims';
+import {TokenClaims} from '../claims/tokenClaims';
+import {UserInfoClaims} from '../claims/userInfoClaims';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration';
 import {BASETYPES} from '../dependencies/baseTypes';
 import {LogEntry} from '../logging/LogEntry';
 import {LoggerFactory} from '../logging/loggerFactory';
 import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
+import {CustomHeaderMiddleware} from '../middleware/customHeaderMiddleware';
 import {ExceptionMiddleware} from '../middleware/exceptionMiddleware';
 import {LoggerMiddleware} from '../middleware/loggerMiddleware';
-import { CustomHeaderMiddleware } from '../middleware/customHeaderMiddleware';
+import {RequestContextAuthorizer} from '../security/requestContextAuthorizer';
 
 /*
  * Register dependencies to manage cross cutting concerns
@@ -62,8 +64,10 @@ export class BaseCompositionRoot {
         return new ExceptionMiddleware(this._container, this._loggingConfiguration!);
     }
 
-    public getRequestContextAuthorizer(): middy.MiddlewareObject<any, any> {
-        return new RequestContextAuthorizer(this._container);
+    public getRequestContextAuthorizer(
+        claimsDeserializer: (data: any) => CustomClaims): middy.MiddlewareObject<any, any> {
+
+        return new RequestContextAuthorizer(this._container, claimsDeserializer);
     }
 
     public getCustomHeaderMiddleware(): middy.MiddlewareObject<any, any> {
@@ -80,11 +84,13 @@ export class BaseCompositionRoot {
     }
 
     /*
-     * Register any common code claims dependencies
+     * Register inkectable items used for claims processing
      */
     private _registerClaimsDependencies() {
 
-        // This default per request object will be overridden at runtime
-        this._container.bind<CoreApiClaims>(BASETYPES.CoreApiClaims).toConstantValue({} as any);
+        // These default per request objects will be overridden at runtime
+        this._container.bind<TokenClaims>(BASETYPES.TokenClaims).toConstantValue({} as any);
+        this._container.bind<UserInfoClaims>(BASETYPES.UserInfoClaims).toConstantValue({} as any);
+        this._container.bind<CustomClaims>(BASETYPES.CustomClaims).toConstantValue({} as any);
     }
 }

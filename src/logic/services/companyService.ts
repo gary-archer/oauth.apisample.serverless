@@ -1,8 +1,9 @@
 import {inject, injectable} from 'inversify';
-import {ClientError, ErrorFactory} from '../../plumbing-base';
+import {BASETYPES, ClientError, ErrorFactory} from '../../plumbing-base';
 import {SAMPLETYPES} from '../dependencies/sampleTypes';
 import {Company} from '../entities/company';
 import {CompanyTransactions} from '../entities/companyTransactions';
+import {SampleCustomClaims} from '../entities/sampleCustomClaims';
 import {SampleErrorCodes} from '../errors/sampleErrorCodes';
 import {CompanyRepository} from '../repositories/companyRepository';
 
@@ -13,36 +14,38 @@ import {CompanyRepository} from '../repositories/companyRepository';
 export class CompanyService {
 
     private readonly _repository: CompanyRepository;
+    private readonly _claims: SampleCustomClaims;
 
-    public constructor(@inject(SAMPLETYPES.CompanyRepository) repository: CompanyRepository) {
+    public constructor(
+        @inject(SAMPLETYPES.CompanyRepository) repository: CompanyRepository,
+        @inject(BASETYPES.CustomClaims) claims: SampleCustomClaims) {
+
         this._repository = repository;
+        this._claims = claims;
     }
 
     /*
      * Forward to the repository to get the company list
      */
-    public async getCompanyList(isAdmin: boolean, regionsCovered: string[]): Promise<Company[]> {
+    public async getCompanyList(): Promise<Company[]> {
 
         // Use a micro services approach of getting all data
         const companies = await this._repository.getCompanyList();
 
         // We will then filter on only authorized companies
-        return companies.filter((c) => this._isUserAuthorizedForCompany(c, isAdmin, regionsCovered));
+        return companies.filter((c) => this._isUserAuthorizedForCompany(c));
     }
 
     /*
      * Forward to the repository to get the company transactions
      */
-    public async getCompanyTransactions(
-        companyId: number,
-        isAdmin: boolean,
-        regionsCovered: string[]): Promise<CompanyTransactions> {
+    public async getCompanyTransactions(companyId: number): Promise<CompanyTransactions> {
 
         // Use a micro services approach of getting all data
         const data = await this._repository.getCompanyTransactions(companyId);
 
         // If the user is unauthorized or data was not found then return 404
-        if (!data || !this._isUserAuthorizedForCompany(data.company, isAdmin, regionsCovered)) {
+        if (!data || !this._isUserAuthorizedForCompany(data.company)) {
             throw this._unauthorizedError(companyId);
         }
 
@@ -52,13 +55,13 @@ export class CompanyService {
     /*
      * A simple example of applying domain specific claims
      */
-    private _isUserAuthorizedForCompany(company: Company, isAdmin: boolean, regionsCovered: string[]): boolean {
+    private _isUserAuthorizedForCompany(company: Company): boolean {
 
-        if (isAdmin) {
+        if (this._claims.isAdmin) {
             return true;
         }
 
-        const found = regionsCovered.find((c) => c === company.region);
+        const found = this._claims.regionsCovered.find((c) => c === company.region);
         return !!found;
     }
 

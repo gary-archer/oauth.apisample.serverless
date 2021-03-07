@@ -1,5 +1,5 @@
 import {CustomAuthorizerResult} from 'aws-lambda';
-import {CoreApiClaims} from '../../../plumbing-base';
+import {ApiClaims} from '../../../plumbing-base';
 
 /*
  * Helper methods to return responses
@@ -9,13 +9,19 @@ export class PolicyDocumentWriter {
     /*
      * The authorized response includes an aws policy document and we include our custom claims in it
      */
-    public static authorizedResponse(claims: CoreApiClaims, event: any): CustomAuthorizerResult {
+    public static authorizedResponse(claims: ApiClaims, event: any): CustomAuthorizerResult {
 
-        const context = {
-            customClaims: JSON.stringify(claims),
+        const claimsData = {
+            token: claims.token.exportData(),
+            userInfo: claims.userInfo.exportData(),
+            custom: claims.custom.exportData(),
         };
 
-        return PolicyDocumentWriter._policyDocument(claims.subject, 'Allow', event, context);
+        const context = {
+            apiClaims: JSON.stringify(claimsData),
+        };
+
+        return PolicyDocumentWriter._policyDocument(claims.token.subject, 'Allow', event, context);
     }
 
     /*

@@ -4,11 +4,12 @@ import jwkToPem from 'jwk-to-pem';
 import {Client, custom, Issuer} from 'openid-client';
 import {
     BASETYPES,
-    CoreApiClaims,
     HttpProxy,
     ErrorFactory,
     LogEntry,
-    using} from '../../../plumbing-base';
+    using,
+    UserInfoClaims,
+    TokenClaims} from '../../../plumbing-base';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {OAUTHTYPES} from '../dependencies/oauthTypes';
 import {OAuthErrorUtils} from '../errors/oauthErrorUtils';
@@ -39,7 +40,7 @@ export class OAuthAuthenticator {
     /*
      * When we receive a new token, validate it and return token claims
      */
-    public async validateTokenAndGetClaims(accessToken: string, claims: CoreApiClaims): Promise<void> {
+    public async validateToken(accessToken: string): Promise<TokenClaims> {
 
         // First load metadata
         await this._loadMetadata();
@@ -68,11 +69,42 @@ export class OAuthAuthenticator {
         // Make sure the token is for this API
         this._verifyScopes(scopes);
 
-        // Update token claims
-        claims.setTokenInfo(subject, clientId, scopes, expiry);
+        // Return the token claims
+        return new TokenClaims(subject, clientId, scopes, expiry);
+    }
 
-        // Look up user info to get the name and email
-        await this._getUserInfoClaims(claims, accessToken);
+    /*
+     * We will read central user data by calling the Open Id Connect User Info endpoint
+     * For many companies it may instead make sense to call a Central User Info API
+     */
+    public async getUserInfo(accessToken: string): Promise<UserInfoClaims> {
+
+        return using (this._logEntry.createPerformanceBreakdown('userInfoLookup'), async () => {
+
+            // Create the Authorization Server client, which requires a dummy client id
+            const client = new this._issuer!.Client({
+                client_id: 'userinfo',
+            });
+            client[custom.http_options] = HttpProxy.getOptions;
+
+            try {
+                // Extend token data with central user info
+                const userData = await client.userinfo(accessToken);
+
+                // Get values
+                const givenName = this._getClaim(userData.given_name, 'given_name');
+                const familyName = this._getClaim(userData.family_name, 'family_name');
+                const email = this._getClaim(userData.email, 'email');
+
+                // Return user info claims
+                return new UserInfoClaims(givenName, familyName, email);
+
+            } catch (e) {
+
+                // Report errors clearly
+                throw OAuthErrorUtils.fromUserInfoError(e, this._issuer!.metadata.userinfo_endpoint!);
+            }
+        });
     }
 
     /*
@@ -168,38 +200,6 @@ export class OAuthAuthenticator {
     }
 
     /*
-     * We will read central user data by calling the Open Id Connect User Info endpoint
-     * For many companies it may instead make sense to call a Central User Info API
-     */
-    private async _getUserInfoClaims(claims: CoreApiClaims, accessToken: string): Promise<void> {
-
-        return using (this._logEntry.createPerformanceBreakdown('userInfoLookup'), async () => {
-
-            // Create the Authorization Server client, which requires a dummy client id
-            const client = new this._issuer!.Client({
-                client_id: 'userinfo',
-            });
-            client[custom.http_options] = HttpProxy.getOptions;
-
-            try {
-                // Extend token data with central user info
-                const userData = await client.userinfo(accessToken);
-
-                // Sanity check the values before accepting them
-                const givenName = this._getClaim(userData.given_name, 'given_name');
-                const familyName = this._getClaim(userData.family_name, 'family_name');
-                const email = this._getClaim(userData.email, 'email');
-                claims.setCentralUserInfo(givenName, familyName, email);
-
-            } catch (e) {
-
-                // Report errors clearly
-                throw OAuthErrorUtils.fromUserInfoError(e, this._issuer!.metadata.userinfo_endpoint!);
-            }
-        });
-    }
-
-    /*
      * Sanity checks when receiving claims to avoid failing later with a cryptic error
      */
     private _getClaim(claim: string | undefined, name: string): string {
@@ -215,9 +215,7 @@ export class OAuthAuthenticator {
      * Plumbing to ensure that the this parameter is available in async callbacks
      */
     private _setupCallbacks(): void {
-        this.validateTokenAndGetClaims = this.validateTokenAndGetClaims.bind(this);
-        this._loadMetadata = this._loadMetadata.bind(this);
-        this._validateTokenInMemory = this._validateTokenInMemory.bind(this);
-        this._getUserInfoClaims = this._getUserInfoClaims.bind(this);
+        this.validateToken = this.validateToken.bind(this);
+        this.getUserInfo = this.getUserInfo.bind(this);
     }
 }
