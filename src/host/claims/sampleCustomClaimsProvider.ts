@@ -1,6 +1,5 @@
 import {CustomClaims, TokenClaims, UserInfoClaims} from '../../plumbing-base';
 import {CustomClaimsProvider} from '../../plumbing-oauth';
-import {SampleCustomClaimsA} from './sampleCustomClaimsA';
 
 /*
  * An example of including domain specific details in cached claims
@@ -22,6 +21,16 @@ export class SampleCustomClaimsProvider extends CustomClaimsProvider {
         const isAdmin = email.toLowerCase().indexOf('admin') !== -1;
         const regionsCovered = isAdmin? [] : ['USA'];
 
-        return new SampleCustomClaimsA(userDatabaseId, isAdmin, regionsCovered);
+        // Return a simplified version of the SampleCustomClaims instance but without referencing the class
+        // This makes AWS packaging easier, since the authorizer zip file does not include the logic folder
+        return {
+            exportData: () => {
+                return {
+                    userDatabaseId,
+                    isAdmin,
+                    regionsCovered,
+                };
+            },
+        };
     }
 }
