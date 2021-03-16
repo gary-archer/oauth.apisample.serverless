@@ -56,7 +56,7 @@ functions:
     handler: dist/host/lambda/getUserClaims.handler
     events:
       - http: 
-          path: /userclaims/current
+          path: /userinfo
           method: get
           authorizer:
             name: authorizer
