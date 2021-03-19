@@ -62,7 +62,6 @@ export class OAuthAuthenticator {
 
         // Read protocol claims and use the immutable user id as the subject claim
         const subject = this._getClaim(tokenData.sub, 'subject');
-        const clientId = this._getClaim(tokenData.client_id, 'clientId');
         const scopes = this._getClaim(tokenData.scope, 'scope').split(' ');
         const expiry = parseInt(this._getClaim(tokenData.exp, 'exp'), 10);
 
@@ -70,7 +69,7 @@ export class OAuthAuthenticator {
         this._verifyScopes(scopes);
 
         // Return the token claims
-        return new TokenClaims(subject, clientId, scopes, expiry);
+        return new TokenClaims(subject, scopes, expiry);
     }
 
     /*
