@@ -1,5 +1,5 @@
+import {BaseClaims} from './baseClaims';
 import {CustomClaims} from './customClaims';
-import {TokenClaims} from './tokenClaims';
 import {UserInfoClaims} from './userInfoClaims';
 
 /*
@@ -7,18 +7,18 @@ import {UserInfoClaims} from './userInfoClaims';
  */
 export class ApiClaims {
 
-    private _tokenClaims: TokenClaims;
+    private _baseClaims: BaseClaims;
     private _userInfoClaims: UserInfoClaims;
     private _customClaims: CustomClaims;
 
-    public constructor(tokenClaims: TokenClaims, userInfoClaims: UserInfoClaims, customClaims: CustomClaims) {
-        this._tokenClaims = tokenClaims;
+    public constructor(baseClaims: BaseClaims, userInfoClaims: UserInfoClaims, customClaims: CustomClaims) {
+        this._baseClaims = baseClaims;
         this._userInfoClaims = userInfoClaims;
         this._customClaims = customClaims;
     }
 
-    public get token(): TokenClaims {
-        return this._tokenClaims;
+    public get token(): BaseClaims {
+        return this._baseClaims;
     }
 
     public get userInfo(): UserInfoClaims {

@@ -1,5 +1,6 @@
-import {CustomClaims, TokenClaims, UserInfoClaims} from '../../plumbing-base';
-import {CustomClaimsProvider} from '../../plumbing-oauth';
+import {SampleCustomClaims} from '../../logic/entities/sampleCustomClaims';
+import {CustomClaims} from '../../plumbing-base';
+import {ClaimsPayload, CustomClaimsProvider} from '../../plumbing-oauth';
 
 /*
  * An example of including domain specific details in cached claims
@@ -7,30 +8,24 @@ import {CustomClaimsProvider} from '../../plumbing-oauth';
 export class SampleCustomClaimsProvider extends CustomClaimsProvider {
 
     /*
-     * An example of how custom claims can be included
+     * Simulate some API logic for identifying the user from OAuth data, via either the subject or email claims
+     * A real API would then do a database lookup to find the user's custom claims
      */
-    public async getCustomClaims(token: TokenClaims, userInfo: UserInfoClaims): Promise<CustomClaims> {
+    protected async supplyCustomClaims(tokenData: ClaimsPayload, userInfoData: ClaimsPayload): Promise<CustomClaims> {
 
-        // A real implementation would look up the database user id from the subject and / or email claim
-        const email = userInfo.email;
-        const userDatabaseId = '10345';
-
-        // Our blog's code samples have two fixed users and we use the below mock implementation:
-        // - guestadmin@mycompany.com is an admin and sees all data
-        // - guestuser@mycompany.com is not an admin and only sees data for the USA region
+        const email = userInfoData.getClaim('email');
         const isAdmin = email.toLowerCase().indexOf('admin') !== -1;
-        const regionsCovered = isAdmin? [] : ['USA'];
+        if (isAdmin) {
 
-        // Return a simplified version of the SampleCustomClaims instance but without referencing the class
-        // This makes AWS packaging easier, since the authorizer zip file does not include the logic folder
-        return {
-            exportData: () => {
-                return {
-                    userDatabaseId,
-                    isAdmin,
-                    regionsCovered,
-                };
-            },
-        };
+            // For admin users we hard code this user id, assign a role of 'admin' and grant access to all regions
+            // The CompanyService class will use these claims to return all transaction data
+            return new SampleCustomClaims('20116', 'admin', []);
+
+        } else {
+
+            // For other users we hard code this user id, assign a role of 'user' and grant access to only one region
+            // The CompanyService class will use these claims to return only transactions for the US region
+            return new SampleCustomClaims('10345', 'user', ['USA']);
+        }
     }
 }

@@ -1,40 +1,67 @@
-import Url from 'url';
+import url from 'url';
 
 /*
  * Manage supplying the HTTP proxy on outgoing calls from lambdas or the authorizer
  */
 export class HttpProxy {
 
+    private _useProxy: boolean;
+    private _proxyUrl: string;
+    private _agent: any = null;
+
+    public constructor() {
+        this._useProxy = false;
+        this._proxyUrl = '';
+        this._agent = null;
+        this._setupCallbacks();
+    }
+
     /*
      * Configure the proxy agent used for HTTP debugging
      */
-    public static async initialize(useProxy: boolean, proxyUrl: string): Promise<void> {
+    public async initialize(useProxy: boolean, proxyUrl: string): Promise<void> {
 
-        if (useProxy) {
+        this._useProxy = useProxy;
+        if (this._useProxy) {
 
-            // Ensure that the standard environment variable is set for our process
-            process.env.HTTPS_PROXY = proxyUrl;
+            // Also ensure that the standard environment variable is set for our process
+            this._proxyUrl = proxyUrl;
+            process.env.HTTPS_PROXY = this._proxyUrl;
 
             // Use a dynamic import so that this dependency is only used on a developer PC
             await import('tunnel-agent').then((agent) => {
-                const opts = Url.parse(proxyUrl);
-                HttpProxy._agent = agent.httpsOverHttp({proxy: opts});
+
+                const opts = url.parse(this._proxyUrl);
+                this._agent = agent.httpsOverHttp({
+                    proxy: opts,
+                });
             });
         }
     }
 
     /*
-     * Configure Open Id Client HTTP options, including the proxy
+     * Set HTTP options as required by the Open ID Client library
      */
-    public static getOptions(options: any): any {
+    public setOptions(options: any): any {
 
         options.agent = {
-            https: HttpProxy._agent,
+            https: this._agent,
         };
 
         return options;
     }
 
-    // The global agent instance
-    private static _agent: any = null;
+    /*
+     * Return the URL when needed
+     */
+    public getUrl(): string {
+        return this._proxyUrl;
+    }
+
+    /*
+     * Plumbing to ensure the this parameter is available
+     */
+    private _setupCallbacks(): void {
+        this.setOptions = this.setOptions.bind(this);
+    }
 }

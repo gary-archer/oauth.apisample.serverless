@@ -2,8 +2,9 @@
  * Base types that can be injected
  */
 export const BASETYPES = {
+    HttpProxy: Symbol.for('HttpProxy'),
     LogEntry: Symbol.for('LogEntry'),
-    CustomClaims: Symbol.for('CustomApiClaims'),
-    TokenClaims: Symbol.for('TokenApiClaims'),
-    UserInfoClaims: Symbol.for('UserInfoApiClaims'),
+    BaseClaims: Symbol.for('BaseClaims'),
+    CustomClaims: Symbol.for('CustomClaims'),
+    UserInfoClaims: Symbol.for('UserInfoClaims'),
 };

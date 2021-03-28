@@ -1,7 +1,7 @@
 import middy from '@middy/core';
 import {Container} from 'inversify';
+import {BaseClaims} from '../claims/baseClaims';
 import {CustomClaims} from '../claims/customClaims';
-import {TokenClaims} from '../claims/tokenClaims';
 import {UserInfoClaims} from '../claims/userInfoClaims';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration';
 import {BASETYPES} from '../dependencies/baseTypes';
@@ -89,7 +89,7 @@ export class BaseCompositionRoot {
     private _registerClaimsDependencies() {
 
         // These default per request objects will be overridden at runtime
-        this._container.bind<TokenClaims>(BASETYPES.TokenClaims).toConstantValue({} as any);
+        this._container.bind<BaseClaims>(BASETYPES.BaseClaims).toConstantValue({} as any);
         this._container.bind<UserInfoClaims>(BASETYPES.UserInfoClaims).toConstantValue({} as any);
         this._container.bind<CustomClaims>(BASETYPES.CustomClaims).toConstantValue({} as any);
     }

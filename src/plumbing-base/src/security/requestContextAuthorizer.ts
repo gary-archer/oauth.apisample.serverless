@@ -1,8 +1,8 @@
 import middy from '@middy/core';
 import {Container} from 'inversify';
 import {ApiClaims} from '../claims/apiClaims';
+import {BaseClaims} from '../claims/baseClaims';
 import {CustomClaims} from '../claims/customClaims';
-import {TokenClaims} from '../claims/tokenClaims';
 import {UserInfoClaims} from '../claims/userInfoClaims';
 import {BASETYPES} from '../dependencies/baseTypes';
 import {BaseAuthorizerMiddleware} from './baseAuthorizerMiddleware';
@@ -32,7 +32,7 @@ export class RequestContextAuthorizer extends BaseAuthorizerMiddleware implement
         const claims = this._readClaims(handler.event);
 
         // Make claims objects available for injection into business logic
-        this._container.rebind<TokenClaims>(BASETYPES.TokenClaims).toConstantValue(claims.token);
+        this._container.rebind<BaseClaims>(BASETYPES.BaseClaims).toConstantValue(claims.token);
         this._container.rebind<UserInfoClaims>(BASETYPES.UserInfoClaims).toConstantValue(claims.userInfo);
         this._container.rebind<CustomClaims>(BASETYPES.CustomClaims).toConstantValue(claims.custom);
 
@@ -58,7 +58,7 @@ export class RequestContextAuthorizer extends BaseAuthorizerMiddleware implement
 
         // Deserialize and use the claims deserializer we were given
         return new ApiClaims(
-            TokenClaims.importData(data.token),
+            BaseClaims.importData(data.token),
             UserInfoClaims.importData(data.userInfo),
             this._claimsDeserializer(data.custom),
         );

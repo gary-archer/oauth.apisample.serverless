@@ -10,4 +10,6 @@ export class BaseErrorCodes {
     public static readonly claimsFailure = 'claims_failure';
 
     public static readonly exceptionSimulation = 'exception_simulation';
+
+    public static readonly insufficientScope = 'insufficient_scope';
 }

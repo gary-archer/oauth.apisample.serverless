@@ -8,6 +8,7 @@ import {BaseCompositionRoot} from './src/dependencies/baseCompositionRoot';
 import {BASETYPES} from './src/dependencies/baseTypes';
 import {BaseErrorCodes} from './src/errors/baseErrorCodes';
 import {ClientError} from './src/errors/clientError';
+import {BaseClaims} from './src/claims/baseClaims';
 import {CustomClaims} from './src/claims/customClaims';
 import {ErrorFactory} from './src/errors/errorFactory';
 import {ServerError} from './src/errors/ServerError';
@@ -21,7 +22,6 @@ import {AsyncHandler} from './src/utilities/asyncHandler';
 import {Disposable} from './src/utilities/disposable';
 import {HttpProxy} from './src/utilities/httpProxy';
 import {ResponseWriter} from './src/utilities/responseWriter';
-import {TokenClaims} from './src/claims/tokenClaims';
 import {UserInfoClaims} from './src/claims/userInfoClaims';
 import {using} from './src/utilities/using';
 
@@ -30,6 +30,7 @@ export {
     AsyncHandler,
     BASETYPES,
     BaseAuthorizerMiddleware,
+    BaseClaims,
     BaseCompositionRoot,
     BaseErrorCodes,
     ClientError,
@@ -45,7 +46,6 @@ export {
     PerformanceBreakdown,
     ResponseWriter,
     ServerError,
-    TokenClaims,
     UserInfoClaims,
     using,
 };

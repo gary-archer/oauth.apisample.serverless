@@ -5,39 +5,39 @@ import {CustomClaims} from '../../plumbing-base';
  */
 export class SampleCustomClaims extends CustomClaims {
 
-    private _userDatabaseId: string;
-    private _isAdmin: boolean;
-    private _regionsCovered: string[];
+    private _userId: string;
+    private _userRole: string;
+    private _userRegions: string[];
 
     public static importData(data: any): SampleCustomClaims {
-        return new SampleCustomClaims(data.userDatabaseId, data.isAdmin, data.regionsCovered);
+        return new SampleCustomClaims(data.userId, data.userRole, data.userRegions);
     }
 
-    public constructor(userDatabaseId: string, isAdmin: boolean, regionsCovered: string[]) {
+    public constructor(userId: string, userRole: string, userRegions: string[]) {
         super();
-        this._userDatabaseId = userDatabaseId;
-        this._isAdmin = isAdmin;
-        this._regionsCovered = regionsCovered;
+        this._userId = userId;
+        this._userRole = userRole;
+        this._userRegions = userRegions;
     }
 
-    public get userDatabaseId(): string {
-        return this._userDatabaseId;
+    public get userId(): string {
+        return this._userId;
     }
 
-    public get isAdmin(): boolean {
-        return this._isAdmin;
+    public get userRole(): string {
+        return this._userRole;
     }
 
-    public get regionsCovered(): string[] {
-        return this._regionsCovered;
+    public get userRegions(): string[] {
+        return this._userRegions;
     }
 
     public exportData(): any {
 
         return {
-            'userDatabaseId': this._userDatabaseId,
-            'isAdmin': this._isAdmin,
-            'regionsCovered': this._regionsCovered,
+            'userId': this._userId,
+            'userRole': this._userRole,
+            'userRegions': this._userRegions,
         };
     }
 }

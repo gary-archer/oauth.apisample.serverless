@@ -80,16 +80,13 @@ export class OAuthAuthorizer extends BaseAuthorizerMiddleware implements middy.M
         }
 
         // Validate the token and get token claims
-        const tokenClaims = await authenticator.validateToken(accessToken);
+        const token = await authenticator.validateToken(accessToken);
 
         // Look up user info claims
-        const userInfoClaims = await authenticator.getUserInfo(accessToken);
+        const userInfo = await authenticator.getUserInfo(accessToken);
 
-        // Add custom claims from the API's own data if needed
-        const customClaims = await this._customClaimsProvider.getCustomClaims(tokenClaims, userInfoClaims);
-
-        // Return the result
-        return new ApiClaims(tokenClaims, userInfoClaims, customClaims);
+        // Ask the custom claims provider to supply custom claims and produce the final result
+        return await this._customClaimsProvider.supplyClaims(token, userInfo);
     }
 
     /*
