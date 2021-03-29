@@ -23,7 +23,7 @@ export class HttpProxy {
 
         if (this._useProxy) {
 
-            // Also ensure that the standard environment variable is set for our process
+            // Ensure that the standard environment variable is set for our process
             process.env.HTTPS_PROXY = this._proxyUrl;
 
             // Use a dynamic import so that this dependency is only used on a developer PC
