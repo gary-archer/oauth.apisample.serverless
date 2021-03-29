@@ -1,4 +1,0 @@
-1. JWT Validator to use jwks rsa
-   Injected into authenticator
-   DI Composition for these new classes to configure
-   HTTP Proxy also - and call initialise
