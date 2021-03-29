@@ -12,32 +12,29 @@ import {CustomHeaderMiddleware} from '../middleware/customHeaderMiddleware';
 import {ExceptionMiddleware} from '../middleware/exceptionMiddleware';
 import {LoggerMiddleware} from '../middleware/loggerMiddleware';
 import {RequestContextAuthorizer} from '../security/requestContextAuthorizer';
+import {HttpProxy} from '../utilities/httpProxy';
 
 /*
  * Register dependencies to manage cross cutting concerns
  */
 export class BaseCompositionRoot {
 
-    // Constructor properties
     private readonly _container: Container;
-
-    // Builder properties
     private _loggingConfiguration: LoggingConfiguration | null;
     private _loggerFactory: LoggerFactoryImpl | null;
+    private _httpProxy: HttpProxy | null;
 
-    /*
-     * Set initial values
-     */
     public constructor(container: Container) {
         this._container = container;
         this._loggingConfiguration = null;
         this._loggerFactory = null;
+        this._httpProxy = null;
     }
 
     /*
      * Receive logging configuration and use common code for logging and error handling
      */
-    public useDiagnostics(
+    public useLogging(
         loggingConfiguration: LoggingConfiguration,
         loggerFactory: LoggerFactory): BaseCompositionRoot {
 
@@ -48,10 +45,19 @@ export class BaseCompositionRoot {
     }
 
     /*
+     * Receive the HTTP proxy object, which is only used on a developer PC
+     */
+    public useHttpProxy(httpProxy: HttpProxy): BaseCompositionRoot {
+        this._httpProxy = httpProxy;
+        return this;
+    }
+
+    /*
      * Register base framework dependencies
      */
-    public register(): BaseCompositionRoot  {
-        this._registerLoggingDependencies();
+    public register(): BaseCompositionRoot {
+
+        this._registerBaseDependencies();
         this._registerClaimsDependencies();
         return this;
     }
@@ -77,14 +83,17 @@ export class BaseCompositionRoot {
     /*
      * Register any common code logging dependencies
      */
-    private _registerLoggingDependencies() {
+    private _registerBaseDependencies() {
 
         // This default per request object will be overridden at runtime
         this._container.bind<LogEntry>(BASETYPES.LogEntry).toConstantValue({} as any);
+
+        // The proxy object is a singleton
+        this._container.bind<HttpProxy>(BASETYPES.HttpProxy).toConstantValue(this._httpProxy!);
     }
 
     /*
-     * Register inkectable items used for claims processing
+     * Register injectable items used for claims processing
      */
     private _registerClaimsDependencies() {
 

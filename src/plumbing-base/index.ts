@@ -16,7 +16,6 @@ import {LogEntry} from './src/logging/logEntry';
 import {LoggerFactory} from './src/logging/loggerFactory';
 import {LoggerFactoryBuilder} from './src/logging/loggerFactoryBuilder';
 import {PerformanceBreakdown} from './src/logging/performanceBreakdown';
-import {HttpProxyMiddleware} from './src/middleware/httpProxyMiddleware';
 import {BaseAuthorizerMiddleware} from './src/security/baseAuthorizerMiddleware';
 import {AsyncHandler} from './src/utilities/asyncHandler';
 import {Disposable} from './src/utilities/disposable';
@@ -36,7 +35,6 @@ export {
     ClientError,
     CustomClaims,
     HttpProxy,
-    HttpProxyMiddleware,
     Disposable,
     ErrorFactory,
     LogEntry,

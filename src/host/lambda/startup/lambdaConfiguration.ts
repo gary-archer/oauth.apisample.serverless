@@ -7,7 +7,7 @@ import {SampleCustomClaims} from '../../../logic/entities/sampleCustomClaims';
 import {
     AsyncHandler,
     BaseCompositionRoot,
-    HttpProxyMiddleware,
+    HttpProxy,
     LoggerFactory,
     LoggerFactoryBuilder,
     ResponseWriter} from '../../../plumbing-base';
@@ -36,9 +36,13 @@ export class LambdaConfiguration {
             // Load our JSON configuration
             const configuration = this._loadConfiguration();
 
+            // Create the HTTP proxy object
+            const httpProxy = new HttpProxy(configuration.api.useProxy, configuration.api.proxyUrl);
+
             // Register common code dependencies for logging and error handling
             const base = new BaseCompositionRoot(this._container)
-                .useDiagnostics(configuration.logging, loggerFactory)
+                .useLogging(configuration.logging, loggerFactory)
+                .useHttpProxy(httpProxy)
                 .register();
 
             // Register API specific dependencies
@@ -88,7 +92,6 @@ export class LambdaConfiguration {
             .use(loggerMiddleware)
             .use(exceptionMiddleware)
             .use(cors({origins: configuration.api.trustedOrigins}))
-            .use(new HttpProxyMiddleware(configuration.api.useProxy, configuration.api.proxyUrl))
             .use(authorizerMiddleware)
             .use(customHeaderMiddleware);
     }

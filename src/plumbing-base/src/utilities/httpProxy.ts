@@ -9,9 +9,9 @@ export class HttpProxy {
     private _proxyUrl: string;
     private _agent: any = null;
 
-    public constructor() {
-        this._useProxy = false;
-        this._proxyUrl = '';
+    public constructor(useProxy: boolean, proxyUrl: string) {
+        this._useProxy = useProxy;
+        this._proxyUrl = proxyUrl;
         this._agent = null;
         this._setupCallbacks();
     }
@@ -19,13 +19,11 @@ export class HttpProxy {
     /*
      * Configure the proxy agent used for HTTP debugging
      */
-    public async initialize(useProxy: boolean, proxyUrl: string): Promise<void> {
+    public async initialize(): Promise<void> {
 
-        this._useProxy = useProxy;
         if (this._useProxy) {
 
             // Also ensure that the standard environment variable is set for our process
-            this._proxyUrl = proxyUrl;
             process.env.HTTPS_PROXY = this._proxyUrl;
 
             // Use a dynamic import so that this dependency is only used on a developer PC
@@ -55,7 +53,12 @@ export class HttpProxy {
      * Return the URL when needed
      */
     public getUrl(): string {
-        return this._proxyUrl;
+
+        if (this._useProxy) {
+            return this._proxyUrl;
+        } else {
+            return '';
+        }
     }
 
     /*

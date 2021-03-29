@@ -5,7 +5,7 @@ import {Container} from 'inversify';
 import {
     AsyncHandler,
     BaseCompositionRoot,
-    HttpProxyMiddleware,
+    HttpProxy,
     LoggerFactory,
     LoggerFactoryBuilder,
     ResponseWriter} from '../../../plumbing-base';
@@ -35,19 +35,24 @@ export class AuthorizerConfiguration {
             // Load our JSON configuration
             const configuration = this._loadConfiguration();
 
+            // Create the HTTP proxy object
+            const httpProxy = new HttpProxy(configuration.api.useProxy, configuration.api.proxyUrl);
+
             // Register common code dependencies for logging and error handling
             const base = new BaseCompositionRoot(this._container)
-                .useDiagnostics(configuration.logging, loggerFactory)
+                .useLogging(configuration.logging, loggerFactory)
+                .useHttpProxy(httpProxy)
                 .register();
 
             // Register common code OAuth dependencies
             const oauth = new OAuthCompositionRoot(this._container)
                 .useOAuth(configuration.oauth)
                 .withCustomClaimsProvider(new SampleCustomClaimsProvider())
+                .useHttpProxy(httpProxy)
                 .register();
 
             // Configure middy middleware classes
-            return this._configureMiddleware(baseHandler, base, oauth, configuration);
+            return this._configureMiddleware(baseHandler, base, oauth);
 
         } catch (e) {
 
@@ -70,8 +75,7 @@ export class AuthorizerConfiguration {
     private _configureMiddleware(
         baseHandler: AsyncHandler,
         base: BaseCompositionRoot,
-        oauth: OAuthCompositionRoot,
-        configuration: Configuration): middy.Middy<any, any> {
+        oauth: OAuthCompositionRoot): middy.Middy<any, any> {
 
         // Get framework middleware classes including an OAuth authorizer
         const loggerMiddleware = base.getLoggerMiddleware();
@@ -87,7 +91,6 @@ export class AuthorizerConfiguration {
         })
             .use(loggerMiddleware)
             .use(exceptionMiddleware)
-            .use(new HttpProxyMiddleware(configuration.api.useProxy, configuration.api.proxyUrl))
             .use(authorizerMiddleware)
             .use(customHeaderMiddleware);
     }

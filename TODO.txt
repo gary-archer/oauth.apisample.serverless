@@ -2,6 +2,3 @@
    Injected into authenticator
    DI Composition for these new classes to configure
    HTTP Proxy also - and call initialise
-
-2. HttpProxyMiddleware
-   Is this right?
