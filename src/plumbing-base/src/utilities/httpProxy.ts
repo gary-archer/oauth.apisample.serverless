@@ -19,7 +19,7 @@ export class HttpProxy {
     /*
      * Configure the proxy agent used for HTTP debugging
      */
-    public async initialize(): Promise<void> {
+    public initialize(): void {
 
         if (this._useProxy) {
 
@@ -27,7 +27,7 @@ export class HttpProxy {
             process.env.HTTPS_PROXY = this._proxyUrl;
 
             // Use a dynamic import so that this dependency is only used on a developer PC
-            await import('tunnel-agent').then((agent) => {
+            import('tunnel-agent').then((agent) => {
 
                 const opts = url.parse(this._proxyUrl);
                 this._agent = agent.httpsOverHttp({

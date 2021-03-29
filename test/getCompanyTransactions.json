@@ -12,7 +12,7 @@
     },
     "requestContext": {
         "authorizer": {
-            "apiClaims": "{\"token\":{\"subject\":\"a6b404b1-98af-41a2-8e7f-e4061dc0bf86\",\"clientId\":\"2tdldo8gk79dsi2lpntntcdug0\",\"scopes\":\"openid profile https://api.authsamples.com/api/default email\",\"expiry\":1615143465},\"userInfo\":{\"givenName\":\"Guest\",\"familyName\":\"User\",\"email\":\"guestuser@mycompany.com\"},\"custom\":{\"userDatabaseId\":\"10345\",\"isAdmin\":false,\"regionsCovered\":[\"USA\"]}}"
+            "apiClaims": "{\"token\":{\"subject\":\"a6b404b1-98af-41a2-8e7f-e4061dc0bf86\",\"clientId\":\"2tdldo8gk79dsi2lpntntcdug0\",\"scopes\":\"openid profile https://api.authsamples.com/api/default email\",\"expiry\":1615143465},\"userInfo\":{\"givenName\":\"Guest\",\"familyName\":\"User\",\"email\":\"guestuser@mycompany.com\"},\"custom\":{\"userId\":\"10345\",\"userRole\":\"user\",\"userRegions\":[\"USA\"]}}"
         }
     }
 }
