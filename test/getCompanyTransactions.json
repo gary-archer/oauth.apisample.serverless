@@ -1,0 +1,18 @@
+{
+    "httpMethod": "GET",
+    "headers": {
+        "origin": "https://web.mycompany.com",
+        "x-mycompany-api-client": "ServerlessTest",
+        "x-mycompany-correlation-id": "9a850020-6407-a97b-5fe7-98b0def07822",
+        "x-mycompany-session-id": "d1270ebf-0323-4e43-c6e1-5458f26c8e23",
+        "x-mycompany-test-exception": ""
+    },
+    "pathParameters": {
+        "id": "2"
+    },
+    "requestContext": {
+        "authorizer": {
+            "apiClaims": "{\"token\":{\"subject\":\"a6b404b1-98af-41a2-8e7f-e4061dc0bf86\",\"clientId\":\"2tdldo8gk79dsi2lpntntcdug0\",\"scopes\":\"openid profile https://api.authsamples.com/api/default email\",\"expiry\":1615143465},\"userInfo\":{\"givenName\":\"Guest\",\"familyName\":\"User\",\"email\":\"guestuser@mycompany.com\"},\"custom\":{\"userId\":\"10345\",\"userRole\":\"user\",\"userRegions\":[\"USA\"]}}"
+        }
+    }
+}

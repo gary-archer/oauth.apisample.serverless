@@ -1,0 +1,51 @@
+{
+  "name": "sampleapi",
+  "version": "4.0.0",
+  "description": "An OAuth secured API using AWS Serverless Hosting via lambdas, and a portable coding model",
+  "scripts": {
+    "lint": "npx eslint . --ext .ts,.tsx && npx eslint deployment --ext .ts,.tsx",
+    "build": "rimraf dist && tsc --sourceMap true",
+    "authorizer": "sls invoke local -f authorizer -p test/authorizer.json",
+    "getUserClaims": "sls invoke local -f getUserClaims -p test/getUserClaims.json",
+    "getCompanyList": "sls invoke local -f getCompanyList -p test/getCompanyList.json",
+    "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
+    "package": "npm run buildRelease && rimraf .serverless && sls package --stage deployed",
+    "buildRelease": "rimraf dist && tsc",
+    "customPackager": "ts-node deployment/customPackager.ts",
+    "deploy": "sls deploy --stage deployed --package .serverless",
+    "remove": "sls remove --stage deployed"
+  },
+  "author": "Gary Archer",
+  "license": "MIT",
+  "dependencies": {
+    "@middy/core": "1.4.0",
+    "@middy/http-cors": "^1.4.0",
+    "fs-extra": "^9.0.1",
+    "guid-typescript": "^1.0.9",
+    "inversify": "^5.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "jwks-rsa": "^1.12.2",
+    "openid-client": "^4.7.4",
+    "reflect-metadata": "^0.1.13",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "@types/adm-zip": "^0.4.34",
+    "@types/aws-lambda": "^8.10.64",
+    "@types/fs-extra": "^9.0.4",
+    "@types/jsonwebtoken": "^8.3.5",
+    "@types/node": "^14.14.10",
+    "@typescript-eslint/eslint-plugin": "^4.16.1",
+    "@typescript-eslint/parser": "^4.16.1",
+    "adm-zip": "^0.5.5",
+    "child-process-es6-promise": "^1.2.1",
+    "eslint": "^7.21.0",
+    "rimraf": "^3.0.2",
+    "serverless": "^2.40.0",
+    "serverless-domain-manager": "4.1.0",
+    "serverless-plugin-scripts": "^1.0.2",
+    "ts-node": "^9.0.0",
+    "tunnel-agent": "^0.6.0",
+    "typescript": "^4.2.2"
+  }
+}
