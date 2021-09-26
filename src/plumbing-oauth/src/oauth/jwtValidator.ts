@@ -81,7 +81,7 @@ export class JwtValidator {
             // On success return the claims JSON data
             return verify(accessToken, tokenSigningPublicKey, options);
 
-        } catch (e) {
+        } catch (e: any) {
 
             // Log the cause behind 401 errors
             let details = 'JWT verification failed';

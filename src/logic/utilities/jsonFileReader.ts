@@ -20,7 +20,7 @@ export class JsonFileReader {
             const buffer = await fs.readFile(filePath);
             return JSON.parse(buffer.toString()) as T;
 
-        } catch (e) {
+        } catch (e: any) {
 
             // Report the error including an error code and exception details
             const error = ErrorFactory.createServerError(
