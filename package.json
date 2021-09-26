@@ -5,7 +5,8 @@
   "scripts": {
     "lint": "npx eslint . --ext .ts,.tsx && npx eslint deployment --ext .ts,.tsx",
     "build": "rimraf dist && tsc --sourceMap true",
-    "authorizer": "sls invoke local -f authorizer -p test/authorizer.json",
+    "authorizeToken": "sls invoke local -f authorizer -p test/authorizeAccessToken.json",
+    "authorizeCookie": "sls invoke local -f authorizer -p test/authorizeSecureCookie.json",
     "getUserClaims": "sls invoke local -f getUserClaims -p test/getUserClaims.json",
     "getCompanyList": "sls invoke local -f getCompanyList -p test/getCompanyList.json",
     "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
