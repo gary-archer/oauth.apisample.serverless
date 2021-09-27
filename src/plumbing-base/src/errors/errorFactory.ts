@@ -45,7 +45,7 @@ export class ErrorFactory {
         const error = new ClientErrorImpl(
             401,
             BaseErrorCodes.unauthorizedRequest,
-            'Missing, invalid or expired access token');
+            'Missing, invalid or expired credential');
         error.logContext = reason;
         return error;
     }
