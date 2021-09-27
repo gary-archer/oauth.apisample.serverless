@@ -1,13 +1,10 @@
 import middy from '@middy/core';
 import {CustomAuthorizerResult} from 'aws-lambda';
 import {Container} from 'inversify';
-import {
-    ApiClaims,
-    BaseAuthorizerMiddleware,
-    ClientError,
-    ErrorFactory} from '../../../plumbing-base';
+import {ApiClaims, BaseAuthorizerMiddleware, ClientError} from '../../../plumbing-base';
 import {ClaimsProvider} from '../claims/claimsProvider';
 import {OAUTHTYPES} from '../dependencies/oauthTypes';
+import {AccessTokenRetriever} from './accessTokenRetriever';
 import {OAuthAuthenticator} from './oauthAuthenticator';
 import {PolicyDocumentWriter} from './policyDocumentWriter';
 
@@ -71,13 +68,11 @@ export class OAuthAuthorizer extends BaseAuthorizerMiddleware implements middy.M
     private async _execute(event: any): Promise<ApiClaims> {
 
         // Resolve dependencies
+        const accessTokenRetriever = this._container.get<AccessTokenRetriever>(OAUTHTYPES.AccessTokenRetriever);
         const authenticator = this._container.get<OAuthAuthenticator>(OAUTHTYPES.OAuthAuthenticator);
 
-        // First read the token from the request header and report missing tokens
-        const accessToken = this._readAccessToken(event);
-        if (!accessToken) {
-            throw ErrorFactory.createClient401Error('No access token was supplied in the bearer header');
-        }
+        // First read the token from received headers and report missing tokens
+        const accessToken = accessTokenRetriever.getAccessToken(event);
 
         // Validate the token and get token claims
         const token = await authenticator.validateToken(accessToken);
@@ -86,26 +81,7 @@ export class OAuthAuthorizer extends BaseAuthorizerMiddleware implements middy.M
         const userInfo = await authenticator.getUserInfo(accessToken);
 
         // Ask the claims provider to supply the final claims
-        return await this._claimsProvider.supplyClaims(token, userInfo);
-    }
-
-    /*
-     * Try to read the token from the authorization header
-     */
-    private _readAccessToken(event: any): string | null {
-
-        if (event && event.headers) {
-
-            const authorizationHeader = event.headers.authorization || event.headers.Authorization;
-            if (authorizationHeader) {
-                const parts = authorizationHeader.split(' ');
-                if (parts.length === 2 && parts[0] === 'Bearer') {
-                    return parts[1];
-                }
-            }
-        }
-
-        return null;
+        return this._claimsProvider.supplyClaims(token, userInfo);
     }
 
     private _setupCallbacks(): void {

@@ -6,6 +6,7 @@ import {HttpProxy} from '../../../plumbing-base';
 import {ClaimsProvider} from '../claims/claimsProvider';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {OAUTHTYPES} from '../dependencies/oauthTypes';
+import {AccessTokenRetriever} from '../oauth/accessTokenRetriever';
 import {JwtValidator} from '../oauth/jwtValidator';
 import {OAuthAuthenticator} from '../oauth/oauthAuthenticator';
 import {OAuthAuthorizer} from '../oauth/oauthAuthorizer';
@@ -87,6 +88,8 @@ export class OAuthCompositionRoot {
             .toConstantValue(jwksClient);
 
         // Register per request objects
+        this._container.bind<AccessTokenRetriever>(OAUTHTYPES.AccessTokenRetriever)
+            .to(AccessTokenRetriever).inTransientScope();
         this._container.bind<OAuthAuthenticator>(OAUTHTYPES.OAuthAuthenticator)
             .to(OAuthAuthenticator).inTransientScope();
         this._container.bind<JwtValidator>(OAUTHTYPES.JwtValidator)

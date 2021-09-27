@@ -21,7 +21,9 @@ class Packager {
 
         // Exclude the OAuth plumbing from the service lambdas, and remove OAuth dependencies
         await this._excludeFolders('serverlessapi', ['dist/host/authorizer', 'dist/plumbing-oauth']);
-        await this._installDependencies('serverlessapi',  ['jsonwebtoken', 'jwks-rsa', 'openid-client']);
+        await this._installDependencies(
+            'serverlessapi',
+            ['cookie', 'cookie-encrypter', 'jsonwebtoken', 'jwks-rsa', 'openid-client']);
 
         // Rezip the packages
         await this._rezipPackage('authorizer');
@@ -94,7 +96,7 @@ class Packager {
             const childProcess = await ChildProcess.spawn(npmCommand, ['install'], options);
             console.log(childProcess.stdout);
 
-        } catch (e) {
+        } catch (e: any) {
 
             // Report install errors
             throw new Error(`Error installing npm packages for ${packageName}: ${e} : ${e.stderr.toString()}`);
@@ -126,7 +128,7 @@ class Packager {
         const packager = new Packager();
         await packager.execute();
 
-    } catch (e) {
+    } catch (e: any) {
 
         // Report errors
         console.log(`Packaging error: ${e}`);

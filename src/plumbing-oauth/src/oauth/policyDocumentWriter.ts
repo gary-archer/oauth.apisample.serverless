@@ -78,8 +78,7 @@ export class PolicyDocumentWriter {
 
                 // Update the final part to a wildcard value such as cqo3riplm6/default/* and then rejoin
                 parts[5] = `${pathParts[0]}/${pathParts[1]}/*`;
-                const result = parts.join(':');
-                return result;
+                return parts.join(':');
             }
         }
 

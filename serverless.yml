@@ -26,11 +26,13 @@ custom:
   # CORS headers allowed, including custom headers for logging
   allowedHeaders:
     - Content-Type
+    - Cookie
     - X-Amz-Date
     - Authorization
     - X-Api-Key
     - X-Amz-Security-Token
     - X-Amz-User-Agent
+    - x-mycompany-csrf
     - x-mycompany-api-client
     - x-mycompany-correlation-id
     - x-mycompany-session-id
@@ -67,6 +69,7 @@ functions:
               - ${self:custom.config.settings.trustedOrigin}
               - ${self:custom.config.settings.trustedDevOrigin}
             headers: ${self:custom.allowedHeaders}
+            allowCredentials: true
 
   getCompanyList:
     handler: dist/host/lambda/getCompanyList.handler
@@ -83,6 +86,7 @@ functions:
               - ${self:custom.config.settings.trustedOrigin}
               - ${self:custom.config.settings.trustedDevOrigin}
             headers: ${self:custom.allowedHeaders}
+            allowCredentials: true
 
   getCompanyTransactions:
     handler: dist/host/lambda/getCompanyTransactions.handler
@@ -99,6 +103,7 @@ functions:
               - ${self:custom.config.settings.trustedOrigin}
               - ${self:custom.config.settings.trustedDevOrigin}
             headers: ${self:custom.allowedHeaders}
+            allowCredentials: true
           request: 
             parameters: 
               paths: 
@@ -130,36 +135,32 @@ resources:
   # https://docs.aws.amazon.com/apigateway/latest/developerguide/supported-gateway-response-types.html
   # https://gist.github.com/jonatassaraiva/4c33dd8225605c02318cd71a55b2335d
 
-    # Handle missing token for an API path that exists
+    # Handle missing token or secure cookie for an API path that exists
     MissingTokenValidPathGatewayResponse:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
         ResponseParameters:
           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.WWW-Authenticate: "'Bearer'"
-
         ResponseType: UNAUTHORIZED
         
         ResponseTemplates:
           application/json: |
-            {"code": "unauthorized", "message": "Missing, invalid or expired access token"}
+            {"code": "unauthorized", "message": "Missing, invalid or expired credential"}
         RestApiId:
           Ref: 'ApiGatewayRestApi'
         StatusCode: '401'
 
-    # Handle invalid or expired tokens
+    # Handle invalid or expired token or cookie credentials
     InvalidTokenGatewayResponse:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
         ResponseParameters:
           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.WWW-Authenticate: "'Bearer'"
-
         ResponseType: ACCESS_DENIED
         
         ResponseTemplates:
           application/json: |
-            {"code": "unauthorized", "message": "Missing, invalid or expired access token"}
+            {"code": "unauthorized", "message": "Missing, invalid or expired credential"}
         RestApiId:
           Ref: 'ApiGatewayRestApi'
         StatusCode: '401'
@@ -171,7 +172,6 @@ resources:
       Properties:
         ResponseParameters:
           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-
         ResponseType: AUTHORIZER_CONFIGURATION_ERROR
 
         ResponseTemplates:

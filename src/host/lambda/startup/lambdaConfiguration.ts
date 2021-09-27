@@ -91,7 +91,7 @@ export class LambdaConfiguration {
         })
             .use(loggerMiddleware)
             .use(exceptionMiddleware)
-            .use(cors({origins: configuration.api.trustedOrigins}))
+            .use(cors(this._getCorsOptions(configuration)))
             .use(authorizerMiddleware)
             .use(customHeaderMiddleware);
     }
@@ -104,6 +104,17 @@ export class LambdaConfiguration {
         const clientError = loggerFactory.logStartupError(error);
         return async () => {
             return ResponseWriter.objectResponse(500, clientError.toResponseFormat());
+        };
+    }
+
+    /*
+     * Allow trusted web origins to call the lambdas and also to send secure cookies
+     */
+    private _getCorsOptions(configuration: Configuration): any {
+
+        return {
+            origins: configuration.api.trustedOrigins,
+            credentials: true,
         };
     }
 }

@@ -1,10 +1,28 @@
-import {BaseErrorCodes, ErrorFactory, ServerError} from '../../../plumbing-base';
+import {BaseErrorCodes, ClientError, ErrorFactory, ServerError} from '../../../plumbing-base';
 import {OAuthErrorCodes} from './oauthErrorCodes';
 
 /*
  * OAuth specific error processing
  */
 export class OAuthErrorUtils {
+
+    /*
+     * Handle the error for key identifier lookups
+     */
+    public static fromCookieDecryptionError(cookieName: string, ex: any): ClientError {
+
+        const message = ex.message ? ex.message : '';
+        return ErrorFactory.createClient401Error(`Problem encountered decrypting ${cookieName} cookie: ${message}`);
+    }
+
+    /*
+     * Handle the error for anti forgery mismatches
+     */
+    public static fromAntiForgeryError(): ClientError {
+
+        return ErrorFactory.createClient401Error(
+            'Problem encountered verifying anti forgery cookie against request header');
+    }
 
     /*
      * Handle the error for key identifier lookups

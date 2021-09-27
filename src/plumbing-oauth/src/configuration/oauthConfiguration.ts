@@ -5,4 +5,6 @@ export interface OAuthConfiguration {
     issuer: string;
     jwksEndpoint: string;
     userInfoEndpoint: string;
+    cookiePrefix: string;
+    cookieDecryptionKey: string;
 }

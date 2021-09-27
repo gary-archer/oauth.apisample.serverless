@@ -37,7 +37,7 @@ export class OAuthAuthenticator {
     public async validateToken(accessToken: string): Promise<ClaimsPayload> {
 
         return using(this._logEntry.createPerformanceBreakdown('validateToken'), async () => {
-            return await this._tokenValidator.validateToken(accessToken);
+            return this._tokenValidator.validateToken(accessToken);
         });
     }
 

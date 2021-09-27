@@ -19,8 +19,10 @@
         }
     },
     "oauth": {
-        "issuer":           "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
-        "jwksEndpoint":     "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn/.well-known/jwks.json",
-        "userInfoEndpoint": "https://login.authsamples.com/oauth2/userInfo"
+        "issuer":              "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
+        "jwksEndpoint":        "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn/.well-known/jwks.json",
+        "userInfoEndpoint":    "https://login.authsamples.com/oauth2/userInfo",
+        "cookiePrefix":        "mycompany",
+        "cookieDecryptionKey": "aPdSgVkYp3s6v9y$B&E)H+MbQeThWmZq"
     }
 }

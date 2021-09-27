@@ -3,6 +3,8 @@
  */
 export class OAuthErrorCodes {
 
+    public static readonly cookieDecryptionError = 'cookie_decryption_failure';
+
     public static readonly signingKeyDownloadFailure = 'signing_key_download';
 
     public static readonly userinfoFailure = 'userinfo_failure';

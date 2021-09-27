@@ -8,4 +8,5 @@ export const OAUTHTYPES = {
     JwksClient: Symbol.for('JwksClient'),
     JwtValidator: Symbol.for('JwtValidator'),
     OAuthAuthenticator: Symbol.for('OAuthAuthenticator'),
+    AccessTokenRetriever: Symbol.for('AccessTokenRetriever'),
 };
