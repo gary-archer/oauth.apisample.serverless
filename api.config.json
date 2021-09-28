@@ -11,10 +11,7 @@
         "apiName": "SampleApi",
         "production": {
             "performanceThresholdsMilliseconds": {
-                "default": 250,
-                "operationOverrides": {
-                    "authorizer": 1000
-                }
+                "default": 1000
             }
         }
     },

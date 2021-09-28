@@ -91,13 +91,11 @@ functions:
                 id: true
 
 # By default all files are included so remove files we don't need for any lambda
-# The custom packager does the rest of the work in code, including adding node_modules
 package:
   patterns:
   - '!.vscode/**'
   - '!deployment/**'
   - '!environments/**'
-  - '!node_modules/**'
   - '!src/**'
   - '!test/**'
   - '!ts*.json'
@@ -106,17 +104,12 @@ package:
   - '!LICENSE.txt'
 
 plugins:
-  - serverless-plugin-scripts
   - serverless-domain-manager
 
 resources:
   Resources:
 
     # Limit cloudwatch log retention 
-    AuthorizerLogGroup:
-      Type: 'AWS::Logs::LogGroup'
-      Properties:
-        RetentionInDays: '5'
     GetUserClaimsLogGroup:
       Type: 'AWS::Logs::LogGroup'
       Properties:

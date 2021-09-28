@@ -1,12 +1,7 @@
 NEW AWS ENDPOINTS FOR TESTING
 -----------------------------
-1. Update packaging and do nothing by default, then redeploy to AWS
-
-2. Use jose and reduce libraries from current size of 2MB / 623KB
-
-3. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
-
-4. Automate flows to get SPA cookies and mobile tokens to improve productivity
+1. Use jose in line with websample1.NEW and reduce libraries from current size of 2MB / 623KB
+   Check that performance logging works as expected and shows OAuth details
 
 SECURE COOKIE SIGN OFF
 ----------------------
@@ -24,7 +19,9 @@ CACHE
 
 REFINEMENTS
 -----------
-1. Add a delivery folder as for other projects
+1. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
+
+2. Automate flows to get SPA cookies and mobile tokens to improve productivity
 
 BLOG NOTES
 ----------

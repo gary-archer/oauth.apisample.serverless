@@ -5,14 +5,11 @@
   "scripts": {
     "lint": "npx eslint . --ext .ts,.tsx && npx eslint deployment --ext .ts,.tsx",
     "build": "rimraf dist && tsc --sourceMap true",
-    "authorizeToken": "sls invoke local -f authorizer -p test/authorizeAccessToken.json",
-    "authorizeCookie": "sls invoke local -f authorizer -p test/authorizeSecureCookie.json",
     "getUserClaims": "sls invoke local -f getUserClaims -p test/getUserClaims.json",
     "getCompanyList": "sls invoke local -f getCompanyList -p test/getCompanyList.json",
     "getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
     "package": "npm run buildRelease && rimraf .serverless && sls package --stage deployed",
     "buildRelease": "rimraf dist && tsc",
-    "customPackager": "ts-node deployment/customPackager.ts",
     "deploy": "sls deploy --stage deployed --package .serverless",
     "remove": "sls remove --stage deployed"
   },
@@ -47,7 +44,6 @@
     "rimraf": "^3.0.2",
     "serverless": "^2.60.0",
     "serverless-domain-manager": "4.1.0",
-    "serverless-plugin-scripts": "^1.0.2",
     "ts-node": "^9.0.0",
     "tunnel-agent": "^0.6.0",
     "typescript": "^4.4.3"

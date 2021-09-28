@@ -1,3 +1,4 @@
+import {SampleCustomClaims} from '../../logic/entities/sampleCustomClaims';
 import {CustomClaims} from '../../plumbing-base';
 import {ClaimsPayload, ClaimsProvider} from '../../plumbing-oauth';
 
@@ -18,30 +19,13 @@ export class SampleClaimsProvider extends ClaimsProvider {
 
             // For admin users we hard code this user id, assign a role of 'admin' and grant access to all regions
             // The CompanyService class will use these claims to return all transaction data
-            return this._sampleCustomClaims('20116', 'admin', []);
+            return new SampleCustomClaims('20116', 'admin', []);
 
         } else {
 
             // For other users we hard code this user id, assign a role of 'user' and grant access to only one region
             // The CompanyService class will use these claims to return only transactions for the US region
-            return this._sampleCustomClaims('10345', 'user', ['USA']);
+            return new SampleCustomClaims('10345', 'user', ['USA']);
         }
-    }
-
-    /*
-     * Return a simplified version of the SampleCustomClaims instance but without referencing the class
-     * This makes AWS packaging easier, since the authorizer zip file does not include the logic folder
-     */
-    private _sampleCustomClaims(userId: string, userRole: string, userRegions: string[]): any {
-
-        return {
-            exportData: () => {
-                return {
-                    userId,
-                    userRole,
-                    userRegions,
-                };
-            },
-        };
     }
 }
