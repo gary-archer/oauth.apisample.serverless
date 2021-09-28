@@ -1,7 +1,3 @@
-NEW AWS ENDPOINTS FOR TESTING
------------------------------
-1. Check that performance logging works as expected and shows OAuth details
-
 SECURE COOKIE SIGN OFF
 ----------------------
 1. Test my local setup against all 4 desktop browsers
