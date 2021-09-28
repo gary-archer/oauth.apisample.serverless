@@ -13,21 +13,21 @@ class Packager {
 
         // Unzip the default packages created by sls package
         await this._unzipPackage('authorizer');
-        await this._unzipPackage('serverlessapi');
+        await this._unzipPackage('serverlessapi2');
 
         // Exclude the service logic from the authorizer
         await this._excludeFolders('authorizer', ['data', 'dist/logic', 'dist/host/lambda']);
         await this._installDependencies('authorizer', []);
 
         // Exclude the OAuth plumbing from the service lambdas, and remove OAuth dependencies
-        await this._excludeFolders('serverlessapi', ['dist/host/authorizer', 'dist/plumbing-oauth']);
+        await this._excludeFolders('serverlessapi2', ['dist/host/authorizer', 'dist/plumbing-oauth']);
         await this._installDependencies(
-            'serverlessapi',
+            'serverlessapi2',
             ['cookie', 'cookie-encrypter', 'jsonwebtoken', 'jwks-rsa', 'openid-client']);
 
         // Rezip the packages
         await this._rezipPackage('authorizer');
-        await this._rezipPackage('serverlessapi');
+        await this._rezipPackage('serverlessapi2');
     }
 
     /*

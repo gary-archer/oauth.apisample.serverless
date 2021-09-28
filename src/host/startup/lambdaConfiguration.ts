@@ -3,16 +3,17 @@ import cors from '@middy/http-cors';
 import {Context, Handler} from 'aws-lambda';
 import fs from 'fs-extra';
 import {Container} from 'inversify';
-import {SampleCustomClaims} from '../../../logic/entities/sampleCustomClaims';
 import {
     AsyncHandler,
     BaseCompositionRoot,
     HttpProxy,
     LoggerFactory,
     LoggerFactoryBuilder,
-    ResponseWriter} from '../../../plumbing-base';
-import {Configuration} from '../../configuration/configuration';
-import {CompositionRoot} from '../../dependencies/compositionRoot';
+    ResponseWriter} from '../../plumbing-base';
+import {OAuthCompositionRoot} from '../../plumbing-oauth';
+import {SampleClaimsProvider} from '../claims/sampleClaimsProvider';
+import {Configuration} from '../configuration/configuration';
+import {CompositionRoot} from '../dependencies/compositionRoot';
 
 /*
  * A class to configure the lambda and manage cross cutting concerns
@@ -26,7 +27,7 @@ export class LambdaConfiguration {
     }
 
     /*
-     * Apply cross cutting concerns to a normal lambda
+     * Apply cross cutting concerns to a lambda
      */
     public enrichHandler(baseHandler: AsyncHandler): Handler {
 
@@ -45,11 +46,18 @@ export class LambdaConfiguration {
                 .useHttpProxy(httpProxy)
                 .register();
 
+            // Register common code OAuth dependencies
+            const oauth = new OAuthCompositionRoot(this._container)
+                .useOAuth(configuration.oauth)
+                .withClaimsProvider(new SampleClaimsProvider())
+                .useHttpProxy(httpProxy)
+                .register();
+
             // Register API specific dependencies
             CompositionRoot.register(this._container);
 
             // Configure middy middleware classes
-            return this._configureMiddleware(baseHandler, base, configuration);
+            return this._configureMiddleware(baseHandler, base, oauth, configuration);
 
         } catch (e) {
 
@@ -72,15 +80,13 @@ export class LambdaConfiguration {
     private _configureMiddleware(
         baseHandler: AsyncHandler,
         base: BaseCompositionRoot,
+        oauth: OAuthCompositionRoot,
         configuration: Configuration): middy.Middy<any, any> {
-
-        // Ensure that claims are deserialized with our specific custom claims class
-        const claimsDeserializer = (data: any) => SampleCustomClaims.importData(data);
 
         // Get framework middleware classes including an authorizer that reads claims from the request context
         const loggerMiddleware = base.getLoggerMiddleware();
         const exceptionMiddleware = base.getExceptionMiddleware();
-        const authorizerMiddleware = base.getRequestContextAuthorizer(claimsDeserializer);
+        const authorizerMiddleware = oauth.getAuthorizerMiddleware();
         const customHeaderMiddleware = base.getCustomHeaderMiddleware();
 
         // Wrap the base handler and add middleware for cross cutting concerns
@@ -89,9 +95,9 @@ export class LambdaConfiguration {
             return baseHandler(event, context);
 
         })
+            .use(cors(this._getCorsOptions(configuration)))
             .use(loggerMiddleware)
             .use(exceptionMiddleware)
-            .use(cors(this._getCorsOptions(configuration)))
             .use(authorizerMiddleware)
             .use(customHeaderMiddleware);
     }

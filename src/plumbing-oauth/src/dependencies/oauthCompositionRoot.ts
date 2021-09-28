@@ -1,5 +1,4 @@
 import middy from '@middy/core';
-import {CustomAuthorizerResult} from 'aws-lambda';
 import {Container} from 'inversify';
 import jwksRsa, {JwksClient} from 'jwks-rsa';
 import {HttpProxy} from '../../../plumbing-base';
@@ -94,10 +93,6 @@ export class OAuthCompositionRoot {
             .to(OAuthAuthenticator).inTransientScope();
         this._container.bind<JwtValidator>(OAUTHTYPES.JwtValidator)
             .to(JwtValidator).inTransientScope();
-
-        // Register a dummy value that is overridden by the authorizer middleware later
-        this._container.bind<CustomAuthorizerResult>(OAUTHTYPES.AuthorizerResult)
-            .toConstantValue({} as any);
 
         return this;
     }

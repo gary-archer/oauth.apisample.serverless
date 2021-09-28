@@ -1,7 +1,7 @@
 import {Container} from 'inversify';
 import 'reflect-metadata';
 import {BASETYPES, ResponseWriter, UserInfoClaims} from '../../plumbing-base';
-import {LambdaConfiguration} from './startup/lambdaConfiguration';
+import {LambdaConfiguration} from '../startup/lambdaConfiguration';
 
 /*
  * Our handler acts as a REST controller

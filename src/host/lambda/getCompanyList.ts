@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes';
 import {CompanyService} from '../../logic/services/companyService';
 import {ResponseWriter} from '../../plumbing-base';
-import {LambdaConfiguration} from './startup/lambdaConfiguration';
+import {LambdaConfiguration} from '../startup/lambdaConfiguration';
 
 /*
  * The entry point is similar to a REST controller

@@ -11,7 +11,6 @@ import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
 import {CustomHeaderMiddleware} from '../middleware/customHeaderMiddleware';
 import {ExceptionMiddleware} from '../middleware/exceptionMiddleware';
 import {LoggerMiddleware} from '../middleware/loggerMiddleware';
-import {RequestContextAuthorizer} from '../security/requestContextAuthorizer';
 import {HttpProxy} from '../utilities/httpProxy';
 
 /*
@@ -68,12 +67,6 @@ export class BaseCompositionRoot {
 
     public getExceptionMiddleware(): middy.MiddlewareObject<any, any> {
         return new ExceptionMiddleware(this._container, this._loggingConfiguration!);
-    }
-
-    public getRequestContextAuthorizer(
-        claimsDeserializer: (data: any) => CustomClaims): middy.MiddlewareObject<any, any> {
-
-        return new RequestContextAuthorizer(this._container, claimsDeserializer);
     }
 
     public getCustomHeaderMiddleware(): middy.MiddlewareObject<any, any> {

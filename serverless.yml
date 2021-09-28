@@ -1,4 +1,4 @@
-service: serverlessapi
+service: serverlessapi2
 
 # Base details for AWS deployment
 provider:
@@ -19,7 +19,7 @@ custom:
   customDomain:
     domainName: ${self:custom.config.settings.apiHostName}
     certificateName: '*.${self:custom.config.settings.certificateDomainName}'
-    basePath: api
+    basePath: api2
     stage: ${self:custom.config.settings.stage}
     endpointType: regional
 
@@ -47,23 +47,12 @@ custom:
       'after:package:createDeploymentArtifacts': npm run customPackager
 
 functions:
-  # The custom authorizer is built into its own package containing OAuth dependencies
-  authorizer:
-    handler: dist/host/authorizer/authorizer.handler
-    package:
-      individually: true
-
-  # The other lambdas reference the authorizer lambda
   getUserClaims:
     handler: dist/host/lambda/getUserClaims.handler
     events:
       - http: 
           path: /userinfo
           method: get
-          authorizer:
-            name: authorizer
-            type: request
-            resultTtlInSeconds: ${self:custom.claimsCacheTtlSeconds}
           cors:
             origins:
               - ${self:custom.config.settings.trustedOrigin}
@@ -77,10 +66,6 @@ functions:
       - http: 
           path: /companies
           method: get
-          authorizer:
-            name: authorizer
-            type: request
-            resultTtlInSeconds: ${self:custom.claimsCacheTtlSeconds}
           cors:
             origins:
               - ${self:custom.config.settings.trustedOrigin}
@@ -94,10 +79,6 @@ functions:
       - http: 
           path: /companies/{id}/transactions
           method: get
-          authorizer:
-            name: authorizer
-            type: request
-            resultTtlInSeconds: ${self:custom.claimsCacheTtlSeconds}
           cors:
             origins:
               - ${self:custom.config.settings.trustedOrigin}

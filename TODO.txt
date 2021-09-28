@@ -1,0 +1,35 @@
+NEW AWS ENDPOINTS FOR TESTING
+-----------------------------
+1. Update packaging and do nothing by default, then redeploy to AWS
+
+2. Use jose and reduce libraries from current size of 2MB / 623KB
+
+3. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
+
+4. Automate flows to get SPA cookies and mobile tokens to improve productivity
+
+SECURE COOKIE SIGN OFF
+----------------------
+1. Test my local setup against all 4 desktop browsers
+   Deploy SPA to /spa2 and test
+   Performance will be slow due to work on every API call
+
+CACHE
+-----
+1. Get a local Docker Redis setup and get / set data.
+   Write code to interact with Redis as a strategy.
+
+2. Run low cost Redis in AWS for /api2
+   Monitor closely to ensure costs are as expected
+
+REFINEMENTS
+-----------
+1. Add a delivery folder as for other projects
+
+BLOG NOTES
+----------
+Lambda authorizer has only basic capabilities:
+- Cache using policy document based on Authorization header, but no support for cookies
+- Also CORS error responses cannot be dynamically controlled
+
+So it is better to use a more portable option, since the API will need persistence anyway.
