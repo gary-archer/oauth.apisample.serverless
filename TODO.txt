@@ -1,7 +1,6 @@
 NEW AWS ENDPOINTS FOR TESTING
 -----------------------------
-1. Use jose in line with websample1.NEW and reduce libraries from current size of 2MB / 623KB
-   Check that performance logging works as expected and shows OAuth details
+1. Check that performance logging works as expected and shows OAuth details
 
 SECURE COOKIE SIGN OFF
 ----------------------
@@ -17,11 +16,14 @@ CACHE
 2. Run low cost Redis in AWS for /api2
    Monitor closely to ensure costs are as expected
 
-REFINEMENTS
------------
-1. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
+IMPROVEMENTS
+------------
+1. Use jose in line with websample1.NEW and reduce libraries from current size of 2MB / 623KB
 
-2. Automate flows to get SPA cookies and mobile tokens to improve productivity
+
+2. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
+
+3. Automate flows to get SPA cookies and mobile tokens to improve productivity
 
 BLOG NOTES
 ----------
