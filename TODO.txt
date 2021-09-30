@@ -2,12 +2,9 @@ CONSOLIDATION
 -------------
 1. Simplify logging and get rid of performance threshold array
 
-2. Lib size is 2.6MB and mostly all jose - look into tree shaking options:
-   https://medium.com/@erezro/optimizing-your-node-js-lambdas-with-webpack-and-tree-shaking-899c153403a9
+2. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
 
-3. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
-
-4. Log cookie errors with different details for client and server
+3. Log cookie errors with different details for client and server
    Work out the coding model
 
 CACHE
