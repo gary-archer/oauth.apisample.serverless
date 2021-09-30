@@ -1,15 +1,11 @@
 CONSOLIDATION
 -------------
-1. Test HTTP proxy
+1. Get rid of url - see websample1.NEW
 
-2. Get rid of openid-client
-   Reduce libraries from current size of 2.3MB
+2. Lib size is 2.6MB and mostly all jose
+   Can I do some custom packaging to reduce its size?
 
-3. Can I do some custom packaging to reduce jose size?
-
-4. Get rid of url - see websample1.NEW
-
-5. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
+3. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
 
 CACHE
 -----
@@ -18,7 +14,3 @@ CACHE
 
 2. Run low cost Redis in AWS for /api2
    Monitor closely to ensure costs are as expected
-
-MINOR
------
-1. In token handler I need to get rid of AFT references

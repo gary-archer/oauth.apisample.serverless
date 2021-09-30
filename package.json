@@ -25,7 +25,6 @@
     "guid-typescript": "^1.0.9",
     "inversify": "^5.0.1",
     "jose": "^3.19.0",
-    "openid-client": "^4.7.4",
     "proxy-agent": "^5.0.0",
     "reflect-metadata": "^0.1.13",
     "url": "^0.11.0"
