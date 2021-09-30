@@ -1,3 +1,4 @@
+import axios, {AxiosRequestConfig} from 'axios';
 import {inject, injectable} from 'inversify';
 import {BASETYPES, HttpProxy, LogEntry, using} from '../../../plumbing-base';
 import {ClaimsPayload} from '../claims/claimsPayload';
@@ -48,12 +49,21 @@ export class OAuthAuthenticator {
         return using(this._logEntry.createPerformanceBreakdown('userInfoLookup'), async () => {
 
             try {
-                console.log('*** GET USER INFO');
-                return new ClaimsPayload({
-                    given_name: 'Fred',
-                    family_name: 'Flintstone',
-                    email: 'fred@bedrock.com',
-                });
+
+                const options = {
+                    url: this._configuration.userInfoEndpoint,
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/x-www-form-urlencoded',
+                        'accept': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`,
+                    },
+                    httpsAgent: this._httpProxy.agent,
+                };
+
+                const authServerResponse = await axios.request(options as AxiosRequestConfig);
+                const userInfo = authServerResponse.data;
+                return new ClaimsPayload(userInfo);
 
             } catch (e) {
                 throw OAuthErrorUtils.fromUserInfoError(e, this._configuration.userInfoEndpoint);
