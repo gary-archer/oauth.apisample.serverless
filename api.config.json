@@ -11,12 +11,14 @@
         "apiName": "SampleApi",
         "production": {
             "performanceThresholdsMilliseconds": {
-                "default": 250
+                "default": 50
             }
         }
     },
     "oauth": {
         "issuer":              "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
+        "audience":            "",
+        "algorithm":           "RS256",
         "jwksEndpoint":        "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn/.well-known/jwks.json",
         "userInfoEndpoint":    "https://login.authsamples.com/oauth2/userInfo",
         "cookiePrefix":        "mycompany",

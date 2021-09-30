@@ -1,10 +1,14 @@
 CONSOLIDATION
 -------------
-1. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
+1. More jose testing of failures
+   Use an invalid jwks endpoint
 
-2. Use jose in line with websample1.NEW and reduce libraries from current size of 2MB / 623KB
+2. Then get rid of openid-client
+   Reduce libraries from current size of 2.3MB
 
-3. Automate flows to get SPA cookies and mobile tokens to improve productivity
+3. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
+
+4. Automate flows to get SPA cookies and mobile tokens to improve productivity
 
 CACHE
 -----
@@ -13,3 +17,7 @@ CACHE
 
 2. Run low cost Redis in AWS for /api2
    Monitor closely to ensure costs are as expected
+
+MINOR
+-----
+1. In token handler I need to get rid of AFT references

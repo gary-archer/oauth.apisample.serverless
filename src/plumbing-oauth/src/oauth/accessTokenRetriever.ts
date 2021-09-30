@@ -24,13 +24,13 @@ export class AccessTokenRetriever {
      */
     public getAccessToken(event: any): string {
 
-        // Look for a token first
+        // Look for a token first, from native clients
         const accessToken = this._readAccessToken(event);
         if (accessToken) {
             return accessToken;
         }
 
-        // Next look for secure cookie related data
+        // Next look for secure cookie data from web clients
         const accessCookie = this._readCookie('at', event);
         const csrfCookie = this._readCookie('csrf', event);
         const csrfHeader = event.headers[`x-${this._configuration.cookiePrefix}-csrf`];

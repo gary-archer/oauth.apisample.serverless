@@ -56,7 +56,7 @@ export class OAuthAuthenticator {
             const client = new issuer.Client({
                 client_id: 'dummy',
             });
-            client[custom.http_options] = this._httpProxy.setOptions;
+            client[custom.http_options] = this._httpProxy.agent;
 
             try {
 

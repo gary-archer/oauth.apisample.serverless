@@ -1,70 +1,26 @@
-import url from 'url';
+import ProxyAgent from 'proxy-agent';
 
 /*
- * Manage supplying the HTTP proxy on outgoing calls from lambdas or the authorizer
+ * Manage routing outbound calls from the API via an HTTP proxy
  */
 export class HttpProxy {
 
-    private _useProxy: boolean;
-    private _proxyUrl: string;
-    private _agent: any = null;
+    private readonly _agent: any;
 
+    /*
+     * Create an HTTP agent to route requests to
+     */
     public constructor(useProxy: boolean, proxyUrl: string) {
-        this._useProxy = useProxy;
-        this._proxyUrl = proxyUrl;
-        this._agent = null;
-        this._setupCallbacks();
-    }
 
-    /*
-     * Configure the proxy agent used for HTTP debugging
-     */
-    public initialize(): void {
-
-        if (this._useProxy) {
-
-            // Ensure that the standard environment variable is set for our process
-            process.env.HTTPS_PROXY = this._proxyUrl;
-
-            // Use a dynamic import so that this dependency is only used on a developer PC
-            import('tunnel-agent').then((agent) => {
-
-                const opts = url.parse(this._proxyUrl);
-                this._agent = agent.httpsOverHttp({
-                    proxy: opts,
-                });
-            });
+        if (useProxy) {
+            this._agent = new ProxyAgent(proxyUrl);
         }
     }
 
     /*
-     * Set HTTP options as required by the Open ID Client library
+     * Return the agent to other parts of the app
      */
-    public setOptions(options: any): any {
-
-        options.agent = {
-            https: this._agent,
-        };
-
-        return options;
-    }
-
-    /*
-     * Return the URL when needed
-     */
-    public getUrl(): string {
-
-        if (this._useProxy) {
-            return this._proxyUrl;
-        } else {
-            return '';
-        }
-    }
-
-    /*
-     * Plumbing to ensure the this parameter is available
-     */
-    private _setupCallbacks(): void {
-        this.setOptions = this.setOptions.bind(this);
+    public get agent(): any {
+        return this._agent;
     }
 }

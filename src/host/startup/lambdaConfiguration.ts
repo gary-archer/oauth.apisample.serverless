@@ -90,7 +90,7 @@ export class LambdaConfiguration {
         const customHeaderMiddleware = base.getCustomHeaderMiddleware();
 
         // Wrap the base handler and add middleware for cross cutting concerns
-        // Error handling and logging are injected early so that they work in other middleware classes
+        // This ordering ensures that correct CORS headers are written for error responses
         return middy(async (event: any, context: Context) => {
             return baseHandler(event, context);
 
