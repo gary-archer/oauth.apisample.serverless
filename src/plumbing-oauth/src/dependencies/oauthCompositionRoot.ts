@@ -1,11 +1,11 @@
 import middy from '@middy/core';
 import {Container} from 'inversify';
-import jwksRsa, {JwksClient} from 'jwks-rsa';
 import {HttpProxy} from '../../../plumbing-base';
 import {ClaimsProvider} from '../claims/claimsProvider';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {OAUTHTYPES} from '../dependencies/oauthTypes';
 import {AccessTokenRetriever} from '../oauth/accessTokenRetriever';
+import {JwksRetriever} from '../oauth/jwksRetriever';
 import {JwtValidator} from '../oauth/jwtValidator';
 import {OAuthAuthenticator} from '../oauth/oauthAuthenticator';
 import {OAuthAuthorizer} from '../oauth/oauthAuthorizer';
@@ -74,17 +74,13 @@ export class OAuthCompositionRoot {
     private _registerOAuthDependencies() {
 
         // Create the singleton JWKS client, which caches JWKS keys between requests
-        const proxyUrl = this._httpProxy!.getUrl();
-        const jwksClient = jwksRsa({
-            jwksUri: this._configuration!.jwksEndpoint,
-            proxy: proxyUrl ? proxyUrl : undefined,
-        });
+        const jwksRetriever = new JwksRetriever(this._configuration!, this._httpProxy!);
 
         // Register singletons
         this._container.bind<OAuthConfiguration>(OAUTHTYPES.Configuration)
             .toConstantValue(this._configuration!);
-        this._container.bind<JwksClient>(OAUTHTYPES.JwksClient)
-            .toConstantValue(jwksClient);
+        this._container.bind<JwksRetriever>(OAUTHTYPES.JwksRetriever)
+            .toConstantValue(jwksRetriever);
 
         // Register per request objects
         this._container.bind<AccessTokenRetriever>(OAUTHTYPES.AccessTokenRetriever)

@@ -1,10 +1,11 @@
 CONSOLIDATION
 -------------
-1. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
+1. Get rid of url - see websample1.NEW
 
-2. Use jose in line with websample1.NEW and reduce libraries from current size of 2MB / 623KB
+2. Lib size is 2.6MB and mostly all jose
+   Can I do some custom packaging to reduce its size?
 
-3. Automate flows to get SPA cookies and mobile tokens to improve productivity
+3. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
 
 CACHE
 -----

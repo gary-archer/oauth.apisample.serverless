@@ -23,9 +23,7 @@ A Low Cost Serverless API sample using OAuth and Open Id Connect, referenced in 
 
 ### API Middleware Used
 
-* The [JSON Web Token Library](https://github.com/auth0/node-jsonwebtoken) is used for in memory validation of JWTs
-* The [JWKS RSA Library](https://github.com/auth0/node-jwks-rsa) is used for efficient download of JWT public keys
-* The [OpenId-Client Library](https://github.com/panva/node-openid-client) is used for other OAuth operations
+* The [JOSE Library](https://github.com/panva/jose) is used for to manage in memory validation of JWTs
 * [InversifyJS](http://inversify.io) is used to help manage class dependencies
 
 ### Cloud Infrastructure Used

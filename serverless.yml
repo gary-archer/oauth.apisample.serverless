@@ -95,7 +95,6 @@ functions:
 package:
   patterns:
   - '!.vscode/**'
-  - '!deployment/**'
   - '!environments/**'
   - '!src/**'
   - '!test/**'

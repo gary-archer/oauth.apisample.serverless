@@ -1,5 +1,4 @@
 import {inject, injectable} from 'inversify';
-import {custom, Issuer} from 'openid-client';
 import {BASETYPES, HttpProxy, LogEntry, using} from '../../../plumbing-base';
 import {ClaimsPayload} from '../claims/claimsPayload';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
@@ -48,23 +47,15 @@ export class OAuthAuthenticator {
 
         return using(this._logEntry.createPerformanceBreakdown('userInfoLookup'), async () => {
 
-            const issuer = new Issuer({
-                issuer: this._configuration.issuer,
-                userinfo_endpoint: this._configuration.userInfoEndpoint,
-            });
-
-            const client = new issuer.Client({
-                client_id: 'dummy',
-            });
-            client[custom.http_options] = this._httpProxy.setOptions;
-
             try {
-
-                const data = await client.userinfo(accessToken);
-                return new ClaimsPayload(data);
+                console.log('*** GET USER INFO');
+                return new ClaimsPayload({
+                    given_name: 'Fred',
+                    family_name: 'Flintstone',
+                    email: 'fred@bedrock.com',
+                });
 
             } catch (e) {
-
                 throw OAuthErrorUtils.fromUserInfoError(e, this._configuration.userInfoEndpoint);
             }
         });
