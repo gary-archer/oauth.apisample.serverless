@@ -11,7 +11,7 @@
         "apiName": "SampleApi",
         "production": {
             "performanceThresholdsMilliseconds": {
-                "default": 1000
+                "default": 250
             }
         }
     },

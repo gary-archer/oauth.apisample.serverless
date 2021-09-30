@@ -26,9 +26,10 @@ custom:
   # CORS headers allowed, including custom headers for logging
   allowedHeaders:
     - Content-Type
+    - Accept
     - Cookie
-    - X-Amz-Date
     - Authorization
+    - X-Amz-Date
     - X-Api-Key
     - X-Amz-Security-Token
     - X-Amz-User-Agent

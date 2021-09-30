@@ -95,9 +95,9 @@ export class LambdaConfiguration {
             return baseHandler(event, context);
 
         })
-            .use(cors(this._getCorsOptions(configuration)))
             .use(loggerMiddleware)
             .use(exceptionMiddleware)
+            .use(cors(this._getCorsOptions(configuration)))
             .use(authorizerMiddleware)
             .use(customHeaderMiddleware);
     }

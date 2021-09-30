@@ -1,30 +1,15 @@
-SECURE COOKIE SIGN OFF
-----------------------
-1. Test my local setup against all 4 desktop browsers
-   Deploy SPA to /spa2 and test
-   Performance will be slow due to work on every API call
+CONSOLIDATION
+-------------
+1. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
+
+2. Use jose in line with websample1.NEW and reduce libraries from current size of 2MB / 623KB
+
+3. Automate flows to get SPA cookies and mobile tokens to improve productivity
 
 CACHE
 -----
-1. Get a local Docker Redis setup and get / set data.
+1. Use a local Docker Redis setup: get / set data + basically secured.
    Write code to interact with Redis as a strategy.
 
 2. Run low cost Redis in AWS for /api2
    Monitor closely to ensure costs are as expected
-
-IMPROVEMENTS
-------------
-1. Use jose in line with websample1.NEW and reduce libraries from current size of 2MB / 623KB
-
-
-2. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
-
-3. Automate flows to get SPA cookies and mobile tokens to improve productivity
-
-BLOG NOTES
-----------
-Lambda authorizer has only basic capabilities:
-- Cache using policy document based on Authorization header, but no support for cookies
-- Also CORS error responses cannot be dynamically controlled
-
-So it is better to use a more portable option, since the API will need persistence anyway.
