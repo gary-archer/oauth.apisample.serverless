@@ -1,14 +1,15 @@
 CONSOLIDATION
 -------------
-1. More jose testing of failures
-   Use an invalid jwks endpoint
+1. Test HTTP proxy
 
-2. Then get rid of openid-client
+2. Get rid of openid-client
    Reduce libraries from current size of 2.3MB
 
-3. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
+3. Can I do some custom packaging to reduce jose size?
 
-4. Automate flows to get SPA cookies and mobile tokens to improve productivity
+4. Get rid of url - see websample1.NEW
+
+5. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
 
 CACHE
 -----

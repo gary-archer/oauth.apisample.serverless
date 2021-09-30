@@ -1,6 +1,6 @@
 import {inject, injectable} from 'inversify';
 import {jwtVerify} from 'jose/jwt/verify';
-import {ErrorFactory} from '../../../plumbing-base';
+import {ErrorFactory, ServerError} from '../../../plumbing-base';
 import {ClaimsPayload} from '../claims/claimsPayload';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {OAUTHTYPES} from '../dependencies/oauthTypes';
@@ -42,6 +42,11 @@ export class JwtValidator {
             return new ClaimsPayload(result.payload);
 
         } catch (e: any) {
+
+            // Handle already caught JWKS download errors
+            if (e instanceof ServerError) {
+                throw e;
+            }
 
             // Log the cause behind 401 errors
             let details = 'JWT verification failed';
