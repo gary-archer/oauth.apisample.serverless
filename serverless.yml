@@ -94,6 +94,9 @@ functions:
 # By default all files are included so remove files we don't need for any lambda
 package:
   patterns:
+  - '!.codacy.yaml'
+  - '!.eslintrc.js'
+  - '!.vscode/**'
   - '!.vscode/**'
   - '!environments/**'
   - '!src/**'
