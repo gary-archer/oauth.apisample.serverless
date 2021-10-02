@@ -12,7 +12,7 @@ import {ErrorUtils} from '../errors/errorUtils';
 import {HttpProxy} from '../utilities/httpProxy';
 
 /*
- * Override downloading and caching JWKS keys for lambda environments
+ * This class deals with downloading and caching JWKS keys for lambda environments
  */
 @injectable()
 export class JwksRetriever {
@@ -56,7 +56,7 @@ export class JwksRetriever {
             if (foundKey) {
 
                 // Then replace JWKS keys in the cache, which will only occur rarely
-                this._cache.addJwksKeys(keysText);
+                this._cache.setJwksKeys(keysText);
 
                 // Then parse the JWK into a crypto object
                 return parseJwk(foundKey);
@@ -105,7 +105,7 @@ export class JwksRetriever {
         try {
 
             const options = {
-                url: this._configuration.jwksEndpoint + 'xx',
+                url: this._configuration.jwksEndpoint,
                 method: 'GET',
                 responseType: 'arraybuffer',
                 headers: {

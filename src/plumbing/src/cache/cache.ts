@@ -1,15 +1,15 @@
-import {ApiClaims} from '../claims/apiClaims';
+import {CachedClaims} from '../claims/cachedClaims';
 
 /*
  * An interface for in-memory caching of OAuth related data
  */
 export interface Cache {
 
-    addJwksKeys(keys: any): Promise<void>;
+    setJwksKeys(keys: any): Promise<void>;
 
     getJwksKeys(): Promise<any>;
 
-    addClaimsForToken(accessTokenHash: string, claims: ApiClaims): Promise<void>;
+    setExtraUserClaims(accessTokenHash: string, claims: CachedClaims): Promise<void>;
 
-    getClaimsForToken(accessTokenHash: string): Promise<ApiClaims | null>;
+    getExtraUserClaims(accessTokenHash: string): Promise<CachedClaims | null>;
 }

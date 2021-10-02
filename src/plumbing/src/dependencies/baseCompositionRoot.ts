@@ -4,8 +4,8 @@ import {Cache} from '../cache/cache';
 import {AwsCache} from '../cache/awsCache';
 import {DevelopmentCache} from '../cache/developmentCache';
 import {BaseClaims} from '../claims/baseClaims';
-import {ClaimsProvider} from '../claims/claimsProvider';
 import {CustomClaims} from '../claims/customClaims';
+import {CustomClaimsProvider} from '../claims/customClaimsProvider';
 import {UserInfoClaims} from '../claims/userInfoClaims';
 import {CacheConfiguration} from '../configuration/cacheConfiguration';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration';
@@ -19,7 +19,6 @@ import {ExceptionMiddleware} from '../middleware/exceptionMiddleware';
 import {LoggerMiddleware} from '../middleware/loggerMiddleware';
 import {AccessTokenRetriever} from '../oauth/accessTokenRetriever';
 import {JwksRetriever} from '../oauth/jwksRetriever';
-import {JwtValidator} from '../oauth/jwtValidator';
 import {OAuthAuthenticator} from '../oauth/oauthAuthenticator';
 import {OAuthAuthorizer} from '../oauth/oauthAuthorizer';
 import {HttpProxy} from '../utilities/httpProxy';
@@ -33,7 +32,7 @@ export class BaseCompositionRoot {
     private _loggingConfiguration: LoggingConfiguration | null;
     private _oauthConfiguration: OAuthConfiguration | null;
     private _cacheConfiguration: CacheConfiguration | null;
-    private _claimsProvider: ClaimsProvider | null;
+    private _customClaimsProvider: CustomClaimsProvider | null;
     private _cache: Cache | null;
     private _loggerFactory: LoggerFactoryImpl | null;
     private _httpProxy: HttpProxy | null;
@@ -44,7 +43,7 @@ export class BaseCompositionRoot {
         this._oauthConfiguration = null;
         this._cacheConfiguration = null;
         this._loggerFactory = null;
-        this._claimsProvider = null;
+        this._customClaimsProvider = null;
         this._cache = null;
         this._httpProxy = null;
     }
@@ -74,14 +73,16 @@ export class BaseCompositionRoot {
     /*
      * Deal with custom claims
      */
-    public withClaimsProvider(provider: ClaimsProvider, configuration: CacheConfiguration) : BaseCompositionRoot {
+    public withCustomClaimsProvider(
+        provider: CustomClaimsProvider,
+        configuration: CacheConfiguration) : BaseCompositionRoot {
 
-        this._claimsProvider = provider;
+        this._customClaimsProvider = provider;
         this._cacheConfiguration = configuration;
 
         this._cache = process.env.IS_LOCAL === 'true2'?
             new DevelopmentCache():
-            new AwsCache(this._claimsProvider, this._cacheConfiguration);
+            new AwsCache(this._cacheConfiguration, this._customClaimsProvider);
 
         return this;
     }
@@ -118,7 +119,7 @@ export class BaseCompositionRoot {
     }
 
     public getAuthorizerMiddleware(): middy.MiddlewareObject<any, any> {
-        return new OAuthAuthorizer(this._container, this._claimsProvider!, this._cache!);
+        return new OAuthAuthorizer(this._container, this._customClaimsProvider!, this._cache!);
     }
 
     /*
@@ -163,8 +164,6 @@ export class BaseCompositionRoot {
             .to(JwksRetriever).inTransientScope();
         this._container.bind<OAuthAuthenticator>(BASETYPES.OAuthAuthenticator)
             .to(OAuthAuthenticator).inTransientScope();
-        this._container.bind<JwtValidator>(BASETYPES.JwtValidator)
-            .to(JwtValidator).inTransientScope();
 
         return this;
     }

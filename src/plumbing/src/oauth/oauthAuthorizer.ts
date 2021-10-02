@@ -4,8 +4,9 @@ import hasher from 'js-sha256';
 import {Cache} from '../cache/cache';
 import {ApiClaims} from '../claims/apiClaims';
 import {BaseClaims} from '../claims/baseClaims';
-import {ClaimsProvider} from '../claims/claimsProvider';
+import {CachedClaims} from '../claims/cachedClaims';
 import {CustomClaims} from '../claims/customClaims';
+import {CustomClaimsProvider} from '../claims/customClaimsProvider';
 import {UserInfoClaims} from '../claims/userInfoClaims';
 import {BASETYPES} from '../dependencies/baseTypes';
 import {ClientError} from '../errors/clientError';
@@ -14,17 +15,21 @@ import {AccessTokenRetriever} from './accessTokenRetriever';
 import {OAuthAuthenticator} from './oauthAuthenticator';
 
 /*
- * A middleware for OAuth handling, which does token processing and claims lookup
+ * A middleware for OAuth handling, which does token processing and custom claims handling
  */
 export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
 
     private readonly _container: Container;
-    private readonly _claimsProvider: ClaimsProvider;
+    private readonly _customClaimsProvider: CustomClaimsProvider;
     private readonly _cache: Cache;
 
-    public constructor(container: Container, claimsProvider: ClaimsProvider, cache: Cache) {
+    public constructor(
+        container: Container,
+        customClaimsProvider: CustomClaimsProvider,
+        cache: Cache) {
+
         this._container = container;
-        this._claimsProvider = claimsProvider;
+        this._customClaimsProvider = customClaimsProvider;
         this._cache = cache;
         this._setupCallbacks();
     }
@@ -73,26 +78,27 @@ export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
         const accessTokenRetriever = this._container.get<AccessTokenRetriever>(BASETYPES.AccessTokenRetriever);
         const accessToken = accessTokenRetriever.getAccessToken(event);
 
-        // Always validate the token and get token claims, in a zero trust manner
+        // On every lambda HTTP request we validate the JWT, in a zero trust manner
         const authenticator = this._container.get<OAuthAuthenticator>(BASETYPES.OAuthAuthenticator);
         const tokenClaims = await authenticator.validateToken(accessToken);
 
-        // If cached results already exist for this token then return them immediately
+        // If cached results exist for other claims then return them
         const accessTokenHash = hasher.sha256(accessToken);
-        const cachedClaims = await this._cache.getClaimsForToken(accessTokenHash);
+        const cachedClaims = await this._cache.getExtraUserClaims(accessTokenHash);
         if (cachedClaims) {
-            return cachedClaims;
+            return new ApiClaims(tokenClaims, cachedClaims.userInfo, cachedClaims.custom);
         }
 
-        // Look up user info claims
+        // Otherwise look up user info claims and domain specific claims
         const userInfo = await authenticator.getUserInfo(accessToken);
+        const customClaims = await this._customClaimsProvider.get(accessToken, userInfo);
+        const claimsToCache = new CachedClaims(userInfo, customClaims);
 
-        // Ask the claims provider to create the final claims object
-        const apiClaims = await this._claimsProvider.supplyClaims(tokenClaims, userInfo);
+        // Cache the extra claims for subsequent requests with the same access token
+        await this._cache.setExtraUserClaims(accessTokenHash, claimsToCache);
 
-        // Cache the claims against the token hash until the token's expiry time
-        await this._cache.addClaimsForToken(accessTokenHash, apiClaims);
-        return apiClaims;
+        // Return the final claims
+        return new ApiClaims(tokenClaims, userInfo, customClaims);
     }
 
     private _setupCallbacks(): void {

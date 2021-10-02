@@ -1,10 +1,7 @@
-1. Improve performance / authorizer related measurements
+1. Revamp claims serialization since I must now always validate the JWT
+   Redeploy and test
 
-2. Redeploy and test that performance and expiry are working in logs
-
-3. Revamp claims serialization since I must now always validate the JWT
-
-4. Put back correct cache code in baseCompositionRoot
+2. Put back correct cache code in baseCompositionRoot
    Put back performance threshold of 1000 in api.config.json
 
 5. Tear down serverless2 items

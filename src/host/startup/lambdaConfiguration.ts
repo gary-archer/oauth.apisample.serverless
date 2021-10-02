@@ -10,7 +10,7 @@ import {
     LoggerFactory,
     LoggerFactoryBuilder,
     ResponseWriter} from '../../plumbing';
-import {SampleClaimsProvider} from '../claims/sampleClaimsProvider';
+import {SampleCustomClaimsProvider} from '../claims/sampleCustomClaimsProvider';
 import {Configuration} from '../configuration/configuration';
 import {CompositionRoot} from '../dependencies/compositionRoot';
 
@@ -43,7 +43,7 @@ export class LambdaConfiguration {
             const base = new BaseCompositionRoot(this._container)
                 .useLogging(configuration.logging, loggerFactory)
                 .useOAuth(configuration.oauth)
-                .withClaimsProvider(new SampleClaimsProvider(), configuration.cache)
+                .withCustomClaimsProvider(new SampleCustomClaimsProvider(), configuration.cache)
                 .useHttpProxy(httpProxy)
                 .register();
 

@@ -8,8 +8,7 @@ import {BaseCompositionRoot} from './src/dependencies/baseCompositionRoot';
 import {BASETYPES} from './src/dependencies/baseTypes';
 import {BaseErrorCodes} from './src/errors/baseErrorCodes';
 import {CacheConfiguration} from './src/configuration/cacheConfiguration';
-import {ClaimsPayload} from './src/claims/claimsPayload';
-import {ClaimsProvider} from './src/claims/claimsProvider';
+import {CustomClaimsProvider} from './src/claims/customClaimsProvider';
 import {ClientError} from './src/errors/clientError';
 import {BaseClaims} from './src/claims/baseClaims';
 import {CustomClaims} from './src/claims/customClaims';
@@ -20,6 +19,7 @@ import {LoggerFactory} from './src/logging/loggerFactory';
 import {LoggerFactoryBuilder} from './src/logging/loggerFactoryBuilder';
 import {OAuthConfiguration} from './src/configuration/oauthConfiguration';
 import {PerformanceBreakdown} from './src/logging/performanceBreakdown';
+import {ScopeVerifier} from './src/oauth/scopeVerifier';
 import {AsyncHandler} from './src/utilities/asyncHandler';
 import {Disposable} from './src/utilities/disposable';
 import {HttpProxy} from './src/utilities/httpProxy';
@@ -35,8 +35,7 @@ export {
     BaseCompositionRoot,
     BaseErrorCodes,
     CacheConfiguration,
-    ClaimsPayload,
-    ClaimsProvider,
+    CustomClaimsProvider,
     ClientError,
     CustomClaims,
     HttpProxy,
@@ -49,6 +48,7 @@ export {
     OAuthConfiguration,
     PerformanceBreakdown,
     ResponseWriter,
+    ScopeVerifier,
     ServerError,
     UserInfoClaims,
     using,

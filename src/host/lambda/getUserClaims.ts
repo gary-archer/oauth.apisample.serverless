@@ -1,6 +1,6 @@
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {BASETYPES, ResponseWriter, UserInfoClaims} from '../../plumbing';
+import {BaseClaims, BASETYPES, ResponseWriter, ScopeVerifier, UserInfoClaims} from '../../plumbing';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration';
 
 /*
@@ -9,10 +9,12 @@ import {LambdaConfiguration} from '../startup/lambdaConfiguration';
 const container = new Container();
 const baseHandler = async () => {
 
-    // Get claims produced by the authorizer
-    const claims = container.get<UserInfoClaims>(BASETYPES.UserInfoClaims);
+    // First check scopes
+    const baseClaims = container.get<BaseClaims>(BASETYPES.BaseClaims);
+    ScopeVerifier.enforce(baseClaims.scopes, 'transactions_read');
 
     // Create the payload and return it
+    const claims = container.get<UserInfoClaims>(BASETYPES.UserInfoClaims);
     const userInfo = {
         givenName: claims.givenName,
         familyName: claims.familyName,

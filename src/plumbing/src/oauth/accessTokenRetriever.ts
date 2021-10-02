@@ -7,7 +7,8 @@ import {ErrorFactory} from '../errors/errorFactory';
 import {ErrorUtils} from '../errors/errorUtils';
 
 /*
- * The SPA sends secure cookies to the API gateway, whereas mobile and desktop clients send tokens
+ * A class to deal with retrieving the access token, which is simple when it is sent directly
+ * This class also deals with an SPA sending secure cookies, in which case we must decrypt and make some extra checks
  */
 @injectable()
 export class AccessTokenRetriever {

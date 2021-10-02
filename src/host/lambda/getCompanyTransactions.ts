@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes';
 import {SampleErrorCodes} from '../../logic/errors/sampleErrorCodes';
 import {CompanyService} from '../../logic/services/companyService';
-import {ErrorFactory, ResponseWriter} from '../../plumbing';
+import {BaseClaims, BASETYPES, ErrorFactory, ResponseWriter, ScopeVerifier} from '../../plumbing';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration';
 
 /*
@@ -11,6 +11,10 @@ import {LambdaConfiguration} from '../startup/lambdaConfiguration';
  */
 const container = new Container();
 const baseHandler = async (event: any) => {
+
+    // First check scopes
+    const baseClaims = container.get<BaseClaims>(BASETYPES.BaseClaims);
+    ScopeVerifier.enforce(baseClaims.scopes, 'transactions_read');
 
     // First get the supplied id and ensure it is a valid integer
     const id = parseInt(event.pathParameters.id, 10);

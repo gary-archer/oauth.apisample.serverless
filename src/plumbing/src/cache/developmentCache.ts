@@ -1,4 +1,4 @@
-import {ApiClaims} from '../claims/apiClaims';
+import {CachedClaims} from '../claims/cachedClaims';
 import {Cache} from './cache';
 
 /*
@@ -7,7 +7,7 @@ import {Cache} from './cache';
 export class DevelopmentCache implements Cache {
 
     /* eslint-disable @typescript-eslint/no-unused-vars */
-    public async addJwksKeys(keys: any): Promise<void> {
+    public async setJwksKeys(keys: any): Promise<void> {
     }
 
     /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -16,11 +16,11 @@ export class DevelopmentCache implements Cache {
     }
 
     /* eslint-disable @typescript-eslint/no-unused-vars */
-    public async addClaimsForToken(accessTokenHash: string, claims: ApiClaims): Promise<void> {
+    public async setExtraUserClaims(accessTokenHash: string, claims: CachedClaims): Promise<void> {
     }
 
     /* eslint-disable @typescript-eslint/no-unused-vars */
-    public async getClaimsForToken(accessTokenHash: string): Promise<ApiClaims | null> {
+    public async getExtraUserClaims(accessTokenHash: string): Promise<CachedClaims | null> {
         return null;
     }
 }

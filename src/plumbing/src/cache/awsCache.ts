@@ -1,27 +1,28 @@
 import AWS from 'aws-sdk';
-import {ApiClaims} from '../claims/apiClaims';
-import {Cache} from './cache';
-import {ClaimsProvider} from '../claims/claimsProvider';
+import {CachedClaims} from '../claims/cachedClaims';
+import {CustomClaimsProvider} from '../claims/customClaimsProvider';
+import {UserInfoClaims} from '../claims/userInfoClaims';
 import {CacheConfiguration} from '../configuration/cacheConfiguration';
 import {BaseErrorCodes} from '../errors/baseErrorCodes';
 import {ErrorUtils} from '../errors/errorUtils';
+import {Cache} from './cache';
 
 /*
  * An implementation that caches data in AWS, used when the API is deployed
  */
 export class AwsCache implements Cache {
 
-    private readonly _cacheConfiguration: CacheConfiguration;
-    private readonly _claimsProvider: ClaimsProvider;
+    private readonly _configuration: CacheConfiguration;
+    private readonly _customClaimsProvider: CustomClaimsProvider;
     private readonly _database: AWS.DynamoDB;
 
-    public constructor(claimsProvider: ClaimsProvider, cacheConfiguration: CacheConfiguration) {
+    public constructor(configuration: CacheConfiguration, customClaimsProvider: CustomClaimsProvider) {
 
         try {
 
-            this._claimsProvider = claimsProvider;
-            this._cacheConfiguration = cacheConfiguration;
-            AWS.config.update({region: cacheConfiguration.region});
+            this._configuration = configuration;
+            this._customClaimsProvider = customClaimsProvider;
+            AWS.config.update({region: configuration.region});
             this._database = new AWS.DynamoDB({apiVersion: '2012-08-10'});
 
         } catch (e) {
@@ -34,10 +35,10 @@ export class AwsCache implements Cache {
      * We validate a JWT on every lambda call but avoid calling the Cognito AWS endpoint every time
      * This is done by updating the cache entry with the JWKS keys whenever the JOSE library triggers a download
      */
-    public async addJwksKeys(jwksText: string): Promise<void> {
+    public async setJwksKeys(jwksText: string): Promise<void> {
 
         const params = {
-            TableName: this._cacheConfiguration.tableName,
+            TableName: this._configuration.tableName,
             Item: {
                 'CACHE_KEY' : {S: 'JWKS'},
                 'CACHE_VALUE' : {S: jwksText},
@@ -54,7 +55,7 @@ export class AwsCache implements Cache {
     public async getJwksKeys(): Promise<any> {
 
         const params = {
-            TableName: this._cacheConfiguration.tableName,
+            TableName: this._configuration.tableName,
             Key: {
                 'CACHE_KEY': {S: 'JWKS'},
             },
@@ -63,8 +64,7 @@ export class AwsCache implements Cache {
 
         const data = await this._getItem(params);
         if (data && data.Item) {
-            const jwksText = data.Item['CACHE_VALUE'].S;
-            return jwksText;
+            return data.Item['CACHE_VALUE'].S;
         }
 
         return null;
@@ -73,39 +73,53 @@ export class AwsCache implements Cache {
     /*
      * When a new access token is received, we cache its keys with a time to live equal to that of the token's expiry
      */
-    public async addClaimsForToken(accessTokenHash: string, claims: ApiClaims): Promise<void> {
+    public async setExtraUserClaims(accessTokenHash: string, claims: CachedClaims): Promise<void> {
 
-        const claimsText = this._claimsProvider.serializeToCache(claims);
+        // Get the data in way that handles private property names
+        const dataAsJson = {
+            userInfo: claims.userInfo.exportData(),
+            custom: claims.custom.exportData(),
+        };
+
+        // Form the DynamoDB command
         const params = {
-            TableName: this._cacheConfiguration.tableName,
+            TableName: this._configuration.tableName,
             Item: {
                 'CACHE_KEY' : {S: accessTokenHash},
-                'CACHE_VALUE' : {S: claimsText},
+                'CACHE_VALUE' : {S: JSON.stringify(dataAsJson)},
                 'TTL_VALUE': {N: `${this._getExpiry()}`},
             }
         };
 
+        // Write the data
         await this._putItem(params);
     }
 
     /*
      * When an access token is received, see if its claims exist in the cache
      */
-    public async getClaimsForToken(accessTokenHash: string): Promise<ApiClaims | null> {
+    public async getExtraUserClaims(accessTokenHash: string): Promise<CachedClaims | null> {
 
+        // Form the DynamoDB command
         const params = {
-            TableName: this._cacheConfiguration.tableName,
+            TableName: this._configuration.tableName,
             Key: {
                 'CACHE_KEY': {S: accessTokenHash},
             },
             ProjectionExpression: 'CACHE_VALUE'
         };
 
+        // Read the data
         const data = await this._getItem(params);
         if (data && data.Item) {
 
             const claimsText = data.Item['CACHE_VALUE'].S;
-            return this._claimsProvider.deserializeFromCache(claimsText);
+            const dataAsJson = JSON.parse(claimsText);
+
+            // Get the data in way that handles private property names
+            return new CachedClaims(
+                UserInfoClaims.importData(dataAsJson.userInfo),
+                this._customClaimsProvider.deserialize(dataAsJson.custom));
         }
 
         return null;
@@ -153,6 +167,6 @@ export class AwsCache implements Cache {
     private _getExpiry(): number {
 
         const currentUtcTimeInEpochSeconds = Math.floor(new Date().getTime() / 1000);
-        return currentUtcTimeInEpochSeconds + this._cacheConfiguration.claimsCacheTimeToLiveMinutes * 60;
+        return currentUtcTimeInEpochSeconds + this._configuration.claimsCacheTimeToLiveMinutes * 60;
     }
 }

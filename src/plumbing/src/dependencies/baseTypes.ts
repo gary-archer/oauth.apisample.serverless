@@ -9,7 +9,6 @@ export const BASETYPES = {
     CustomClaims: Symbol.for('CustomClaims'),
     HttpProxy: Symbol.for('HttpProxy'),
     JwksRetriever: Symbol.for('JwksRetriever'),
-    JwtValidator: Symbol.for('JwtValidator'),
     LogEntry: Symbol.for('LogEntry'),
     OAuthAuthenticator: Symbol.for('OAuthAuthenticator'),
     OAuthConfiguration: Symbol.for('OAuthConfiguration'),
