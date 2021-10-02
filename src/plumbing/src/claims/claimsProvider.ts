@@ -24,6 +24,40 @@ export class ClaimsProvider {
     }
 
     /*
+     * Serialize claims when requested
+     */
+    public serializeToCache(claims: ApiClaims): string {
+
+        const data = {
+            token: claims.token.exportData(),
+            userInfo: claims.userInfo.exportData(),
+            custom: claims.custom.exportData(),
+        };
+
+        return JSON.stringify(data);
+    }
+
+    /*
+     * Read the claims parts
+     */
+    public deserializeFromCache(claimsText: string): ApiClaims {
+
+        const data = JSON.parse(claimsText);
+        return new ApiClaims(
+            BaseClaims.importData(data.token),
+            UserInfoClaims.importData(data.userInfo),
+            this.deserializeCustomClaims(data.custom),
+        );
+    }
+
+    /*
+     * This can be overridden by derived classes
+     */
+    protected deserializeCustomClaims(data: any): CustomClaims {
+        return CustomClaims.importData(data);
+    }
+
+    /*
      * Read base claims from the supplied token data
      */
     private _readBaseClaims(data: ClaimsPayload): BaseClaims {

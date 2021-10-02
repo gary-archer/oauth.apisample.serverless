@@ -3,6 +3,8 @@ import {ApiClaims} from '../claims/apiClaims';
 import {Cache} from './cache';
 import {ClaimsProvider} from '../claims/claimsProvider';
 import {CacheConfiguration} from '../configuration/cacheConfiguration';
+import {BaseErrorCodes} from '../errors/baseErrorCodes';
+import {ErrorUtils} from '../errors/errorUtils';
 
 /*
  * An implementation that caches data in AWS, used when the API is deployed
@@ -10,26 +12,61 @@ import {CacheConfiguration} from '../configuration/cacheConfiguration';
 export class AwsCache implements Cache {
 
     private readonly _cacheConfiguration: CacheConfiguration;
+    private readonly _claimsProvider: ClaimsProvider;
     private readonly _database: AWS.DynamoDB;
 
-    public constructor(cacheConfiguration: CacheConfiguration, claimsProvider: ClaimsProvider) {
+    public constructor(claimsProvider: ClaimsProvider, cacheConfiguration: CacheConfiguration) {
 
-        this._cacheConfiguration = cacheConfiguration;
-        AWS.config.update({region: cacheConfiguration.region});
-        this._database = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+        try {
+
+            this._claimsProvider = claimsProvider;
+            this._cacheConfiguration = cacheConfiguration;
+            AWS.config.update({region: cacheConfiguration.region});
+            this._database = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+
+        } catch (e) {
+
+            throw ErrorUtils.fromCacheError(BaseErrorCodes.cacheConnect, e);
+        }
     }
 
     /*
      * We validate a JWT on every lambda call but avoid calling the Cognito AWS endpoint every time
      * This is done by updating the cache entry with the JWKS keys whenever the JOSE library triggers a download
      */
-    public async addJwksKeys(keys: any): Promise<void> {
+    public async addJwksKeys(jwksText: string): Promise<void> {
+
+        const params = {
+            TableName: this._cacheConfiguration.tableName,
+            Item: {
+                'CACHE_KEY' : {S: 'JWKS'},
+                'CACHE_VALUE' : {S: jwksText},
+                'TTL_VALUE': {N: `${this._getExpiry()}`},
+            }
+        };
+
+        await this._putItem(params);
     }
 
     /*
      * On the vast majority of requests our JWKS retriever gets keys from the database
      */
     public async getJwksKeys(): Promise<any> {
+
+        const params = {
+            TableName: this._cacheConfiguration.tableName,
+            Key: {
+                'CACHE_KEY': {S: 'JWKS'},
+            },
+            ProjectionExpression: 'CACHE_VALUE'
+        };
+
+        const data = await this._getItem(params);
+        if (data && data.Item) {
+            const jwksText = data.Item['CACHE_VALUE'].S;
+            return jwksText;
+        }
+
         return null;
     }
 
@@ -38,11 +75,13 @@ export class AwsCache implements Cache {
      */
     public async addClaimsForToken(accessTokenHash: string, claims: ApiClaims): Promise<void> {
 
+        const claimsText = this._claimsProvider.serializeToCache(claims);
         const params = {
             TableName: this._cacheConfiguration.tableName,
             Item: {
                 'CACHE_KEY' : {S: accessTokenHash},
-                'CACHE_VALUE' : {S: 'Richard Roe one more time'}
+                'CACHE_VALUE' : {S: claimsText},
+                'TTL_VALUE': {N: `${this._getExpiry()}`},
             }
         };
 
@@ -63,22 +102,10 @@ export class AwsCache implements Cache {
         };
 
         const data = await this._getItem(params);
-        if (data) {
-            const claims = data.Item['CACHE_VALUE'].S;
+        if (data && data.Item) {
 
-            /*
-            {
-                Item: {
-                    'cache-value': { S: 'Richard Roe updated innit' },
-                    'cache-key': {
-                    S: '6ca0b2603bd362f34f82c51ae3b47a23f499f1a4c410c532a47eca9f43e560ae'
-                    }
-                }
-            }
-            */
-
-        } else {
-            console.log('*** NO CLAIMS FOUND IN CACHE');
+            const claimsText = data.Item['CACHE_VALUE'].S;
+            return this._claimsProvider.deserializeFromCache(claimsText);
         }
 
         return null;
@@ -91,10 +118,10 @@ export class AwsCache implements Cache {
 
         return new Promise((resolve, reject) => {
 
-            this._database.putItem(params, function(err, data) {
+            this._database.putItem(params, (error) => {
 
-                if (err) {
-                    reject(new Error('Unable to update cache'));
+                if (error) {
+                    reject(ErrorUtils.fromCacheError(BaseErrorCodes.cacheWrite, error));
                 }
 
                 resolve();
@@ -109,15 +136,23 @@ export class AwsCache implements Cache {
 
         return new Promise((resolve, reject) => {
 
-            this._database.getItem(params, function(err, data) {
+            this._database.getItem(params, (error, data) => {
 
-                if (err) {
-                    console.log(err);
-                    reject(new Error('Unable to get from cache'));
+                if (error) {
+                    reject(ErrorUtils.fromCacheError(BaseErrorCodes.cacheRead, error));
                 }
 
                 resolve(data);
             });
         });
+    }
+
+    /*
+     * Extra claims are cached for 30 minutes after the current UTC time
+     */
+    private _getExpiry(): number {
+
+        const currentUtcTimeInEpochSeconds = Math.floor(new Date().getTime() / 1000);
+        return currentUtcTimeInEpochSeconds + this._cacheConfiguration.claimsCacheTimeToLiveMinutes * 60;
     }
 }

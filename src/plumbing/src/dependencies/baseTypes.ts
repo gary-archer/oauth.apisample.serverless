@@ -4,6 +4,7 @@
 export const BASETYPES = {
     AccessTokenRetriever: Symbol.for('AccessTokenRetriever'),
     BaseClaims: Symbol.for('BaseClaims'),
+    Cache: Symbol.for('Cache'),
     ClaimsProvider: Symbol.for('ClaimsProvider'),
     CustomClaims: Symbol.for('CustomClaims'),
     HttpProxy: Symbol.for('HttpProxy'),

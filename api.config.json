@@ -10,7 +10,7 @@
     },
     "logging": {
         "apiName": "SampleApi",
-        "performanceThresholdMilliseconds": 1000
+        "performanceThresholdMilliseconds": 0
     },
     "oauth": {
         "issuer":              "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",

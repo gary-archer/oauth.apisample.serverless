@@ -1,10 +1,14 @@
-1. PUT with time to live
-   Calculate this properly and use 5 mins, then check it disappears + understand AWS console
+1. Improve performance / authorizer related measurements
 
-2. Proper errors and test via a bad connection and non existing table
+2. Redeploy and test that performance and expiry are working in logs
 
-2. PUT and get properly serialized claims
+3. Revamp claims serialization since I must now always validate the JWT
 
-3. PUT JWKS keys
+4. Put back correct cache code in baseCompositionRoot
+   Put back performance threshold of 1000 in api.config.json
 
-4. Put commented out code back in BaseCompositionRoot
+5. Tear down serverless2 items
+   Then rename in branches
+   Then deploy, test and merge
+   Then update READMEs
+   Then update blog instructions

@@ -40,15 +40,16 @@ export class ErrorUtils {
             errorCode || defaultErrorCode,
             message || defaultMessage,
             exception.stack);
+
         error.setDetails(ErrorUtils._getExceptionDetailsMessage(exception));
         return error;
     }/*
      * Handle the error for key identifier lookups
      */
-    public static fromCookieDecryptionError(cookieName: string, ex: any): ClientError {
+    public static fromCookieDecryptionError(cookieName: string, exception: any): ClientError {
 
-        const message = ex.message ? ex.message : '';
-        return ErrorFactory.createClient401Error(`Problem encountered decrypting ${cookieName} cookie: ${message}`);
+        const details = ErrorUtils._getExceptionDetailsMessage(exception);
+        return ErrorFactory.createClient401Error(`Problem encountered decrypting ${cookieName} cookie: ${details}`);
     }
 
     /*
@@ -66,11 +67,25 @@ export class ErrorUtils {
     public static fromSigningKeyDownloadError(responseError: any, url: string): ServerError {
 
         const error = ErrorFactory.createServerError(
-            BaseErrorCodes.signingKeyDownloadFailure,
+            BaseErrorCodes.signingKeyDownloadError,
             'Signing key download failed',
             responseError.stack);
 
         ErrorUtils._setErrorDetails(error, null, responseError, url);
+        return error;
+    }
+
+    /*
+     * Handle other errors during JWKS processing
+     */
+    public static fromJwksProcessingError(exception: any): ServerError {
+
+        const error = ErrorFactory.createServerError(
+            BaseErrorCodes.jwksProcessingError,
+            'JWKS processing failed',
+            exception.stack);
+
+        error.setDetails(ErrorUtils._getExceptionDetailsMessage(exception));
         return error;
     }
 
@@ -107,6 +122,16 @@ export class ErrorUtils {
 
         const error = ErrorFactory.createServerError(BaseErrorCodes.claimsFailure, 'Authorization Data Not Found');
         error.setDetails(`An empty value was found for the expected claim '${claimName}'`);
+        return error;
+    }
+
+    /*
+     * The error thrown if we have problems interacting with the cache
+     */
+    public static fromCacheError(errorCode: string, exception: any): ServerError {
+
+        const error = ErrorFactory.createServerError(errorCode, 'Problem encountered during a cache operation');
+        error.setDetails(ErrorUtils._getExceptionDetailsMessage(exception));
         return error;
     }
 

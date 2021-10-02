@@ -7,6 +7,13 @@ import {ClaimsPayload, ClaimsProvider, CustomClaims} from '../../plumbing';
 export class SampleClaimsProvider extends ClaimsProvider {
 
     /*
+     * An override to load custom claims when they are read from the cache
+     */
+    protected deserializeCustomClaims(data: any): CustomClaims {
+        return SampleCustomClaims.importData(data);
+    }
+
+    /*
      * Simulate some API logic for identifying the user from OAuth data, via either the subject or email claims
      * A real API would then do a database lookup to find the user's custom claims
      */

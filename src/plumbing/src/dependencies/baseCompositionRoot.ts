@@ -2,6 +2,7 @@ import middy from '@middy/core';
 import {Container} from 'inversify';
 import {Cache} from '../cache/cache';
 import {AwsCache} from '../cache/awsCache';
+import {DevelopmentCache} from '../cache/developmentCache';
 import {BaseClaims} from '../claims/baseClaims';
 import {ClaimsProvider} from '../claims/claimsProvider';
 import {CustomClaims} from '../claims/customClaims';
@@ -33,6 +34,7 @@ export class BaseCompositionRoot {
     private _oauthConfiguration: OAuthConfiguration | null;
     private _cacheConfiguration: CacheConfiguration | null;
     private _claimsProvider: ClaimsProvider | null;
+    private _cache: Cache | null;
     private _loggerFactory: LoggerFactoryImpl | null;
     private _httpProxy: HttpProxy | null;
 
@@ -43,6 +45,7 @@ export class BaseCompositionRoot {
         this._cacheConfiguration = null;
         this._loggerFactory = null;
         this._claimsProvider = null;
+        this._cache = null;
         this._httpProxy = null;
     }
 
@@ -69,12 +72,17 @@ export class BaseCompositionRoot {
     }
 
     /*
-     * Consumers of the builder class can provide a constructor function for injecting custom claims
+     * Deal with custom claims
      */
     public withClaimsProvider(provider: ClaimsProvider, configuration: CacheConfiguration) : BaseCompositionRoot {
 
         this._claimsProvider = provider;
         this._cacheConfiguration = configuration;
+
+        this._cache = process.env.IS_LOCAL === 'true2'?
+            new DevelopmentCache():
+            new AwsCache(this._claimsProvider, this._cacheConfiguration);
+
         return this;
     }
 
@@ -110,7 +118,7 @@ export class BaseCompositionRoot {
     }
 
     public getAuthorizerMiddleware(): middy.MiddlewareObject<any, any> {
-        return new OAuthAuthorizer(this._container, this._claimsProvider!, this._createOAuthCache());
+        return new OAuthAuthorizer(this._container, this._claimsProvider!, this._cache!);
     }
 
     /*
@@ -130,6 +138,9 @@ export class BaseCompositionRoot {
      */
     private _registerClaimsDependencies() {
 
+        // Create the cache
+        this._container.bind<Cache>(BASETYPES.Cache).toConstantValue(this._cache!);
+
         // These default per request objects will be overridden at runtime
         this._container.bind<BaseClaims>(BASETYPES.BaseClaims).toConstantValue({} as any);
         this._container.bind<UserInfoClaims>(BASETYPES.UserInfoClaims).toConstantValue({} as any);
@@ -141,36 +152,20 @@ export class BaseCompositionRoot {
      */
     private _registerOAuthDependencies() {
 
-        // Create the singleton JWKS client, which caches JWKS keys between requests
-        const jwksRetriever = new JwksRetriever(this._oauthConfiguration!, this._httpProxy!);
-
         // Register singletons
         this._container.bind<OAuthConfiguration>(BASETYPES.OAuthConfiguration)
             .toConstantValue(this._oauthConfiguration!);
-        this._container.bind<JwksRetriever>(BASETYPES.JwksRetriever)
-            .toConstantValue(jwksRetriever);
 
         // Register per request objects
         this._container.bind<AccessTokenRetriever>(BASETYPES.AccessTokenRetriever)
             .to(AccessTokenRetriever).inTransientScope();
+        this._container.bind<JwksRetriever>(BASETYPES.JwksRetriever)
+            .to(JwksRetriever).inTransientScope();
         this._container.bind<OAuthAuthenticator>(BASETYPES.OAuthAuthenticator)
             .to(OAuthAuthenticator).inTransientScope();
         this._container.bind<JwtValidator>(BASETYPES.JwtValidator)
             .to(JwtValidator).inTransientScope();
 
         return this;
-    }
-
-    /*
-     * Different caches are used in AWS and on a developer PC
-     */
-    private _createOAuthCache(): Cache {
-
-        /*
-          import {DevelopmentCache} from '../cache/developmentCache';
-          return process.env.IS_LOCAL === 'true' ? new DevelopmentCache() :
-          new AwsCache(this._cacheConfiguration!, this._claimsProvider!); */
-
-        return new AwsCache(this._cacheConfiguration!, this._claimsProvider!);
     }
 }

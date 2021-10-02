@@ -22,6 +22,7 @@ export class JwtValidator {
 
         this._jwksRetriever = jwksRetriever;
         this._configuration = configuration;
+        this._setupCallbacks();
     }
 
     /*
@@ -57,5 +58,12 @@ export class JwtValidator {
 
             throw ErrorFactory.createClient401Error(details);
         }
+    }
+
+    /*
+     * Plumbing to ensure that the this parameter is available in async callbacks
+     */
+    private _setupCallbacks(): void {
+        this.validateToken = this.validateToken.bind(this);
     }
 }

@@ -34,13 +34,14 @@ export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
      */
     public async before(handler: middy.HandlerLambda<any, any>): Promise<void> {
 
+        const logEntry = this._container.get<LogEntryImpl>(BASETYPES.LogEntry);
         try {
 
             // Ask the authorizer to do the work and return claims
             const claims = await this._execute(handler.event);
 
-            // Include identity details in logs
-            this._logIdentity(this._container, claims.token);
+            // Include identity details in logs as soon as we have them
+            logEntry.setIdentity(claims.token);
 
             // Make claims injectable
             this._container.rebind<BaseClaims>(BASETYPES.BaseClaims).toConstantValue(claims.token);
@@ -49,9 +50,11 @@ export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
 
         } catch (e) {
 
-            // Log 401s and causes
+            // Log the cause of any 401 errors
             if (e instanceof ClientError) {
-                this._logUnauthorized(this._container, e);
+
+                logEntry.setClientError(e);
+                logEntry.setResponseStatus(401);
             }
 
             // Rethrow the error
@@ -70,6 +73,10 @@ export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
         const accessTokenRetriever = this._container.get<AccessTokenRetriever>(BASETYPES.AccessTokenRetriever);
         const accessToken = accessTokenRetriever.getAccessToken(event);
 
+        // Always validate the token and get token claims, in a zero trust manner
+        const authenticator = this._container.get<OAuthAuthenticator>(BASETYPES.OAuthAuthenticator);
+        const tokenClaims = await authenticator.validateToken(accessToken);
+
         // If cached results already exist for this token then return them immediately
         const accessTokenHash = hasher.sha256(accessToken);
         const cachedClaims = await this._cache.getClaimsForToken(accessTokenHash);
@@ -77,40 +84,15 @@ export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
             return cachedClaims;
         }
 
-        // Otherwise resolve the authenticator for this request
-        const authenticator = this._container.get<OAuthAuthenticator>(BASETYPES.OAuthAuthenticator);
-
-        // Validate the token and get token claims
-        const token = await authenticator.validateToken(accessToken);
-
         // Look up user info claims
         const userInfo = await authenticator.getUserInfo(accessToken);
 
         // Ask the claims provider to create the final claims object
-        const apiClaims = await this._claimsProvider.supplyClaims(token, userInfo);
+        const apiClaims = await this._claimsProvider.supplyClaims(tokenClaims, userInfo);
 
         // Cache the claims against the token hash until the token's expiry time
         await this._cache.addClaimsForToken(accessTokenHash, apiClaims);
         return apiClaims;
-    }
-
-    /*
-     * Include identity details in both authorizer and lambda logs
-     */
-    private _logIdentity(container: Container, claims: BaseClaims): void {
-
-        const logEntry = container.get<LogEntryImpl>(BASETYPES.LogEntry);
-        logEntry.setIdentity(claims);
-    }
-
-    /*
-     * Log any authorization failures
-     */
-    private _logUnauthorized(container: Container, error: ClientError): void {
-
-        const logEntry = container.get<LogEntryImpl>(BASETYPES.LogEntry);
-        logEntry.setClientError(error);
-        logEntry.setResponseStatus(401);
     }
 
     private _setupCallbacks(): void {
