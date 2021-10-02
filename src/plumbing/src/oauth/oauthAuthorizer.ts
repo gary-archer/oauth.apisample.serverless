@@ -1,5 +1,7 @@
 import middy from '@middy/core';
 import {Container} from 'inversify';
+import hasher from 'js-sha256';
+import {Cache} from '../cache/cache';
 import {ApiClaims} from '../claims/apiClaims';
 import {BaseClaims} from '../claims/baseClaims';
 import {ClaimsProvider} from '../claims/claimsProvider';
@@ -18,10 +20,12 @@ export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
 
     private readonly _container: Container;
     private readonly _claimsProvider: ClaimsProvider;
+    private readonly _cache: Cache;
 
-    public constructor(container: Container, claimsProvider: ClaimsProvider) {
+    public constructor(container: Container, claimsProvider: ClaimsProvider, cache: Cache) {
         this._container = container;
         this._claimsProvider = claimsProvider;
+        this._cache = cache;
         this._setupCallbacks();
     }
 
@@ -62,12 +66,19 @@ export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
      */
     private async _execute(event: any): Promise<ApiClaims> {
 
-        // Resolve dependencies
+        // First get the access token from the incoming request
         const accessTokenRetriever = this._container.get<AccessTokenRetriever>(BASETYPES.AccessTokenRetriever);
-        const authenticator = this._container.get<OAuthAuthenticator>(BASETYPES.OAuthAuthenticator);
-
-        // First get the token from received headers and report missing tokens
         const accessToken = accessTokenRetriever.getAccessToken(event);
+
+        // If cached results already exist for this token then return them immediately
+        const accessTokenHash = hasher.sha256(accessToken);
+        const cachedClaims = await this._cache.getClaimsForToken(accessTokenHash);
+        if (cachedClaims) {
+            return cachedClaims;
+        }
+
+        // Otherwise resolve the authenticator for this request
+        const authenticator = this._container.get<OAuthAuthenticator>(BASETYPES.OAuthAuthenticator);
 
         // Validate the token and get token claims
         const token = await authenticator.validateToken(accessToken);
@@ -75,8 +86,12 @@ export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
         // Look up user info claims
         const userInfo = await authenticator.getUserInfo(accessToken);
 
-        // Ask the claims provider to supply the final claims
-        return this._claimsProvider.supplyClaims(token, userInfo);
+        // Ask the claims provider to create the final claims object
+        const apiClaims = await this._claimsProvider.supplyClaims(token, userInfo);
+
+        // Cache the claims against the token hash until the token's expiry time
+        await this._cache.addClaimsForToken(accessTokenHash, apiClaims);
+        return apiClaims;
     }
 
     /*

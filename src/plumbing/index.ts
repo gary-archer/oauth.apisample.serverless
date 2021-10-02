@@ -7,6 +7,7 @@ import {LoggingConfiguration} from './src/configuration/loggingConfiguration';
 import {BaseCompositionRoot} from './src/dependencies/baseCompositionRoot';
 import {BASETYPES} from './src/dependencies/baseTypes';
 import {BaseErrorCodes} from './src/errors/baseErrorCodes';
+import {CacheConfiguration} from './src/configuration/cacheConfiguration';
 import {ClaimsPayload} from './src/claims/claimsPayload';
 import {ClaimsProvider} from './src/claims/claimsProvider';
 import {ClientError} from './src/errors/clientError';
@@ -33,6 +34,7 @@ export {
     BaseClaims,
     BaseCompositionRoot,
     BaseErrorCodes,
+    CacheConfiguration,
     ClaimsPayload,
     ClaimsProvider,
     ClientError,

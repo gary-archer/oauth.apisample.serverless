@@ -11,6 +11,20 @@ provider:
   apiGateway:
     shouldStartNameWithService: true
 
+  # Grant lambdas access to the DynamoDB cache table
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:DescribeTable
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+    Resource:
+      - "Fn::GetAtt": [ CacheTable, Arn ]
+
 custom:
   # Each environment can have its own configuration file
   config: ${file(environments/${opt:stage, 'local'}.yml)}
@@ -111,6 +125,22 @@ plugins:
 
 resources:
   Resources:
+
+    # I am using DynamoDB as a cache for both JWKS keys and user claims
+    CacheTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: OAUTH_CACHE
+        AttributeDefinitions:
+          - AttributeName: CACHE_KEY
+            AttributeType: S
+        KeySchema:
+          - AttributeName: CACHE_KEY
+            KeyType: HASH
+        TimeToLiveSpecification:
+          AttributeName: TTL_VALUE
+          Enabled: true
+        BillingMode: PAY_PER_REQUEST
 
     # Limit cloudwatch log retention 
     GetUserClaimsLogGroup:

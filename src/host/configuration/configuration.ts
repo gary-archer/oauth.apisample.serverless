@@ -1,4 +1,4 @@
-import {LoggingConfiguration, OAuthConfiguration} from '../../plumbing';
+import {CacheConfiguration, LoggingConfiguration, OAuthConfiguration} from '../../plumbing';
 import {ApiConfiguration} from './apiConfiguration';
 
 /*
@@ -8,4 +8,5 @@ export interface Configuration {
     api: ApiConfiguration;
     logging: LoggingConfiguration;
     oauth: OAuthConfiguration;
+    cache: CacheConfiguration;
 }

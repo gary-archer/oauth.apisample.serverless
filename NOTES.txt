@@ -1,0 +1,10 @@
+1. PUT with time to live
+   Calculate this properly and use 5 mins, then check it disappears + understand AWS console
+
+2. Proper errors and test via a bad connection and non existing table
+
+2. PUT and get properly serialized claims
+
+3. PUT JWKS keys
+
+4. Put commented out code back in BaseCompositionRoot

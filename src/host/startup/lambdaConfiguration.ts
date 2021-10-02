@@ -43,7 +43,7 @@ export class LambdaConfiguration {
             const base = new BaseCompositionRoot(this._container)
                 .useLogging(configuration.logging, loggerFactory)
                 .useOAuth(configuration.oauth)
-                .withClaimsProvider(new SampleClaimsProvider())
+                .withClaimsProvider(new SampleClaimsProvider(), configuration.cache)
                 .useHttpProxy(httpProxy)
                 .register();
 

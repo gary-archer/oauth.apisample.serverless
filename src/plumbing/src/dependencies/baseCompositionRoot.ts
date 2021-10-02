@@ -1,9 +1,12 @@
 import middy from '@middy/core';
 import {Container} from 'inversify';
+import {Cache} from '../cache/cache';
+import {AwsCache} from '../cache/awsCache';
 import {BaseClaims} from '../claims/baseClaims';
 import {ClaimsProvider} from '../claims/claimsProvider';
 import {CustomClaims} from '../claims/customClaims';
 import {UserInfoClaims} from '../claims/userInfoClaims';
+import {CacheConfiguration} from '../configuration/cacheConfiguration';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {BASETYPES} from '../dependencies/baseTypes';
@@ -28,6 +31,7 @@ export class BaseCompositionRoot {
     private readonly _container: Container;
     private _loggingConfiguration: LoggingConfiguration | null;
     private _oauthConfiguration: OAuthConfiguration | null;
+    private _cacheConfiguration: CacheConfiguration | null;
     private _claimsProvider: ClaimsProvider | null;
     private _loggerFactory: LoggerFactoryImpl | null;
     private _httpProxy: HttpProxy | null;
@@ -36,6 +40,7 @@ export class BaseCompositionRoot {
         this._container = container;
         this._loggingConfiguration = null;
         this._oauthConfiguration = null;
+        this._cacheConfiguration = null;
         this._loggerFactory = null;
         this._claimsProvider = null;
         this._httpProxy = null;
@@ -58,6 +63,7 @@ export class BaseCompositionRoot {
      * Indicate that we're using OAuth and receive the configuration
      */
     public useOAuth(configuration: OAuthConfiguration): BaseCompositionRoot {
+
         this._oauthConfiguration = configuration;
         return this;
     }
@@ -65,9 +71,10 @@ export class BaseCompositionRoot {
     /*
      * Consumers of the builder class can provide a constructor function for injecting custom claims
      */
-    public withClaimsProvider(provider: ClaimsProvider) : BaseCompositionRoot {
+    public withClaimsProvider(provider: ClaimsProvider, configuration: CacheConfiguration) : BaseCompositionRoot {
 
         this._claimsProvider = provider;
+        this._cacheConfiguration = configuration;
         return this;
     }
 
@@ -103,7 +110,7 @@ export class BaseCompositionRoot {
     }
 
     public getAuthorizerMiddleware(): middy.MiddlewareObject<any, any> {
-        return new OAuthAuthorizer(this._container, this._claimsProvider!);
+        return new OAuthAuthorizer(this._container, this._claimsProvider!, this._createOAuthCache());
     }
 
     /*
@@ -152,5 +159,18 @@ export class BaseCompositionRoot {
             .to(JwtValidator).inTransientScope();
 
         return this;
+    }
+
+    /*
+     * Different caches are used in AWS and on a developer PC
+     */
+    private _createOAuthCache(): Cache {
+
+        /*
+          import {DevelopmentCache} from '../cache/developmentCache';
+          return process.env.IS_LOCAL === 'true' ? new DevelopmentCache() :
+          new AwsCache(this._cacheConfiguration!, this._claimsProvider!); */
+
+        return new AwsCache(this._cacheConfiguration!, this._claimsProvider!);
     }
 }
