@@ -80,7 +80,7 @@ export class BaseCompositionRoot {
         this._customClaimsProvider = provider;
         this._cacheConfiguration = configuration;
 
-        this._cache = process.env.IS_LOCAL === 'true2'?
+        this._cache = process.env.IS_LOCAL === 'true'?
             new DevelopmentCache():
             new AwsCache(this._cacheConfiguration, this._customClaimsProvider);
 
