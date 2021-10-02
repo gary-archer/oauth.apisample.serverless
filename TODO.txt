@@ -1,10 +1,8 @@
 CONSOLIDATION
 -------------
-1. Simplify logging and get rid of performance threshold array
+1. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
 
-2. Merge plumbing-base and plumbing-oauth and compare to NodeJS API
-
-3. Log cookie errors with different details for client and server
+2. Log cookie errors with different details for client and server
    Work out the coding model
 
 CACHE

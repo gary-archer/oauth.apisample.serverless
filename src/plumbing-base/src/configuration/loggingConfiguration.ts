@@ -3,5 +3,5 @@
  */
 export interface LoggingConfiguration {
     apiName: string;
-    production: any;
+    performanceThresholdMilliseconds: number;
 }

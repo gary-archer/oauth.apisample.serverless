@@ -16,14 +16,14 @@ import {PerformanceBreakdown} from './performanceBreakdown';
 export class LogEntryImpl implements LogEntry {
 
     private readonly _data: LogEntryData;
-    private readonly _getPerformanceThreshold: ((op: string) => number) | null;
+    private readonly _performanceThresholdMilliseconds: number;
 
-    public constructor(apiName: string, getPerformanceThreshold: ((op: string) => number) | null) {
+    public constructor(apiName: string, performanceThresholdMilliseconds: number) {
 
         this._data = new LogEntryData();
         this._data.apiName = apiName;
         this._data.hostName = os.hostname();
-        this._getPerformanceThreshold = getPerformanceThreshold;
+        this._performanceThresholdMilliseconds = performanceThresholdMilliseconds;
     }
 
     /*
@@ -33,9 +33,9 @@ export class LogEntryImpl implements LogEntry {
 
         this._data.performance.start();
 
-        // Get the operation name and its performance threshold
+        // Get the operation name and set the performance threshold
         this._calculateOperationName(event, context);
-        this._data.performanceThresholdMilliseconds = this._getPerformanceThreshold!(this._data.operationName);
+        this._data.performanceThresholdMilliseconds = this._performanceThresholdMilliseconds;
 
         // Record REST path details
         this._calculateRequestLocationFields(event);
