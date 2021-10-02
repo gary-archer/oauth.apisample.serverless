@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 import {injectable} from 'inversify';
-import {ErrorFactory} from '../../plumbing-base';
+import {ErrorFactory} from '../../plumbing';
 import {SampleErrorCodes} from '../errors/sampleErrorCodes';
 
 /*

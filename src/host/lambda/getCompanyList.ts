@@ -2,7 +2,7 @@ import {Container} from 'inversify';
 import 'reflect-metadata';
 import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes';
 import {CompanyService} from '../../logic/services/companyService';
-import {ResponseWriter} from '../../plumbing-base';
+import {ResponseWriter} from '../../plumbing';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration';
 
 /*

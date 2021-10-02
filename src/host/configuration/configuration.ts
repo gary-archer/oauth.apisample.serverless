@@ -1,5 +1,4 @@
-import {LoggingConfiguration} from '../../plumbing-base';
-import {OAuthConfiguration} from '../../plumbing-oauth';
+import {LoggingConfiguration, OAuthConfiguration} from '../../plumbing';
 import {ApiConfiguration} from './apiConfiguration';
 
 /*

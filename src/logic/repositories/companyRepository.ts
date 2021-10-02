@@ -1,5 +1,5 @@
 import {inject, injectable} from 'inversify';
-import {BASETYPES, LogEntry, using} from '../../plumbing-base';
+import {BASETYPES, LogEntry, using} from '../../plumbing';
 import {SAMPLETYPES} from '../dependencies/sampleTypes';
 import {Company} from '../entities/company';
 import {CompanyTransactions} from '../entities/companyTransactions';

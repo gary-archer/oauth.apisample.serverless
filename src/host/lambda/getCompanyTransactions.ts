@@ -3,7 +3,7 @@ import 'reflect-metadata';
 import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes';
 import {SampleErrorCodes} from '../../logic/errors/sampleErrorCodes';
 import {CompanyService} from '../../logic/services/companyService';
-import {ErrorFactory, ResponseWriter} from '../../plumbing-base';
+import {ErrorFactory, ResponseWriter} from '../../plumbing';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration';
 
 /*

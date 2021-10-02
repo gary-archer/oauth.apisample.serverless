@@ -1,6 +1,5 @@
 import {SampleCustomClaims} from '../../logic/entities/sampleCustomClaims';
-import {CustomClaims} from '../../plumbing-base';
-import {ClaimsPayload, ClaimsProvider} from '../../plumbing-oauth';
+import {ClaimsPayload, ClaimsProvider, CustomClaims} from '../../plumbing';
 
 /*
  * This class provides any API specific custom claims

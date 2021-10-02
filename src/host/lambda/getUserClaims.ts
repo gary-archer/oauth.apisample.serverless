@@ -1,6 +1,6 @@
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {BASETYPES, ResponseWriter, UserInfoClaims} from '../../plumbing-base';
+import {BASETYPES, ResponseWriter, UserInfoClaims} from '../../plumbing';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration';
 
 /*

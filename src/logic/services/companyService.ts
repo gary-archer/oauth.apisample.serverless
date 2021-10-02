@@ -1,5 +1,5 @@
 import {inject, injectable} from 'inversify';
-import {BASETYPES, ClientError, ErrorFactory} from '../../plumbing-base';
+import {BASETYPES, ClientError, ErrorFactory} from '../../plumbing';
 import {SAMPLETYPES} from '../dependencies/sampleTypes';
 import {Company} from '../entities/company';
 import {CompanyTransactions} from '../entities/companyTransactions';

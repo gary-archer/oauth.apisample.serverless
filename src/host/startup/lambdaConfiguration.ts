@@ -9,8 +9,7 @@ import {
     HttpProxy,
     LoggerFactory,
     LoggerFactoryBuilder,
-    ResponseWriter} from '../../plumbing-base';
-import {OAuthCompositionRoot} from '../../plumbing-oauth';
+    ResponseWriter} from '../../plumbing';
 import {SampleClaimsProvider} from '../claims/sampleClaimsProvider';
 import {Configuration} from '../configuration/configuration';
 import {CompositionRoot} from '../dependencies/compositionRoot';
@@ -43,11 +42,6 @@ export class LambdaConfiguration {
             // Register common code dependencies for logging and error handling
             const base = new BaseCompositionRoot(this._container)
                 .useLogging(configuration.logging, loggerFactory)
-                .useHttpProxy(httpProxy)
-                .register();
-
-            // Register common code OAuth dependencies
-            const oauth = new OAuthCompositionRoot(this._container)
                 .useOAuth(configuration.oauth)
                 .withClaimsProvider(new SampleClaimsProvider())
                 .useHttpProxy(httpProxy)
@@ -57,7 +51,7 @@ export class LambdaConfiguration {
             CompositionRoot.register(this._container);
 
             // Configure middy middleware classes
-            return this._configureMiddleware(baseHandler, base, oauth, configuration);
+            return this._configureMiddleware(baseHandler, base, configuration);
 
         } catch (e) {
 
@@ -80,13 +74,12 @@ export class LambdaConfiguration {
     private _configureMiddleware(
         baseHandler: AsyncHandler,
         base: BaseCompositionRoot,
-        oauth: OAuthCompositionRoot,
         configuration: Configuration): middy.Middy<any, any> {
 
         // Get framework middleware classes including an authorizer that reads claims from the request context
         const loggerMiddleware = base.getLoggerMiddleware();
         const exceptionMiddleware = base.getExceptionMiddleware();
-        const authorizerMiddleware = oauth.getAuthorizerMiddleware();
+        const authorizerMiddleware = base.getAuthorizerMiddleware();
         const customHeaderMiddleware = base.getCustomHeaderMiddleware();
 
         // Wrap the base handler and add middleware for cross cutting concerns
