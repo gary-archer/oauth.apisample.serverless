@@ -90,7 +90,7 @@ export class JwksRetriever {
             if (foundKey) {
 
                 // If the kid is found then use the JOSE library to parse it
-                return parseJwk(foundKey, this._configuration.algorithm);
+                return parseJwk(foundKey, 'RS256');
             }
         }
 

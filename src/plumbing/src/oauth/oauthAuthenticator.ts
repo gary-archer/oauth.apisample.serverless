@@ -49,7 +49,7 @@ export class OAuthAuthenticator {
 
                 // Set standard options
                 const options = {
-                    algorithms: [this._configuration.algorithm],
+                    algorithms: ['RS256'],
                     issuer: this._configuration.issuer,
                     audience: this._configuration.audience,
                 };
