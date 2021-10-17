@@ -1,0 +1,157 @@
+service: serverlessapi
+
+# Base details for AWS deployment
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: eu-west-2
+  profile: default
+  stage: ${self:custom.config.settings.stage}
+  lambdaHashingVersion: '20201221'
+  apiGateway:
+    shouldStartNameWithService: true
+
+  # Grant lambdas access to the DynamoDB cache table
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:DescribeTable
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+    Resource:
+      - "Fn::GetAtt": [ CacheTable, Arn ]
+
+custom:
+  # Each environment can have its own configuration file
+  config: ${file(environments/${opt:stage, 'local'}.yml)}
+  
+  # AWS deployed details
+  customDomain:
+    domainName: ${self:custom.config.settings.apiHostName}
+    certificateName: '*.${self:custom.config.settings.certificateDomainName}'
+    basePath: api
+    stage: ${self:custom.config.settings.stage}
+    endpointType: regional
+
+  # CORS headers allowed, including custom headers for logging
+  allowedHeaders:
+    - Content-Type
+    - Accept
+    - Cookie
+    - Authorization
+    - X-Amz-Date
+    - X-Api-Key
+    - X-Amz-Security-Token
+    - X-Amz-User-Agent
+    - x-mycompany-csrf
+    - x-mycompany-api-client
+    - x-mycompany-correlation-id
+    - x-mycompany-session-id
+    - x-mycompany-test-exception
+
+  # The time for which authorizer results are cached
+  claimsCacheTtlSeconds: 1800
+  
+  # Scripts used when building the AWS deployment package
+  scripts:
+    hooks:
+      'after:package:createDeploymentArtifacts': npm run customPackager
+
+functions:
+  getUserClaims:
+    handler: dist/host/lambda/getUserClaims.handler
+    events:
+      - http: 
+          path: /userinfo
+          method: get
+          cors:
+            origins:
+              - ${self:custom.config.settings.trustedOrigin}
+              - ${self:custom.config.settings.trustedDevOrigin}
+            headers: ${self:custom.allowedHeaders}
+            allowCredentials: true
+
+  getCompanyList:
+    handler: dist/host/lambda/getCompanyList.handler
+    events:
+      - http: 
+          path: /companies
+          method: get
+          cors:
+            origins:
+              - ${self:custom.config.settings.trustedOrigin}
+              - ${self:custom.config.settings.trustedDevOrigin}
+            headers: ${self:custom.allowedHeaders}
+            allowCredentials: true
+
+  getCompanyTransactions:
+    handler: dist/host/lambda/getCompanyTransactions.handler
+    events:
+      - http: 
+          path: /companies/{id}/transactions
+          method: get
+          cors:
+            origins:
+              - ${self:custom.config.settings.trustedOrigin}
+              - ${self:custom.config.settings.trustedDevOrigin}
+            headers: ${self:custom.allowedHeaders}
+            allowCredentials: true
+          request: 
+            parameters: 
+              paths: 
+                id: true
+
+# By default all files are included so remove files we don't need for any lambda
+package:
+  patterns:
+  - '!.codacy.yaml'
+  - '!.eslintrc.js'
+  - '!.vscode/**'
+  - '!.vscode/**'
+  - '!environments/**'
+  - '!src/**'
+  - '!test/**'
+  - '!ts*.json'
+  - '!package*.json'
+  - '!README.md'
+  - '!LICENSE.txt'
+
+plugins:
+  - serverless-domain-manager
+
+resources:
+  Resources:
+
+    # I am using DynamoDB as a cache for both JWKS keys and user claims
+    CacheTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: OAUTH_CACHE
+        AttributeDefinitions:
+          - AttributeName: CACHE_KEY
+            AttributeType: S
+        KeySchema:
+          - AttributeName: CACHE_KEY
+            KeyType: HASH
+        TimeToLiveSpecification:
+          AttributeName: TTL_VALUE
+          Enabled: true
+        BillingMode: PAY_PER_REQUEST
+
+    # Limit cloudwatch log retention 
+    GetUserClaimsLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'
+    GetCompanyListLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'
+    GetCompanyTransactionsLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'
