@@ -1,4 +1,4 @@
-# oauth.apisample.serverless
+# Final Serverless API 
 
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/b880a7d88a7547009e950a513bc00046)](https://www.codacy.com/gh/gary-archer/oauth.apisample.serverless/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=gary-archer/oauth.apisample.serverless&amp;utm_campaign=Badge_Grade)
 
@@ -6,7 +6,7 @@
  
 ### Overview
 
-A Low Cost Serverless Lambda API sample secured via OAuth, referenced in my blog at https://authguidance.com:
+The final Serverless OAuth Secured API code sample, referenced in my blog at https://authguidance.com:
 
 - The API handles direct JWTs from native apps or `SameSite=strict` cookies from Single Page Applications
 - The API validates JWTs on every request in a zero trust manner, using a JOSE library
