@@ -2,7 +2,7 @@
  * Export public types from common code
  */
 
-import {ApiClaims} from './src/claims/apiClaims';
+import {ClaimsPrincipal} from './src/claims/claimsPrincipal';
 import {LoggingConfiguration} from './src/configuration/loggingConfiguration';
 import {BaseCompositionRoot} from './src/dependencies/baseCompositionRoot';
 import {BASETYPES} from './src/dependencies/baseTypes';
@@ -28,7 +28,6 @@ import {UserInfoClaims} from './src/claims/userInfoClaims';
 import {using} from './src/utilities/using';
 
 export {
-    ApiClaims,
     AsyncHandler,
     BASETYPES,
     BaseClaims,
@@ -36,6 +35,7 @@ export {
     BaseErrorCodes,
     CacheConfiguration,
     CustomClaimsProvider,
+    ClaimsPrincipal,
     ClientError,
     CustomClaims,
     HttpProxy,

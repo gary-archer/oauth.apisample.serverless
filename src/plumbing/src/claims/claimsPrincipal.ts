@@ -5,7 +5,7 @@ import {UserInfoClaims} from './userInfoClaims';
 /*
  * An extensible claims object for APIs
  */
-export class ApiClaims {
+export class ClaimsPrincipal {
 
     private _baseClaims: BaseClaims;
     private _userInfoClaims: UserInfoClaims;

@@ -36,7 +36,9 @@ export class JwksRetriever {
      * Do our own DynamoDB based caching of JWKS keys since the JOSE library cannot cache them for lambdas
      */
     /* eslint-disable @typescript-eslint/no-unused-vars */
-    public async getKey(protectedHeader: JWSHeaderParameters, token: FlattenedJWSInput): Promise<KeyLike> {
+    public async getKey(
+        protectedHeader: JWSHeaderParameters,
+        token: FlattenedJWSInput): Promise<KeyLike | Uint8Array> {
 
         try {
 
@@ -79,7 +81,7 @@ export class JwksRetriever {
      * The jose library caches downloaded JWKS keys, but a new lambda is spun up on every request
      * Therefore we instead cache keys in DynamoDB cache for the deployed system
      */
-    private async _getCachedKey(kid?: string): Promise<KeyLike | null> {
+    private async _getCachedKey(kid?: string): Promise<KeyLike | Uint8Array | null> {
 
         const keysText = await this._cache.getJwksKeys();
         if (keysText) {

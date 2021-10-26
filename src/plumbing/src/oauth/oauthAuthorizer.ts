@@ -2,7 +2,7 @@ import middy from '@middy/core';
 import {Container} from 'inversify';
 import hasher from 'js-sha256';
 import {Cache} from '../cache/cache';
-import {ApiClaims} from '../claims/apiClaims';
+import {ClaimsPrincipal} from '../claims/claimsPrincipal';
 import {BaseClaims} from '../claims/baseClaims';
 import {CachedClaims} from '../claims/cachedClaims';
 import {CustomClaims} from '../claims/customClaims';
@@ -72,7 +72,7 @@ export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
     /*
      * Do the token validation and claims lookup
      */
-    private async _execute(event: any): Promise<ApiClaims> {
+    private async _execute(event: any): Promise<ClaimsPrincipal> {
 
         // First get the access token from the incoming request
         const accessTokenRetriever = this._container.get<AccessTokenRetriever>(BASETYPES.AccessTokenRetriever);
@@ -86,7 +86,7 @@ export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
         const accessTokenHash = hasher.sha256(accessToken);
         const cachedClaims = await this._cache.getExtraUserClaims(accessTokenHash);
         if (cachedClaims) {
-            return new ApiClaims(tokenClaims, cachedClaims.userInfo, cachedClaims.custom);
+            return new ClaimsPrincipal(tokenClaims, cachedClaims.userInfo, cachedClaims.custom);
         }
 
         // Otherwise look up user info claims and domain specific claims
@@ -98,7 +98,7 @@ export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
         await this._cache.setExtraUserClaims(accessTokenHash, claimsToCache);
 
         // Return the final claims
-        return new ApiClaims(tokenClaims, userInfo, customClaims);
+        return new ClaimsPrincipal(tokenClaims, userInfo, customClaims);
     }
 
     private _setupCallbacks(): void {
