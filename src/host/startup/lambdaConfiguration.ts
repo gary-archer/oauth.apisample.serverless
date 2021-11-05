@@ -1,10 +1,9 @@
 import middy from '@middy/core';
 import cors from '@middy/http-cors';
-import {Context, Handler} from 'aws-lambda';
+import {APIGatewayProxyEvent, APIGatewayProxyResult, Context} from 'aws-lambda';
 import fs from 'fs-extra';
 import {Container} from 'inversify';
 import {
-    AsyncHandler,
     BaseCompositionRoot,
     HttpProxy,
     LoggerFactory,
@@ -13,6 +12,11 @@ import {
 import {SampleCustomClaimsProvider} from '../claims/sampleCustomClaimsProvider';
 import {Configuration} from '../configuration/configuration';
 import {CompositionRoot} from '../dependencies/compositionRoot';
+
+/*
+ * A shorthand type for this module
+ */
+type AsyncHandler = (event: APIGatewayProxyEvent, context: Context) => Promise<APIGatewayProxyResult>;
 
 /*
  * A class to configure the lambda and manage cross cutting concerns
@@ -28,7 +32,8 @@ export class LambdaConfiguration {
     /*
      * Apply cross cutting concerns to a lambda
      */
-    public enrichHandler(baseHandler: AsyncHandler): Handler {
+    public enrichHandler(baseHandler: AsyncHandler)
+        : middy.MiddyfiedHandler<APIGatewayProxyEvent, APIGatewayProxyResult> | AsyncHandler {
 
         const loggerFactory = LoggerFactoryBuilder.create();
         try {
@@ -74,7 +79,8 @@ export class LambdaConfiguration {
     private _configureMiddleware(
         baseHandler: AsyncHandler,
         base: BaseCompositionRoot,
-        configuration: Configuration): middy.Middy<any, any> {
+        configuration: Configuration)
+            : middy.MiddyfiedHandler<APIGatewayProxyEvent, APIGatewayProxyResult> | AsyncHandler {
 
         // Get framework middleware classes including an authorizer that reads claims from the request context
         const loggerMiddleware = base.getLoggerMiddleware();
@@ -84,7 +90,7 @@ export class LambdaConfiguration {
 
         // Wrap the base handler and add middleware for cross cutting concerns
         // This ordering ensures that correct CORS headers are written for error responses
-        return middy(async (event: any, context: Context) => {
+        return middy(async (event: APIGatewayProxyEvent, context: Context) => {
             return baseHandler(event, context);
 
         })
@@ -98,7 +104,7 @@ export class LambdaConfiguration {
     /*
      * Ensure that any startup errors are logged and then return a handler that will provide the client response
      */
-    private _handleStartupError(loggerFactory: LoggerFactory, error: any): Handler {
+    private _handleStartupError(loggerFactory: LoggerFactory, error: any): AsyncHandler {
 
         const clientError = loggerFactory.logStartupError(error);
         return async () => {
