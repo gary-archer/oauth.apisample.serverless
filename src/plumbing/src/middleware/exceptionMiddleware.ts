@@ -1,3 +1,4 @@
+import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import middy from '@middy/core';
 import {Container} from 'inversify';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration';
@@ -10,7 +11,7 @@ import {ResponseWriter} from '../utilities/responseWriter';
 /*
  * The exception middleware coded in a class based manner
  */
-export class ExceptionMiddleware implements middy.MiddlewareObject<any, any> {
+export class ExceptionMiddleware implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
 
     private readonly _container: Container;
     private readonly _configuration: LoggingConfiguration;
@@ -25,13 +26,13 @@ export class ExceptionMiddleware implements middy.MiddlewareObject<any, any> {
     /*
      * All exceptions are caught and returned from AWS here
      */
-    public onError(handler: middy.HandlerLambda<any, any>, next: middy.NextFunction): void {
+    public onError(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
 
         // Get the log entry
         const logEntry = this._container.get<LogEntryImpl>(BASETYPES.LogEntry);
 
         // Get the error into a known object
-        const error = ErrorUtils.fromException(handler.error);
+        const error = ErrorUtils.fromException(request.error);
 
         // Log the error and convert to the client error
         let clientError;
@@ -49,10 +50,7 @@ export class ExceptionMiddleware implements middy.MiddlewareObject<any, any> {
         logEntry.write();
 
         // Set the client error as the lambda response error, which will be serialized and returned via the API gateway
-        handler.response = ResponseWriter.objectResponse(clientError.getStatusCode(), clientError.toResponseFormat());
-
-        // With middy we always move to the next
-        next();
+        request.response = ResponseWriter.objectResponse(clientError.getStatusCode(), clientError.toResponseFormat());
     }
 
     /*

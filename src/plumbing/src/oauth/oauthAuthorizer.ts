@@ -17,7 +17,7 @@ import {OAuthAuthenticator} from './oauthAuthenticator';
 /*
  * A middleware for OAuth handling, which does token processing and custom claims handling
  */
-export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
+export class OAuthAuthorizer implements middy.MiddlewareObj<any, any> {
 
     private readonly _container: Container;
     private readonly _customClaimsProvider: CustomClaimsProvider;
@@ -37,13 +37,13 @@ export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
     /*
      * The entry point does the OAuth work as well as AWS specific processing
      */
-    public async before(handler: middy.HandlerLambda<any, any>): Promise<void> {
+    public async before(context: any): Promise<void> {
 
         const logEntry = this._container.get<LogEntryImpl>(BASETYPES.LogEntry);
         try {
 
             // Ask the authorizer to do the work and return claims
-            const claims = await this._execute(handler.event);
+            const claims = await this._execute(context.event);
 
             // Include identity details in logs as soon as we have them
             logEntry.setIdentity(claims.token);
@@ -72,11 +72,11 @@ export class OAuthAuthorizer implements middy.MiddlewareObject<any, any> {
     /*
      * Do the token validation and claims lookup
      */
-    private async _execute(event: any): Promise<ClaimsPrincipal> {
+    private async _execute(context: any): Promise<ClaimsPrincipal> {
 
         // First get the access token from the incoming request
         const accessTokenRetriever = this._container.get<AccessTokenRetriever>(BASETYPES.AccessTokenRetriever);
-        const accessToken = accessTokenRetriever.getAccessToken(event);
+        const accessToken = accessTokenRetriever.getAccessToken(context);
 
         // On every lambda HTTP request we validate the JWT, in a zero trust manner
         const authenticator = this._container.get<OAuthAuthenticator>(BASETYPES.OAuthAuthenticator);

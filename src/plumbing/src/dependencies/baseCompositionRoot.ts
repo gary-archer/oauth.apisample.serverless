@@ -106,19 +106,19 @@ export class BaseCompositionRoot {
         return this;
     }
 
-    public getLoggerMiddleware(): middy.MiddlewareObject<any, any> {
+    public getLoggerMiddleware(): middy.MiddlewareObj<any, any> {
         return new LoggerMiddleware(this._container, this._loggerFactory!);
     }
 
-    public getExceptionMiddleware(): middy.MiddlewareObject<any, any> {
+    public getExceptionMiddleware(): middy.MiddlewareObj<any, any> {
         return new ExceptionMiddleware(this._container, this._loggingConfiguration!);
     }
 
-    public getCustomHeaderMiddleware(): middy.MiddlewareObject<any, any> {
+    public getCustomHeaderMiddleware(): middy.MiddlewareObj<any, any> {
         return new CustomHeaderMiddleware(this._loggingConfiguration!.apiName);
     }
 
-    public getAuthorizerMiddleware(): middy.MiddlewareObject<any, any> {
+    public getAuthorizerMiddleware(): middy.MiddlewareObj<any, any> {
         return new OAuthAuthorizer(this._container, this._customClaimsProvider!, this._cache!);
     }
 

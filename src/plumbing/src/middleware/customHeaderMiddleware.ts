@@ -1,3 +1,4 @@
+import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import middy from '@middy/core';
 import {BaseErrorCodes} from '../errors/baseErrorCodes';
 import {ErrorFactory} from '../errors/errorFactory';
@@ -5,7 +6,7 @@ import {ErrorFactory} from '../errors/errorFactory';
 /*
  * A middleware for special header processing, used to simulate exceptions and check deployed error handling
  */
-export class CustomHeaderMiddleware implements middy.MiddlewareObject<any, any> {
+export class CustomHeaderMiddleware implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
 
     private readonly _apiName: string;
 
@@ -17,12 +18,12 @@ export class CustomHeaderMiddleware implements middy.MiddlewareObject<any, any> 
     /*
      * Simulate a 500 error if a particular test header is received
      */
-    public before(handler: middy.HandlerLambda<any, any>, next: middy.NextFunction): void {
+    public before(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
 
         const textExceptionHeaderName = 'x-mycompany-test-exception';
 
-        if (handler.event.headers) {
-            const apiToBreak = handler.event.headers[textExceptionHeaderName];
+        if (request.event.headers) {
+            const apiToBreak = request.event.headers[textExceptionHeaderName];
             if (apiToBreak) {
                 if (apiToBreak.toLowerCase() === this._apiName.toLowerCase()) {
                     throw ErrorFactory.createServerError(
@@ -31,8 +32,6 @@ export class CustomHeaderMiddleware implements middy.MiddlewareObject<any, any> 
                 }
             }
         }
-
-        next();
     }
 
     /*

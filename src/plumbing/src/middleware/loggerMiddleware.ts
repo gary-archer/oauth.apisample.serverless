@@ -1,4 +1,5 @@
 import middy from '@middy/core';
+import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
 import {BASETYPES} from '../dependencies/baseTypes';
 import {LogEntryImpl} from '../logging/logEntryImpl';
@@ -7,7 +8,7 @@ import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
 /*
  * The middleware coded in a class based manner
  */
-export class LoggerMiddleware implements middy.MiddlewareObject<any, any> {
+export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
 
     private readonly _container: Container;
     private readonly _loggerFactory: LoggerFactoryImpl;
@@ -21,7 +22,7 @@ export class LoggerMiddleware implements middy.MiddlewareObject<any, any> {
     /*
      * Start logging when a request begins
      */
-    public before(handler: middy.HandlerLambda<any, any>, next: middy.NextFunction): void {
+    public before(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
 
         // Create the log entry for the current request
         const logEntry = this._loggerFactory.createLogEntry();
@@ -30,27 +31,23 @@ export class LoggerMiddleware implements middy.MiddlewareObject<any, any> {
         this._container.rebind<LogEntryImpl>(BASETYPES.LogEntry).toConstantValue(logEntry);
 
         // Start request logging
-        logEntry.start(handler.event, handler.context);
-        next();
+        logEntry.start(request.event, request.context);
     }
 
     /*
      * Finish logging after normal completion
      */
-    public after(handler: middy.HandlerLambda<any, any>, next: middy.NextFunction): void {
+    public after(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
 
         // Get the log entry
         const logEntry = this._container.get<LogEntryImpl>(BASETYPES.LogEntry);
 
         // End logging
-        if (handler.response && handler.response.statusCode) {
-            logEntry.setResponseStatus(handler.response.statusCode);
+        if (request.response && request.response.statusCode) {
+            logEntry.setResponseStatus(request.response.statusCode);
         }
         logEntry.end();
         logEntry.write();
-
-        // Move to next
-        next();
     }
 
     /*

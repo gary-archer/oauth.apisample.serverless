@@ -1,3 +1,4 @@
+import {APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
 import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes';
@@ -9,7 +10,7 @@ import {LambdaConfiguration} from '../startup/lambdaConfiguration';
  * The entry point is similar to a REST controller
  */
 const container = new Container();
-const baseHandler = async () => {
+const baseHandler = async (): Promise<APIGatewayProxyResult> => {
 
     // First check scopes
     const baseClaims = container.get<BaseClaims>(BASETYPES.BaseClaims);

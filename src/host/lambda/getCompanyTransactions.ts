@@ -1,3 +1,4 @@
+import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
 import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes';
@@ -10,14 +11,14 @@ import {LambdaConfiguration} from '../startup/lambdaConfiguration';
  * Our handler acts as a REST controller
  */
 const container = new Container();
-const baseHandler = async (event: any) => {
+const baseHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
     // First check scopes
     const baseClaims = container.get<BaseClaims>(BASETYPES.BaseClaims);
     ScopeVerifier.enforce(baseClaims.scopes, 'transactions_read');
 
     // First get the supplied id and ensure it is a valid integer
-    const id = parseInt(event.pathParameters.id, 10);
+    const id = parseInt(event.pathParameters?.id || '', 10);
     if (isNaN(id) || id <= 0) {
 
         throw ErrorFactory.createClientError(

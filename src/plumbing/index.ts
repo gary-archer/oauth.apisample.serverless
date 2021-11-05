@@ -20,7 +20,6 @@ import {LoggerFactoryBuilder} from './src/logging/loggerFactoryBuilder';
 import {OAuthConfiguration} from './src/configuration/oauthConfiguration';
 import {PerformanceBreakdown} from './src/logging/performanceBreakdown';
 import {ScopeVerifier} from './src/oauth/scopeVerifier';
-import {AsyncHandler} from './src/utilities/asyncHandler';
 import {Disposable} from './src/utilities/disposable';
 import {HttpProxy} from './src/utilities/httpProxy';
 import {ResponseWriter} from './src/utilities/responseWriter';
@@ -28,7 +27,6 @@ import {UserInfoClaims} from './src/claims/userInfoClaims';
 import {using} from './src/utilities/using';
 
 export {
-    AsyncHandler,
     BASETYPES,
     BaseClaims,
     BaseCompositionRoot,
