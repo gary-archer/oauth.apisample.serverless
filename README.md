@@ -8,7 +8,8 @@
 
 The final Serverless OAuth Secured API code sample, referenced in my blog at https://authguidance.com:
 
-- The API receives JWT access tokens from native apps or `SameSite=strict` cookies from Single Page Applications
+- The API receives JWT access tokens from mobile and desktop apps
+- The API receives `SameSite=strict` cookies from Single Page Applications
 - The API validates JWTs on every request in a zero trust manner, using a JOSE library
 - The API authorizes using domain specific claims
 - The API uses caching to avoid excessive calls to the Authorization Server
@@ -36,7 +37,7 @@ Ensure that Node.js, `jq` and `curl` are installed, then run these commands to t
 
 ## API Middleware Used
 
-* The [JOSE Library](https://github.com/panva/jose) is used for to manage in memory validation of JWTs
+* The [JOSE library](https://github.com/panva/jose) is used for to manage in memory validation of JWTs
 * [InversifyJS](http://inversify.io) is used to help manage class dependencies
 
 ## Cloud Infrastructure Used
