@@ -8,7 +8,7 @@
 
 The final Serverless OAuth Secured API code sample, referenced in my blog at https://authguidance.com:
 
-- The API handles direct JWTs from native apps or `SameSite=strict` cookies from Single Page Applications
+- The API receives JWT access tokens from native apps or `SameSite=strict` cookies from Single Page Applications
 - The API validates JWTs on every request in a zero trust manner, using a JOSE library
 - The API authorizes using domain specific claims
 - The API uses caching to avoid excessive calls to the Authorization Server
