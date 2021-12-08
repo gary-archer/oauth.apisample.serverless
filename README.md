@@ -18,7 +18,7 @@ The final Serverless OAuth Secured API code sample, referenced in my blog at htt
 
 Ensure that Node.js, `jq` and `curl` are installed, then Run these operations to test the API's lambda functions:
 
-- ./setup.sh
+- npm run setup
 - npm run getUserClaims
 - npm run getCompanyList
 - npm run getCompanyTransactions
