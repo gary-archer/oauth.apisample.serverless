@@ -60,7 +60,7 @@ export class LogEntryImpl implements LogEntry {
      * Add identity details for secured requests
      */
     public setIdentity(claims: BaseClaims): void {
-        this._data.userOAuthId = claims.subject;
+        this._data.userId = claims.subject;
     }
 
     /*
@@ -169,12 +169,12 @@ export class LogEntryImpl implements LogEntry {
 
             // Log the HTTP method
             if (event.httpMethod) {
-                this._data.requestVerb = event.httpMethod;
+                this._data.method = event.httpMethod;
             }
 
             // Log the full request path including query parameters
             if (event.path) {
-                this._data.requestPath = event.path;
+                this._data.path = event.path;
                 if (event.queryStringParameters) {
 
                     // Collect each item
@@ -187,7 +187,7 @@ export class LogEntryImpl implements LogEntry {
 
                     // Append to the base path
                     if (items.length > 0) {
-                        this._data.requestPath += `?${items.join('&')}`;
+                        this._data.path += `?${items.join('&')}`;
                     }
                 }
             }

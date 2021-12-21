@@ -5,7 +5,7 @@
 ################################################################################################
 
 WEB_BASE_URL='https://web.authsamples.com'
-TOKEN_HANDLER_BASE_URL='https://api.authsamples.com/token-handler'
+TOKEN_HANDLER_BASE_URL='https://api.authsamples.com/tokenhandler'
 BUSINESS_API_BASE_URL='https://api.authsamples.com/api'
 LOGIN_BASE_URL='https://login.authsamples.com'
 COOKIE_PREFIX=mycompany

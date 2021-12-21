@@ -22,20 +22,20 @@ export class LogEntryData {
     // The host on which the request was processed
     public hostName: string;
 
-    // The HTTP verb
-    public requestVerb: string;
+    // The HTTP method
+    public method: string;
+
+    // The request path
+    public path: string;
 
     // The resource id(s) in the request URL path segments is often useful to query by
     public resourceId: string;
-
-    // The request path
-    public requestPath: string;
 
     // The calling application name
     public clientApplicationName: string;
 
     // The subject claim from the OAuth 2.0 access token
-    public userOAuthId: string;
+    public userId: string;
 
     // The status code returned
     public statusCode: number;
@@ -78,11 +78,11 @@ export class LogEntryData {
         this.apiName = '';
         this.operationName = '';
         this.hostName = '';
-        this.requestVerb = '';
+        this.method = '';
+        this.path = '';
         this.resourceId = '';
-        this.requestPath = '';
         this.clientApplicationName = '';
-        this.userOAuthId = '';
+        this.userId = '';
         this.statusCode = 200;
         this.errorCode = '';
         this.errorId = 0;
@@ -116,11 +116,11 @@ export class LogEntryData {
         this._outputString((x) => output.apiName = x, this.apiName);
         this._outputString((x) => output.operationName = x, this.operationName);
         this._outputString((x) => output.hostName = x, this.hostName);
-        this._outputString((x) => output.requestVerb = x, this.requestVerb);
+        this._outputString((x) => output.method = x, this.method);
+        this._outputString((x) => output.path = x, this.path);
         this._outputString((x) => output.resourceId = x, this.resourceId);
-        this._outputString((x) => output.requestPath = x, this.requestPath);
         this._outputString((x) => output.clientApplicationName = x, this.clientApplicationName);
-        this._outputString((x) => output.userOAuthId = x, this.userOAuthId);
+        this._outputString((x) => output.userId = x, this.userId);
         this._outputNumber((x) => output.statusCode = x, this.statusCode);
         this._outputString((x) => output.errorCode = x, this.errorCode);
         this._outputNumber((x) => output.errorId = x, this.errorId);
