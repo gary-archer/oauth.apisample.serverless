@@ -120,6 +120,7 @@ export class LambdaConfiguration {
         return {
             origins: configuration.api.trustedOrigins,
             credentials: true,
+            maxAge: 86400,
         };
     }
 }
