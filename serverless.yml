@@ -37,22 +37,6 @@ custom:
     stage: ${self:custom.config.settings.stage}
     endpointType: regional
 
-  # CORS headers allowed, including custom headers for logging
-  allowedHeaders:
-    - Content-Type
-    - Accept
-    - Cookie
-    - Authorization
-    - X-Amz-Date
-    - X-Api-Key
-    - X-Amz-Security-Token
-    - X-Amz-User-Agent
-    - x-mycompany-csrf
-    - x-mycompany-api-client
-    - x-mycompany-correlation-id
-    - x-mycompany-session-id
-    - x-mycompany-test-exception
-
   # The time for which authorizer results are cached
   claimsCacheTtlSeconds: 1800
   
@@ -68,12 +52,6 @@ functions:
       - http: 
           path: /userinfo
           method: get
-          cors:
-            origins:
-              - ${self:custom.config.settings.trustedOrigin}
-              - ${self:custom.config.settings.trustedDevOrigin}
-            headers: ${self:custom.allowedHeaders}
-            allowCredentials: true
 
   getCompanyList:
     handler: dist/host/lambda/getCompanyList.handler
@@ -81,12 +59,6 @@ functions:
       - http: 
           path: /companies
           method: get
-          cors:
-            origins:
-              - ${self:custom.config.settings.trustedOrigin}
-              - ${self:custom.config.settings.trustedDevOrigin}
-            headers: ${self:custom.allowedHeaders}
-            allowCredentials: true
 
   getCompanyTransactions:
     handler: dist/host/lambda/getCompanyTransactions.handler
@@ -94,12 +66,6 @@ functions:
       - http: 
           path: /companies/{id}/transactions
           method: get
-          cors:
-            origins:
-              - ${self:custom.config.settings.trustedOrigin}
-              - ${self:custom.config.settings.trustedDevOrigin}
-            headers: ${self:custom.allowedHeaders}
-            allowCredentials: true
           request: 
             parameters: 
               paths: 
