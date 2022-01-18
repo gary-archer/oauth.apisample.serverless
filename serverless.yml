@@ -29,7 +29,7 @@ custom:
   # Each environment can have its own configuration file
   config: ${file(environments/${opt:stage, 'local'}.yml)}
   
-  # AWS deployed details
+  # API gateway domain details
   customDomain:
     domainName: ${self:custom.config.settings.apiHostName}
     certificateName: '*.${self:custom.config.settings.certificateDomainName}'
@@ -53,9 +53,6 @@ custom:
     - x-mycompany-session-id
     - x-mycompany-test-exception
 
-  # The time for which authorizer results are cached
-  claimsCacheTtlSeconds: 1800
-  
   # Scripts used when building the AWS deployment package
   scripts:
     hooks:
