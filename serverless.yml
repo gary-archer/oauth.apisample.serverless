@@ -37,6 +37,22 @@ custom:
     stage: ${self:custom.config.settings.stage}
     endpointType: regional
 
+  # Tell the API gateway to not reject any requests with these headers
+  allowedHeaders:
+    - Content-Type
+    - Accept
+    - Cookie
+    - Authorization
+    - X-Amz-Date
+    - X-Api-Key
+    - X-Amz-Security-Token
+    - X-Amz-User-Agent
+    - x-mycompany-csrf
+    - x-mycompany-api-client
+    - x-mycompany-correlation-id
+    - x-mycompany-session-id
+    - x-mycompany-test-exception
+
   # The time for which authorizer results are cached
   claimsCacheTtlSeconds: 1800
   
@@ -45,6 +61,7 @@ custom:
     hooks:
       'after:package:createDeploymentArtifacts': npm run customPackager
 
+# We have to configure CORS here so that API gateway does not reject OPTIONS requests
 functions:
   getUserClaims:
     handler: dist/host/lambda/getUserClaims.handler
@@ -52,6 +69,13 @@ functions:
       - http: 
           path: /userinfo
           method: get
+          cors:
+            origins:
+              - ${self:custom.config.settings.trustedOrigin}
+              - ${self:custom.config.settings.trustedDevOrigin}
+            headers: ${self:custom.allowedHeaders}
+            allowCredentials: true
+            maxAge: 86400
 
   getCompanyList:
     handler: dist/host/lambda/getCompanyList.handler
@@ -59,6 +83,13 @@ functions:
       - http: 
           path: /companies
           method: get
+          cors:
+            origins:
+              - ${self:custom.config.settings.trustedOrigin}
+              - ${self:custom.config.settings.trustedDevOrigin}
+            headers: ${self:custom.allowedHeaders}
+            allowCredentials: true
+            maxAge: 86400
 
   getCompanyTransactions:
     handler: dist/host/lambda/getCompanyTransactions.handler
@@ -66,6 +97,13 @@ functions:
       - http: 
           path: /companies/{id}/transactions
           method: get
+          cors:
+            origins:
+              - ${self:custom.config.settings.trustedOrigin}
+              - ${self:custom.config.settings.trustedDevOrigin}
+            headers: ${self:custom.allowedHeaders}
+            allowCredentials: true
+            maxAge: 86400
           request: 
             parameters: 
               paths: 
