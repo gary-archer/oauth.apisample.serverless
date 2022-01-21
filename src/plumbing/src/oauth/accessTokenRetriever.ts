@@ -1,5 +1,6 @@
+import base64url from 'base64url';
 import cookie from 'cookie';
-import {decryptCookie} from 'cookie-encrypter';
+import crypto from 'crypto';
 import {inject, injectable} from 'inversify';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {BASETYPES} from '../dependencies/baseTypes';
@@ -134,18 +135,49 @@ export class AccessTokenRetriever {
     }
 
     /*
-     * A helper method to decrypt a cookie and report errors clearly
+     * A helper method to decrypt a cookie using AES256-GCM and report errors clearly
      */
     private _decryptCookie(cookieName: string, encryptedData: string): string {
 
+        const VERSION_SIZE = 1;
+        const GCM_IV_SIZE = 12;
+        const GCM_TAG_SIZE = 16;
+        const CURRENT_VERSION = 1;
+
+        const allBytes = base64url.toBuffer(encryptedData);
+
+        const minSize = VERSION_SIZE + GCM_IV_SIZE + 1 + GCM_TAG_SIZE;
+        if (allBytes.length < minSize) {
+            throw ErrorUtils.fromMalformedCookieError(cookieName, 'The received cookie has an invalid length');
+        }
+
+        const version = allBytes[0];
+        if (version != CURRENT_VERSION) {
+            throw ErrorUtils.fromMalformedCookieError(cookieName, 'The received cookie has an invalid format');
+        }
+
+        let offset = VERSION_SIZE;
+        const ivBytes = allBytes.slice(offset, offset + GCM_IV_SIZE);
+
+        offset += GCM_IV_SIZE;
+        const ciphertextBytes = allBytes.slice(offset, allBytes.length - GCM_TAG_SIZE);
+
+        offset = allBytes.length - GCM_TAG_SIZE;
+        const tagBytes = allBytes.slice(offset, allBytes.length);
+
         try {
 
-            // Try the AES256 decryption
-            return decryptCookie(encryptedData, {key: this._configuration.cookieDecryptionKey});
+            const encKeyBytes = Buffer.from(this._configuration.cookieDecryptionKey, 'hex');
+            const decipher = crypto.createDecipheriv('aes-256-gcm', encKeyBytes, ivBytes);
+            decipher.setAuthTag(tagBytes);
 
-        } catch (e) {
+            const decryptedBytes = decipher.update(ciphertextBytes);
+            const finalBytes = decipher.final();
 
-            // Get an error
+            const plaintextBytes = Buffer.concat([decryptedBytes, finalBytes]);
+            return plaintextBytes.toString();
+
+        } catch (e: any) {
             throw ErrorUtils.fromCookieDecryptionError(cookieName, e);
         }
     }

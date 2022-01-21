@@ -48,10 +48,20 @@ export class ErrorUtils {
     /*
      * Handle the error for key identifier lookups
      */
+    public static fromMalformedCookieError(cookieName: string, message: string): ClientError {
+
+        return ErrorFactory.createClient401Error(
+            `Invalid cookie received, name: ${cookieName}, details: ${message}`);
+    }
+
+    /*
+     * Handle the error for key identifier lookups
+     */
     public static fromCookieDecryptionError(cookieName: string, exception: any): ClientError {
 
         const details = ErrorUtils._getExceptionDetailsMessage(exception);
-        return ErrorFactory.createClient401Error(`Problem encountered decrypting ${cookieName} cookie: ${details}`);
+        return ErrorFactory.createClient401Error(
+            `Problem encountered decrypting cookie, name: ${cookieName} details: ${details}`);
     }
 
     /*
