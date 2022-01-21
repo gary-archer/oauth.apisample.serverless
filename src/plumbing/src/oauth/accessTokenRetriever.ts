@@ -115,7 +115,7 @@ export class AccessTokenRetriever {
         method: string): string {
 
         // Get the token from the secure cookie
-        const accessToken = this._decryptCookie('access', accessCookie);
+        const accessToken = this._decryptCookie('at', accessCookie);
 
         // Make extra CSRF checks for data changing commands
         if (method === 'post' || method === 'put' || method === 'patch' || method === 'delete') {
