@@ -1,0 +1,9 @@
+{
+    "httpMethod": "OPTIONS",
+    "path": "/api/companies",
+    "headers": {
+      "origin": "https://web.authsamples.com",
+      "access-control-request-headers": "x-mycompany-csrf,x-mycompany-api-client,x-mycompany-correlation-id,x-mycompany-session-id,x-mycompany-test-exception"
+    }
+  }
+  

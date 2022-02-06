@@ -1,0 +1,21 @@
+{
+  "httpMethod": "GET",
+  "path": "/api/companies/2/transactions",
+  "headers": {
+    "origin": "https://web.authsamples.com",
+    "x-mycompany-csrf": "sUa6B4UhFZN2mhenvR2oRbDcVbZmhxpr0anHmK6dkg4=",
+    "x-mycompany-api-client": "ServerlessTest",
+    "x-mycompany-correlation-id": "9a850020-6407-a97b-5fe7-98b0def07822",
+    "x-mycompany-session-id": "d1270ebf-0323-4e43-c6e1-5458f26c8e23",
+    "x-mycompany-test-exception": ""
+  },
+  "pathParameters": {
+    "id": "2"
+  },
+  "multiValueHeaders": {
+    "cookie": [
+      "mycompany-at=AR6YApuszZwXbCC__1v-IgIs1D1Y7Qnf_lhy4p0_oMQdi1ZljMWtVmsgx21yS_FT--NHLzwf43tg6X_G7zujgCbg_5YO4zick7uKXf5rc9QVT0g3roVh7tJvV6QoBmwCqsH4Tw52dNG7YU8eW7Ds6yLF7l9xIlgmrtbkiQiPV28FXohMkki9L8mylVEgSoHe5_pSsqe8hcb_Y-AX6OMDv44hQqbeNv39BYD6U1OJz9o2N9Sk8AIkBVcXzVplTeawtvGcFHFH60RduK4pud2hvwVm5quM6PaGKH9zYbSFC8fYu10TeeNWPwlF2CBLZD_Fru4ibnDPMKm_oD0qTEXouQOu7dOs12dND55EC5N3LfzroUbaoRXUs2_6jJVQZaZdG5BmWUiYBib1vcuExpRKKeiXyfRjJ3wxv1bkddl88vWJhKw3Qjb7cDV1hxnN1s7K8GOJQsciHhsWJMVNZBSAb6X1Wwv8vRd40QfcD9lHO7us13bu81KTKkj5BHCE9NL199LtoW0KmpgB4cigVgYwmv4SY-Gv8GyPTX5zn8ZKlvEpLJPpDWCcao7E5VL5Z2Pc_NgLEDpe6xYCbrG_xO2IT-qzVF-AaOChVJEvpngc-a4hB7XHBF6_H85CqMxRcVx1QtL45AatVx2Q6ri0U1RgyPwKAcLusG8trB1FCYEGsOT-PjuhyxIjEGsg1Zfhmn3Wwb6h2y25_qejywDepkAHZOavL04WZnOluTGJ63Ux0KQqJIpvrufeekvhbmxPWKCCq_JdL7ddOXU-VbBHEYIVjjKSBDLKaiceNluO4D3I3A9xPpUnoN6funXrMY4KfAB7lBN7O9FfDwgb2zbr7nOiJcSuOHKWQYElF-uJauUviB6gvhFbpJmWmZgSE9p3SzYQJfZnrGCrbi2ONDAiHuRO0h0RB1y9Zc95pAF4x7-VdVCrrNtF2kUWoIkSwcmEqHGsboYijE4GQmn9cX4FPh6iSn6p86pIrKX0mmtJNCHjcqu2m3OXbScZctm_xJQ9t0m9cOK3m3dsDDg0P1Nt37mqFhFZrT_RUlPkjdHgDL346CwE2x624o-gUBQeBCNTVnK0JLMzgAgXkd0mbrTMe6eoaM-pBvANI-1kw7shIxlx5fjEpytk6jRsXlDfC__LMAQ3hw-NzUs0OBNKZdQrjGGJf3oGI-0zc3ZqufVU9WGf1aXNRCiU8UoeaXcu0Q8gKY4cugP829XtSRY0IrlNEaXWuzZTmePcqqesvMq4CzXGNQ4eOMCDZV5vqiHHry0mPe-rV792mi8LbCrcxUMcPpavnlaK03vFtNuhIRxASUjvkyzRsMEpz4P1nKL6o40QW-_qsagUMMpLSBTpTdnEGl6mDJTmrfm8JhxPb10ER-vaYr7_9uRpugB1hDLjoayvv0LOBiYLjXLXJQ9tIbaKzKUniGvcRfFx7_jAfNq1dGdu38cXpBkB4VceHPGLUKUtybar2ShmTcpiRatJqLDG0dJfDV5EXaM0yxY-2jxdBn1quJNiEfIKO_cB1SnP3BcRJMX-9ZOmmLNQSJzj3-Uy36mOgYBExHCuJOC9",
+      "mycompany-csrf=AVLY6LcP3pb89Bq4_tnpN8agiVhEf-N9QNDY0ofgYEpLUi2RI4lpnYLnVBJt9CRCG0_X5eeHn6tDa-LRTBARXxS3hnp9TAe9Aw"
+    ]
+  }
+}
