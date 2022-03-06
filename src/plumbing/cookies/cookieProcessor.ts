@@ -27,7 +27,7 @@ export class CookieProcessor {
     /*
      * Try to read the token from either the authorization header or cookies
      */
-    public getAccessToken(event: any): string | null {
+    public getAccessToken(event: APIGatewayProxyEvent): string | null {
 
         // First see if we have a request with secure cookies
         const name = 'at';

@@ -1,4 +1,5 @@
-import {Context} from 'aws-lambda';
+import {APIGatewayProxyEvent, Context} from 'aws-lambda';
+import fs from 'fs-extra';
 import {Guid} from 'guid-typescript';
 import {injectable} from 'inversify';
 import os from 'os';
@@ -29,7 +30,7 @@ export class LogEntryImpl implements LogEntry {
     /*
      * Start logging and read data from the context where possible
      */
-    public start(event: any, context: Context): void {
+    public start(event: APIGatewayProxyEvent, context: Context): void {
 
         this._data.performance.start();
 
@@ -132,8 +133,9 @@ export class LogEntryImpl implements LogEntry {
 
         if (process.env.IS_LOCAL) {
 
-            // On a developer PC, output logs with pretty printing
-            console.log(JSON.stringify(this._data.toLogFormat(), null, 2));
+            // On a developer PC, output from 'npm run lambda' is written with pretty printing to a file
+            const data = JSON.stringify(this._data.toLogFormat(), null, 2);
+            fs.appendFileSync('./test/lambdatest.log', data);
 
         } else {
 
@@ -147,7 +149,7 @@ export class LogEntryImpl implements LogEntry {
      * Calculate the operation name from the AWS function name
      * This is a value such as 'sampleapi-default-getCompanyList'
      */
-    private _calculateOperationName(event: any, context: Context) {
+    private _calculateOperationName(event: APIGatewayProxyEvent, context: Context) {
 
         if (context && context.functionName) {
 
@@ -159,18 +161,13 @@ export class LogEntryImpl implements LogEntry {
                     this._data.operationName = operationName.trim();
                 }
             }
-
-        } else if (event && event.type === 'REQUEST') {
-
-            // Authorizers have an event type of REQUEST
-            this._data.operationName = 'authorizer';
         }
     }
 
     /*
      * Log details from the incoming URL and query string
      */
-    private _calculateRequestLocationFields(event: any) {
+    private _calculateRequestLocationFields(event: APIGatewayProxyEvent) {
 
         if (event) {
 
@@ -221,7 +218,7 @@ export class LogEntryImpl implements LogEntry {
     /*
      * Correlate requests together, including authorizers and lambdas
      */
-    private _calculateCorrelationId(event: any) {
+    private _calculateCorrelationId(event: APIGatewayProxyEvent) {
 
         // See if there is an incoming valid
         const correlationId = this._getHeader(event, 'x-mycompany-correlation-id');
@@ -233,7 +230,7 @@ export class LogEntryImpl implements LogEntry {
     /*
      * Get a header value if supplied
      */
-    private _getHeader(event: any, key: string): string | null {
+    private _getHeader(event: APIGatewayProxyEvent, key: string): string | null {
 
         if (event.headers) {
             const value = event.headers[key];

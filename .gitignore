@@ -2,4 +2,6 @@ node_modules
 .serverless
 dist
 .DS_store
-test/*.txt
+request.txt
+response.txt
+lambdatest.log
