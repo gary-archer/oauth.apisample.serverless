@@ -147,33 +147,20 @@ if [ $HTTP_STATUS != '200' ]; then
 fi
 
 #
-# Get the data that we will update in our lambda test cases
+# Decrypt the access token cookie and save it to test data
 #
 JSON=$(tail -n 1 $RESPONSE_FILE)
 ACCESS_COOKIE=$(getCookieValue "$COOKIE_PREFIX-at")
-CSRF_COOKIE=$(getCookieValue "$COOKIE_PREFIX-csrf")
-ANTI_FORGERY_TOKEN=$(jq -r .antiForgeryToken <<< "$JSON")
-AT_COOKIE_TEXT="mycompany-at=$ACCESS_COOKIE"
-CSRF_COOKIE_TEXT="mycompany-csrf=$CSRF_COOKIE"
 cd test
 
 #
-# Update the getCompanyList test case
+# Decrypt the access token cookie
 #
-echo "$(cat getCompanyList.json | jq --arg i "$ANTI_FORGERY_TOKEN" '.headers."x-mycompany-csrf" = $i')"  > getCompanyList.json
-echo "$(cat getCompanyList.json | jq --arg i "$AT_COOKIE_TEXT"     '.multiValueHeaders.cookie[0] = $i')" > getCompanyList.json
-echo "$(cat getCompanyList.json | jq --arg i "$CSRF_COOKIE_TEXT"   '.multiValueHeaders.cookie[1] = $i')" > getCompanyList.json
+ACCESS_TOKEN='xxx'
 
 #
-# Update the getCompanyTransactions test case
+# Update test cases
 #
-echo "$(cat getCompanyTransactions.json | jq --arg i "$ANTI_FORGERY_TOKEN" '.headers."x-mycompany-csrf" = $i')"  > getCompanyTransactions.json
-echo "$(cat getCompanyTransactions.json | jq --arg i "$AT_COOKIE_TEXT"     '.multiValueHeaders.cookie[0] = $i')" > getCompanyTransactions.json
-echo "$(cat getCompanyTransactions.json | jq --arg i "$CSRF_COOKIE_TEXT"   '.multiValueHeaders.cookie[1] = $i')" > getCompanyTransactions.json
-
-#
-# Update the getUserClaims test case
-#
-echo "$(cat getUserClaims.json | jq --arg i "$ANTI_FORGERY_TOKEN" '.headers."x-mycompany-csrf" = $i')"  > getUserClaims.json
-echo "$(cat getUserClaims.json | jq --arg i "$AT_COOKIE_TEXT"     '.multiValueHeaders.cookie[0] = $i')" > getUserClaims.json
-echo "$(cat getUserClaims.json | jq --arg i "$CSRF_COOKIE_TEXT"   '.multiValueHeaders.cookie[1] = $i')" > getUserClaims.json
+echo "$(cat getCompanyList.json         | jq --arg i "Bearer $ACCESS_TOKEN"     '.headers."authorization" = $i')" > getCompanyList.json
+echo "$(cat getCompanyTransactions.json | jq --arg i "Bearer $AT_COOKIE_TEXT"   '.headers."authorization" = $i')" > getCompanyTransactions.json
+echo "$(cat getUserClaims.json          | jq --arg i "Bearer $CSRF_COOKIE_TEXT" '.headers."authorization" = $i')" > getUserClaims.json

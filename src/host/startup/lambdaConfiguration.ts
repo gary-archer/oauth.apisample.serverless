@@ -5,7 +5,6 @@ import {Container} from 'inversify';
 import {BaseCompositionRoot} from '../../plumbing/dependencies/baseCompositionRoot';
 import {LoggerFactory} from '../../plumbing/logging/loggerFactory';
 import {LoggerFactoryBuilder} from '../../plumbing/logging/loggerFactoryBuilder';
-import {CorsMiddleware} from '../../plumbing/middleware/corsMiddleware';
 import {HttpProxy} from '../../plumbing/utilities/httpProxy';
 import {ResponseWriter} from '../../plumbing/utilities/responseWriter';
 import {SampleCustomClaimsProvider} from '../claims/sampleCustomClaimsProvider';
@@ -21,31 +20,6 @@ type AsyncHandler = (event: APIGatewayProxyEvent, context: Context) => Promise<A
  * A class to configure the lambda and manage cross cutting concerns
  */
 export class LambdaConfiguration {
-
-    /*
-     * Apply cross cutting concerns to the options lambda
-     */
-    public enrichOptionsHandler(baseHandler: AsyncHandler)
-        : middy.MiddyfiedHandler<APIGatewayProxyEvent, APIGatewayProxyResult> | AsyncHandler {
-
-        const loggerFactory = LoggerFactoryBuilder.create();
-        try {
-
-            // Load our JSON configuration
-            const configuration = this._loadConfiguration();
-
-            // Wrap the base handler and add middleware for cross cutting concerns
-            return middy(async (event: APIGatewayProxyEvent, context: Context) => {
-                return baseHandler(event, context);
-            })
-                .use(new CorsMiddleware(configuration.cookie.trustedWebOrigins));
-
-        } catch (e) {
-
-            // Handle any startup exceptions
-            return this._handleStartupError(loggerFactory, e);
-        }
-    }
 
     /*
      * Apply cross cutting concerns to a lambda
@@ -65,7 +39,6 @@ export class LambdaConfiguration {
             // Register common code dependencies for security, logging and error handling
             const base = new BaseCompositionRoot(container)
                 .useLogging(configuration.logging, loggerFactory)
-                .useCookies(configuration.cookie)
                 .useOAuth(configuration.oauth)
                 .withCustomClaimsProvider(new SampleCustomClaimsProvider(), configuration.cache)
                 .useHttpProxy(httpProxy)
@@ -77,12 +50,10 @@ export class LambdaConfiguration {
             // Get framework middleware classes including the OAuth authorizer
             const loggerMiddleware = base.getLoggerMiddleware();
             const exceptionMiddleware = base.getExceptionMiddleware();
-            const corsMiddleware = base.getCorsMiddleware();
             const authorizerMiddleware = base.getAuthorizerMiddleware();
             const customHeaderMiddleware = base.getCustomHeaderMiddleware();
 
             // Wrap the base handler and add middleware for cross cutting concerns
-            // This ordering ensures that correct CORS headers are written for error responses
             return middy(async (event: APIGatewayProxyEvent, context: Context) => {
                 return baseHandler(event, context);
 
@@ -90,8 +61,7 @@ export class LambdaConfiguration {
                 .use(loggerMiddleware)
                 .use(exceptionMiddleware)
                 .use(authorizerMiddleware)
-                .use(customHeaderMiddleware)
-                .use(corsMiddleware);
+                .use(customHeaderMiddleware);
 
         } catch (e) {
 

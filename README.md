@@ -9,8 +9,7 @@
 The final Serverless OAuth Secured API code sample, referenced in my blog at https://authguidance.com. \
 The overall goal is to use portable security related code when working with lambdas.
 
-- The API receives JWT access tokens from mobile and desktop apps
-- The API receives `SameSite=strict` cookies from Single Page Applications
+- The API receives JWT access tokens from web, mobile and desktop apps
 - The API validates JWTs on every request in a zero trust manner, using a JOSE library
 - The API authorizes access to data using domain specific claims
 - The API uses caching to avoid excessive calls to the Authorization Server
@@ -23,7 +22,6 @@ Ensure that Node.js, `jq` and `curl` are installed, then run these commands to t
 - npm install
 - npm run build
 - npm run setup
-- npm run options
 - npm run getUserClaims
 - npm run getCompanyList
 - npm run getCompanyTransactions
