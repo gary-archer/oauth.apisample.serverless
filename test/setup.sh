@@ -61,7 +61,7 @@ function apiError() {
 # Act as the SPA by sending an OPTIONS request, then verifying that we get the expected results
 #
 echo "Session ID is $SESSION_ID"
-echo "Requesting cross origin access"
+echo 'Requesting cross origin access'
 HTTP_STATUS=$(curl -i -s -X OPTIONS "$TOKEN_HANDLER_BASE_URL/login/start" \
 -H "origin: $WEB_BASE_URL" \
 -o $RESPONSE_FILE -w '%{http_code}')
@@ -73,14 +73,14 @@ fi
 #
 # Act as the SPA by calling the token handler to start a login and get the request URI
 #
-echo "Creating login URL ..."
+echo 'Creating login URL ...'
 HTTP_STATUS=$(curl -i -s -X POST "$TOKEN_HANDLER_BASE_URL/login/start" \
 -H "origin: $WEB_BASE_URL" \
 -H 'accept: application/json' \
 -H 'x-mycompany-api-client: httpTest' \
 -H "x-mycompany-session-id: $SESSION_ID" \
 -o $RESPONSE_FILE -w '%{http_code}')
-if [ $HTTP_STATUS != '200' ]; then
+if [ "$HTTP_STATUS" != '200' ]; then
   echo "*** Problem encountered starting a login, status: $HTTP_STATUS"
   exit
 fi
@@ -95,9 +95,9 @@ STATE_COOKIE=$(getCookieValue "$COOKIE_PREFIX-state")
 #
 # Next invoke the redirect URI to start a login
 #
-echo "Following login redirect ..."
+echo 'Following login redirect ...'
 HTTP_STATUS=$(curl -i -L -s "$AUTHORIZATION_REQUEST_URL" -o $RESPONSE_FILE -w '%{http_code}')
-if [ $HTTP_STATUS != '200' ]; then
+if [ "$HTTP_STATUS" != '200' ]; then
   echo "*** Problem encountered using the OpenID Connect authorization URL, status: $HTTP_STATUS"
   exit
 fi
@@ -112,7 +112,7 @@ COGNITO_XSRF_TOKEN=$(getCookieValue 'XSRF-TOKEN' | cut -d ' ' -f 2)
 #
 # We can now post a password credential, and the form fields used are Cognito specific
 #
-echo "Posting credentials to sign in the test user ..."
+echo 'Posting credentials to sign in the test user ...'
 HTTP_STATUS=$(curl -i -s -X POST "$LOGIN_POST_LOCATION" \
 -H "origin: $LOGIN_BASE_URL" \
 --cookie "XSRF-TOKEN=$COGNITO_XSRF_TOKEN" \
@@ -120,7 +120,7 @@ HTTP_STATUS=$(curl -i -s -X POST "$LOGIN_POST_LOCATION" \
 --data-urlencode "username=$TEST_USERNAME" \
 --data-urlencode "password=$TEST_PASSWORD" \
 -o $RESPONSE_FILE -w '%{http_code}')
-if [ $HTTP_STATUS != '302' ]; then
+if [ "$HTTP_STATUS" != '302' ]; then
   echo "*** Problem encountered posting a credential to AWS Cognito, status: $HTTP_STATUS"
   exit
 fi
@@ -133,7 +133,7 @@ AUTHORIZATION_RESPONSE_URL=$(getHeaderValue 'location')
 #
 # Next we end the login by asking the server to run an authorization code grant
 #
-echo "Finishing the login by processing the authorization code ..."
+echo 'Finishing the login by processing the authorization code ...'
 HTTP_STATUS=$(curl -i -s -X POST "$TOKEN_HANDLER_BASE_URL/login/end" \
 -H "origin: $WEB_BASE_URL" \
 -H 'content-type: application/json' \
@@ -143,7 +143,7 @@ HTTP_STATUS=$(curl -i -s -X POST "$TOKEN_HANDLER_BASE_URL/login/end" \
 --cookie "$COOKIE_PREFIX-state=$STATE_COOKIE" \
 -d '{"url":"'$AUTHORIZATION_RESPONSE_URL'"}' \
 -o $RESPONSE_FILE -w '%{http_code}')
-if [ $HTTP_STATUS != '200' ]; then
+if [ "$HTTP_STATUS" != '200' ]; then
   echo "*** Problem encountered ending a login, status: $HTTP_STATUS"
   apiError
   exit
