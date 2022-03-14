@@ -5,3 +5,4 @@ dist
 request.txt
 response.txt
 lambdatest.log
+decryption_result.txt
