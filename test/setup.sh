@@ -65,7 +65,7 @@ echo 'Requesting cross origin access'
 HTTP_STATUS=$(curl -i -s -X OPTIONS "$TOKEN_HANDLER_BASE_URL/login/start" \
 -H "origin: $WEB_BASE_URL" \
 -o $RESPONSE_FILE -w '%{http_code}')
-if [ "$HTTP_STATUS" != '200'  ] && [ "$HTTP_STATUS" != '204' ]; then
+if [ "$HTTP_STATUS" != '200'  ]; then
   echo "*** Problem encountered requesting cross origin access, status: $HTTP_STATUS"
   exit
 fi
@@ -150,14 +150,10 @@ if [ "$HTTP_STATUS" != '200' ]; then
 fi
 
 #
-# Decrypt the access token cookie and save it to test data
+# Get the access token cookie and decrypt it
 #
 JSON=$(tail -n 1 $RESPONSE_FILE)
 ACCESS_COOKIE=$(getCookieValue "$COOKIE_PREFIX-at")
-
-#
-# Decrypt the access token cookie
-#
 echo 'Decrypting the access token cookie ...'
 node decrypt.mjs "$ACCESS_COOKIE"
 if [ "$?" != '0' ]; then
