@@ -161,6 +161,6 @@ ACCESS_TOKEN='xxx'
 #
 # Update test cases
 #
-echo "$(cat getCompanyList.json         | jq --arg i "Bearer $ACCESS_TOKEN"     '.headers."authorization" = $i')" > getCompanyList.json
-echo "$(cat getCompanyTransactions.json | jq --arg i "Bearer $AT_COOKIE_TEXT"   '.headers."authorization" = $i')" > getCompanyTransactions.json
-echo "$(cat getUserClaims.json          | jq --arg i "Bearer $CSRF_COOKIE_TEXT" '.headers."authorization" = $i')" > getUserClaims.json
+echo "$(cat getCompanyList.json         | jq --arg i "Bearer $ACCESS_TOKEN" '.headers."authorization" = $i')" > getCompanyList.json
+echo "$(cat getCompanyTransactions.json | jq --arg i "Bearer $ACCESS_TOKEN" '.headers."authorization" = $i')" > getCompanyTransactions.json
+echo "$(cat getUserClaims.json          | jq --arg i "Bearer $ACCESS_TOKEN" '.headers."authorization" = $i')" > getUserClaims.json
