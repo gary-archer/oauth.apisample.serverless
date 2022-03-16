@@ -7,16 +7,11 @@
         "apiName": "SampleApi",
         "performanceThresholdMilliseconds": 500
     },
-    "cookie": {
-        "trustedWebOrigins":  ["https://web.authsamples.com"],
-        "cookiePrefix":        "mycompany",
-        "cookieDecryptionKey": "7312725575a3789d43bd41e592d1042226bc0d1a5d9bd9c4e8e58f121a1d5550"
-    },
     "oauth": {
-        "issuer":              "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
-        "audience":            "",
-        "jwksEndpoint":        "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn/.well-known/jwks.json",
-        "userInfoEndpoint":    "https://login.authsamples.com/oauth2/userInfo"
+        "issuer":           "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
+        "audience":         "",
+        "jwksEndpoint":     "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn/.well-known/jwks.json",
+        "userInfoEndpoint": "https://login.authsamples.com/oauth2/userInfo"
     },
     "cache": {
         "region": "eu-west-2",

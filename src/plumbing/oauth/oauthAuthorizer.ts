@@ -11,8 +11,8 @@ import {CustomClaimsProvider} from '../claims/customClaimsProvider';
 import {UserInfoClaims} from '../claims/userInfoClaims';
 import {BASETYPES} from '../dependencies/baseTypes';
 import {ClientError} from '../errors/clientError';
+import {ErrorFactory} from '../errors/errorFactory';
 import {LogEntryImpl} from '../logging/logEntryImpl';
-import {AccessTokenRetriever} from './accessTokenRetriever';
 import {OAuthAuthenticator} from './oauthAuthenticator';
 
 /*
@@ -76,8 +76,7 @@ export class OAuthAuthorizer implements middy.MiddlewareObj<APIGatewayProxyEvent
     private async _execute(event: APIGatewayProxyEvent): Promise<ClaimsPrincipal> {
 
         // First get the access token from the incoming request
-        const accessTokenRetriever = this._container.get<AccessTokenRetriever>(BASETYPES.AccessTokenRetriever);
-        const accessToken = accessTokenRetriever.getAccessToken(event);
+        const accessToken = this._readAccessToken(event);
 
         // On every lambda HTTP request we validate the JWT, in a zero trust manner
         const authenticator = this._container.get<OAuthAuthenticator>(BASETYPES.OAuthAuthenticator);
@@ -100,6 +99,26 @@ export class OAuthAuthorizer implements middy.MiddlewareObj<APIGatewayProxyEvent
 
         // Return the final claims
         return new ClaimsPrincipal(tokenClaims, userInfo, customClaims);
+    }
+
+    /*
+     * Try to read the token from the authorization header
+     */
+    public _readAccessToken(event: APIGatewayProxyEvent): string {
+
+        // First look for a bearer token
+        if (event && event.headers) {
+
+            const authorizationHeader = event.headers.authorization || event.headers.Authorization;
+            if (authorizationHeader) {
+                const parts = authorizationHeader.split(' ');
+                if (parts.length === 2 && parts[0] === 'Bearer') {
+                    return parts[1];
+                }
+            }
+        }
+
+        throw ErrorFactory.createClient401Error('No access token was found in an API request');
     }
 
     /*

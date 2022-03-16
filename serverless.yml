@@ -38,27 +38,9 @@ custom:
     stage: ${self:custom.config.settings.stage}
     endpointType: regional
 
+# Lambda functions that receives a JWT access token
 functions:
   
-  # A single CORS handler deals with OPTIONS requests for all endpoints
-  options:
-    handler: dist/host/lambda/options.handler
-    events:
-      - http:
-          path: /userinfo
-          method: options
-      - http: 
-          path: /companies
-          method: options
-      - http: 
-          path: /companies/{id}/transactions
-          method: options
-          request:
-            parameters:
-              paths: 
-                id: true
-  
-  # The main lambda functions do not then require any CORS properties
   getUserClaims:
     handler: dist/host/lambda/getUserClaims.handler
     events:
@@ -89,7 +71,6 @@ package:
   patterns:
   - '!.codacy.yaml'
   - '!.eslintrc.js'
-  - '!.vscode/**'
   - '!.vscode/**'
   - '!environments/**'
   - '!src/**'
@@ -122,10 +103,6 @@ resources:
         BillingMode: PAY_PER_REQUEST
 
     # Limit cloudwatch log retention 
-    OptionsLogGroup:
-      Type: 'AWS::Logs::LogGroup'
-      Properties:
-        RetentionInDays: '5'
     GetUserClaimsLogGroup:
       Type: 'AWS::Logs::LogGroup'
       Properties:

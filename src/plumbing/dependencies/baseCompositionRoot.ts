@@ -8,19 +8,15 @@ import {CustomClaims} from '../claims/customClaims';
 import {CustomClaimsProvider} from '../claims/customClaimsProvider';
 import {UserInfoClaims} from '../claims/userInfoClaims';
 import {CacheConfiguration} from '../configuration/cacheConfiguration';
-import {CookieConfiguration} from '../configuration/cookieConfiguration';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
-import {CookieProcessor} from '../cookies/cookieProcessor';
 import {BASETYPES} from '../dependencies/baseTypes';
 import {LogEntry} from '../logging/logEntry';
 import {LoggerFactory} from '../logging/loggerFactory';
 import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
-import {CorsMiddleware} from '../middleware/corsMiddleware';
 import {CustomHeaderMiddleware} from '../middleware/customHeaderMiddleware';
 import {ExceptionMiddleware} from '../middleware/exceptionMiddleware';
 import {LoggerMiddleware} from '../middleware/loggerMiddleware';
-import {AccessTokenRetriever} from '../oauth/accessTokenRetriever';
 import {JwksRetriever} from '../oauth/jwksRetriever';
 import {OAuthAuthenticator} from '../oauth/oauthAuthenticator';
 import {OAuthAuthorizer} from '../oauth/oauthAuthorizer';
@@ -33,7 +29,6 @@ export class BaseCompositionRoot {
 
     private readonly _container: Container;
     private _loggingConfiguration: LoggingConfiguration | null;
-    private _cookieConfiguration: CookieConfiguration | null;
     private _oauthConfiguration: OAuthConfiguration | null;
     private _cacheConfiguration: CacheConfiguration | null;
     private _customClaimsProvider: CustomClaimsProvider | null;
@@ -44,7 +39,6 @@ export class BaseCompositionRoot {
     public constructor(container: Container) {
         this._container = container;
         this._loggingConfiguration = null;
-        this._cookieConfiguration = null;
         this._oauthConfiguration = null;
         this._cacheConfiguration = null;
         this._loggerFactory = null;
@@ -63,15 +57,6 @@ export class BaseCompositionRoot {
         this._loggingConfiguration = loggingConfiguration;
         this._loggerFactory = loggerFactory as LoggerFactoryImpl;
         this._loggerFactory.configure(loggingConfiguration);
-        return this;
-    }
-
-    /*
-     * Indicate that we're accepting secure cookies
-     */
-    public useCookies(cookieConfiguration: CookieConfiguration): BaseCompositionRoot {
-
-        this._cookieConfiguration = cookieConfiguration;
         return this;
     }
 
@@ -132,10 +117,6 @@ export class BaseCompositionRoot {
         return new CustomHeaderMiddleware(this._loggingConfiguration!.apiName);
     }
 
-    public getCorsMiddleware(): middy.MiddlewareObj<any, any> {
-        return new CorsMiddleware(this._cookieConfiguration!.trustedWebOrigins);
-    }
-
     public getAuthorizerMiddleware(): middy.MiddlewareObj<any, any> {
         return new OAuthAuthorizer(this._container, this._customClaimsProvider!, this._cache!);
     }
@@ -172,16 +153,10 @@ export class BaseCompositionRoot {
     private _registerOAuthDependencies() {
 
         // Register singletons
-        this._container.bind<CookieConfiguration>(BASETYPES.CookieConfiguration)
-            .toConstantValue(this._cookieConfiguration!);
         this._container.bind<OAuthConfiguration>(BASETYPES.OAuthConfiguration)
             .toConstantValue(this._oauthConfiguration!);
 
         // Register per request objects
-        this._container.bind<AccessTokenRetriever>(BASETYPES.AccessTokenRetriever)
-            .to(AccessTokenRetriever).inTransientScope();
-        this._container.bind<CookieProcessor>(BASETYPES.CookieProcessor)
-            .to(CookieProcessor).inTransientScope();
         this._container.bind<JwksRetriever>(BASETYPES.JwksRetriever)
             .to(JwksRetriever).inTransientScope();
         this._container.bind<OAuthAuthenticator>(BASETYPES.OAuthAuthenticator)
