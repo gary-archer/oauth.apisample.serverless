@@ -117,7 +117,7 @@ export class JwksRetriever {
             };
 
             const response = await axios.request(options as AxiosRequestConfig);
-            return Buffer.from(response.data, 'binary').toString();
+            return Buffer.from(response.data as any, 'binary').toString();
 
         } catch (e) {
 

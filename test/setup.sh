@@ -5,12 +5,13 @@
 ################################################################################################
 
 WEB_BASE_URL='https://web.authsamples.com'
-TOKEN_HANDLER_BASE_URL='https://api.authsamples.com/tokenhandler'
-BUSINESS_API_BASE_URL='https://api.authsamples.com/api'
+OAUTH_AGENT_BASE_URL='https://tokenhandler.authsamples.com/oauth-agent'
+BUSINESS_API_BASE_URL='https://tokenhandler.authsamples.com/api'
 LOGIN_BASE_URL='https://login.authsamples.com'
 COOKIE_PREFIX=mycompany
 TEST_USERNAME='guestuser@mycompany.com'
 TEST_PASSWORD=GuestPassword1
+SESSION_ID=$(uuidgen)
 RESPONSE_FILE=response.txt
 DECRYPTION_RESULT_FILE=decryption_result.txt
 
@@ -62,10 +63,10 @@ function apiError() {
 #
 echo "Session ID is $SESSION_ID"
 echo 'Requesting cross origin access'
-HTTP_STATUS=$(curl -i -s -X OPTIONS "$TOKEN_HANDLER_BASE_URL/login/start" \
+HTTP_STATUS=$(curl -i -s -X OPTIONS "$OAUTH_AGENT_BASE_URL/login/start" \
 -H "origin: $WEB_BASE_URL" \
 -o $RESPONSE_FILE -w '%{http_code}')
-if [ "$HTTP_STATUS" != '200'  ]; then
+if [ "$HTTP_STATUS" != '204'  ]; then
   echo "*** Problem encountered requesting cross origin access, status: $HTTP_STATUS"
   exit
 fi
@@ -74,7 +75,7 @@ fi
 # Act as the SPA by calling the token handler to start a login and get the request URI
 #
 echo 'Creating login URL ...'
-HTTP_STATUS=$(curl -i -s -X POST "$TOKEN_HANDLER_BASE_URL/login/start" \
+HTTP_STATUS=$(curl -i -s -X POST "$OAUTH_AGENT_BASE_URL/login/start" \
 -H "origin: $WEB_BASE_URL" \
 -H 'accept: application/json' \
 -H 'x-mycompany-api-client: httpTest' \
@@ -134,7 +135,7 @@ AUTHORIZATION_RESPONSE_URL=$(getHeaderValue 'location')
 # Next we end the login by asking the server to run an authorization code grant
 #
 echo 'Finishing the login by processing the authorization code ...'
-HTTP_STATUS=$(curl -i -s -X POST "$TOKEN_HANDLER_BASE_URL/login/end" \
+HTTP_STATUS=$(curl -i -s -X POST "$OAUTH_AGENT_BASE_URL/login/end" \
 -H "origin: $WEB_BASE_URL" \
 -H 'content-type: application/json' \
 -H 'accept: application/json' \

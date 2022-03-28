@@ -1,7 +1,7 @@
 {
   "name": "sampleapi",
-  "version": "4.0.0",
-  "description": "An OAuth secured API using AWS Serverless Hosting via lambdas",
+  "version": "3.0.0",
+  "description": "An OAuth secured API using AWS Serverless Hosting and Lambda Functions",
   "scripts": {
     "lint": "npx eslint . --ext .ts,.tsx",
     "build": "rimraf dist && tsc --sourceMap true",
@@ -18,7 +18,7 @@
   "license": "MIT",
   "dependencies": {
     "@middy/core": "^2.5.3",
-    "axios": "^0.21.4",
+    "axios": "^0.23.0",
     "fs-extra": "^9.0.1",
     "guid-typescript": "^1.0.9",
     "inversify": "^5.0.1",
@@ -30,9 +30,9 @@
     "@types/aws-lambda": "^8.10.85",
     "@types/fs-extra": "^9.0.4",
     "@types/node": "^14.14.10",
-    "@typescript-eslint/eslint-plugin": "^5.10.1",
-    "@typescript-eslint/parser": "^5.10.1",
-    "eslint": "^7.32.0",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "@typescript-eslint/parser": "^5.17.0",
+    "eslint": "^8.12.0",
     "proxy-agent": "^5.0.0",
     "rimraf": "^3.0.2",
     "serverless": "^3.0.1",
