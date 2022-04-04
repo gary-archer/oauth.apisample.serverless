@@ -19,12 +19,14 @@ The overall goal is to use portable security related code when working with lamb
 
 Ensure that Node.js, `jq` and `curl` are installed, then run these commands to test the API's lambda functions:
 
-- npm install
-- npm run build
-- npm run setup
-- npm run getUserClaims
-- npm run getCompanyList
-- npm run getCompanyTransactions
+```bash
+npm install
+npm run build
+npm run setup
+npm run getUserClaims
+npm run getCompanyList
+npm run getCompanyTransactions
+```
 
 ## Further Information
 
