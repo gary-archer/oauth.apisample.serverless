@@ -28,7 +28,7 @@ Ensure that Node.js, `jq` and `curl` are installed, then run these commands to t
 
 ## Further Information
 
-* See the [Serverless API Setup](https://authguidance.com/2018/12/11/serverless-api-overview) for an overview
+* See the [Serverless API Overview](https://authguidance.com/2018/12/11/serverless-api-overview) for further notes on running the API
 * See the [Serverless API Deployment](https://authguidance.com/2018/12/16/serverless-api-deployment/) post for details on Cloud Hosting
 
 ## Programming Technologies
