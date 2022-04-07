@@ -1,4 +1,4 @@
-1. GET JSON Web Keyset
+1. GET JSON Web Keyset correctly using jose
 
 2. Run sls invoke programmatically to get output, then parse it
 
@@ -7,4 +7,11 @@
 4. Verify no problems with new jose library, and update other projects
 
 5. Get Wiremock to use https://login.mycompany.com and certificates
+   Also run Wiremock standalone directly
    Update README accordingly
+
+6. Update other final APIs, and for Java use built in stubs
+   Consider whether a .NET Java wrapper makes sense
+   Possibly just run Java directly for all APIs
+
+7. Update load test project
