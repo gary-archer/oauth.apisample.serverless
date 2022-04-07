@@ -1,0 +1,10 @@
+1. GET JSON Web Keyset
+
+2. Run sls invoke programmatically to get output, then parse it
+
+3. Call admin API endpoints to add responses
+
+4. Verify no problems with new jose library, and update other projects
+
+5. Get Wiremock to use https://login.mycompany.com and certificates
+   Update README accordingly

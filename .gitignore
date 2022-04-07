@@ -1,8 +1,7 @@
-node_modules
-.serverless
-dist
 .DS_store
-request.txt
-response.txt
+node_modules
+dist
+.serverless
 lambdatest.log
-decryption_result.txt
+input.json
+output.json

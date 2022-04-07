@@ -1,0 +1,21 @@
+{
+    "api": {
+        "useProxy": false,
+        "proxyUrl": "http://127.0.0.1:8888"
+    },
+    "logging": {
+        "apiName": "SampleApi",
+        "performanceThresholdMilliseconds": 500
+    },
+    "oauth": {
+        "issuer":           "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
+        "audience":         "",
+        "jwksEndpoint":     "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn/.well-known/jwks.json",
+        "userInfoEndpoint": "https://login.authsamples.com/oauth2/userInfo"
+    },
+    "cache": {
+        "region": "eu-west-2",
+        "tableName": "OAUTH_CACHE",
+        "claimsCacheTimeToLiveMinutes": 30
+    }
+}

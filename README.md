@@ -17,15 +17,19 @@ The overall goal is to use portable security related code when working with lamb
 
 ## Quick Start
 
-Ensure that Node.js, `jq` and `curl` are installed, then run these commands to test the API's lambda functions:
+Ensure that Node.js is installed, then run these commands to build the API's code:
 
 ```bash
 npm install
 npm run build
-npm run setup
-npm run getUserClaims
-npm run getCompanyList
-npm run getCompanyTransactions
+```
+
+To test the API in isolation, mock the Authorization Server and run mocha tests.\
+Note that Wiremock requires a Java runtime to be installed as a prerequisite.
+
+```bash
+npm run wiremock
+npm test
 ```
 
 ## Further Information
