@@ -1,17 +1,23 @@
-1. GET JSON Web Keyset correctly using jose
+DELIVERABLE 1
+-------------
+1. Stub out all tests, including error cases
 
-2. Run sls invoke programmatically to get output, then parse it
+2. GET JSON Web Keyset correctly outputting using jose
 
-3. Call admin API endpoints to add responses
+3. Call admin API endpoints to add canned responses
 
-4. Verify no problems with new jose library, and update other projects
+4. Update Node.js API, including README file
 
-5. Get Wiremock to use https://login.mycompany.com and certificates
+5. Run UI against Node.js API to ensure JOES working as expected, and look at 401 logs
+
+OTHER DELIVERABLES
+------------------
+1. Get Wiremock to use https://login.mycompany.com and certificates
    Also run Wiremock standalone directly
    Update README accordingly
 
-6. Update other final APIs, and for Java use built in stubs
+2. Update other final APIs, and for Java use built in stubs
    Consider whether a .NET Java wrapper makes sense
    Possibly just run Java directly for all APIs
 
-7. Update load test project
+3. Update load test project
