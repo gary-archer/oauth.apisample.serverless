@@ -1,8 +1,7 @@
 
 import axios, {AxiosRequestConfig} from 'axios';
 import {inject, injectable} from 'inversify';
-import {parseJwk} from 'jose/jwk/parse';
-import {FlattenedJWSInput, JWK, JWSHeaderParameters, KeyLike} from 'jose/types';
+import {FlattenedJWSInput, importJWK, JWK, JWSHeaderParameters, KeyLike} from 'jose';
 import {Cache} from '../cache/cache';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {BASETYPES} from '../dependencies/baseTypes';
@@ -38,14 +37,14 @@ export class JwksRetriever {
     /* eslint-disable @typescript-eslint/no-unused-vars */
     public async getKey(
         protectedHeader: JWSHeaderParameters,
-        token: FlattenedJWSInput): Promise<KeyLike | Uint8Array> {
+        token: FlattenedJWSInput): Promise<Uint8Array | KeyLike> {
 
         try {
 
             // See if the JSON Web Key for this key id is cached outside this lambda
             const key = await this._getCachedKey(protectedHeader.kid);
             if (key) {
-                return key;
+                return importJWK(key);
             }
 
             // If not then download all JSON web keys
@@ -61,7 +60,7 @@ export class JwksRetriever {
                 this._cache.setJwksKeys(keysText);
 
                 // Then parse the JWK into a crypto object
-                return parseJwk(foundKey);
+                return importJWK(foundKey);
             }
 
             throw ErrorFactory.createClient401Error('A JWT kid field was received that does not exist in JWS keys');
@@ -81,7 +80,7 @@ export class JwksRetriever {
      * The jose library caches downloaded JWKS keys, but a new lambda is spun up on every request
      * Therefore we instead cache keys in DynamoDB cache for the deployed system
      */
-    private async _getCachedKey(kid?: string): Promise<KeyLike | Uint8Array | null> {
+    private async _getCachedKey(kid?: string): Promise<JWK | null> {
 
         const keysText = await this._cache.getJwksKeys();
         if (keysText) {
@@ -90,9 +89,7 @@ export class JwksRetriever {
             const keys = data.keys as JWK[];
             const foundKey = keys.find((k: any) => k.kid === kid);
             if (foundKey) {
-
-                // If the kid is found then use the JOSE library to parse it
-                return parseJwk(foundKey, 'RS256');
+                return foundKey;
             }
         }
 
@@ -100,7 +97,7 @@ export class JwksRetriever {
     }
 
     /*
-     * Download the keys as raw text and work around this issue: https://github.com/axios/axios/issues/907
+     * Get the keys as raw text and work around this issue: https://github.com/axios/axios/issues/907
      */
     private async _downloadKeys(): Promise<string> {
 

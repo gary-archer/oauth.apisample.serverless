@@ -3,6 +3,7 @@ import axios from 'axios';
 import exec from 'child_process';
 import fs from 'fs-extra';
 import {Guid} from 'guid-typescript';
+import { ChildProcess } from './childProcess';
 import {TokenIssuer} from './tokenIssuer';
 
 /*
@@ -26,7 +27,7 @@ describe('ApiTests', () => {
 
         await fs.copy('environments/test.config.json', 'api.config.json');
         await tokenIssuer.initialize();
-        
+
         // TODO: Get the JWKS data and set it against the Wiremock admin API
         const keySet = tokenIssuer.getTokenSigningPublicKeys();
     });
@@ -60,11 +61,13 @@ describe('ApiTests', () => {
         };
         fs.writeFile('test/input.json', JSON.stringify(lambdaInput, null, 2));
 
-        // Run sls invoke
-        // sls invoke local -f getUserClaims -p test/input.json > test/output.json
-
-        assert.strictEqual(2, 2, 'Incorrect number');
-    })
+        // Run the Serverless API operation
+        const rawResponse = await ChildProcess.run('sls', ['invoke', 'local', '-f', 'getUserClaims', '-p', 'test/input.json']);
+        const response = JSON.parse(rawResponse);
+        
+        assert.strictEqual(response.statusCode, 200, rawResponse);
+        
+    }).timeout(10000);
 
     /*
      * Test the get company list endpoint
@@ -72,7 +75,7 @@ describe('ApiTests', () => {
     it('Get company list returns valid data', async () => {
 
         //"getCompanyList": "sls invoke local -f getCompanyList -p test/getCompanyList.json",
-    })
+    }).timeout(10000);
 
     /*
      * Test the get company transactions endpoint
@@ -80,8 +83,8 @@ describe('ApiTests', () => {
     it('Get company transactions returns valid data', async () => {
 
         //"getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
-    })
+    }).timeout(10000);
 
     // ALSO: test company 3 unauthorized and also a 500 exception
     // "x-mycompany-test-exception": ""
-})
+});

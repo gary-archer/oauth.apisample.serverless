@@ -1,6 +1,6 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import {inject, injectable} from 'inversify';
-import {jwtVerify} from 'jose/jwt/verify';
+import {jwtVerify} from 'jose';
 import {BaseClaims} from '../claims/baseClaims';
 import {ClaimsReader} from '../claims/claimsReader';
 import {UserInfoClaims} from '../claims/userInfoClaims';
