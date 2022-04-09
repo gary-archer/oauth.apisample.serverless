@@ -24,12 +24,19 @@ npm install
 npm run build
 ```
 
-To test the API in isolation, mock the Authorization Server and run mocha tests.\
-Note that Wiremock requires a Java runtime to be installed as a prerequisite.
+To test the API in isolation, replace the Authorization Server using Wiremock and run tests:
 
 ```bash
 npm run wiremock
 npm test
+```
+
+Wiremock requires a Java runtime to be installed as a prerequisite.\
+In addition the mock Authorization Server URL must be added to your hosts file:
+
+```text
+127.0.0.1     localhost login.mycompany.com
+::1           localhost
 ```
 
 ## Further Information

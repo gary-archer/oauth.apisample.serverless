@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "npx eslint . --ext .ts,.tsx",
     "build": "rimraf dist && tsc --sourceMap true",
-    "wiremock": "wiremock --root-dir test/integration --port 8443",
+    "wiremock": "wiremock --root-dir test/integration --port 80",
     "test": "mocha -r ts-node/register test/apiTests.ts",
     "package": "npm run buildRelease && rimraf .serverless && sls package --stage deployed",
     "buildRelease": "rimraf dist && tsc",

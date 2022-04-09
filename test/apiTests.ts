@@ -1,55 +1,65 @@
 import assert from 'assert';
-import axios from 'axios';
-import exec from 'child_process';
 import fs from 'fs-extra';
 import {Guid} from 'guid-typescript';
-import { ChildProcess } from './childProcess';
+import {ChildProcess} from './childProcess';
 import {TokenIssuer} from './tokenIssuer';
+import {WiremockAdmin} from './wiremockAdmin';
 
 /*
  * Test the API in isolation, without any dependencies on the Authorization Server
  */
 describe('ApiTests', () => {
 
-    // The wiremock replacement for the Authorization Server
-    const wiremockAdminEndpoint = 'http://login.mycompany.com/__admin/mappings';
+    // The real subject claim values for my two online test users
+    const guestUserId  = 'a6b404b1-98af-41a2-8e7f-e4061dc0bf86';
+    const guestAdminId = 'a6b404b1-98af-41a2-8e7f-e4061dc0bf86';
 
     // A class to issue our own JWTs for testing
     const tokenIssuer = new TokenIssuer();
+    const wiremockAdmin = new WiremockAdmin(true);
 
     // The test session ID
     const sessionId = Guid.create().toString();
 
     /*
-     * Initialize the token issuer and update the API to use test configuration
+     * Initialize the test configuration and token issuer, then register a mock keyset the API will use to validate JWTs
      */
     before( async () => {
 
         await fs.copy('environments/test.config.json', 'api.config.json');
-        await tokenIssuer.initialize();
 
-        // TODO: Get the JWKS data and set it against the Wiremock admin API
-        const keySet = tokenIssuer.getTokenSigningPublicKeys();
+        await tokenIssuer.initialize();
+        const keyset = await tokenIssuer.getTokenSigningPublicKeys();
+
+        await wiremockAdmin.initialize();
+        await wiremockAdmin.registerJsonWebWeys(keyset);
     });
 
     /*
-     * Restore the API's main configuration once all tests have completed
+     * Restore the API's main configuration and clean up wiremock resources
      */
     after( async () => {
         await fs.copy('environments/api.config.json', 'api.config.json');
+        await wiremockAdmin.unregisterJsonWebWeys();
     });
 
     /*
      * Test the user claims endpoint
      */
-    it('Get user claims returns valid data', async () => {
+    it ('Get user claims returns standard region claims for the guest user', async () => {
 
-        // Get a token for an end user for this request
-        const accessToken = await tokenIssuer.issueAccessToken('abc123');
+        // Get an access token for the end user of this test
+        const accessToken = await tokenIssuer.issueAccessToken(guestUserId);
 
-        // TODO: Set the user info for the current test in the Authorization Server
+        // Register the Authorization Server response
+        const mockUserInfo = {
+            given_name: 'Guest',
+            family_name: 'User',
+            email: 'guestuser@mycompany.com',
+        };
+        await wiremockAdmin.registerUserInfo(JSON.stringify(mockUserInfo));
 
-        // The lambda input contains the access token and some custom headers used for API logging
+        // Create the lambda function's request, including the access token and some custom headers for API logging
         const lambdaInput = {
             httpMethod: 'GET',
             path: '/api/companies',
@@ -62,29 +72,13 @@ describe('ApiTests', () => {
         fs.writeFile('test/input.json', JSON.stringify(lambdaInput, null, 2));
 
         // Run the Serverless API operation
-        const rawResponse = await ChildProcess.run('sls', ['invoke', 'local', '-f', 'getUserClaims', '-p', 'test/input.json']);
+        const rawResponse = await ChildProcess.run(
+            'sls',
+            ['invoke', 'local', '-f', 'getUserClaims', '-p', 'test/input.json']);
+
+        // Assert results
         const response = JSON.parse(rawResponse);
-        
         assert.strictEqual(response.statusCode, 200, rawResponse);
-        
+
     }).timeout(10000);
-
-    /*
-     * Test the get company list endpoint
-     */
-    it('Get company list returns valid data', async () => {
-
-        //"getCompanyList": "sls invoke local -f getCompanyList -p test/getCompanyList.json",
-    }).timeout(10000);
-
-    /*
-     * Test the get company transactions endpoint
-     */
-    it('Get company transactions returns valid data', async () => {
-
-        //"getCompanyTransactions": "sls invoke local -f getCompanyTransactions -p test/getCompanyTransactions.json",
-    }).timeout(10000);
-
-    // ALSO: test company 3 unauthorized and also a 500 exception
-    // "x-mycompany-test-exception": ""
 });

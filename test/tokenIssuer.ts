@@ -1,4 +1,4 @@
-import {generateKeyPair, KeyLike, SignJWT} from 'jose';
+import {generateKeyPair, exportJWK, KeyLike, SignJWT} from 'jose';
 
 /*
  * A token issuer for testing
@@ -36,6 +36,7 @@ export class TokenIssuer {
             sub,
             iss: 'testissuer.com',
             aud: 'api.mycompany.com',
+            scope: 'openid profile email https://api.authsamples.com/api/transactions_read',
         })
             .setProtectedHeader( { kid: '1', alg: this._algorithm } )
             .setIssuedAt(now - 30000)
@@ -44,9 +45,20 @@ export class TokenIssuer {
     }
 
     /*
-     * Called by the API to get the JSON Web Key Set
+     * Get the token signing public keys as a JSON Web Keyset
      */
-    public getTokenSigningPublicKeys(): string {
-        return this._tokenSigningPublicKey!.toString();
+    public async getTokenSigningPublicKeys(): Promise<string> {
+
+        const jwk = await exportJWK(this._tokenSigningPublicKey!);
+
+        jwk.kid = '1';
+        jwk.alg = this._algorithm;
+        const keys = {
+            keys: [
+                jwk,
+            ],
+        };
+
+        return JSON.stringify(keys);
     }
 }
