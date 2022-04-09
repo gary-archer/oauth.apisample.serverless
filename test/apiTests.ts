@@ -16,7 +16,7 @@ describe('ApiTests', () => {
 
     // A class to issue our own JWTs for testing
     const tokenIssuer = new TokenIssuer();
-    const wiremockAdmin = new WiremockAdmin(true);
+    const wiremockAdmin = new WiremockAdmin(false);
 
     // The test session ID
     const sessionId = Guid.create().toString();
@@ -41,6 +41,7 @@ describe('ApiTests', () => {
     after( async () => {
         await fs.copy('environments/api.config.json', 'api.config.json');
         await wiremockAdmin.unregisterJsonWebWeys();
+        await wiremockAdmin.unregisterUserInfo();
     });
 
     /*
@@ -79,6 +80,7 @@ describe('ApiTests', () => {
         // Assert results
         const response = JSON.parse(rawResponse);
         assert.strictEqual(response.statusCode, 200, rawResponse);
+        assert.strictEqual(response.body.regions.length, 2, 'The regions claim did not contain the expected number of elements');
 
     }).timeout(10000);
 });

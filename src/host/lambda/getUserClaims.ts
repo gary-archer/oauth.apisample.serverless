@@ -7,6 +7,7 @@ import {ScopeVerifier} from '../../plumbing/oauth/scopeVerifier';
 import {ResponseWriter} from '../../plumbing/utilities/responseWriter';
 import {UserInfoClaims} from '../../plumbing/claims/userInfoClaims';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration';
+import {SampleCustomClaims} from '../../logic/entities/sampleCustomClaims';
 
 /*
  * Our handler acts as a REST controller
@@ -18,11 +19,15 @@ const baseHandler = async (): Promise<APIGatewayProxyResult> => {
     const baseClaims = container.get<BaseClaims>(BASETYPES.BaseClaims);
     ScopeVerifier.enforce(baseClaims.scopes, 'transactions_read');
 
-    // Create the payload and return it
-    const claims = container.get<UserInfoClaims>(BASETYPES.UserInfoClaims);
+    // Get both OAuth User Info and domain specific user info
+    const userClaims = container.get<UserInfoClaims>(BASETYPES.UserInfoClaims);
+    const customClaims = container.get<SampleCustomClaims>(BASETYPES.CustomClaims);
+    
+    // Return a payload with whatever the UI needs
     const userInfo = {
-        givenName: claims.givenName,
-        familyName: claims.familyName,
+        givenName: userClaims.givenName,
+        familyName: userClaims.familyName,
+        regions: customClaims.userRegions,
     };
 
     return ResponseWriter.objectResponse(200, userInfo);

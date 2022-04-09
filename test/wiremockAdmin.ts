@@ -63,7 +63,7 @@ export class WiremockAdmin {
             id: this._userInfoId,
             priority: 1,
             request: {
-                method: 'GET',
+                method: 'POST',
                 url: '/oauth2/userInfo'
             },
             response: {
