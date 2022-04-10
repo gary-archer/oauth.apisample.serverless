@@ -21,7 +21,7 @@ export class SampleCustomClaimsProvider extends CustomClaimsProvider {
 
             // For admin users we hard code this user id, assign a role of 'admin' and grant access to all regions
             // The CompanyService class will use these claims to return all transaction data
-            return new SampleCustomClaims('20116', 'admin', []);
+            return new SampleCustomClaims('20116', 'admin', ['Europe', 'USA', 'Asia']);
 
         } else {
 

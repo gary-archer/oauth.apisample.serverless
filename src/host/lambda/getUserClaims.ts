@@ -22,7 +22,7 @@ const baseHandler = async (): Promise<APIGatewayProxyResult> => {
     // Get both OAuth User Info and domain specific user info
     const userClaims = container.get<UserInfoClaims>(BASETYPES.UserInfoClaims);
     const customClaims = container.get<SampleCustomClaims>(BASETYPES.CustomClaims);
-    
+
     // Return a payload with whatever the UI needs
     const userInfo = {
         givenName: userClaims.givenName,

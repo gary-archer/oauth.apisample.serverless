@@ -3,5 +3,5 @@ node_modules
 dist
 .serverless
 lambdatest.log
-input.json
-output.json
+input.txt
+output.txt
