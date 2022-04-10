@@ -1,4 +1,4 @@
-import {JWTPayload} from 'jose/types';
+import {JWTPayload} from 'jose';
 import {ErrorUtils} from '../errors/errorUtils';
 import {BaseClaims} from './baseClaims';
 import {UserInfoClaims} from './userInfoClaims';

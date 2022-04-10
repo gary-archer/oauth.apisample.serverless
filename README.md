@@ -15,17 +15,46 @@ The overall goal is to use portable security related code when working with lamb
 - The API uses caching to avoid excessive calls to the Authorization Server
 - The API implements other [Non Functional Behaviour](https://authguidance.com/2017/10/08/corporate-code-sample-core-behavior/), to enable productivity and quality
 
-## Quick Start
+## Build the API
 
-Ensure that Node.js, `jq` and `curl` are installed, then run these commands to test the API's lambda functions:
+Ensure that Node.js is installed, then run these commands to build the API's code:
 
 ```bash
 npm install
 npm run build
-npm run setup
-npm run getUserClaims
-npm run getCompanyList
-npm run getCompanyTransactions
+```
+
+## Integration Test Setup
+
+Wiremock is used to mock the Authorization Server for testing.\
+This requires a Java runtime to be installed as a prerequisite.\
+Also add the test Authorization Server domain name to your hosts file:
+
+```text
+127.0.0.1     localhost login.mycompany.com
+::1           localhost
+```
+
+## Run Integration Tests
+
+To test the API's lambda functions, first run the Wiremock tool, then run integration tests:
+
+```bash
+npm run wiremock
+npm test
+```
+
+The API then runs some integration tests to demonstrate key API behaviour:
+
+```text
+OAuth API Tests
+    ✔ Get user claims returns a single region for the standard user (1854ms)
+    ✔ Get user claims returns all regions for the admin user (1970ms)
+    ✔ Get companies list returns 2 items for the standard user (2708ms)
+    ✔ Get companies list returns all items for the admin user (2504ms)
+    ✔ Get transactions is allowed for companies that match the regions claim (2319ms)
+    ✔ Get transactions returns 404 for companies that do not match the regions claim (1842ms)
+    ✔ API exceptions return 500 with a supportable error response (1742ms)
 ```
 
 ## Further Information
