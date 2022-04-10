@@ -21,7 +21,18 @@ export class LambdaChildProcess {
                 'x-mycompany-api-client': 'ServerlessTest',
                 'x-mycompany-session-id': options.sessionId,
             },
-        };
+        } as any;
+
+        // Add path parameters if required
+        if (options.pathParameters) {
+            lambdaInput.pathParameters = options.pathParameters;
+        }
+
+        // This custom header allows us to rehearse API 500 exceptions in tests
+        if (options.rehearseException) {
+            lambdaInput.headers['x-mycompany-test-exception'] = 'SampleApi';
+        }
+
         fs.writeFile('test/input.txt', JSON.stringify(lambdaInput, null, 2));
 
         // Run the Serverless API operation and return its output

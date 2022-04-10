@@ -7,4 +7,6 @@ export interface LambdaChildProcessOptions {
     lambdaFunction: string;
     accessToken: string;
     sessionId: string;
+    pathParameters?: any;
+    rehearseException?: boolean;
 }
