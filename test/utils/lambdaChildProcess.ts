@@ -24,21 +24,11 @@ export class LambdaChildProcess {
         };
         fs.writeFile('test/input.txt', JSON.stringify(lambdaInput, null, 2));
 
-        // Run the Serverless API operation as a file to file operation
+        // Run the Serverless API operation and return its output
         await LambdaChildProcess._runChildProcess(
             'sls',
             ['invoke', 'local', '-f', options.lambdaFunction, '-p', 'test/input.txt']);
-
-        // Read the response file up to the '}' line, since Serverless sometimes adds other messages after this
-        const rawResponse = await fs.readFile('test/output.txt', 'utf8');
-
-        // Return the raw lambda output as an object based response
-        const responseData = JSON.parse(rawResponse);
-        const body = JSON.parse(responseData.body);
-        return {
-            statusCode: responseData.statusCode,
-            body,
-        };
+        return await LambdaChildProcess._transformOutput();
     }
 
     /*
@@ -49,37 +39,60 @@ export class LambdaChildProcess {
 
         return new Promise((resolve, reject) => {
 
-            let result = '';
+            let childProcessOutput = '';
             const child = spawn(command, args);
 
             child.stdout.on('data', data => {
-                result += data;
+                childProcessOutput += data;
             });
 
             child.stderr.on('data', data => {
-                result += data;
+                childProcessOutput += data;
             });
 
             child.on('close', async code => {
 
                 if (code === 0) {
 
-                    await fs.writeFile('test/output.txt', result);
+                    await fs.writeFile('test/output.txt', childProcessOutput);
                     resolve();
 
                 } else {
 
-                    await fs.writeFile('test/output.txt', result);
+                    await fs.writeFile('test/output.txt', childProcessOutput);
                     reject(`Child process failed with exit code ${code}`);
                 }
             });
 
             child.on('error', async e => {
 
-                await fs.writeFile('test/output.txt', result);
+                await fs.writeFile('test/output.txt', childProcessOutput);
                 reject(`Child process failed: ${e.message}`);
 
             });
         });
+    }
+
+    /*
+     * Reliably transform the child process output into a response object
+     */
+    private static async _transformOutput(): Promise<any> {
+
+        const lambdaOutput = await fs.readFile('test/output.txt', 'utf8');
+
+        // Read the response file up to the '}' line, since Serverless sometimes adds other messages after this
+        let responseJson = '';
+        lambdaOutput.split(/\r?\n/).every(line =>  {
+            responseJson += line + '\n';
+            return line === '}' ? false : true;
+        });
+
+        // Return an object based response, which requires double deserialization to get the body
+        const responseData = JSON.parse(responseJson);
+        const body = JSON.parse(responseData.body);
+        return {
+            statusCode: responseData.statusCode,
+            body,
+        };
     }
 }
