@@ -48,13 +48,13 @@ The API then runs some integration tests to demonstrate key API behaviour:
 
 ```text
 OAuth API Tests
-    ✔ Get user claims returns a single region for the standard user (1854ms)
-    ✔ Get user claims returns all regions for the admin user (1970ms)
-    ✔ Get companies list returns 2 items for the standard user (2708ms)
-    ✔ Get companies list returns all items for the admin user (2504ms)
-    ✔ Get transactions is allowed for companies that match the regions claim (2319ms)
-    ✔ Get transactions returns 404 for companies that do not match the regions claim (1842ms)
-    ✔ API exceptions return 500 with a supportable error response (1742ms)
+    ✔ Get user claims returns a single region for the standard user
+    ✔ Get user claims returns all regions for the admin user
+    ✔ Get companies list returns 2 items for the standard user
+    ✔ Get companies list returns all items for the admin user
+    ✔ Get transactions is allowed for companies that match the regions claim
+    ✔ Get transactions returns 404 for companies that do not match the regions claim
+    ✔ API exceptions return 500 with a supportable error response
 ```
 
 ## Further Information
