@@ -226,7 +226,7 @@ describe('OAuth API Tests', () => {
         // Company 3 is associated to a region the user is not authorized to access
         const options = {
             httpMethod: 'GET',
-            apiPath: '/api/companies/2/transactions',
+            apiPath: '/api/companies/3/transactions',
             lambdaFunction: 'getCompanyTransactions',
             accessToken,
             sessionId,
