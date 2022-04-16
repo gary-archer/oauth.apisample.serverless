@@ -26,8 +26,7 @@ npm run build
 
 ## Integration Test Setup
 
-Wiremock is used to mock the Authorization Server for testing.\
-This requires a Java runtime to be installed as a prerequisite.\
+Wiremock is used to mock the Authorization Server, which requires a Java runtime as a prerequisite.\
 Also add the test Authorization Server domain name to your hosts file:
 
 ```text
@@ -35,17 +34,21 @@ Also add the test Authorization Server domain name to your hosts file:
 ::1           localhost
 ```
 
-## Run Integration Tests
-
-To test the API's lambda functions, first run the Wiremock tool in a terminal window.\
-Then run integration tests in another terminal window:
+Then run the Wiremock tool in a terminal window:
 
 ```bash
 npm run wiremock
+```
+
+## Run Integration Tests
+
+Run integration tests in another terminal window:
+
+```bash
 npm test
 ```
 
-The API then runs some integration tests to demonstrate key API behaviour:
+Tests call lambda functions and assert some key API behaviour:
 
 ```text
 OAuth API Tests
