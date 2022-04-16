@@ -37,7 +37,8 @@ Also add the test Authorization Server domain name to your hosts file:
 
 ## Run Integration Tests
 
-To test the API's lambda functions, first run the Wiremock tool, then run integration tests:
+To test the API's lambda functions, first run the Wiremock tool in a terminal window.\
+Then run integration tests in another terminal window:
 
 ```bash
 npm run wiremock
@@ -48,13 +49,13 @@ The API then runs some integration tests to demonstrate key API behaviour:
 
 ```text
 OAuth API Tests
-    ✔ Get user claims returns a single region for the standard user
-    ✔ Get user claims returns all regions for the admin user
-    ✔ Get companies list returns 2 items for the standard user
-    ✔ Get companies list returns all items for the admin user
-    ✔ Get transactions is allowed for companies that match the regions claim
-    ✔ Get transactions returns 404 for companies that do not match the regions claim
-    ✔ API exceptions return 500 with a supportable error response
+  ✔ Get user claims returns a single region for the standard user
+  ✔ Get user claims returns all regions for the admin user
+  ✔ Get companies list returns 2 items for the standard user
+  ✔ Get companies list returns all items for the admin user
+  ✔ Get transactions is allowed for companies that match the regions claim
+  ✔ Get transactions returns 404 for companies that do not match the regions claim
+  ✔ API exceptions return 500 with a supportable error response
 ```
 
 ## Further Information
