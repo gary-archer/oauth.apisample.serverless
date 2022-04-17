@@ -56,6 +56,7 @@ OAuth API Tests
   ✔ Get user claims returns all regions for the admin user
   ✔ Get companies list returns 2 items for the standard user
   ✔ Get companies list returns all items for the admin user
+  ✔ Get companies list with malicious JWT signing key returns a 401 error
   ✔ Get transactions is allowed for companies that match the regions claim
   ✔ Get transactions returns 404 for companies that do not match the regions claim
   ✔ API exceptions return 500 with a supportable error response

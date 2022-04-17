@@ -173,6 +173,29 @@ describe('OAuth API Tests', () => {
     }).timeout(10000);
 
     /*
+     * Test getting companies with a malicious JWT
+     */
+    it ('Get companies list with malicious JWT returns a 401 error', async () => {
+
+        // Get an access token for the end user of this test
+        const accessToken = await tokenIssuer.issueMaliciousAccessToken(guestUserId);
+
+        // Run the lambda function
+        const options = {
+            httpMethod: 'GET',
+            apiPath: '/api/companies',
+            lambdaFunction: 'getCompanyList',
+            accessToken,
+            sessionId,
+        };
+        const response = await LambdaChildProcess.invoke(options);
+
+        // Assert results
+        assert.strictEqual(response.statusCode, 401, 'Unexpected HTTP status code');
+        assert.strictEqual(response.body.code, 'unauthorized');
+    }).timeout(10000);
+
+    /*
      * Test getting allowed transactions
      */
     it ('Get transactions is allowed for companies that match the regions claim', async () => {
