@@ -89,7 +89,6 @@ export class OAuthAuthenticator {
                     url: this._configuration.userInfoEndpoint,
                     method: 'POST',
                     headers: {
-                        'content-type': 'application/x-www-form-urlencoded',
                         'accept': 'application/json',
                         'Authorization': `Bearer ${accessToken}`,
                     },
