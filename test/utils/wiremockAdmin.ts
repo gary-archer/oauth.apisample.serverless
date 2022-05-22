@@ -13,7 +13,7 @@ export class WiremockAdmin {
     private readonly _httpProxy: HttpProxy;
 
     public constructor(useProxy: boolean) {
-        this._baseUrl = 'http://login.mycompany.com/__admin/mappings';
+        this._baseUrl = 'http://login.authsamples-dev.com/__admin/mappings';
         this._jsonWebKeysId = Guid.create().toString();
         this._userInfoId = Guid.create().toString();
         this._httpProxy = new HttpProxy(useProxy, 'http://127.0.0.1:8888');

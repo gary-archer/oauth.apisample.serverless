@@ -10,8 +10,8 @@
     "oauth": {
         "issuer":           "testissuer.com",
         "audience":         "api.mycompany.com",
-        "jwksEndpoint":     "http://login.mycompany.com/.well-known/jwks.json",
-        "userInfoEndpoint": "http://login.mycompany.com/oauth2/userInfo"
+        "jwksEndpoint":     "http://login.authsamples-dev.com/.well-known/jwks.json",
+        "userInfoEndpoint": "http://login.authsamples-dev.com/oauth2/userInfo"
     },
     "cache": {
         "region": "eu-west-2",
