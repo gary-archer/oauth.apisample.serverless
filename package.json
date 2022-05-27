@@ -9,7 +9,7 @@
     "test": "mocha -r ts-node/register test/apiTests.ts",
     "package": "npm run buildRelease && rimraf .serverless && sls package --stage deployed",
     "buildRelease": "rimraf dist && tsc",
-    "deploy": "sls deploy --stage deployed --package .serverless",
+    "deploy": "sls deploy --stage deployed --package .serverless --aws-profile default",
     "remove": "sls remove --stage deployed"
   },
   "author": "Gary Archer",
