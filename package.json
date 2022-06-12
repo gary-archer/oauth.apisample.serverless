@@ -8,7 +8,7 @@
     "buildRelease": "rimraf dist && tsc",
     "wiremock": "wiremock --root-dir test/integration --port 80",
     "test": "mocha -r ts-node/register test/apiTests.ts",
-    "deploy": "./deploy.sh",
+    "deploy": "bash ./deploy.sh",
     "remove": "sls remove --stage deployed"
   },
   "author": "Gary Archer",

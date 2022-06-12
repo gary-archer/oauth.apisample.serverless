@@ -82,8 +82,8 @@ export class BaseCompositionRoot {
         this._cacheConfiguration = configuration;
 
         this._cache = configuration.isActive ?
-            new NullCache() :
-            new AwsCache(this._cacheConfiguration, this._customClaimsProvider);
+            new AwsCache(this._cacheConfiguration, this._customClaimsProvider) :
+            new NullCache()
 
         return this;
     }

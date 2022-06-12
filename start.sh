@@ -54,6 +54,7 @@ if [ "$PLATFORM" == 'MACOS' ]; then
 
 elif [ "$PLATFORM" == 'WINDOWS' ]; then
 
+  GIT_BASH="C:\Program Files\Git\git-bash.exe"
   "$GIT_BASH" -c ./run_wiremock.sh &
 
 elif [ "$PLATFORM" == 'LINUX' ]; then
@@ -77,11 +78,4 @@ npm test
 if [ $? -ne 0 ]; then
   echo 'Problem encountered running lambdas'
   exit
-fi
-
-#
-# Prevent automatic terminal closure on Linux
-#
-if [ "$(uname -s)" == 'Linux' ]; then
-  read -n 1
 fi

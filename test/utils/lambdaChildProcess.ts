@@ -37,7 +37,7 @@ export class LambdaChildProcess {
 
         // Run the Serverless API operation and return its output
         await LambdaChildProcess._runChildProcess(
-            'sls',
+            './node_modules/.bin/sls',
             ['invoke', 'local', '-f', options.lambdaFunction, '-p', 'test/input.txt']);
         return await LambdaChildProcess._transformOutput();
     }
