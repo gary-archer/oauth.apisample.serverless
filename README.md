@@ -15,9 +15,9 @@ The Serverless OAuth secured Node.js API code sample, referenced in my blog at h
 ## API serves UI Clients
 
 The AWS deployed API runs as part of an OAuth end-to-end setup, to serve my blog's UI code samples.\
-This enables UI code examples to point to online API URLs:
+This enables UI code examples to point to API endpoints that run in the AWS cloud:
 
-- [Final SPA](https://github.com/gary-archer/oauth.websample.final)
+- [Final Single Page Application](https://github.com/gary-archer/oauth.websample.final)
 - [Final Desktop App](https://github.com/gary-archer/oauth.desktopsample.final)
 - [Final iOS App](https://github.com/gary-archer/oauth.mobilesample.ios)
 - [Final Android App](https://github.com/gary-archer/oauth.mobilesample.android)
