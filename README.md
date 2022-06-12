@@ -36,11 +36,11 @@ This enables the API component to be developed and tested in isolation:
 
 ![Local Lambda Tests](./doc/local-lambda-tests.png)
 
-This works well enough to meet my low cost deployment goals, though these development limitations exist:
+This works well enough to meet my low cost deployment goals, though these technical limitations exist:
 
 - The lambdas cannot be run as real HTTP endpoints locally, and called concurrently from UIs
-- The lambdas cannot be load tested locally, due to startup times
-- The lambdas cannot cache data such as token signing public keys between requests
+- The lambdas cannot be load tested locally, due to the impact of startup times
+- The lambdas cannot use in-memory caching between requests
 
 ## Further Information
 
