@@ -9,8 +9,8 @@
 The Serverless OAuth secured Node.js API code sample, referenced in my blog at https://authguidance.com:
 
 - The API's lambda functions validate a JWT access tokens on every request, in a zero trust manner
-* The API takes finer control over OAuth domain specific claims and uses a certified JOSE library
-* The API uses JSON request logging and Elasticsearch log aggregation, for measurability
+- The API takes finer control over OAuth domain specific claims and uses a certified JOSE library
+- The API uses JSON request logging and Elasticsearch log aggregation, for measurability
 
 ## API serves UI Clients
 
