@@ -27,7 +27,7 @@ provider:
 
 custom:
   # Each environment can have its own configuration file
-  config: ${file(environments/${opt:stage, 'local'}.yml)}
+  config: ${file(environments/${opt:stage, 'dev'}.yml)}
   
   # API gateway domain details
   customDomain:
@@ -73,6 +73,7 @@ package:
   - '!.vscode/**'
   - '!environments/**'
   - '!src/**'
+  - '!doc/**'
   - '!test/**'
   - '!ts*.json'
   - '!package*.json'

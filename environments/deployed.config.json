@@ -1,10 +1,11 @@
 {
     "api": {
         "useProxy": false,
-        "proxyUrl": "http://127.0.0.1:8888"
+        "proxyUrl": ""
     },
     "logging": {
         "apiName": "SampleApi",
+        "prettyPrint": false,
         "performanceThresholdMilliseconds": 500
     },
     "oauth": {
@@ -14,6 +15,7 @@
         "userInfoEndpoint": "https://login.authsamples.com/oauth2/userInfo"
     },
     "cache": {
+        "isActive": true,
         "region": "eu-west-2",
         "tableName": "OAUTH_CACHE",
         "claimsCacheTimeToLiveMinutes": 30

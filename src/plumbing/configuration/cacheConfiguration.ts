@@ -5,4 +5,5 @@ export interface CacheConfiguration {
     region: string;
     tableName: string;
     claimsCacheTimeToLiveMinutes: number;
+    isActive: boolean;
 }

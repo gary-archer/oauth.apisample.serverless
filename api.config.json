@@ -5,15 +5,17 @@
     },
     "logging": {
         "apiName": "SampleApi",
+        "prettyPrint": true,
         "performanceThresholdMilliseconds": 500
     },
     "oauth": {
-        "issuer":           "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn",
-        "audience":         "",
-        "jwksEndpoint":     "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_qqJgVeuTn/.well-known/jwks.json",
-        "userInfoEndpoint": "https://login.authsamples.com/oauth2/userInfo"
+        "issuer":           "testissuer.com",
+        "audience":         "api.mycompany.com",
+        "jwksEndpoint":     "http://login.authsamples-dev.com/.well-known/jwks.json",
+        "userInfoEndpoint": "http://login.authsamples-dev.com/oauth2/userInfo"
     },
     "cache": {
+        "isActive": false,
         "region": "eu-west-2",
         "tableName": "OAUTH_CACHE",
         "claimsCacheTimeToLiveMinutes": 30

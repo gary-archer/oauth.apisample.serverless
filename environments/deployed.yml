@@ -1,5 +1,5 @@
 #
-# Specific settings per environment
+# Specific settings for the AWS deployed environment
 #
 settings:
   # Sets event.requestContext.stage to this value

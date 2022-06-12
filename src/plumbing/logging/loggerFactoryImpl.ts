@@ -10,18 +10,13 @@ import {LoggerFactory} from './loggerFactory';
 export class LoggerFactoryImpl implements LoggerFactory {
 
     private _apiName: string;
+    private _prettyPrint: boolean;
     private _performanceThresholdMilliseconds: number;
 
     public constructor() {
         this._apiName = 'api';
+        this._prettyPrint = false;
         this._performanceThresholdMilliseconds = 1000;
-    }
-
-    /*
-     * Create the log entry and return it to the framework
-     */
-    public createLogEntry(): LogEntryImpl {
-        return new LogEntryImpl(this._apiName, this._performanceThresholdMilliseconds);
     }
 
     /*
@@ -30,7 +25,15 @@ export class LoggerFactoryImpl implements LoggerFactory {
     public configure(configuration: LoggingConfiguration): void {
 
         this._apiName = configuration.apiName;
+        this._prettyPrint = configuration.prettyPrint;
         this._performanceThresholdMilliseconds = configuration.performanceThresholdMilliseconds;
+    }
+
+    /*
+     * Create the log entry and return it to the framework
+     */
+    public createLogEntry(): LogEntryImpl {
+        return new LogEntryImpl(this._apiName, this._prettyPrint, this._performanceThresholdMilliseconds);
     }
 
     /*

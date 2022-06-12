@@ -22,24 +22,26 @@ describe('OAuth API Tests', () => {
     const sessionId = Guid.create().toString();
 
     /*
-     * Initialize the test configuration and token issuer, then register a mock keyset the API will use to validate JWTs
+     * Initialize resources
      */
     before( async () => {
 
-        await fs.copy('environments/test.config.json', 'api.config.json');
+        // Ensure that we are using the development configuration
+        await fs.copy('environments/dev.config.json', 'api.config.json');
 
+        // Create some mock token signing keys for access tokens
         await tokenIssuer.initialize();
         const keyset = await tokenIssuer.getTokenSigningPublicKeys();
 
+        // Use Wiremock to simulate the Authorization Server, so that the API receives mock token signing public keys
         await wiremockAdmin.initialize();
         await wiremockAdmin.registerJsonWebWeys(keyset);
     });
 
     /*
-     * Restore the API's main configuration and clean up wiremock resources
+     * Clean up resources
      */
     after( async () => {
-        await fs.copy('environments/api.config.json', 'api.config.json');
         await wiremockAdmin.unregisterJsonWebWeys();
         await wiremockAdmin.unregisterUserInfo();
     });

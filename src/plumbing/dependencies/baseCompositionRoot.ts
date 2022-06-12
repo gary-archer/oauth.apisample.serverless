@@ -2,7 +2,7 @@ import middy from '@middy/core';
 import {Container} from 'inversify';
 import {Cache} from '../cache/cache';
 import {AwsCache} from '../cache/awsCache';
-import {DevelopmentCache} from '../cache/developmentCache';
+import {NullCache} from '../cache/nullCache';
 import {BaseClaims} from '../claims/baseClaims';
 import {CustomClaims} from '../claims/customClaims';
 import {CustomClaimsProvider} from '../claims/customClaimsProvider';
@@ -28,6 +28,7 @@ import {HttpProxy} from '../utilities/httpProxy';
 export class BaseCompositionRoot {
 
     private readonly _container: Container;
+
     private _loggingConfiguration: LoggingConfiguration | null;
     private _oauthConfiguration: OAuthConfiguration | null;
     private _cacheConfiguration: CacheConfiguration | null;
@@ -37,6 +38,7 @@ export class BaseCompositionRoot {
     private _httpProxy: HttpProxy | null;
 
     public constructor(container: Container) {
+
         this._container = container;
         this._loggingConfiguration = null;
         this._oauthConfiguration = null;
@@ -79,8 +81,8 @@ export class BaseCompositionRoot {
         this._customClaimsProvider = provider;
         this._cacheConfiguration = configuration;
 
-        this._cache = process.env.IS_LOCAL === 'true'?
-            new DevelopmentCache():
+        this._cache = configuration.isActive ?
+            new NullCache() :
             new AwsCache(this._cacheConfiguration, this._customClaimsProvider);
 
         return this;

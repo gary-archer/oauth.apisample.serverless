@@ -18,12 +18,15 @@ export class LogEntryImpl implements LogEntry {
 
     private readonly _data: LogEntryData;
     private readonly _performanceThresholdMilliseconds: number;
+    private readonly _prettyPrint: boolean;
 
-    public constructor(apiName: string, performanceThresholdMilliseconds: number) {
+    public constructor(apiName: string, prettyPrint: boolean, performanceThresholdMilliseconds: number) {
 
         this._data = new LogEntryData();
-        this._data.apiName = apiName;
         this._data.hostName = os.hostname();
+
+        this._data.apiName = apiName;
+        this._prettyPrint = prettyPrint;
         this._performanceThresholdMilliseconds = performanceThresholdMilliseconds;
     }
 
@@ -35,7 +38,7 @@ export class LogEntryImpl implements LogEntry {
         this._data.performance.start();
 
         // Get the operation name and set the performance threshold
-        this._calculateOperationName(event, context);
+        this._calculateOperationName(context);
         this._data.performanceThresholdMilliseconds = this._performanceThresholdMilliseconds;
 
         // Record REST path details
@@ -131,7 +134,7 @@ export class LogEntryImpl implements LogEntry {
      */
     public write(): void {
 
-        if (process.env.IS_LOCAL) {
+        if (this._prettyPrint) {
 
             // On a developer PC, output from 'npm run lambda' is written with pretty printing to a file
             const data = JSON.stringify(this._data.toLogFormat(), null, 2);
@@ -149,7 +152,7 @@ export class LogEntryImpl implements LogEntry {
      * Calculate the operation name from the AWS function name
      * This is a value such as 'sampleapi-default-getCompanyList'
      */
-    private _calculateOperationName(event: APIGatewayProxyEvent, context: Context) {
+    private _calculateOperationName(context: Context) {
 
         if (context && context.functionName) {
 

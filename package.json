@@ -5,11 +5,10 @@
   "scripts": {
     "lint": "npx eslint . --ext .ts,.tsx",
     "build": "rimraf dist && tsc --sourceMap true",
+    "buildRelease": "rimraf dist && tsc",
     "wiremock": "wiremock --root-dir test/integration --port 80",
     "test": "mocha -r ts-node/register test/apiTests.ts",
-    "package": "npm run buildRelease && rimraf .serverless && sls package --stage deployed",
-    "buildRelease": "rimraf dist && tsc",
-    "deploy": "sls deploy --stage deployed --package .serverless --aws-profile default",
+    "deploy": "./deploy.sh",
     "remove": "sls remove --stage deployed"
   },
   "author": "Gary Archer",
