@@ -14,8 +14,6 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 ./node_modules/.bin/wiremock --root-dir test/integration --port 80
 
 #
-# Prevent automatic terminal closure on Linux
+# Prevent automatic terminal closure
 #
-if [ "$(uname -s)" == 'Linux' ]; then
-  read -n 1
-fi
+read -n 1
