@@ -6,29 +6,46 @@
  
 ## Overview
 
-The final Serverless OAuth Secured API code sample, referenced in my blog at https://authguidance.com. \
-The overall goal is to use portable security related code when working with lambdas.
+The Serverless OAuth secured Node.js API code sample, referenced in my blog at https://authguidance.com:
 
-- The API receives JWT access tokens from web, mobile and desktop apps
-- The API validates JWTs on every request in a zero trust manner, using a JOSE library
-- The API authorizes access to data using domain specific claims
-- The API uses caching to avoid excessive calls to the Authorization Server
-- The API implements other [Non Functional Behaviour](https://authguidance.com/2017/10/08/corporate-code-sample-core-behavior/), to enable productivity and quality
+- The API's lambda functions validate a JWT access tokens on every request, in a zero trust manner
+* The API takes finer control over OAuth domain specific claims and uses a certified JOSE library
+* The API uses JSON request logging and Elasticsearch log aggregation, for measurability
 
-## Run the Lambda Functions
+## API serves UI Clients
 
-Ensure that Node.js is installed, then run this command to run tests that invoke all lambdas.\
-The API's clients are UIs, which get user level access tokens by running an OpenID Connect code flow.\
-For productive test driven development, the API instead mocks the Authorization Server:
+The AWS deployed API runs as part of an OAuth end-to-end setup, to serve my blog's UI code samples.\
+This enables UI code examples to point to online API URLs:
+
+- [Final SPA](https://github.com/gary-archer/oauth.websample.final)
+- [Final Desktop App](https://github.com/gary-archer/oauth.desktopsample.final)
+- [Final iOS App](https://github.com/gary-archer/oauth.mobilesample.ios)
+- [Final Android App](https://github.com/gary-archer/oauth.mobilesample.android)
+
+## Local Development Quick Start
+
+Ensure that Node.js is installed, then run this command to run mocha tests that invoke all lambdas:
 
 ```bash
 ./start.sh
 ```
 
+The API's clients are UIs, which get user level access tokens by running an OpenID Connect code flow.\
+For productive test driven development, the API instead mocks the Authorization Server.\
+This enables the API component to be developed and tested in isolation:
+
+![Local Lambda Tests](./doc/local-lambda-tests.png)
+
+This works well enough to meet my low cost deployment goals, though these development limitations exist:
+
+- The lambdas cannot be run as real HTTP endpoints locally, and called concurrently from UIs
+- The lambdas cannot be load tested locally, due to startup times
+- The lambdas cannot cache data such as token signing public keys between requests
+
 ## Further Information
 
-* See the [Serverless API Overview](https://authguidance.com/2018/12/11/serverless-api-overview) for further notes on running the API
-* See the [Serverless API Deployment](https://authguidance.com/2018/12/16/serverless-api-deployment/) post for details on Cloud Hosting
+* See the [Serverless API Overview](https://authguidance.com/2018/12/11/serverless-api-overview) for further details on how the API runs locally
+* See the [Serverless API Deployment](https://authguidance.com/2018/12/16/serverless-api-deployment/) post for details on how the API is deployed to the AWS cloud
 
 ## Programming Technologies
 
