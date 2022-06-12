@@ -38,9 +38,9 @@ This enables the API component to be developed and tested in isolation:
 
 This works well enough to meet my low cost deployment goals, though these technical limitations exist:
 
-- The lambdas cannot be run as real HTTP endpoints locally, and called concurrently from UIs
-- The lambdas cannot be load tested locally, due to the impact of startup times
-- The lambdas cannot use in-memory caching between requests
+- The lambdas cannot be run as real HTTP endpoints locally, and be called concurrently from UIs
+- The lambdas cannot be load tested locally, due to the slow lambda startup times
+- The lambdas cannot use in-memory caching of token signing public keys or custom claims
 
 ## Further Information
 
