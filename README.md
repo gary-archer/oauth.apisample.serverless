@@ -34,13 +34,10 @@ For productive test driven development, the API instead mocks the Authorization 
 
 * Node.js and TypeScript are used to implement AWS Lambda Functions
 
-## API Middleware Used
+## Infrastructure
 
 * The [JOSE library](https://github.com/panva/jose) is used for to manage in memory validation of JWTs
 * [InversifyJS](http://inversify.io) is used to help manage class dependencies
-
-## Cloud Infrastructure Used
-
 * AWS Route 53 is used for custom hosting domains
 * AWS Certificate Manager is used to manage and auto renew the API's SSL certificate
 * AWS Cognito is used as the default Authorization Server
