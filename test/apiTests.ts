@@ -195,6 +195,7 @@ describe('OAuth API Tests', () => {
         // Assert results
         assert.strictEqual(response.statusCode, 401, 'Unexpected HTTP status code');
         assert.strictEqual(response.body.code, 'unauthorized');
+
     }).timeout(10000);
 
     /*

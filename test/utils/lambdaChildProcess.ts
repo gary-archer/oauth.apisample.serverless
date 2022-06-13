@@ -37,7 +37,7 @@ export class LambdaChildProcess {
 
         // Run the Serverless API operation and return its output
         await LambdaChildProcess._runChildProcess(
-            './node_modules/.bin/sls',
+            LambdaChildProcess.getServerlessCommand(),
             ['invoke', 'local', '-f', options.lambdaFunction, '-p', 'test/input.txt']);
         return await LambdaChildProcess._transformOutput();
     }
@@ -71,15 +71,18 @@ export class LambdaChildProcess {
                 } else {
 
                     await fs.writeFile('test/output.txt', childProcessOutput);
-                    reject(`Child process failed with exit code ${code}`);
+                    reject(`Child process failed with exit code ${code}: ${childProcessOutput}`);
                 }
             });
 
             child.on('error', async e => {
 
-                await fs.writeFile('test/output.txt', childProcessOutput);
-                reject(`Child process failed: ${e.message}`);
+                if (e && e.message) {
+                    childProcessOutput += `, Error: ${e.message}`;
+                }
 
+                await fs.writeFile('test/output.txt', childProcessOutput);
+                reject(`Child process failed: ${childProcessOutput}`);
             });
         });
     }
@@ -105,5 +108,12 @@ export class LambdaChildProcess {
             statusCode: responseData.statusCode,
             body,
         };
+    }
+
+    /*
+     * On Windows we must create a child process via the .cmd executable
+     */
+    private static getServerlessCommand(): string {
+        return (process.platform === 'win32') ? 'sls.cmd' : 'sls';
     }
 }
