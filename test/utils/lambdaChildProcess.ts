@@ -114,6 +114,8 @@ export class LambdaChildProcess {
      * On Windows we must create a child process via the .cmd executable
      */
     private static getServerlessCommand(): string {
-        return (process.platform === 'win32') ? 'sls.cmd' : 'sls';
+
+        const name = (process.platform === 'win32') ? 'sls.cmd' : 'sls';
+        return `./node_modules/.bin/${name}`;
     }
 }

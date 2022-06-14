@@ -6,8 +6,8 @@
     "lint": "npx eslint . --ext .ts,.tsx",
     "build": "rimraf dist && tsc --sourceMap true",
     "buildRelease": "rimraf dist && tsc",
-    "wiremock": "wiremock --root-dir test/integration --port 80",
-    "test": "mocha -r ts-node/register test/apiTests.ts",
+    "start": "bash ./start.sh",
+    "test": "bash ./start.sh",
     "deploy": "bash ./deploy.sh",
     "remove": "sls remove --stage deployed"
   },

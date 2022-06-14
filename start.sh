@@ -36,6 +36,15 @@ if [ ! -d 'node_modules' ]; then
 fi
 
 #
+# Check code quality
+#
+npm run lint
+if [ $? -ne 0 ]; then
+  echo 'Code quality checks failed'
+  exit
+fi
+
+#
 # Build the API code
 #
 npm run build
@@ -72,9 +81,9 @@ while [ "$(curl -s -X GET -o /dev/null -w '%{http_code}' "$WIREMOCK_URL")" != '2
 done
 
 #
-# Run all lambdas via some mocha tests
+# Run all lambda functions locally via some mocha tests
 #
-npm test
+./node_modules/.bin/mocha -r 'ts-node/register' 'test/apiTests.ts'
 if [ $? -ne 0 ]; then
   echo 'Problem encountered running lambdas'
   exit
