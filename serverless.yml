@@ -79,6 +79,7 @@ package:
   - '!package*.json'
   - '!README.md'
   - '!LICENSE.txt'
+  - '!*.sh'
 
 plugins:
   - serverless-domain-manager
