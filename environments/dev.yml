@@ -1,0 +1,10 @@
+#
+# Specific settings for local test driven development
+#
+settings:
+  # Sets event.requestContext.stage to this value
+  stage: 'dev'
+
+  # These are dummy values for when running on a development computer, to keep Serverless happy
+  apiHostName: 'api.mycompany.com'
+  certificateDomainName: 'mycompany.com'
