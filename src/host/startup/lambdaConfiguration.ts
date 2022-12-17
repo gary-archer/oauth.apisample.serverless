@@ -58,6 +58,7 @@ export class LambdaConfiguration {
                 return baseHandler(event, context);
 
             })
+                // Handlers run in the reverse order listed here, so that exceptions are handled then logged
                 .use(loggerMiddleware)
                 .use(exceptionMiddleware)
                 .use(authorizerMiddleware)
