@@ -1,4 +1,9 @@
-import AWS from 'aws-sdk';
+import {
+    DynamoDBClient,
+    GetItemCommand,
+    GetItemInput,
+    PutItemCommand,
+    PutItemInput} from '@aws-sdk/client-dynamodb';
 import {CachedClaims} from '../claims/cachedClaims';
 import {CustomClaimsProvider} from '../claims/customClaimsProvider';
 import {UserInfoClaims} from '../claims/userInfoClaims';
@@ -14,7 +19,7 @@ export class AwsCache implements Cache {
 
     private readonly _configuration: CacheConfiguration;
     private readonly _customClaimsProvider: CustomClaimsProvider;
-    private readonly _database: AWS.DynamoDB;
+    private readonly _database: DynamoDBClient;
 
     public constructor(configuration: CacheConfiguration, customClaimsProvider: CustomClaimsProvider) {
 
@@ -22,8 +27,7 @@ export class AwsCache implements Cache {
 
             this._configuration = configuration;
             this._customClaimsProvider = customClaimsProvider;
-            AWS.config.update({region: configuration.region});
-            this._database = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+            this._database = new DynamoDBClient({region: configuration.region});
 
         } catch (e) {
 
@@ -126,39 +130,35 @@ export class AwsCache implements Cache {
     }
 
     /*
-     * Wrap the put item call in a promise and handle errors
+     * Handle the put call and capture error causes
      */
-    private async _putItem(params: AWS.DynamoDB.PutItemInput): Promise<void> {
+    private async _putItem(params: PutItemInput): Promise<void> {
 
-        return new Promise((resolve, reject) => {
+        try {
 
-            this._database.putItem(params, (error) => {
+            const command = new PutItemCommand(params);
+            await this._database.send(command);
 
-                if (error) {
-                    reject(ErrorUtils.fromCacheError(BaseErrorCodes.cacheWrite, error));
-                }
+        } catch (e: any) {
 
-                resolve();
-            });
-        });
+            throw ErrorUtils.fromCacheError(BaseErrorCodes.cacheWrite, e);
+        }
     }
 
     /*
-     * Wrap the get item call in a promise and handle errors
+     * Handle the get call and capture error causes
      */
-    private async _getItem(params: AWS.DynamoDB.GetItemInput): Promise<any> {
+    private async _getItem(params: GetItemInput): Promise<any> {
 
-        return new Promise((resolve, reject) => {
+        try {
 
-            this._database.getItem(params, (error, data) => {
+            const command = new GetItemCommand(params);
+            await this._database.send(command);
 
-                if (error) {
-                    reject(ErrorUtils.fromCacheError(BaseErrorCodes.cacheRead, error));
-                }
+        } catch (e: any) {
 
-                resolve(data);
-            });
-        });
+            throw ErrorUtils.fromCacheError(BaseErrorCodes.cacheRead, e);
+        }
     }
 
     /*
