@@ -1,4 +1,4 @@
-import {ClientError} from '../errors/clientError';
+import {ClientError} from '../errors/clientError.js';
 
 /*
  * An interface that allows business logic to access logging objects

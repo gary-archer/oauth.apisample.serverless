@@ -83,7 +83,7 @@ done
 #
 # Run all lambda functions locally via some mocha tests
 #
-./node_modules/.bin/mocha -r 'ts-node/register' 'test/apiTests.ts'
+./node_modules/.bin/mocha
 if [ $? -ne 0 ]; then
   echo 'Problem encountered running lambdas'
   exit

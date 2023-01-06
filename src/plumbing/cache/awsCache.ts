@@ -4,13 +4,13 @@ import {
     GetItemInput,
     PutItemCommand,
     PutItemInput} from '@aws-sdk/client-dynamodb';
-import {CachedClaims} from '../claims/cachedClaims';
-import {CustomClaimsProvider} from '../claims/customClaimsProvider';
-import {UserInfoClaims} from '../claims/userInfoClaims';
-import {CacheConfiguration} from '../configuration/cacheConfiguration';
-import {BaseErrorCodes} from '../errors/baseErrorCodes';
-import {ErrorUtils} from '../errors/errorUtils';
-import {Cache} from './cache';
+import {CachedClaims} from '../claims/cachedClaims.js';
+import {CustomClaimsProvider} from '../claims/customClaimsProvider.js';
+import {UserInfoClaims} from '../claims/userInfoClaims.js';
+import {CacheConfiguration} from '../configuration/cacheConfiguration.js';
+import {BaseErrorCodes} from '../errors/baseErrorCodes.js';
+import {ErrorUtils} from '../errors/errorUtils.js';
+import {Cache} from './cache.js';
 
 /*
  * An implementation that caches data in AWS, used when the API is deployed

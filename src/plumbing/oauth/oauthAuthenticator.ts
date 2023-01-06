@@ -1,18 +1,18 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import {inject, injectable} from 'inversify';
 import {jwtVerify} from 'jose';
-import {BaseClaims} from '../claims/baseClaims';
-import {ClaimsReader} from '../claims/claimsReader';
-import {UserInfoClaims} from '../claims/userInfoClaims';
-import {OAuthConfiguration} from '../configuration/oauthConfiguration';
-import {BASETYPES} from '../dependencies/baseTypes';
-import {ErrorFactory} from '../errors/errorFactory';
-import {ErrorUtils} from '../errors/errorUtils';
-import {ServerError} from '../errors/serverError';
-import {LogEntry} from '../logging/logEntry';
-import {HttpProxy} from '../utilities/httpProxy';
-import {using} from '../utilities/using';
-import {JwksRetriever} from './jwksRetriever';
+import {BaseClaims} from '../claims/baseClaims.js';
+import {ClaimsReader} from '../claims/claimsReader.js';
+import {UserInfoClaims} from '../claims/userInfoClaims.js';
+import {OAuthConfiguration} from '../configuration/oauthConfiguration.js';
+import {BASETYPES} from '../dependencies/baseTypes.js';
+import {ErrorFactory} from '../errors/errorFactory.js';
+import {ErrorUtils} from '../errors/errorUtils.js';
+import {ServerError} from '../errors/serverError.js';
+import {LogEntry} from '../logging/logEntry.js';
+import {HttpProxy} from '../utilities/httpProxy.js';
+import {using} from '../utilities/using.js';
+import {JwksRetriever} from './jwksRetriever.js';
 
 /*
  * A class to manage the calls to the Authorization Server

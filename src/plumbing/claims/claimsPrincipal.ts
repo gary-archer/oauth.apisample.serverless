@@ -1,6 +1,6 @@
-import {BaseClaims} from './baseClaims';
-import {CustomClaims} from './customClaims';
-import {UserInfoClaims} from './userInfoClaims';
+import {BaseClaims} from './baseClaims.js';
+import {CustomClaims} from './customClaims.js';
+import {UserInfoClaims} from './userInfoClaims.js';
 
 /*
  * An extensible claims object for APIs

@@ -1,8 +1,8 @@
 import {Container} from 'inversify';
-import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes';
-import {CompanyRepository} from '../../logic/repositories/companyRepository';
-import {CompanyService} from '../../logic/services/companyService';
-import {JsonFileReader} from '../../logic/utilities/jsonFileReader';
+import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes.js';
+import {CompanyRepository} from '../../logic/repositories/companyRepository.js';
+import {CompanyService} from '../../logic/services/companyService.js';
+import {JsonFileReader} from '../../logic/utilities/jsonFileReader.js';
 
 /*
  * Compose the application's business dependencies

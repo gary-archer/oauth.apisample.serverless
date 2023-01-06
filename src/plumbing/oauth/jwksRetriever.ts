@@ -2,13 +2,13 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import {inject, injectable} from 'inversify';
 import {FlattenedJWSInput, importJWK, JWK, JWSHeaderParameters, KeyLike} from 'jose';
-import {Cache} from '../cache/cache';
-import {OAuthConfiguration} from '../configuration/oauthConfiguration';
-import {BASETYPES} from '../dependencies/baseTypes';
-import {ErrorFactory} from '../errors/errorFactory';
-import {ServerError} from '../errors/serverError';
-import {ErrorUtils} from '../errors/errorUtils';
-import {HttpProxy} from '../utilities/httpProxy';
+import {Cache} from '../cache/cache.js';
+import {OAuthConfiguration} from '../configuration/oauthConfiguration.js';
+import {BASETYPES} from '../dependencies/baseTypes.js';
+import {ErrorFactory} from '../errors/errorFactory.js';
+import {ServerError} from '../errors/serverError.js';
+import {ErrorUtils} from '../errors/errorUtils.js';
+import {HttpProxy} from '../utilities/httpProxy.js';
 
 /*
  * This class deals with downloading and caching JWKS keys for lambda environments

@@ -2,18 +2,18 @@ import middy from '@middy/core';
 import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
 import hasher from 'js-sha256';
-import {Cache} from '../cache/cache';
-import {ClaimsPrincipal} from '../claims/claimsPrincipal';
-import {BaseClaims} from '../claims/baseClaims';
-import {CachedClaims} from '../claims/cachedClaims';
-import {CustomClaims} from '../claims/customClaims';
-import {CustomClaimsProvider} from '../claims/customClaimsProvider';
-import {UserInfoClaims} from '../claims/userInfoClaims';
-import {BASETYPES} from '../dependencies/baseTypes';
-import {ClientError} from '../errors/clientError';
-import {ErrorFactory} from '../errors/errorFactory';
-import {LogEntryImpl} from '../logging/logEntryImpl';
-import {OAuthAuthenticator} from './oauthAuthenticator';
+import {Cache} from '../cache/cache.js';
+import {ClaimsPrincipal} from '../claims/claimsPrincipal.js';
+import {BaseClaims} from '../claims/baseClaims.js';
+import {CachedClaims} from '../claims/cachedClaims.js';
+import {CustomClaims} from '../claims/customClaims.js';
+import {CustomClaimsProvider} from '../claims/customClaimsProvider.js';
+import {UserInfoClaims} from '../claims/userInfoClaims.js';
+import {BASETYPES} from '../dependencies/baseTypes.js';
+import {ClientError} from '../errors/clientError.js';
+import {ErrorFactory} from '../errors/errorFactory.js';
+import {LogEntryImpl} from '../logging/logEntryImpl.js';
+import {OAuthAuthenticator} from './oauthAuthenticator.js';
 
 /*
  * A middleware for OAuth handling, which does token processing and custom claims handling

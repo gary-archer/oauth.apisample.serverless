@@ -1,13 +1,13 @@
 import {inject, injectable} from 'inversify';
-import {BASETYPES} from '../../plumbing/dependencies/baseTypes';
-import {ClientError} from '../../plumbing/errors/clientError';
-import {ErrorFactory} from '../../plumbing/errors/errorFactory';
-import {SAMPLETYPES} from '../dependencies/sampleTypes';
-import {Company} from '../entities/company';
-import {CompanyTransactions} from '../entities/companyTransactions';
-import {SampleCustomClaims} from '../entities/sampleCustomClaims';
-import {SampleErrorCodes} from '../errors/sampleErrorCodes';
-import {CompanyRepository} from '../repositories/companyRepository';
+import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
+import {ClientError} from '../../plumbing/errors/clientError.js';
+import {ErrorFactory} from '../../plumbing/errors/errorFactory.js';
+import {SAMPLETYPES} from '../dependencies/sampleTypes.js';
+import {Company} from '../entities/company.js';
+import {CompanyTransactions} from '../entities/companyTransactions.js';
+import {SampleCustomClaims} from '../entities/sampleCustomClaims.js';
+import {SampleErrorCodes} from '../errors/sampleErrorCodes.js';
+import {CompanyRepository} from '../repositories/companyRepository.js';
 
 /*
  * Our service layer class applies business authorization

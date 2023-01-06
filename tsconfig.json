@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
     "strict": true,
-    "target": "es2017",
-    "outDir": "dist",
-    "lib": ["es2017"],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "esModuleInterop": true,
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "module":"ES2022",
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "outDir": "dist",
+    "sourceMap": true
   },
   "include": [
     "src/**/*.ts"

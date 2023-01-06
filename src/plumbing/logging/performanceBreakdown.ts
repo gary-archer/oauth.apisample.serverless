@@ -1,4 +1,4 @@
-import {Disposable} from '../utilities/disposable';
+import {Disposable} from '../utilities/disposable.js';
 
 /*
  * Represents a time measurement within an API operation

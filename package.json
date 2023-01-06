@@ -13,6 +13,10 @@
   },
   "author": "Gary Archer",
   "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "dependencies": {
     "@middy/core": "^4.0.8",
     "axios": "^1.2.1",

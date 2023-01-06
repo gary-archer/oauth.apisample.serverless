@@ -1,7 +1,7 @@
 import fs from 'fs-extra';
 import {injectable} from 'inversify';
-import {ErrorFactory} from '../../plumbing/errors/errorFactory';
-import {SampleErrorCodes} from '../errors/sampleErrorCodes';
+import {ErrorFactory} from '../../plumbing/errors/errorFactory.js';
+import {SampleErrorCodes} from '../errors/sampleErrorCodes.js';
 
 /*
  * A simple utility to deal with the infrastructure of reading JSON files

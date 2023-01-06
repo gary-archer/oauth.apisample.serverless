@@ -1,7 +1,7 @@
 import {JWTPayload} from 'jose';
-import {ErrorUtils} from '../errors/errorUtils';
-import {BaseClaims} from './baseClaims';
-import {UserInfoClaims} from './userInfoClaims';
+import {ErrorUtils} from '../errors/errorUtils.js';
+import {BaseClaims} from './baseClaims.js';
+import {UserInfoClaims} from './userInfoClaims.js';
 
 /*
  * A utility for gathering claims

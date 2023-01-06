@@ -1,6 +1,6 @@
 import {spawn} from 'child_process';
 import fs from 'fs-extra';
-import {LambdaChildProcessOptions} from './lambdaChildProcessOptions';
+import {LambdaChildProcessOptions} from './lambdaChildProcessOptions.js';
 
 /*
  * Encapsulate running a lambda as a child process, with input and output
@@ -116,6 +116,7 @@ export class LambdaChildProcess {
     private static getServerlessCommand(): string {
 
         const commandName = (process.platform === 'win32') ? 'sls.cmd' : 'sls';
-        return `${__dirname}/../../node_modules/.bin/${commandName}`;
+        const dirname = process.cwd();
+        return `${dirname}/node_modules/.bin/${commandName}`;
     }
 }

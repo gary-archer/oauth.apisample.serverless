@@ -1,6 +1,6 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import {Guid} from 'guid-typescript';
-import {HttpProxy} from '../../src/plumbing/utilities/httpProxy';
+import {HttpProxy} from '../../src/plumbing/utilities/httpProxy.js';
 
 /*
  * Manage updates to Wiremock

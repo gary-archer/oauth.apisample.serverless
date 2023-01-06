@@ -1,9 +1,9 @@
 import middy from '@middy/core';
 import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
-import {BASETYPES} from '../dependencies/baseTypes';
-import {LogEntryImpl} from '../logging/logEntryImpl';
-import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
+import {BASETYPES} from '../dependencies/baseTypes.js';
+import {LogEntryImpl} from '../logging/logEntryImpl.js';
+import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl.js';
 
 /*
  * The middleware coded in a class based manner
