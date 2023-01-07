@@ -1,7 +1,7 @@
 import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import middy from '@middy/core';
-import {BaseErrorCodes} from '../errors/baseErrorCodes';
-import {ErrorFactory} from '../errors/errorFactory';
+import {BaseErrorCodes} from '../errors/baseErrorCodes.js';
+import {ErrorFactory} from '../errors/errorFactory.js';
 
 /*
  * A middleware for special header processing, used to simulate exceptions and check deployed error handling

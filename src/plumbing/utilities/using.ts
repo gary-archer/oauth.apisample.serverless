@@ -1,4 +1,4 @@
-import {Disposable} from '../utilities/disposable';
+import {Disposable} from '../utilities/disposable.js';
 
 /*
  * A helper function similar to the .Net concept

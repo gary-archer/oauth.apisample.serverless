@@ -1,9 +1,9 @@
 import assert from 'assert';
 import fs from 'fs-extra';
 import {Guid} from 'guid-typescript';
-import {LambdaChildProcess} from './utils/lambdaChildProcess';
-import {TokenIssuer} from './utils/tokenIssuer';
-import {WiremockAdmin} from './utils/wiremockAdmin';
+import {LambdaChildProcess} from './utils/lambdaChildProcess.js';
+import {TokenIssuer} from './utils/tokenIssuer.js';
+import {WiremockAdmin} from './utils/wiremockAdmin.js';
 
 /*
  * Test the API in isolation, without any dependencies on the Authorization Server

@@ -1,11 +1,11 @@
 import {inject, injectable} from 'inversify';
-import {BASETYPES} from '../../plumbing/dependencies/baseTypes';
-import {LogEntry} from '../../plumbing/logging/logEntry';
-import {using} from '../../plumbing/utilities/using';
-import {SAMPLETYPES} from '../dependencies/sampleTypes';
-import {Company} from '../entities/company';
-import {CompanyTransactions} from '../entities/companyTransactions';
-import {JsonFileReader} from '../utilities/jsonFileReader';
+import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
+import {LogEntry} from '../../plumbing/logging/logEntry.js';
+import {using} from '../../plumbing/utilities/using.js';
+import {SAMPLETYPES} from '../dependencies/sampleTypes.js';
+import {Company} from '../entities/company.js';
+import {CompanyTransactions} from '../entities/companyTransactions.js';
+import {JsonFileReader} from '../utilities/jsonFileReader.js';
 
 /*
  * A repository for getting data about companies

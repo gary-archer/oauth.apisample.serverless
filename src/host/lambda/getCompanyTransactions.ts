@@ -1,15 +1,15 @@
 import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes';
-import {SampleErrorCodes} from '../../logic/errors/sampleErrorCodes';
-import {CompanyService} from '../../logic/services/companyService';
-import {BaseClaims} from '../../plumbing/claims/baseClaims';
-import {BASETYPES} from '../../plumbing/dependencies/baseTypes';
-import {ErrorFactory} from '../../plumbing/errors/errorFactory';
-import {ScopeVerifier} from '../../plumbing/oauth/scopeVerifier';
-import {ResponseWriter} from '../../plumbing/utilities/responseWriter';
-import {LambdaConfiguration} from '../startup/lambdaConfiguration';
+import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes.js';
+import {SampleErrorCodes} from '../../logic/errors/sampleErrorCodes.js';
+import {CompanyService} from '../../logic/services/companyService.js';
+import {BaseClaims} from '../../plumbing/claims/baseClaims.js';
+import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
+import {ErrorFactory} from '../../plumbing/errors/errorFactory.js';
+import {ScopeVerifier} from '../../plumbing/oauth/scopeVerifier.js';
+import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
+import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
 
 /*
  * Our handler acts as a REST controller

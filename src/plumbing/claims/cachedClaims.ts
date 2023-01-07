@@ -1,5 +1,5 @@
-import {CustomClaims} from './customClaims';
-import {UserInfoClaims} from './userInfoClaims';
+import {CustomClaims} from './customClaims.js';
+import {UserInfoClaims} from './userInfoClaims.js';
 
 /*
  * Claims that are cached between requests to the lambda

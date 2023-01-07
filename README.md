@@ -22,9 +22,14 @@ This enables UI code examples to point to API endpoints that run in the AWS clou
 - [Final iOS App](https://github.com/gary-archer/oauth.mobilesample.ios)
 - [Final Android App](https://github.com/gary-archer/oauth.mobilesample.android)
 
+## Prerequisites
+
+- Ensure that Node.js 18 or later is installed
+- To run Wiremock, so also install a Java 17+ SDK
+
 ## Local Development Quick Start
 
-Ensure that Node.js is installed, then run this command to run mocha tests that invoke all lambdas:
+Run this command to build code and then run mocha tests that invoke all lambdas:
 
 ```bash
 ./start.sh

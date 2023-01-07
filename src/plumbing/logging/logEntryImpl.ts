@@ -3,12 +3,12 @@ import fs from 'fs-extra';
 import {Guid} from 'guid-typescript';
 import {injectable} from 'inversify';
 import os from 'os';
-import {BaseClaims} from '../claims/baseClaims';
-import {ClientError} from '../errors/clientError';
-import {ServerError} from '../errors/serverError';
-import {LogEntry} from './logEntry';
-import {LogEntryData} from './logEntryData';
-import {PerformanceBreakdown} from './performanceBreakdown';
+import {BaseClaims} from '../claims/baseClaims.js';
+import {ClientError} from '../errors/clientError.js';
+import {ServerError} from '../errors/serverError.js';
+import {LogEntry} from './logEntry.js';
+import {LogEntryData} from './logEntryData.js';
+import {PerformanceBreakdown} from './performanceBreakdown.js';
 
 /*
  * A class to manage logging of a lambda request

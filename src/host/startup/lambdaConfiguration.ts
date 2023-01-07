@@ -2,14 +2,14 @@ import middy from '@middy/core';
 import {APIGatewayProxyEvent, APIGatewayProxyResult, Context} from 'aws-lambda';
 import fs from 'fs-extra';
 import {Container} from 'inversify';
-import {BaseCompositionRoot} from '../../plumbing/dependencies/baseCompositionRoot';
-import {LoggerFactory} from '../../plumbing/logging/loggerFactory';
-import {LoggerFactoryBuilder} from '../../plumbing/logging/loggerFactoryBuilder';
-import {HttpProxy} from '../../plumbing/utilities/httpProxy';
-import {ResponseWriter} from '../../plumbing/utilities/responseWriter';
-import {SampleCustomClaimsProvider} from '../claims/sampleCustomClaimsProvider';
-import {Configuration} from '../configuration/configuration';
-import {CompositionRoot} from '../dependencies/compositionRoot';
+import {BaseCompositionRoot} from '../../plumbing/dependencies/baseCompositionRoot.js';
+import {LoggerFactory} from '../../plumbing/logging/loggerFactory.js';
+import {LoggerFactoryBuilder} from '../../plumbing/logging/loggerFactoryBuilder.js';
+import {HttpProxy} from '../../plumbing/utilities/httpProxy.js';
+import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
+import {SampleCustomClaimsProvider} from '../claims/sampleCustomClaimsProvider.js';
+import {Configuration} from '../configuration/configuration.js';
+import {CompositionRoot} from '../dependencies/compositionRoot.js';
 
 /*
  * A shorthand type for this module

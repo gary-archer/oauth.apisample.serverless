@@ -1,13 +1,13 @@
 import {APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {BaseClaims} from '../../plumbing/claims/baseClaims';
-import {BASETYPES} from '../../plumbing/dependencies/baseTypes';
-import {ScopeVerifier} from '../../plumbing/oauth/scopeVerifier';
-import {ResponseWriter} from '../../plumbing/utilities/responseWriter';
-import {UserInfoClaims} from '../../plumbing/claims/userInfoClaims';
-import {LambdaConfiguration} from '../startup/lambdaConfiguration';
-import {SampleCustomClaims} from '../../logic/entities/sampleCustomClaims';
+import {BaseClaims} from '../../plumbing/claims/baseClaims.js';
+import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
+import {ScopeVerifier} from '../../plumbing/oauth/scopeVerifier.js';
+import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
+import {UserInfoClaims} from '../../plumbing/claims/userInfoClaims.js';
+import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
+import {SampleCustomClaims} from '../../logic/entities/sampleCustomClaims.js';
 
 /*
  * Our handler acts as a REST controller

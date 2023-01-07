@@ -1,8 +1,8 @@
-import {SampleCustomClaims} from '../../logic/entities/sampleCustomClaims';
-import {BaseClaims} from '../../plumbing/claims/baseClaims';
-import {CustomClaims} from '../../plumbing/claims/customClaims';
-import {CustomClaimsProvider} from '../../plumbing/claims/customClaimsProvider';
-import {UserInfoClaims} from '../../plumbing/claims/userInfoClaims';
+import {SampleCustomClaims} from '../../logic/entities/sampleCustomClaims.js';
+import {BaseClaims} from '../../plumbing/claims/baseClaims.js';
+import {CustomClaims} from '../../plumbing/claims/customClaims.js';
+import {CustomClaimsProvider} from '../../plumbing/claims/customClaimsProvider.js';
+import {UserInfoClaims} from '../../plumbing/claims/userInfoClaims.js';
 
 /*
  * This class provides any API specific custom claims

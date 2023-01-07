@@ -1,4 +1,4 @@
-import {CachedClaims} from '../claims/cachedClaims';
+import {CachedClaims} from '../claims/cachedClaims.js';
 
 /*
  * An interface for in-memory caching of OAuth related data

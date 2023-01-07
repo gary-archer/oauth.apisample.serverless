@@ -1,5 +1,5 @@
-import {LoggerFactory} from './loggerFactory';
-import {LoggerFactoryImpl} from './loggerFactoryImpl';
+import {LoggerFactory} from './loggerFactory.js';
+import {LoggerFactoryImpl} from './loggerFactoryImpl.js';
 
 /*
  * A simple builder class

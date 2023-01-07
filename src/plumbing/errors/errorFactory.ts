@@ -1,8 +1,8 @@
-import {BaseErrorCodes} from './baseErrorCodes';
-import {ClientError} from './clientError';
-import {ClientErrorImpl} from './clientErrorImpl';
-import {ServerError} from './serverError';
-import {ServerErrorImpl} from './serverErrorImpl';
+import {BaseErrorCodes} from './baseErrorCodes.js';
+import {ClientError} from './clientError.js';
+import {ClientErrorImpl} from './clientErrorImpl.js';
+import {ServerError} from './serverError.js';
+import {ServerErrorImpl} from './serverErrorImpl.js';
 
 /*
  * An error factory class that returns the interface rather than the concrete type

@@ -1,13 +1,13 @@
 import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import middy from '@middy/core';
 import {Container} from 'inversify';
-import {LoggingConfiguration} from '../configuration/loggingConfiguration';
-import {BASETYPES} from '../dependencies/baseTypes';
-import {ClientError} from '../errors/clientError';
-import {ErrorUtils} from '../errors/errorUtils';
-import {ServerError} from '../errors/serverError';
-import {LogEntryImpl} from '../logging/logEntryImpl';
-import {ResponseWriter} from '../utilities/responseWriter';
+import {LoggingConfiguration} from '../configuration/loggingConfiguration.js';
+import {BASETYPES} from '../dependencies/baseTypes.js';
+import {ClientError} from '../errors/clientError.js';
+import {ErrorUtils} from '../errors/errorUtils.js';
+import {ServerError} from '../errors/serverError.js';
+import {LogEntryImpl} from '../logging/logEntryImpl.js';
+import {ResponseWriter} from '../utilities/responseWriter.js';
 
 /*
  * The exception middleware coded in a class based manner

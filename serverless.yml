@@ -69,14 +69,15 @@ functions:
 package:
   patterns:
   - '!.codacy.yaml'
-  - '!.eslintrc.js'
+  - '!.eslintrc'
+  - '!.mocharc.json'
   - '!.vscode/**'
   - '!environments/**'
   - '!src/**'
   - '!doc/**'
   - '!test/**'
   - '!ts*.json'
-  - '!package*.json'
+  - '!package-lock.json'
   - '!README.md'
   - '!LICENSE.txt'
   - '!*.sh'

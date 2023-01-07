@@ -1,5 +1,5 @@
-import {CachedClaims} from '../claims/cachedClaims';
-import {Cache} from './cache';
+import {CachedClaims} from '../claims/cachedClaims.js';
+import {Cache} from './cache.js';
 
 /*
  * A null implementation when running sls invoke on a development computer

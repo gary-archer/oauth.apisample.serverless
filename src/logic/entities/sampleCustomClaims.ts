@@ -1,4 +1,4 @@
-import {CustomClaims} from '../../plumbing/claims/customClaims';
+import {CustomClaims} from '../../plumbing/claims/customClaims.js';
 
 /*
  * Extend core claims for this particular API
