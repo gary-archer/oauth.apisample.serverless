@@ -2,6 +2,12 @@
   "name": "sampleapi",
   "version": "3.0.0",
   "description": "An OAuth secured API using AWS Serverless Hosting and Lambda Functions",
+  "author": "Gary Archer",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "lint": "npx eslint . --ext .ts,.tsx",
     "build": "rimraf dist && tsc",
@@ -10,12 +16,6 @@
     "test": "bash ./start.sh",
     "deploy": "bash ./deploy.sh",
     "remove": "sls remove --stage deployed"
-  },
-  "author": "Gary Archer",
-  "license": "MIT",
-  "type": "module",
-  "engines": {
-    "node": ">=18"
   },
   "dependencies": {
     "@middy/core": "^4.0.8",
