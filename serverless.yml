@@ -77,7 +77,7 @@ package:
   - '!doc/**'
   - '!test/**'
   - '!ts*.json'
-  - '!package*.json'
+  - '!package-lock.json'
   - '!README.md'
   - '!LICENSE.txt'
   - '!*.sh'
