@@ -1,7 +1,7 @@
 import middy from '@middy/core';
 import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
-import hasher from 'js-sha256';
+import {sha256} from 'js-sha256';
 import {Cache} from '../cache/cache.js';
 import {ClaimsPrincipal} from '../claims/claimsPrincipal.js';
 import {BaseClaims} from '../claims/baseClaims.js';
@@ -83,7 +83,7 @@ export class OAuthAuthorizer implements middy.MiddlewareObj<APIGatewayProxyEvent
         const tokenClaims = await authenticator.validateToken(accessToken);
 
         // If cached results exist for other claims then return them
-        const accessTokenHash = hasher.sha256(accessToken);
+        const accessTokenHash = sha256(accessToken);
         const cachedClaims = await this._cache.getExtraUserClaims(accessTokenHash);
         if (cachedClaims) {
             return new ClaimsPrincipal(tokenClaims, cachedClaims.userInfo, cachedClaims.custom);
