@@ -69,7 +69,8 @@ functions:
 package:
   patterns:
   - '!.codacy.yaml'
-  - '!.eslintrc.js'
+  - '!.eslintrc'
+  - '!.mocharc.json'
   - '!.vscode/**'
   - '!environments/**'
   - '!src/**'

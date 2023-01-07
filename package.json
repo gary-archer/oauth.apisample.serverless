@@ -4,8 +4,8 @@
   "description": "An OAuth secured API using AWS Serverless Hosting and Lambda Functions",
   "scripts": {
     "lint": "npx eslint . --ext .ts,.tsx",
-    "build": "rimraf dist && tsc --sourceMap true",
-    "buildRelease": "rimraf dist && tsc",
+    "build": "rimraf dist && tsc",
+    "buildRelease": "rimraf dist && tsc --sourceMap false",
     "start": "bash ./start.sh",
     "test": "bash ./start.sh",
     "deploy": "bash ./deploy.sh",
