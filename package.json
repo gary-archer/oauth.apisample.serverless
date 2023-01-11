@@ -24,7 +24,6 @@
     "guid-typescript": "^1.0.9",
     "inversify": "^6.0.1",
     "jose": "^4.11.1",
-    "js-sha256": "^0.9.0",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
