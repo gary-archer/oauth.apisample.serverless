@@ -2,6 +2,6 @@
 exclude_paths: [
     '*',
     'data/**',
-    'environments/**',
-    'test/**'
+    'doc/**',
+    'environments/**'
 ]
