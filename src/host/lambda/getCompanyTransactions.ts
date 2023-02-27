@@ -19,7 +19,7 @@ const baseHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxy
 
     // First check scopes
     const baseClaims = container.get<BaseClaims>(BASETYPES.BaseClaims);
-    ScopeVerifier.enforce(baseClaims.scopes, 'transactions_read');
+    ScopeVerifier.enforce(baseClaims.scopes, 'investments');
 
     // First get the supplied id and ensure it is a valid integer
     const id = parseInt(event.pathParameters?.id || '', 10);

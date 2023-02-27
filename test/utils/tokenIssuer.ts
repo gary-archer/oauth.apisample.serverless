@@ -57,7 +57,7 @@ export class TokenIssuer {
             sub,
             iss: 'testissuer.com',
             aud: 'api.mycompany.com',
-            scope: 'openid profile email https://api.authsamples.com/api/transactions_read',
+            scope: 'openid profile email https://api.authsamples.com/investments',
         })
             .setProtectedHeader( { kid: this._keyId, alg: this._algorithm } )
             .setIssuedAt(now - 30000)
@@ -77,7 +77,7 @@ export class TokenIssuer {
             sub,
             iss: 'testissuer.com',
             aud: 'api.mycompany.com',
-            scope: 'openid profile email https://api.authsamples.com/api/transactions_read',
+            scope: 'openid profile email https://api.authsamples.com/investments',
         })
             .setProtectedHeader( { kid: this._keyId, alg: this._algorithm } )
             .setIssuedAt(now - 30000)

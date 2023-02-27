@@ -15,7 +15,7 @@ export class LambdaChildProcess {
         // Create the lambda function's request, including the access token and some custom headers for API logging
         const lambdaInput = {
             httpMethod: 'GET',
-            path: '/api/userinfo',
+            path: '/investments/userinfo',
             headers: {
                 authorization: `Bearer ${options.accessToken}`,
                 'x-mycompany-api-client': 'ServerlessTest',

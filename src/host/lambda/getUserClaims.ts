@@ -17,7 +17,7 @@ const baseHandler = async (): Promise<APIGatewayProxyResult> => {
 
     // First check scopes
     const baseClaims = container.get<BaseClaims>(BASETYPES.BaseClaims);
-    ScopeVerifier.enforce(baseClaims.scopes, 'transactions_read');
+    ScopeVerifier.enforce(baseClaims.scopes, 'investments');
 
     // Get both OAuth User Info and domain specific user info
     const userClaims = container.get<UserInfoClaims>(BASETYPES.UserInfoClaims);
