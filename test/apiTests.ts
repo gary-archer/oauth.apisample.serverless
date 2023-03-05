@@ -65,7 +65,7 @@ describe('OAuth API Tests', () => {
         // Run the lambda function
         const options = {
             httpMethod: 'GET',
-            apiPath: '/api/userinfo',
+            apiPath: '/investments/userinfo',
             lambdaFunction: 'getUserClaims',
             accessToken,
             sessionId,
@@ -97,7 +97,7 @@ describe('OAuth API Tests', () => {
         // Run the lambda function
         const options = {
             httpMethod: 'GET',
-            apiPath: '/api/userinfo',
+            apiPath: '/investments/userinfo',
             lambdaFunction: 'getUserClaims',
             accessToken,
             sessionId,
@@ -129,7 +129,7 @@ describe('OAuth API Tests', () => {
         // Run the lambda function
         const options = {
             httpMethod: 'GET',
-            apiPath: '/api/companies',
+            apiPath: '/investments/companies',
             lambdaFunction: 'getCompanyList',
             accessToken,
             sessionId,
@@ -161,7 +161,7 @@ describe('OAuth API Tests', () => {
         // Run the lambda function
         const options = {
             httpMethod: 'GET',
-            apiPath: '/api/companies',
+            apiPath: '/investments/companies',
             lambdaFunction: 'getCompanyList',
             accessToken,
             sessionId,
@@ -185,7 +185,7 @@ describe('OAuth API Tests', () => {
         // Run the lambda function
         const options = {
             httpMethod: 'GET',
-            apiPath: '/api/companies',
+            apiPath: '/investments/companies',
             lambdaFunction: 'getCompanyList',
             accessToken,
             sessionId,
@@ -217,7 +217,7 @@ describe('OAuth API Tests', () => {
         // Company 2 is associated to the user's USA region
         const options = {
             httpMethod: 'GET',
-            apiPath: '/api/companies/2/transactions',
+            apiPath: '/investments/companies/2/transactions',
             lambdaFunction: 'getCompanyTransactions',
             accessToken,
             sessionId,
@@ -252,7 +252,7 @@ describe('OAuth API Tests', () => {
         // Company 3 is associated to a region the user is not authorized to access
         const options = {
             httpMethod: 'GET',
-            apiPath: '/api/companies/3/transactions',
+            apiPath: '/investments/companies/3/transactions',
             lambdaFunction: 'getCompanyTransactions',
             accessToken,
             sessionId,
@@ -287,7 +287,7 @@ describe('OAuth API Tests', () => {
         // Company 3 is associated to a region the user is not authorized to access
         const options = {
             httpMethod: 'GET',
-            apiPath: '/api/companies/2/transactions',
+            apiPath: '/investments/companies/2/transactions',
             lambdaFunction: 'getCompanyTransactions',
             accessToken,
             sessionId,
