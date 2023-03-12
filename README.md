@@ -52,7 +52,6 @@ This works well enough to meet my low cost deployment goals, though these techni
 
 * See the [Serverless API Overview](https://authguidance.com/2018/12/11/serverless-api-overview) for further details on how the API runs locally
 * See the [Serverless API Deployment](https://authguidance.com/2018/12/16/serverless-api-deployment/) post for details on how the API is deployed to the AWS cloud
-* See the [Non Functional Behaviour](https://authguidance.com/2017/10/08/corporate-code-sample-core-behavior/) page for a summary of overall qualities
 
 ## Programming Technologies
 
