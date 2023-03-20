@@ -12,9 +12,9 @@
     "lint": "npx eslint . --ext .ts,.tsx",
     "build": "rimraf dist && tsc",
     "buildRelease": "rimraf dist && tsc --sourceMap false",
-    "start": "bash ./start.sh",
-    "test": "bash ./start.sh",
-    "deploy": "bash ./deploy.sh",
+    "start": "./start.sh",
+    "test": "./start.sh",
+    "deploy": "./deploy.sh",
     "remove": "sls remove --stage deployed"
   },
   "dependencies": {
