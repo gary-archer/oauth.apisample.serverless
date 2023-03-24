@@ -150,7 +150,7 @@ export class LogEntryImpl implements LogEntry {
 
     /*
      * Calculate the operation name from the AWS function name
-     * This is a value such as 'sampleapi-default-getCompanyList'
+     * This is a value such as 'serverlessapi-dev-getCompanyTransactions'
      */
     private _calculateOperationName(context: Context) {
 
