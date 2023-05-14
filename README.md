@@ -26,7 +26,7 @@ This enables UI code examples to point to API endpoints that run in the AWS clou
 ## Prerequisites
 
 - Ensure that Node.js 18 or later is installed
-- To run Wiremock, also install a Java 17+ SDK
+- Integration tests use Wiremock, so also install a Java 17+ SDK
 
 ## Local Development Quick Start
 
