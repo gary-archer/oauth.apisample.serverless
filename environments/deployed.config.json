@@ -18,6 +18,6 @@
         "isActive": true,
         "region": "eu-west-2",
         "tableName": "OAUTH_CACHE",
-        "claimsCacheTimeToLiveMinutes": 30
+        "claimsCacheTimeToLiveMinutes": 15
     }
 }
