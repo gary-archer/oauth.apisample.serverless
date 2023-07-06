@@ -41,7 +41,7 @@ const baseHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxy
 
 // Create an enriched handler, which wires up middleware to run before the above handler
 const configuration = new LambdaConfiguration();
-const handler = configuration.enrichHandler(baseHandler, container);
+const handler = await configuration.enrichHandler(baseHandler, container);
 
 // Export the handler to serverless.yml
 export {handler};

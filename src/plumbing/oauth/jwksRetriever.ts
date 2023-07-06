@@ -110,7 +110,7 @@ export class JwksRetriever {
                 headers: {
                     'accept': 'application/json',
                 },
-                httpsAgent: this._httpProxy.agent,
+                httpAgent: this._httpProxy.agent,
             };
 
             const response = await axios.request(options as AxiosRequestConfig);

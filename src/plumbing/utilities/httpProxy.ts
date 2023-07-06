@@ -24,8 +24,8 @@ export class HttpProxy {
 
         if (this._useProxy) {
 
-            const module = await import('proxy-agent');
-            this._agent = new module.default(this._proxyUrl);
+            const module = await import('http-proxy-agent');
+            this._agent = new module.HttpProxyAgent(this._proxyUrl);
         }
     }
 

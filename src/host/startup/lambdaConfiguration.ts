@@ -24,8 +24,8 @@ export class LambdaConfiguration {
     /*
      * Apply cross cutting concerns to a lambda
      */
-    public enrichHandler(baseHandler: AsyncHandler, container: Container)
-        : middy.MiddyfiedHandler<APIGatewayProxyEvent, APIGatewayProxyResult> | AsyncHandler {
+    public async enrichHandler(baseHandler: AsyncHandler, container: Container)
+        : Promise<middy.MiddyfiedHandler<APIGatewayProxyEvent, APIGatewayProxyResult> | AsyncHandler> {
 
         const loggerFactory = LoggerFactoryBuilder.create();
         try {
@@ -33,8 +33,9 @@ export class LambdaConfiguration {
             // Load our JSON configuration
             const configuration = this._loadConfiguration();
 
-            // Create the HTTP proxy object
+            // Initialize the HTTP proxy object
             const httpProxy = new HttpProxy(configuration.api.useProxy, configuration.api.proxyUrl);
+            await httpProxy.initialize();
 
             // Register common code dependencies for security, logging and error handling
             const base = new BaseCompositionRoot(container)

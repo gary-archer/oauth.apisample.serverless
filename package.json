@@ -36,12 +36,15 @@
     "@typescript-eslint/parser": "^5.61.0",
     "child-process": "^1.0.2",
     "eslint": "^8.44.0",
+    "http-proxy-agent": "^7.0.0",
     "mocha": "^10.2.0",
-    "proxy-agent": "^5.0.0",
     "serverless": "^3.33.0",
     "serverless-domain-manager": "^7.0.2",
     "ts-node": "^10.9.1",
     "typescript": "5.1.5",
     "wiremock": "^2.35.0"
+  },
+  "overrides": {
+    "semver": "7.5.2"
   }
 }
