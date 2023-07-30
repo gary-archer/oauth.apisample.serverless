@@ -19,7 +19,7 @@ const baseHandler = async (): Promise<APIGatewayProxyResult> => {
     const baseClaims = container.get<BaseClaims>(BASETYPES.BaseClaims);
     ScopeVerifier.enforce(baseClaims.scopes, 'investments');
 
-    // Get both OAuth User Info and domain specific user info
+    // Return both OAuth User Info and domain specific user info
     const userClaims = container.get<UserInfoClaims>(BASETYPES.UserInfoClaims);
     const customClaims = container.get<SampleCustomClaims>(BASETYPES.CustomClaims);
 

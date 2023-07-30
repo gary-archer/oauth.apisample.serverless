@@ -40,8 +40,8 @@ custom:
 # Lambda functions that receives a JWT access token
 functions:
   
-  getUserClaims:
-    handler: dist/host/lambda/getUserClaims.handler
+  getUserInfo:
+    handler: dist/host/lambda/getUserInfo.handler
     events:
       - http: 
           path: /userinfo
@@ -105,7 +105,7 @@ resources:
         BillingMode: PAY_PER_REQUEST
 
     # Limit cloudwatch log retention 
-    GetUserClaimsLogGroup:
+    getUserInfoLogGroup:
       Type: 'AWS::Logs::LogGroup'
       Properties:
         RetentionInDays: '5'

@@ -66,7 +66,7 @@ describe('OAuth API Tests', () => {
         const options = {
             httpMethod: 'GET',
             apiPath: '/investments/userinfo',
-            lambdaFunction: 'getUserClaims',
+            lambdaFunction: 'getUserInfo',
             accessToken,
             sessionId,
         };
@@ -98,7 +98,7 @@ describe('OAuth API Tests', () => {
         const options = {
             httpMethod: 'GET',
             apiPath: '/investments/userinfo',
-            lambdaFunction: 'getUserClaims',
+            lambdaFunction: 'getUserInfo',
             accessToken,
             sessionId,
         };
