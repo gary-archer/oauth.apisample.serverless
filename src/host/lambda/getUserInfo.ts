@@ -5,7 +5,6 @@ import {BaseClaims} from '../../plumbing/claims/baseClaims.js';
 import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
 import {ScopeVerifier} from '../../plumbing/oauth/scopeVerifier.js';
 import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
-import {UserInfoClaims} from '../../plumbing/claims/userInfoClaims.js';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
 import {SampleCustomClaims} from '../../logic/entities/sampleCustomClaims.js';
 
@@ -19,14 +18,9 @@ const baseHandler = async (): Promise<APIGatewayProxyResult> => {
     const baseClaims = container.get<BaseClaims>(BASETYPES.BaseClaims);
     ScopeVerifier.enforce(baseClaims.scopes, 'investments');
 
-    // Return both OAuth User Info and domain specific user info
-    const userClaims = container.get<UserInfoClaims>(BASETYPES.UserInfoClaims);
+    // Return user information not stored in the authorization server
     const customClaims = container.get<SampleCustomClaims>(BASETYPES.CustomClaims);
-
-    // Return a payload with whatever the UI needs
     const userInfo = {
-        givenName: userClaims.givenName,
-        familyName: userClaims.familyName,
         role: customClaims.userRole,
         regions: customClaims.userRegions,
     };
