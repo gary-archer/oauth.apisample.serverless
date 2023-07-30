@@ -27,6 +27,7 @@ const baseHandler = async (): Promise<APIGatewayProxyResult> => {
     const userInfo = {
         givenName: userClaims.givenName,
         familyName: userClaims.familyName,
+        role: customClaims.userRole,
         regions: customClaims.userRegions,
     };
 
