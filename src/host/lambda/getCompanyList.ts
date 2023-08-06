@@ -7,7 +7,7 @@ import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
 
 /*
- * The entry point is similar to a REST controller
+ * A lambda to return a list of company resources
  */
 const container = new Container();
 const baseHandler = async (): Promise<APIGatewayProxyResult> => {
@@ -17,7 +17,7 @@ const baseHandler = async (): Promise<APIGatewayProxyResult> => {
     const companies = await service.getCompanyList();
 
     // Write the response
-    return ResponseWriter.objectResponse(200, companies);
+    return ResponseWriter.successResponse(200, companies);
 };
 
 // Create an enriched handler, which wires up middleware to run before the above handler

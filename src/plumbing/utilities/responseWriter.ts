@@ -1,4 +1,5 @@
 import {APIGatewayProxyResult} from 'aws-lambda';
+import {ClientError} from '../errors/clientError';
 
 /*
  * A utility to write REST responses from objects and deal with common aspects
@@ -6,17 +7,36 @@ import {APIGatewayProxyResult} from 'aws-lambda';
 export class ResponseWriter {
 
     /*
-     * Return data to the caller, which could be a success or error object
+     * Return a success response to the caller
      */
-    public static objectResponse(statusCode: number, body: any): APIGatewayProxyResult {
+    public static successResponse(statusCode: number, body: any): APIGatewayProxyResult {
+
+        return {
+            statusCode,
+            body: JSON.stringify(body)
+        };
+    }
+
+    /*
+     * Return a client friendly error response
+     */
+    public static errorResponse(statusCode: number, error: ClientError): APIGatewayProxyResult {
 
         const response = {
             statusCode,
+            body: JSON.stringify(error.toResponseFormat()),
         } as APIGatewayProxyResult;
 
-        // Invalid lambda response data results in a cryptic 502 error so ensure that we have a Javascript object
-        if (body && typeof body === 'object') {
-            response.body = JSON.stringify(body);
+        // For 401 errors, also return the standards based OAuth response header
+        if (error.getStatusCode() === 401) {
+
+            const realm = 'mycompany.com';
+            let wwwAuthenticateHeader = `Bearer realm="${realm}"`;
+            wwwAuthenticateHeader += `, error="${error.getErrorCode()}"`;
+            wwwAuthenticateHeader += `, error_description="${error.message}"`;
+            response.headers = {
+                'www-authenticate': wwwAuthenticateHeader,
+            };
         }
 
         return response;

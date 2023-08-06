@@ -8,7 +8,7 @@ import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
 
 /*
- * Our handler acts as a REST controller
+ * A lambda to return user info
  */
 const container = new Container();
 const baseHandler = async (): Promise<APIGatewayProxyResult> => {
@@ -21,7 +21,7 @@ const baseHandler = async (): Promise<APIGatewayProxyResult> => {
         regions: customClaims.regions,
     };
 
-    return ResponseWriter.objectResponse(200, userInfo);
+    return ResponseWriter.successResponse(200, userInfo);
 };
 
 // Create an enriched handler, which wires up middleware to run before the above handler

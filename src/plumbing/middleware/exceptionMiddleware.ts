@@ -61,7 +61,7 @@ export class ExceptionMiddleware implements middy.MiddlewareObj<APIGatewayProxyE
         logEntry.write();
 
         // Set the client error as the lambda response error, which will be serialized and returned via the API gateway
-        request.response = ResponseWriter.objectResponse(clientError.getStatusCode(), clientError.toResponseFormat());
+        request.response = ResponseWriter.errorResponse(clientError.getStatusCode(), clientError);
     }
 
     /*

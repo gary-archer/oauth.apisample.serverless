@@ -12,7 +12,7 @@ import {LogEntryImpl} from '../logging/logEntryImpl.js';
 import {AccessTokenValidator} from './accessTokenValidator.js';
 
 /*
- * A middleware for OAuth handling, which does token processing and custom claims handling
+ * A class to create the claims principal at the start of every secured request
  */
 export class OAuthAuthorizer implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
 
@@ -76,14 +76,14 @@ export class OAuthAuthorizer implements middy.MiddlewareObj<APIGatewayProxyEvent
         const tokenValidator = this._container.get<AccessTokenValidator>(BASETYPES.AccessTokenValidator);
         const tokenClaims = await tokenValidator.execute(accessToken);
 
-        // If cached results exist for other claims then return them
+        // If cached results already exist for this token then return them immediately
         const accessTokenHash = createHash('sha256').update(accessToken).digest('hex');
         let customClaims = await this._cache.getExtraUserClaims(accessTokenHash);
         if (customClaims) {
             return new ClaimsPrincipal(tokenClaims, customClaims);
         }
 
-        // Otherwise look up custom claims
+        // Look up custom claims not in the JWT access token when it is first received
         customClaims = await this._customClaimsProvider.lookupForNewAccessToken(accessToken, tokenClaims);
 
         // Cache the extra claims for subsequent requests with the same access token

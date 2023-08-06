@@ -88,7 +88,7 @@ export class LambdaConfiguration {
 
         const clientError = loggerFactory.logStartupError(error);
         return async () => {
-            return ResponseWriter.objectResponse(500, clientError.toResponseFormat());
+            return ResponseWriter.errorResponse(500, clientError);
         };
     }
 }
