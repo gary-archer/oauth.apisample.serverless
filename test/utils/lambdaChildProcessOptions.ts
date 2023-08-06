@@ -5,8 +5,8 @@ export interface LambdaChildProcessOptions {
     httpMethod: string;
     apiPath: string;
     lambdaFunction: string;
-    accessToken: string;
     sessionId: string;
+    accessToken: string;
     pathParameters?: any;
     rehearseException?: boolean;
 }
