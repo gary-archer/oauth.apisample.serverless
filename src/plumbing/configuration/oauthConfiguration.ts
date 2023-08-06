@@ -4,5 +4,6 @@
 export interface OAuthConfiguration {
     issuer: string;
     audience: string;
+    scope: string;
     jwksEndpoint: string;
 }

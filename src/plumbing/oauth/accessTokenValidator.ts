@@ -72,7 +72,7 @@ export class AccessTokenValidator {
 
             // The sample API requires the same scope for all endpoints, and it is enforced here
             const scopes = ClaimsReader.getStringClaim(claims, 'scope').split(' ');
-            if (scopes.indexOf('https://api.authsamples.com/investments') === -1) {
+            if (scopes.indexOf(this._configuration.scope) === -1) {
 
                 throw ErrorFactory.createClientError(
                     403,
