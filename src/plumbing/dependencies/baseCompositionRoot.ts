@@ -12,6 +12,7 @@ import {BASETYPES} from '../dependencies/baseTypes.js';
 import {LogEntry} from '../logging/logEntry.js';
 import {LoggerFactory} from '../logging/loggerFactory.js';
 import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl.js';
+import {AuthorizerMiddleware} from '../middleware/authorizerMiddleware.js';
 import {CustomHeaderMiddleware} from '../middleware/customHeaderMiddleware.js';
 import {ExceptionMiddleware} from '../middleware/exceptionMiddleware.js';
 import {LoggerMiddleware} from '../middleware/loggerMiddleware.js';
@@ -118,7 +119,7 @@ export class BaseCompositionRoot {
     }
 
     public getAuthorizerMiddleware(): middy.MiddlewareObj<any, any> {
-        return new OAuthAuthorizer(this._container, this._customClaimsProvider!, this._cache!);
+        return new AuthorizerMiddleware(this._container);
     }
 
     /*
@@ -138,10 +139,14 @@ export class BaseCompositionRoot {
      */
     private _registerClaimsDependencies() {
 
-        // Create the cache
+        // Register the singleton cache
         this._container.bind<Cache>(BASETYPES.Cache).toConstantValue(this._cache!);
 
-        // Per request claims objects are updated at runtime
+        // Register the custom claims provider
+        this._container.bind<CustomClaimsProvider>(BASETYPES.CustomClaimsProvider)
+            .toConstantValue(this._customClaimsProvider!);
+
+        // The per request claims principal is given a dummy value here and then updated at runtime
         this._container.bind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue({} as any);
     }
 
@@ -154,11 +159,17 @@ export class BaseCompositionRoot {
         this._container.bind<OAuthConfiguration>(BASETYPES.OAuthConfiguration)
             .toConstantValue(this._oauthConfiguration!);
 
-        // Register per request objects
+        // Every request retrieves cached token signing public keys from the cache
         this._container.bind<JwksRetriever>(BASETYPES.JwksRetriever)
             .to(JwksRetriever).inTransientScope();
+
+        // Every request verifies a JWT access token
         this._container.bind<AccessTokenValidator>(BASETYPES.AccessTokenValidator)
             .to(AccessTokenValidator).inTransientScope();
+
+        // Every request does extra work to form a claims principal
+        this._container.bind<OAuthAuthorizer>(BASETYPES.OAuthAuthorizer)
+            .to(OAuthAuthorizer).inTransientScope();
 
         return this;
     }

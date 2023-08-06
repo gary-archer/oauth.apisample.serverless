@@ -1,9 +1,11 @@
+import {injectable} from 'inversify';
 import {JWTPayload} from 'jose';
 import {CustomClaims} from './customClaims.js';
 
 /*
  * A null implementation that can be overridden to provide custom claims
  */
+@injectable()
 export class CustomClaimsProvider {
 
     /*

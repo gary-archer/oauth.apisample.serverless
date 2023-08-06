@@ -1,3 +1,4 @@
+import {injectable} from 'inversify';
 import {JWTPayload} from 'jose';
 import {CustomClaims} from './customClaims.js';
 import {ClaimsReader} from './claimsReader.js';
@@ -5,6 +6,7 @@ import {ClaimsReader} from './claimsReader.js';
 /*
  * The total set of claims for this API
  */
+@injectable()
 export class ClaimsPrincipal {
 
     private _jwtClaims: JWTPayload;
