@@ -4,10 +4,7 @@ import 'reflect-metadata';
 import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes.js';
 import {SampleErrorCodes} from '../../logic/errors/sampleErrorCodes.js';
 import {CompanyService} from '../../logic/services/companyService.js';
-import {BaseClaims} from '../../plumbing/claims/baseClaims.js';
-import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
 import {ErrorFactory} from '../../plumbing/errors/errorFactory.js';
-import {ScopeVerifier} from '../../plumbing/oauth/scopeVerifier.js';
 import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
 
@@ -16,10 +13,6 @@ import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
  */
 const container = new Container();
 const baseHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-
-    // First check scopes
-    const baseClaims = container.get<BaseClaims>(BASETYPES.BaseClaims);
-    ScopeVerifier.enforce(baseClaims.scopes, 'investments');
 
     // First get the supplied id and ensure it is a valid integer
     const id = parseInt(event.pathParameters?.id || '', 10);

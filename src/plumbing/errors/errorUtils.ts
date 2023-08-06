@@ -75,55 +75,6 @@ export class ErrorUtils {
     }
 
     /*
-     * Handle user info lookup failures
-     */
-    public static fromUserInfoError(e: any, url: string): ServerError | ClientError {
-
-        // Avoid reprocessing
-        if (e instanceof ServerError) {
-            return e;
-        }
-
-        // Collect the parts of the error, including the standard OAuth error / error_description fields
-        let status = 0;
-        if (e.response && e.response.status) {
-            status = e.response.status;
-        }
-
-        let responseData: any = {};
-        if (e.response && e.response.data && typeof e.response.data === 'object') {
-            responseData = e.response.data;
-        }
-
-        const parts: string[] = [];
-        parts.push('User info lookup failed');
-        if (status) {
-            parts.push(`Status: ${status}`);
-        }
-        if (responseData.error) {
-            parts.push(`Code: ${responseData.error}`);
-        }
-        if (responseData.error_description) {
-            parts.push(`Description: ${responseData.error_description}`);
-        }
-        parts.push(`URL: ${url}`);
-        const details = parts.join(', ');
-
-        // Report 401 errors where the access token is rejected
-        if (status == 401) {
-            return ErrorFactory.createClient401Error(details);
-        }
-
-        // Otherwise report technical failures
-        const error = ErrorFactory.createServerError(
-            BaseErrorCodes.userinfoFailure,
-            'User info lookup failed',
-            e.stack);
-        error.setDetails(details);
-        return error;
-    }
-
-    /*
      * The error thrown if we cannot find an expected claim during security handling
      */
     public static fromMissingClaim(claimName: string): ServerError {

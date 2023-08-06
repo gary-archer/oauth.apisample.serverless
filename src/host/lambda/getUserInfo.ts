@@ -1,12 +1,11 @@
 import {APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
-import {BaseClaims} from '../../plumbing/claims/baseClaims.js';
+import {SampleCustomClaims} from '../../logic/entities/sampleCustomClaims.js';
+import {ClaimsPrincipal} from '../../plumbing/claims/claimsPrincipal.js';
 import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
-import {ScopeVerifier} from '../../plumbing/oauth/scopeVerifier.js';
 import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
-import {SampleCustomClaims} from '../../logic/entities/sampleCustomClaims.js';
 
 /*
  * Our handler acts as a REST controller
@@ -14,15 +13,12 @@ import {SampleCustomClaims} from '../../logic/entities/sampleCustomClaims.js';
 const container = new Container();
 const baseHandler = async (): Promise<APIGatewayProxyResult> => {
 
-    // First check scopes
-    const baseClaims = container.get<BaseClaims>(BASETYPES.BaseClaims);
-    ScopeVerifier.enforce(baseClaims.scopes, 'investments');
-
     // Return user information not stored in the authorization server
-    const customClaims = container.get<SampleCustomClaims>(BASETYPES.CustomClaims);
+    const claims = container.get<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal);
+    const customClaims = claims.custom as SampleCustomClaims;
     const userInfo = {
-        role: customClaims.userRole,
-        regions: customClaims.userRegions,
+        role: customClaims.role,
+        regions: customClaims.regions,
     };
 
     return ResponseWriter.objectResponse(200, userInfo);

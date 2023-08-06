@@ -1,4 +1,4 @@
-import {CachedClaims} from '../claims/cachedClaims.js';
+import {CustomClaims} from '../claims/customClaims.js';
 import {Cache} from './cache.js';
 
 /*
@@ -16,11 +16,11 @@ export class NullCache implements Cache {
     }
 
     /* eslint-disable @typescript-eslint/no-unused-vars */
-    public async setExtraUserClaims(accessTokenHash: string, claims: CachedClaims): Promise<void> {
+    public async setExtraUserClaims(accessTokenHash: string, claims: CustomClaims): Promise<void> {
     }
 
     /* eslint-disable @typescript-eslint/no-unused-vars */
-    public async getExtraUserClaims(accessTokenHash: string): Promise<CachedClaims | null> {
+    public async getExtraUserClaims(accessTokenHash: string): Promise<CustomClaims | null> {
         return null;
     }
 }

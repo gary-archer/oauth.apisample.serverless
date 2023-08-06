@@ -3,9 +3,6 @@ import {Container} from 'inversify';
 import 'reflect-metadata';
 import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes.js';
 import {CompanyService} from '../../logic/services/companyService.js';
-import {BaseClaims} from '../../plumbing/claims/baseClaims.js';
-import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
-import {ScopeVerifier} from '../../plumbing/oauth/scopeVerifier.js';
 import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
 
@@ -14,10 +11,6 @@ import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
  */
 const container = new Container();
 const baseHandler = async (): Promise<APIGatewayProxyResult> => {
-
-    // First check scopes
-    const baseClaims = container.get<BaseClaims>(BASETYPES.BaseClaims);
-    ScopeVerifier.enforce(baseClaims.scopes, 'investments');
 
     // Resolve the service and execute the logic
     const service = container.get<CompanyService>(SAMPLETYPES.CompanyService);

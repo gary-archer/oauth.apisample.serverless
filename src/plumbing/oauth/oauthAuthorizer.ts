@@ -4,16 +4,12 @@ import {createHash} from 'crypto';
 import {Container} from 'inversify';
 import {Cache} from '../cache/cache.js';
 import {ClaimsPrincipal} from '../claims/claimsPrincipal.js';
-import {BaseClaims} from '../claims/baseClaims.js';
-import {CachedClaims} from '../claims/cachedClaims.js';
-import {CustomClaims} from '../claims/customClaims.js';
 import {CustomClaimsProvider} from '../claims/customClaimsProvider.js';
-import {UserInfoClaims} from '../claims/userInfoClaims.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
 import {ClientError} from '../errors/clientError.js';
 import {ErrorFactory} from '../errors/errorFactory.js';
 import {LogEntryImpl} from '../logging/logEntryImpl.js';
-import {OAuthAuthenticator} from './oauthAuthenticator.js';
+import {AccessTokenValidator} from './accessTokenValidator.js';
 
 /*
  * A middleware for OAuth handling, which does token processing and custom claims handling
@@ -47,12 +43,10 @@ export class OAuthAuthorizer implements middy.MiddlewareObj<APIGatewayProxyEvent
             const claims = await this._execute(request.event);
 
             // Include identity details in logs as soon as we have them
-            logEntry.setIdentity(claims.token);
+            logEntry.setIdentity(claims.subject);
 
             // Make claims injectable
-            this._container.rebind<BaseClaims>(BASETYPES.BaseClaims).toConstantValue(claims.token);
-            this._container.rebind<UserInfoClaims>(BASETYPES.UserInfoClaims).toConstantValue(claims.userInfo);
-            this._container.rebind<CustomClaims>(BASETYPES.CustomClaims).toConstantValue(claims.custom);
+            this._container.rebind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue(claims);
 
         } catch (e) {
 
@@ -79,26 +73,24 @@ export class OAuthAuthorizer implements middy.MiddlewareObj<APIGatewayProxyEvent
         const accessToken = this._readAccessToken(event);
 
         // On every lambda HTTP request we validate the JWT, in a zero trust manner
-        const authenticator = this._container.get<OAuthAuthenticator>(BASETYPES.OAuthAuthenticator);
-        const tokenClaims = await authenticator.validateToken(accessToken);
+        const tokenValidator = this._container.get<AccessTokenValidator>(BASETYPES.AccessTokenValidator);
+        const tokenClaims = await tokenValidator.execute(accessToken);
 
         // If cached results exist for other claims then return them
         const accessTokenHash = createHash('sha256').update(accessToken).digest('hex');
-        const cachedClaims = await this._cache.getExtraUserClaims(accessTokenHash);
-        if (cachedClaims) {
-            return new ClaimsPrincipal(tokenClaims, cachedClaims.userInfo, cachedClaims.custom);
+        let customClaims = await this._cache.getExtraUserClaims(accessTokenHash);
+        if (customClaims) {
+            return new ClaimsPrincipal(tokenClaims, customClaims);
         }
 
-        // Otherwise look up user info claims and domain specific claims
-        const userInfo = await authenticator.getUserInfo(accessToken);
-        const customClaims = await this._customClaimsProvider.get(accessToken, tokenClaims, userInfo);
-        const claimsToCache = new CachedClaims(userInfo, customClaims);
+        // Otherwise look up custom claims
+        customClaims = await this._customClaimsProvider.lookupForNewAccessToken(accessToken, tokenClaims);
 
         // Cache the extra claims for subsequent requests with the same access token
-        await this._cache.setExtraUserClaims(accessTokenHash, claimsToCache);
+        await this._cache.setExtraUserClaims(accessTokenHash, customClaims!);
 
         // Return the final claims
-        return new ClaimsPrincipal(tokenClaims, userInfo, customClaims);
+        return new ClaimsPrincipal(tokenClaims, customClaims!);
     }
 
     /*

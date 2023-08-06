@@ -1,4 +1,4 @@
-import {CachedClaims} from '../claims/cachedClaims.js';
+import {CustomClaims} from '../claims/customClaims.js';
 
 /*
  * An interface for in-memory caching of OAuth related data
@@ -9,7 +9,7 @@ export interface Cache {
 
     getJwksKeys(): Promise<any>;
 
-    setExtraUserClaims(accessTokenHash: string, claims: CachedClaims): Promise<void>;
+    setExtraUserClaims(accessTokenHash: string, claims: CustomClaims): Promise<void>;
 
-    getExtraUserClaims(accessTokenHash: string): Promise<CachedClaims | null>;
+    getExtraUserClaims(accessTokenHash: string): Promise<CustomClaims | null>;
 }

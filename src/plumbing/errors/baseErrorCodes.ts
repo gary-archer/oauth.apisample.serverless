@@ -5,7 +5,7 @@ export class BaseErrorCodes {
 
     public static readonly serverError = 'server_error';
 
-    public static readonly unauthorizedRequest = 'unauthorized';
+    public static readonly invalidToken = 'invalid_token';
 
     public static readonly exceptionSimulation = 'exception_simulation';
 
@@ -16,10 +16,6 @@ export class BaseErrorCodes {
     public static readonly claimsFailure = 'claims_failure';
 
     public static readonly insufficientScope = 'insufficient_scope';
-
-    public static readonly userinfoFailure = 'userinfo_failure';
-
-    public static readonly userInfoInvalidToken = 'invalid_token';
 
     public static readonly cacheConnect = 'cache_connect';
 

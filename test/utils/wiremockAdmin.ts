@@ -9,13 +9,11 @@ export class WiremockAdmin {
 
     private readonly _baseUrl: string;
     private readonly _jsonWebKeysId: string;
-    private readonly _userInfoId: string;
     private readonly _httpProxy: HttpProxy;
 
     public constructor(useProxy: boolean) {
         this._baseUrl = 'http://login.authsamples-dev.com/__admin/mappings';
         this._jsonWebKeysId = Guid.create().toString();
-        this._userInfoId = Guid.create().toString();
         this._httpProxy = new HttpProxy(useProxy, 'http://127.0.0.1:8888');
     }
 
@@ -52,34 +50,6 @@ export class WiremockAdmin {
      */
     public async unregisterJsonWebWeys(): Promise<void> {
         return this._unregister(this._jsonWebKeysId);
-    }
-
-    /*
-     * Register a user at the start of an individual test
-     */
-    public async registerUserInfo(userJson: string): Promise<void> {
-
-        const stubbedResponse = {
-            id: this._userInfoId,
-            priority: 1,
-            request: {
-                method: 'POST',
-                url: '/oauth2/userInfo'
-            },
-            response: {
-                status: 200,
-                body: userJson,
-            },
-        };
-
-        return this._register(stubbedResponse);
-    }
-
-    /*
-     * Unregister a user at the end of an individual test
-     */
-    public async unregisterUserInfo(): Promise<void> {
-        return this._unregister(this._userInfoId);
     }
 
     /*

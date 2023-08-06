@@ -3,10 +3,8 @@ import {Container} from 'inversify';
 import {Cache} from '../cache/cache.js';
 import {AwsCache} from '../cache/awsCache.js';
 import {NullCache} from '../cache/nullCache.js';
-import {BaseClaims} from '../claims/baseClaims.js';
-import {CustomClaims} from '../claims/customClaims.js';
+import {ClaimsPrincipal} from '../claims/claimsPrincipal.js';
 import {CustomClaimsProvider} from '../claims/customClaimsProvider.js';
-import {UserInfoClaims} from '../claims/userInfoClaims.js';
 import {CacheConfiguration} from '../configuration/cacheConfiguration.js';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration.js';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration.js';
@@ -17,8 +15,8 @@ import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl.js';
 import {CustomHeaderMiddleware} from '../middleware/customHeaderMiddleware.js';
 import {ExceptionMiddleware} from '../middleware/exceptionMiddleware.js';
 import {LoggerMiddleware} from '../middleware/loggerMiddleware.js';
+import {AccessTokenValidator} from '../oauth/accessTokenValidator.js';
 import {JwksRetriever} from '../oauth/jwksRetriever.js';
-import {OAuthAuthenticator} from '../oauth/oauthAuthenticator.js';
 import {OAuthAuthorizer} from '../oauth/oauthAuthorizer.js';
 import {HttpProxy} from '../utilities/httpProxy.js';
 
@@ -31,8 +29,8 @@ export class BaseCompositionRoot {
 
     private _loggingConfiguration: LoggingConfiguration | null;
     private _oauthConfiguration: OAuthConfiguration | null;
-    private _cacheConfiguration: CacheConfiguration | null;
     private _customClaimsProvider: CustomClaimsProvider | null;
+    private _cacheConfiguration: CacheConfiguration | null;
     private _cache: Cache | null;
     private _loggerFactory: LoggerFactoryImpl | null;
     private _httpProxy: HttpProxy | null;
@@ -143,10 +141,8 @@ export class BaseCompositionRoot {
         // Create the cache
         this._container.bind<Cache>(BASETYPES.Cache).toConstantValue(this._cache!);
 
-        // These default per request objects will be overridden at runtime
-        this._container.bind<BaseClaims>(BASETYPES.BaseClaims).toConstantValue({} as any);
-        this._container.bind<UserInfoClaims>(BASETYPES.UserInfoClaims).toConstantValue({} as any);
-        this._container.bind<CustomClaims>(BASETYPES.CustomClaims).toConstantValue({} as any);
+        // Per request claims objects are updated at runtime
+        this._container.bind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue({} as any);
     }
 
     /*
@@ -161,8 +157,8 @@ export class BaseCompositionRoot {
         // Register per request objects
         this._container.bind<JwksRetriever>(BASETYPES.JwksRetriever)
             .to(JwksRetriever).inTransientScope();
-        this._container.bind<OAuthAuthenticator>(BASETYPES.OAuthAuthenticator)
-            .to(OAuthAuthenticator).inTransientScope();
+        this._container.bind<AccessTokenValidator>(BASETYPES.AccessTokenValidator)
+            .to(AccessTokenValidator).inTransientScope();
 
         return this;
     }

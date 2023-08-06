@@ -57,31 +57,11 @@ export class TokenIssuer {
             sub,
             iss: 'testissuer.com',
             aud: 'api.mycompany.com',
-            scope: 'openid profile email https://api.authsamples.com/investments',
+            scope: 'openid profile https://api.authsamples.com/investments',
         })
             .setProtectedHeader( { kid: this._keyId, alg: this._algorithm } )
             .setIssuedAt(now - 30000)
             .setExpirationTime(now + 30000)
             .sign(this._tokenSigningPrivateKey!);
-    }
-
-    /*
-     * Issue an access token signed with an untrusted JWK
-     */
-    public async issueMaliciousAccessToken(sub: string): Promise<string> {
-
-        const maliciousKeys = await generateKeyPair(this._algorithm);
-        const now = Date.now();
-
-        return await new SignJWT( {
-            sub,
-            iss: 'testissuer.com',
-            aud: 'api.mycompany.com',
-            scope: 'openid profile email https://api.authsamples.com/investments',
-        })
-            .setProtectedHeader( { kid: this._keyId, alg: this._algorithm } )
-            .setIssuedAt(now - 30000)
-            .setExpirationTime(now + 30000)
-            .sign(maliciousKeys.privateKey);
     }
 }

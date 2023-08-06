@@ -4,9 +4,8 @@ import {
     GetItemInput,
     PutItemCommand,
     PutItemInput} from '@aws-sdk/client-dynamodb';
-import {CachedClaims} from '../claims/cachedClaims.js';
+import {CustomClaims} from '../claims/customClaims.js';
 import {CustomClaimsProvider} from '../claims/customClaimsProvider.js';
-import {UserInfoClaims} from '../claims/userInfoClaims.js';
 import {CacheConfiguration} from '../configuration/cacheConfiguration.js';
 import {BaseErrorCodes} from '../errors/baseErrorCodes.js';
 import {ErrorUtils} from '../errors/errorUtils.js';
@@ -77,13 +76,10 @@ export class AwsCache implements Cache {
     /*
      * When a new access token is received, we cache its keys with a time to live equal to that of the token's expiry
      */
-    public async setExtraUserClaims(accessTokenHash: string, claims: CachedClaims): Promise<void> {
+    public async setExtraUserClaims(accessTokenHash: string, claims: CustomClaims): Promise<void> {
 
         // Get the data in way that handles private property names
-        const dataAsJson = {
-            userInfo: claims.userInfo.exportData(),
-            custom: claims.custom.exportData(),
-        };
+        const dataAsJson = claims.exportData();
 
         // Form the DynamoDB command
         const params = {
@@ -102,7 +98,7 @@ export class AwsCache implements Cache {
     /*
      * When an access token is received, see if its claims exist in the cache
      */
-    public async getExtraUserClaims(accessTokenHash: string): Promise<CachedClaims | null> {
+    public async getExtraUserClaims(accessTokenHash: string): Promise<CustomClaims | null> {
 
         // Form the DynamoDB command
         const params = {
@@ -121,9 +117,7 @@ export class AwsCache implements Cache {
             const dataAsJson = JSON.parse(claimsText);
 
             // Get the data in way that handles private property names
-            return new CachedClaims(
-                UserInfoClaims.importData(dataAsJson.userInfo),
-                this._customClaimsProvider.deserialize(dataAsJson.custom));
+            return this._customClaimsProvider.deserializeFromCache(dataAsJson);
         }
 
         return null;

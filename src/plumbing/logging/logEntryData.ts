@@ -162,11 +162,11 @@ export class LogEntryData {
     }
 
     /*
-     * Add the performance breakdown if the threshold has been exceeded or there has been a 500 error
+     * Add the performance breakdown if the threshold has been exceeded
      */
     private _outputPerformance(output: any): void {
 
-        if (this.performance.millisecondsTaken >= this.performanceThresholdMilliseconds || this.errorId) {
+        if (this.performance.millisecondsTaken >= this.performanceThresholdMilliseconds) {
             output.performance = this.performance.data;
         }
     }

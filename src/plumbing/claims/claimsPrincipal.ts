@@ -1,28 +1,22 @@
-import {BaseClaims} from './baseClaims.js';
+import {JWTPayload} from 'jose';
 import {CustomClaims} from './customClaims.js';
-import {UserInfoClaims} from './userInfoClaims.js';
+import {ClaimsReader} from './claimsReader.js';
 
 /*
- * An extensible claims object for APIs
+ * The total set of claims for this API
  */
 export class ClaimsPrincipal {
 
-    private _baseClaims: BaseClaims;
-    private _userInfoClaims: UserInfoClaims;
+    private _jwtClaims: JWTPayload;
     private _customClaims: CustomClaims;
 
-    public constructor(baseClaims: BaseClaims, userInfoClaims: UserInfoClaims, customClaims: CustomClaims) {
-        this._baseClaims = baseClaims;
-        this._userInfoClaims = userInfoClaims;
+    public constructor(jwtClaims: JWTPayload, customClaims: CustomClaims) {
+        this._jwtClaims = jwtClaims;
         this._customClaims = customClaims;
     }
 
-    public get token(): BaseClaims {
-        return this._baseClaims;
-    }
-
-    public get userInfo(): UserInfoClaims {
-        return this._userInfoClaims;
+    public get subject(): string {
+        return ClaimsReader.getStringClaim(this._jwtClaims, 'sub');
     }
 
     public get custom(): CustomClaims {
