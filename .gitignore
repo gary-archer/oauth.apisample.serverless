@@ -1,0 +1,7 @@
+.DS_store
+node_modules
+dist
+.serverless
+lambdatest.log
+input.txt
+output.txt

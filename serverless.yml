@@ -1,0 +1,119 @@
+service: serverlessapi
+
+# Base details for AWS deployment
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-west-2
+  stage: ${self:custom.config.settings.stage}
+  apiGateway:
+    shouldStartNameWithService: true
+
+  # Grant lambdas access to the DynamoDB cache table
+  iam:
+    role:
+      statements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DescribeTable
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+        Resource:
+          - "Fn::GetAtt": [ CacheTable, Arn ]
+
+custom:
+  # Each environment can have its own configuration file
+  config: ${file(environments/${opt:stage, 'dev'}.yml)}
+  
+  # API gateway domain details
+  customDomain:
+    domainName: ${self:custom.config.settings.apiHostName}
+    certificateName: '*.${self:custom.config.settings.certificateDomainName}'
+    basePath: investments
+    stage: ${self:custom.config.settings.stage}
+    endpointType: regional
+
+# Lambda functions that receives a JWT access token
+functions:
+  
+  getUserInfo:
+    handler: dist/host/lambda/getUserInfo.handler
+    events:
+      - http: 
+          path: /userinfo
+          method: get
+
+  getCompanyList:
+    handler: dist/host/lambda/getCompanyList.handler
+    events:
+      - http: 
+          path: /companies
+          method: get
+
+  getCompanyTransactions:
+    handler: dist/host/lambda/getCompanyTransactions.handler
+    events:
+      - http: 
+          path: /companies/{id}/transactions
+          method: get
+          request: 
+            parameters: 
+              paths: 
+                id: true
+
+# By default all files are included so remove files we don't need for any lambda
+package:
+  patterns:
+  - '!.codacy.yaml'
+  - '!.eslintrc'
+  - '!.mocharc.json'
+  - '!.vscode/**'
+  - '!environments/**'
+  - '!src/**'
+  - '!doc/**'
+  - '!test/**'
+  - '!ts*.json'
+  - '!package-lock.json'
+  - '!README.md'
+  - '!LICENSE.txt'
+  - '!*.sh'
+
+plugins:
+  - serverless-domain-manager
+
+resources:
+  Resources:
+
+    # Use DynamoDB as a cache for both JWKS keys and extra claims
+    CacheTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: OAUTH_CACHE
+        AttributeDefinitions:
+          - AttributeName: CACHE_KEY
+            AttributeType: S
+        KeySchema:
+          - AttributeName: CACHE_KEY
+            KeyType: HASH
+        TimeToLiveSpecification:
+          AttributeName: TTL_VALUE
+          Enabled: true
+        BillingMode: PAY_PER_REQUEST
+
+    # Limit cloudwatch log retention 
+    getUserInfoLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'
+    GetCompanyListLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'
+    GetCompanyTransactionsLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'
