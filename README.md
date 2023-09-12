@@ -10,7 +10,7 @@ The Serverless OAuth secured Node.js API code sample, referenced in my blog at h
 
 - The API has a fictional business area of `investments`, but simply returns hard coded data
 - The API's lambda functions validate a JWT access token on every request, in a zero trust manner
-- The API takes finer control over OAuth domain specific claims and uses a certified JOSE library
+- The API takes finer control over OAuth and claims to enable the best security with good manageability
 - The API uses JSON request logging and Elasticsearch log aggregation, for measurability
 
 ## API serves UI Clients
@@ -60,12 +60,10 @@ This works well enough to meet my low cost deployment goals, though these techni
 
 ## Infrastructure
 
-* The [JOSE library](https://github.com/panva/jose) is used for to manage in memory validation of JWTs
-* [InversifyJS](http://inversify.io) is used to help manage class dependencies
+* The [JOSE library](https://github.com/panva/jose) is used to manage in memory validation of JWTs
 * AWS Route 53 is used for custom hosting domains
 * AWS Certificate Manager is used to manage and auto renew the API's SSL certificate
 * AWS Cognito is used as the default Authorization Server
 * DynamoDB is used to cache JWKS keys and domain specific claims
 * The AWS API Gateway is used as the HTTPS internet entry point
-* CloudWatch is used for immediate storage of API logs
-* API logs are aggregated to [Elastic Cloud](https://authguidance.com/2020/08/11/cloud-elastic-search-setup) to support common [Query Use Cases](https://authguidance.com/2019/08/02/intelligent-api-platform-analysis/)
+* CloudWatch is used for immediate storage of API logs, which could then be aggregated, eg to Elasticsearch.
