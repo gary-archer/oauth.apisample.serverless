@@ -25,7 +25,7 @@ This enables UI code examples to point to API endpoints that run in the AWS clou
 
 ## Prerequisites
 
-- Ensure that Node.js 20 or later is installed, and also the [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- Ensure that Node.js 20 or later is installed
 - Integration tests use Wiremock, so also install a Java 17+ SDK
 
 ## Local Development Quick Start
