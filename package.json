@@ -40,8 +40,8 @@
     "mocha": "^10.2.0",
     "serverless": "^3.36.0",
     "serverless-domain-manager": "^7.0.2",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.2.0",
-    "wiremock": "^2.35.0"
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "wiremock": "^3.3.1"
   }
 }

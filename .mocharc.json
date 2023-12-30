@@ -1,5 +1,5 @@
 {
     "extension": ["ts"],
-    "node-option": ["loader=ts-node/esm", "no-warnings"],
+    "node-option": ["import=tsx"],
     "spec": ["test/apiTests.ts"]
 }
