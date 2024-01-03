@@ -38,7 +38,7 @@ export class AccessTokenValidator {
         return using(this._logEntry.createPerformanceBreakdown('tokenValidator'), async () => {
 
             const options = {
-                algorithms: ['RS256'],
+                algorithms: [this._configuration.algorithm],
                 issuer: this._configuration.issuer,
             } as JWTVerifyOptions;
 

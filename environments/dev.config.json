@@ -11,6 +11,7 @@
     "oauth": {
         "issuer":           "https://login.authsamples-dev.com",
         "audience":         "api.mycompany.com",
+        "algorithm":        "RS256",
         "scope":            "https://api.authsamples.com/investments",
         "jwksEndpoint":     "http://login.authsamples-dev.com/.well-known/jwks.json"
     },
