@@ -85,7 +85,7 @@ export class ErrorUtils {
             BaseErrorCodes.insufficientScope,
             'The token does not contain sufficient scope for this API');
 
-        error.setLogContext(`An empty value was found for the expected claim '${claimName}'`);
+        error.setLogContext(`Missing claim in input: '${claimName}'`);
         return error;
     }
 
