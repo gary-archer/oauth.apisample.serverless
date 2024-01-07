@@ -76,11 +76,16 @@ export class ErrorUtils {
 
     /*
      * The error thrown if we cannot find an expected claim during security handling
+     * This is the same underlying problem as a missing scope and typically caused by incorrect configuration
      */
-    public static fromMissingClaim(claimName: string): ServerError {
+    public static fromMissingClaim(claimName: string): ClientError {
 
-        const error = ErrorFactory.createServerError(BaseErrorCodes.claimsFailure, 'Authorization Data Not Found');
-        error.setDetails(`An empty value was found for the expected claim '${claimName}'`);
+        const error = ErrorFactory.createClientError(
+            403,
+            BaseErrorCodes.insufficientScope,
+            'The token does not contain sufficient scope for this API');
+
+        error.setLogContext(`An empty value was found for the expected claim '${claimName}'`);
         return error;
     }
 

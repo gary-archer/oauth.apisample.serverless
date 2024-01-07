@@ -13,8 +13,6 @@ export class BaseErrorCodes {
 
     public static readonly jwksProcessingError = 'jwks_processing';
 
-    public static readonly claimsFailure = 'claims_failure';
-
     public static readonly insufficientScope = 'insufficient_scope';
 
     public static readonly cacheConnect = 'cache_connect';
