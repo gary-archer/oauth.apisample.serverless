@@ -18,30 +18,15 @@ export class ResponseWriter {
     }
 
     /*
-     * Return a client friendly error response
+     * This blog's examples use a JSON response to provide client friendly OAuth errors
+     * When required, such as to inform clients how to integrate, a www-authenticate header can be added here
+     * - https://datatracker.ietf.org/doc/html/rfc6750#section-3
      */
     public static errorResponse(statusCode: number, error: ClientError): APIGatewayProxyResult {
 
-        const response = {
+        return {
             statusCode,
             body: JSON.stringify(error.toResponseFormat()),
         } as APIGatewayProxyResult;
-
-        // For 401 errors, we could return the standards based OAuth response header
-        // But the AWS API gateway renames it, so currently I do not return the header
-        if (error.getStatusCode() === 401) {
-
-            /*
-            const realm = 'mycompany.com';
-            let wwwAuthenticateHeader = `Bearer realm="${realm}"`;
-            wwwAuthenticateHeader += `, error="${error.getErrorCode()}"`;
-            wwwAuthenticateHeader += `, error_description="${error.message}"`;
-            response.headers = {
-                'www-authenticate': wwwAuthenticateHeader,
-            };
-            */
-        }
-
-        return response;
     }
 }
