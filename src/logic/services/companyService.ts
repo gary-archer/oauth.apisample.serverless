@@ -17,14 +17,14 @@ import {CompanyRepository} from '../repositories/companyRepository.js';
 export class CompanyService {
 
     private readonly _repository: CompanyRepository;
-    private readonly _claims: SampleExtraClaims;
+    private readonly _claims: ClaimsPrincipal;
 
     public constructor(
         @inject(SAMPLETYPES.CompanyRepository) repository: CompanyRepository,
         @inject(BASETYPES.ClaimsPrincipal) claims: ClaimsPrincipal) {
 
         this._repository = repository;
-        this._claims = claims.extra as SampleExtraClaims;
+        this._claims = claims;
     }
 
     /*
@@ -61,19 +61,19 @@ export class CompanyService {
     private _isUserAuthorizedForCompany(company: Company): boolean {
 
         // The admin role is granted access to all resources
-        const isAdmin = this._claims.role.toLowerCase() === 'admin';
-        if (isAdmin) {
+        const role = this._claims.getJwtClaim('role').toLowerCase();
+        if (role === 'admin') {
             return true;
         }
 
         // Unknown roles are granted no access to resources
-        const isUser = this._claims.role.toLowerCase() === 'user';
-        if (!isUser) {
+        if (role !== 'user') {
             return false;
         }
 
         // For the user role, authorize based on a business rule that links the user to regional data
-        const found = this._claims.regions.find((c) => c === company.region);
+        const extraClaims = this._claims.extra as SampleExtraClaims;
+        const found = extraClaims.regions.find((c) => c === company.region);
         return !!found;
     }
 

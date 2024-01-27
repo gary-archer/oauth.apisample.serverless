@@ -8,24 +8,24 @@ import {SampleExtraClaims} from '../claims/sampleExtraClaims.js';
 export class UserRepository {
 
     /*
-     * Receive the subject claim from the AWS Cognito access token and look up all other claims
+     * Receive the manager ID in the access token, as a useful identity to the API, then look up extra claims
      */
-    public getClaimsForSubject(subject: string): SampleExtraClaims {
+    public getClaimsForManagerId(managerId: string): SampleExtraClaims {
 
-        if (subject === 'd3d64319-1f84-42bb-92cb-5883793c50dc') {
+        if (managerId === '20116') {
 
             // These claims are used for the guestadmin@mycompany.com user account
-            return new SampleExtraClaims('20116', 'admin', 'Global Manager', ['Europe', 'USA', 'Asia']);
+            return new SampleExtraClaims('Global Manager', ['Europe', 'USA', 'Asia']);
 
-        } else if (subject === '06e3c525-33d1-47ec-97be-03d8affc3726') {
+        } else if (managerId == '10345') {
 
             // These claims are used for the guestuser@mycompany.com user account
-            return new SampleExtraClaims('10345', 'user', 'Regional Manager', ['USA']);
+            return new SampleExtraClaims('Regional Manager', ['USA']);
 
         } else {
 
             // Use empty claims for unrecognized users
-            return new SampleExtraClaims('', '', '', []);
+            return new SampleExtraClaims('', []);
         }
     }
 }

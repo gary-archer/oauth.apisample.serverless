@@ -29,13 +29,13 @@ export class AuthorizerMiddleware implements middy.MiddlewareObj<APIGatewayProxy
 
             // Get the authorizer and call it to do the work and return claims
             const authorizer =  this._container.get<OAuthAuthorizer>(BASETYPES.OAuthAuthorizer);
-            const claims = await authorizer.execute(request.event);
+            const claimsPrincipal = await authorizer.execute(request.event);
 
             // Include identity details in logs as soon as we have them
-            logEntry.setIdentity(claims.subject);
+            logEntry.setIdentity(claimsPrincipal.getJwtClaim('sub'));
 
             // Make claims injectable
-            this._container.rebind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue(claims);
+            this._container.rebind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue(claimsPrincipal);
 
         } catch (e) {
 

@@ -27,10 +27,9 @@ export class SampleExtraClaimsProvider extends ExtraClaimsProvider {
         // Get an object to look up user information
         const userRepository = this._container.get<UserRepository>(SAMPLETYPES.UserRepository);
 
-        // With AWS Cognito, there is a lack of support for custom claims in access tokens at the time of writing
-        // So the API has to map the subject to its own user identity and look up all custom claims
-        const subject = ClaimsReader.getStringClaim(jwtClaims, 'sub');
-        return userRepository.getClaimsForSubject(subject);
+        // The manager ID is a business user identity from which other claims can be looked up
+        const managerId = ClaimsReader.getStringClaim(jwtClaims, 'manager_id');
+        return userRepository.getClaimsForManagerId(managerId);
     }
 
     /*
