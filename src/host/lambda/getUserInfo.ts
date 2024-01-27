@@ -8,7 +8,8 @@ import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
 
 /*
- * A lambda to return user info
+ * A lambda to return user info from the business data to the client
+ * These values are separate to the core identity data returned from the OAuth user info endpoint
  */
 const container = new Container();
 const baseHandler = async (): Promise<APIGatewayProxyResult> => {
