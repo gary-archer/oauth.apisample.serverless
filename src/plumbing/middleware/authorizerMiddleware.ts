@@ -2,6 +2,7 @@ import middy from '@middy/core';
 import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
 import {ClaimsPrincipal} from '../claims/claimsPrincipal.js';
+import {ClaimsReader} from '../claims/claimsReader.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
 import {ClientError} from '../errors/clientError.js';
 import {LogEntryImpl} from '../logging/logEntryImpl.js';
@@ -32,7 +33,7 @@ export class AuthorizerMiddleware implements middy.MiddlewareObj<APIGatewayProxy
             const claimsPrincipal = await authorizer.execute(request.event);
 
             // Include identity details in logs as soon as we have them
-            logEntry.setIdentity(claimsPrincipal.getJwtClaim('sub'));
+            logEntry.setIdentity(ClaimsReader.getStringClaim(claimsPrincipal.jwt, 'sub'));
 
             // Make claims injectable
             this._container.rebind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue(claimsPrincipal);

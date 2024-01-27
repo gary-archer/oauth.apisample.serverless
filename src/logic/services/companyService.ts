@@ -1,5 +1,6 @@
 import {inject, injectable} from 'inversify';
 import {ClaimsPrincipal} from '../../plumbing/claims/claimsPrincipal.js';
+import {ClaimsReader} from '../../plumbing/claims/claimsReader.js';
 import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
 import {ClientError} from '../../plumbing/errors/clientError.js';
 import {ErrorFactory} from '../../plumbing/errors/errorFactory.js';
@@ -61,7 +62,7 @@ export class CompanyService {
     private _isUserAuthorizedForCompany(company: Company): boolean {
 
         // The admin role is granted access to all resources
-        const role = this._claims.getJwtClaim('role').toLowerCase();
+        const role = ClaimsReader.getStringClaim(this._claims.jwt, 'role').toLowerCase();
         if (role === 'admin') {
             return true;
         }
