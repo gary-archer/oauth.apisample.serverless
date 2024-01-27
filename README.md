@@ -60,7 +60,7 @@ This works well enough to meet my low cost deployment goals, though these techni
 
 ## Infrastructure
 
-* The [JOSE library](https://github.com/panva/jose) is used to manage in memory validation of JWTs
+* The [jose](https://github.com/panva/jose) library is used to manage in memory validation of JWTs
 * AWS Route 53 is used for custom hosting domains
 * AWS Certificate Manager is used to manage and auto renew the API's SSL certificate
 * AWS Cognito is used as the default Authorization Server
