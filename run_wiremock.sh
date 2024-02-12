@@ -5,7 +5,6 @@
 ########################################################
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
-cd ../..
 
 #
 # Run Wiremock over HTTPS using Docker
