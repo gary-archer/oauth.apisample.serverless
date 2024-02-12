@@ -26,7 +26,7 @@ This enables UI code examples to point to API endpoints that run in the AWS clou
 ## Prerequisites
 
 - Ensure that Node.js 20 or later is installed
-- Integration tests use Wiremock, so also install a Java 17+ SDK
+- Integration tests run Wiremock in Docker, so ensure that Docker is installed
 
 ## Local Development Quick Start
 

@@ -41,7 +41,6 @@
     "serverless": "^3.36.0",
     "serverless-domain-manager": "^7.0.2",
     "tsx": "^4.7.0",
-    "typescript": "^5.3.3",
-    "wiremock": "^3.3.1"
+    "typescript": "^5.3.3"
   }
 }
