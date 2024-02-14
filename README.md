@@ -66,4 +66,4 @@ This works well enough to meet my low cost deployment goals, though these techni
 * AWS Cognito is used as the default Authorization Server
 * DynamoDB is used to cache JWKS keys and domain specific claims
 * The AWS API Gateway is used as the HTTPS internet entry point
-* CloudWatch is used for immediate storage of API logs, which could then be aggregated, eg to Elasticsearch.
+* CloudWatch is used for immediate storage of API logs
