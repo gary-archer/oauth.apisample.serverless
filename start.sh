@@ -9,24 +9,6 @@
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 #
-# Get the platform
-#
-case "$(uname -s)" in
-
-  Darwin)
-    PLATFORM="MACOS"
- 	;;
-
-  MINGW64*)
-    PLATFORM="WINDOWS"
-	;;
-
-  Linux)
-    PLATFORM="LINUX"
-	;;
-esac
-
-#
 # Install dependencies if needed
 #
 if [ ! -d 'node_modules' ]; then
@@ -56,21 +38,39 @@ if [ $? -ne 0 ]; then
 fi
 
 #
+# Get the platform
+#
+case "$(uname -s)" in
+
+  Darwin)
+    PLATFORM="MACOS"
+ 	;;
+
+  MINGW64*)
+    PLATFORM="WINDOWS"
+	;;
+
+  Linux)
+    PLATFORM="LINUX"
+	;;
+esac
+
+#
 # Run wiremock in a child window, to act as a mock Authorization Server
 #
 echo 'Running Wiremock ...'
 if [ "$PLATFORM" == 'MACOS' ]; then
 
-  open -a Terminal ./run_wiremock.sh
+  open -a Terminal ./test/scripts/run_wiremock.sh
 
 elif [ "$PLATFORM" == 'WINDOWS' ]; then
 
   GIT_BASH="C:\Program Files\Git\git-bash.exe"
-  "$GIT_BASH" -c ./run_wiremock.sh &
+  "$GIT_BASH" -c ./test/scripts/run_wiremock.sh &
 
 elif [ "$PLATFORM" == 'LINUX' ]; then
 
-  gnome-terminal -- ./run_wiremock.sh
+  gnome-terminal -- ./test/scripts/run_wiremock.sh
 fi
 
 #

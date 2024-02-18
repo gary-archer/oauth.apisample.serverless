@@ -7,14 +7,14 @@
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 #
-# Run Wiremock over HTTPS using Docker
+# Use Docker compose where volumes are easier on Windows
 #
-docker run -it --rm \
-  --name wiremock \
-  -p 80:80 \
-  wiremock/wiremock:3.3.1 \
-  --root-dir test/integration \
-  --port 80
+docker compose --project-name wiremock up --force-recreate
+if [ $? -ne 0 ]; then
+  echo 'Problem encountered deploying Wiremock'
+  read -n 1
+  exit 1
+fi
 
 #
 # Prevent automatic terminal closure
