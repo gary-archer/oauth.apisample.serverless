@@ -36,9 +36,8 @@ export class LambdaChildProcess {
         fs.writeFile('test/input.txt', JSON.stringify(lambdaInput, null, 2));
 
         // Run the Serverless API operation and return its output
-        await LambdaChildProcess._runChildProcess(
-            LambdaChildProcess.getServerlessCommand(),
-            ['invoke', 'local', '-f', options.lambdaFunction, '-p', 'test/input.txt']);
+        await LambdaChildProcess._runChildProcess('npx',
+            ['sls', 'invoke', 'local', '-f', options.lambdaFunction, '-p', 'test/input.txt']);
         return await LambdaChildProcess._transformOutput();
     }
 
@@ -108,15 +107,5 @@ export class LambdaChildProcess {
             statusCode: responseData.statusCode,
             body,
         };
-    }
-
-    /*
-     * On Windows we must create a child process via the .cmd executable
-     */
-    private static getServerlessCommand(): string {
-
-        const commandName = (process.platform === 'win32') ? 'sls.cmd' : 'sls';
-        const dirname = process.cwd();
-        return `${dirname}/node_modules/.bin/${commandName}`;
     }
 }
