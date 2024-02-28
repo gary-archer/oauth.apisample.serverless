@@ -15,7 +15,7 @@ export class MockAuthorizationServer {
     private _jwk: GenerateKeyPairResult<KeyLike> | null;
     private _keyId: string;
 
-    public constructor(useProxy = false) {
+    public constructor(useProxy: boolean) {
 
         this._baseUrl = 'http://login.authsamples-dev.com/__admin/mappings';
         this._httpProxy = new HttpProxy(useProxy, 'http://127.0.0.1:8888');
