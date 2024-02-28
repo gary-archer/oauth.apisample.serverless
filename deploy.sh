@@ -5,7 +5,6 @@
 ###################################################
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
-SLS='./node_modules/.bin/sls'
 
 #
 # Copy down the deployed configuration
@@ -36,7 +35,7 @@ fi
 # Do the Serverless packaging
 #
 rm -rf ./.serverless
-"$SLS" package --stage deployed
+npx sls package --stage deployed
 if [ $? -ne 0 ]; then
   echo 'Problem encountered packaging the API'
   exit
@@ -45,7 +44,7 @@ fi
 #
 # Do the Serverless deployment
 #
-"$SLS" deploy --stage deployed --package .serverless --aws-profile default
+npx sls deploy --stage deployed --package .serverless --aws-profile default
 if [ $? -ne 0 ]; then
   echo 'Problem encountered packaging the API'
   exit
