@@ -6,7 +6,7 @@
  
 ## Overview
 
-The Serverless OAuth secured Node.js API code sample, referenced in my blog at https://authguidance.com:
+The Serverless OAuth secured Node.js API code sample:
 
 - The API has a fictional business area of `investments`, but simply returns hard coded data
 - The API's lambda functions validate a JWT access token on every request, in a zero trust manner
@@ -50,9 +50,9 @@ This works well enough to meet my low cost deployment goals, though these techni
 
 ## Further Information
 
-* See the [API Journey - Server Side](https://authguidance.com/api-journey-server-side/) for further information on the desired API behaviour
-* See the [Serverless API Overview](https://authguidance.com/serverless-api-overview) for further details on how the API runs locally
-* See the [Serverless API Deployment](https://authguidance.com/serverless-api-deployment/) post for details on how the API is deployed to the AWS cloud
+* See the [API Journey - Server Side](https://apisandclients.com/posts/api-journey-server-side) for further information on the desired API behaviour
+* See the [Serverless API Overview](https://apisandclients.com/posts/serverless-api-overview) for further details on how the API runs locally
+* See the [Serverless API Deployment](https://apisandclients.com/posts/serverless-api-deployment) post for details on how the API is deployed to the AWS cloud
 
 ## Programming Technologies
 
