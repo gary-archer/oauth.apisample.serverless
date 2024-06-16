@@ -20,7 +20,7 @@ export class CustomHeaderMiddleware implements middy.MiddlewareObj<APIGatewayPro
      */
     public before(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
 
-        const textExceptionHeaderName = 'x-mycompany-test-exception';
+        const textExceptionHeaderName = 'x-authsamples-test-exception';
 
         if (request.event.headers) {
             const apiToBreak = request.event.headers[textExceptionHeaderName];

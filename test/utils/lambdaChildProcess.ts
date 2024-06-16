@@ -18,8 +18,8 @@ export class LambdaChildProcess {
             path: options.apiPath,
             headers: {
                 authorization: `Bearer ${options.accessToken}`,
-                'x-mycompany-api-client': 'ServerlessTest',
-                'x-mycompany-session-id': options.sessionId,
+                'x-authsamples-api-client': 'ServerlessTest',
+                'x-authsamples-session-id': options.sessionId,
             },
         } as any;
 
@@ -30,7 +30,7 @@ export class LambdaChildProcess {
 
         // This custom header allows us to rehearse API 500 exceptions in tests
         if (options.rehearseException) {
-            lambdaInput.headers['x-mycompany-test-exception'] = 'SampleApi';
+            lambdaInput.headers['x-authsamples-test-exception'] = 'SampleApi';
         }
 
         fs.writeFile('test/input.txt', JSON.stringify(lambdaInput, null, 2));
