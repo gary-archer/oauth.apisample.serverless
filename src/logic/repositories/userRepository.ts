@@ -14,12 +14,12 @@ export class UserRepository {
 
         if (managerId === '20116') {
 
-            // These claims are used for the guestadmin@mycompany.com user account
+            // These claims are used for the guestadmin@example.com user account
             return new SampleExtraClaims('Global Manager', ['Europe', 'USA', 'Asia']);
 
         } else if (managerId == '10345') {
 
-            // These claims are used for the guestuser@mycompany.com user account
+            // These claims are used for the guestuser@example.com user account
             return new SampleExtraClaims('Regional Manager', ['USA']);
 
         } else {

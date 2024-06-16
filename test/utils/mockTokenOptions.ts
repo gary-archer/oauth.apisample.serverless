@@ -5,7 +5,7 @@ export class MockTokenOptions {
 
     public issuer = 'https://login.authsamples-dev.com';
 
-    public audience = 'api.mycompany.com';
+    public audience = 'api.authsamples.com';
 
     public scope = 'openid profile https://api.authsamples.com/investments';
 

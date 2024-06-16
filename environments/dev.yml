@@ -5,6 +5,6 @@ settings:
   # Sets event.requestContext.stage to this value
   stage: 'dev'
 
-  # These are dummy values for when running on a development computer, to keep Serverless happy
-  apiHostName: 'api.mycompany.com'
-  certificateDomainName: 'mycompany.com'
+  # These values are not used when running on a development computer but prevent Serverless errors
+  apiHostName: 'api.authsamples.com'
+  certificateDomainName: 'authsamples.com'
