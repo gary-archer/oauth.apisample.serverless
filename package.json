@@ -43,5 +43,10 @@
     "tsx": "^4.15.7",
     "typescript": "^5.5.2",
     "typescript-eslint": "^7.14.1"
+  },
+  "overrides": {
+    "eslint": {
+      "file-entry-cache": "8.x"
+    }
   }
 }
