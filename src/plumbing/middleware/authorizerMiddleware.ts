@@ -6,7 +6,7 @@ import {ClaimsReader} from '../claims/claimsReader.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
 import {ClientError} from '../errors/clientError.js';
 import {LogEntryImpl} from '../logging/logEntryImpl.js';
-import {OAuthAuthorizer} from '../oauth/oauthAuthorizer.js';
+import {OAuthFilter} from '../oauth/oauthFilter.js';
 
 /*
  * A middleware class as the entry point for OAuth authorization
@@ -28,9 +28,9 @@ export class AuthorizerMiddleware implements middy.MiddlewareObj<APIGatewayProxy
         const logEntry = this._container.get<LogEntryImpl>(BASETYPES.LogEntry);
         try {
 
-            // Get the authorizer and call it to do the work and return claims
-            const authorizer =  this._container.get<OAuthAuthorizer>(BASETYPES.OAuthAuthorizer);
-            const claimsPrincipal = await authorizer.execute(request.event);
+            // Get the filter and call it to do the work and return claims
+            const filter =  this._container.get<OAuthFilter>(BASETYPES.OAuthFilter);
+            const claimsPrincipal = await filter.execute(request.event);
 
             // Include identity details in logs as soon as we have them
             logEntry.setIdentity(ClaimsReader.getStringClaim(claimsPrincipal.jwt, 'sub'));

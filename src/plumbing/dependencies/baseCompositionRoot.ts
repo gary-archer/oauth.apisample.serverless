@@ -18,12 +18,13 @@ import {ExceptionMiddleware} from '../middleware/exceptionMiddleware.js';
 import {LoggerMiddleware} from '../middleware/loggerMiddleware.js';
 import {AccessTokenValidator} from '../oauth/accessTokenValidator.js';
 import {JwksRetriever} from '../oauth/jwksRetriever.js';
-import {OAuthAuthorizer} from '../oauth/oauthAuthorizer.js';
+import {OAuthFilter} from '../oauth/oauthFilter.js';
 import {HttpProxy} from '../utilities/httpProxy.js';
 
 /*
  * Register dependencies to manage cross cutting concerns
  */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 export class BaseCompositionRoot {
 
     private readonly _container: Container;
@@ -168,8 +169,8 @@ export class BaseCompositionRoot {
             .to(AccessTokenValidator).inTransientScope();
 
         // Every request does extra work to form a claims principal
-        this._container.bind<OAuthAuthorizer>(BASETYPES.OAuthAuthorizer)
-            .to(OAuthAuthorizer).inTransientScope();
+        this._container.bind<OAuthFilter>(BASETYPES.OAuthFilter)
+            .to(OAuthFilter).inTransientScope();
 
         return this;
     }

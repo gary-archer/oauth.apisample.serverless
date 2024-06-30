@@ -10,5 +10,5 @@ export const BASETYPES = {
     JwksRetriever: Symbol.for('JwksRetriever'),
     LogEntry: Symbol.for('LogEntry'),
     OAuthConfiguration: Symbol.for('OAuthConfiguration'),
-    OAuthAuthorizer: Symbol.for('OAuthAuthorizer'),
+    OAuthFilter: Symbol.for('OAuthFilter'),
 };

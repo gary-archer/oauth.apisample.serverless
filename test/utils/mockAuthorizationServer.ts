@@ -12,7 +12,7 @@ export class MockAuthorizationServer {
     private readonly _baseUrl: string;
     private readonly _httpProxy: HttpProxy;
     private readonly _algorithm: string;
-    private _jwk: GenerateKeyPairResult<KeyLike> | null;
+    private _jwk!: GenerateKeyPairResult<KeyLike>;
     private _keyId: string;
 
     public constructor(useProxy = false) {
@@ -20,7 +20,6 @@ export class MockAuthorizationServer {
         this._baseUrl = 'http://login.authsamples-dev.com/__admin/mappings';
         this._httpProxy = new HttpProxy(useProxy, 'http://127.0.0.1:8888');
         this._algorithm = 'RS256';
-        this._jwk = null;
         this._keyId = Guid.create().toString();
     }
 
@@ -33,7 +32,7 @@ export class MockAuthorizationServer {
         this._jwk = await generateKeyPair(this._algorithm);
 
         // Get the JSON Web Key Set containing the public key
-        const jwk = await exportJWK(this._jwk.publicKey!);
+        const jwk = await exportJWK(this._jwk.publicKey);
         jwk.kid = this._keyId;
         jwk.alg = this._algorithm;
         const keys = {
@@ -74,7 +73,7 @@ export class MockAuthorizationServer {
         options: MockTokenOptions,
         jwk: GenerateKeyPairResult<KeyLike> | null = null): Promise<string> {
 
-        const jwkToUse = jwk || this._jwk!;
+        const jwkToUse = jwk || this._jwk;
         return await new SignJWT( {
             iss: options.issuer,
             aud: options.audience,

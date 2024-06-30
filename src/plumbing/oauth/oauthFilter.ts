@@ -12,7 +12,7 @@ import {BearerToken} from './bearerToken.js';
  * A class to create the claims principal at the start of every secured request
  */
 @injectable()
-export class OAuthAuthorizer {
+export class OAuthFilter {
 
     private readonly _cache: Cache;
     private readonly _accessTokenValidator: AccessTokenValidator;
@@ -50,9 +50,9 @@ export class OAuthAuthorizer {
         extraClaims = await this._extraClaimsProvider.lookupExtraClaims(tokenClaims);
 
         // Cache the extra claims for subsequent requests with the same access token
-        await this._cache.setExtraUserClaims(accessTokenHash, extraClaims!);
+        await this._cache.setExtraUserClaims(accessTokenHash, extraClaims);
 
         // Return the final claims
-        return new ClaimsPrincipal(tokenClaims, extraClaims!);
+        return new ClaimsPrincipal(tokenClaims, extraClaims);
     }
 }
