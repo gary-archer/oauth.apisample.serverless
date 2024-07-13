@@ -6,7 +6,7 @@ import {BASETYPES} from '../dependencies/baseTypes.js';
 import {BaseErrorCodes} from '../errors/baseErrorCodes.js';
 import {ErrorFactory} from '../errors/errorFactory.js';
 import {ErrorUtils} from '../errors/errorUtils.js';
-import {JwksRetriever} from './jwksRetriever';
+import {JwksRetriever} from './jwksRetriever.js';
 import {LogEntry} from '../logging/logEntry.js';
 import {using} from '../utilities/using.js';
 
