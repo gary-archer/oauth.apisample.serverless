@@ -9,6 +9,7 @@
     "node": ">=20"
   },
   "scripts": {
+    "login": "sls login",
     "lint": "npx eslint . --ignore-pattern dist",
     "build": "rm -rf dist && tsc",
     "buildRelease": "rm -rf dist && tsc --sourceMap false",
@@ -38,7 +39,7 @@
     "eslint": "^8.57.0",
     "http-proxy-agent": "^7.0.2",
     "mocha": "^10.5.2",
-    "serverless": "^3.39.0",
+    "serverless": "^4.1.15",
     "serverless-domain-manager": "^7.3.8",
     "tsx": "^4.15.7",
     "typescript": "^5.5.2",
@@ -47,6 +48,9 @@
   "overrides": {
     "eslint": {
       "file-entry-cache": "8.x"
+    },
+    "serverless-domain-manager": {
+      "serverless": "^4.1.15"
     }
   }
 }
