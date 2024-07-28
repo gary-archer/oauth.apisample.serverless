@@ -93,11 +93,24 @@ export class LambdaChildProcess {
 
         const lambdaOutput = await fs.readFile('test/output.txt', 'utf8');
 
-        // Read the response file up to the '}' line, since Serverless sometimes adds other messages after this
+        // Read the response file between the '{' and '}' lines, since Serverless adds other annoying messages
         let responseJson = '';
+        let include = false;
         lambdaOutput.split(/\r?\n/).every(line =>  {
-            responseJson += line + '\n';
-            return line === '}' ? false : true;
+
+            if (line === '{') {
+                include = true;
+            }
+
+            if (include) {
+                responseJson += line + '\n';
+            }
+
+            if (line === '}') {
+                include = false;
+            }
+
+            return true;
         });
 
         // Return an object based response, which requires double deserialization to get the body
