@@ -10,7 +10,6 @@ export class NullCache implements Cache {
     public async setJwksKeys(keys: any): Promise<void> {
     }
 
-    /* eslint-disable @typescript-eslint/no-unused-vars */
     public async getJwksKeys(): Promise<any> {
         return null;
     }

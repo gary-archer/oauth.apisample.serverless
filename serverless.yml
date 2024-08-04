@@ -1,11 +1,10 @@
 service: serverlessapi
 
-# Base details for AWS deployment
+# AWS deployment details
 provider:
   name: aws
   runtime: nodejs20.x
   region: eu-west-2
-  stage: ${self:custom.config.settings.stage}
   apiGateway:
     shouldStartNameWithService: true
 
@@ -25,16 +24,12 @@ provider:
         Resource:
           - "Fn::GetAtt": [ CacheTable, Arn ]
 
+# Serverless domain manager details
 custom:
-  # Each environment can have its own configuration file
-  config: ${file(environments/${opt:stage, 'dev'}.yml)}
-  
-  # API gateway domain details
   customDomain:
-    domainName: ${self:custom.config.settings.apiHostName}
-    certificateName: '*.${self:custom.config.settings.certificateDomainName}'
+    domainName: 'api.authsamples.com'
+    certificateName: 'authsamples.com'
     basePath: investments
-    stage: ${self:custom.config.settings.stage}
     endpointType: regional
 
 # Lambda functions that receives a JWT access token

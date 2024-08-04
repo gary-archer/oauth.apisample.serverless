@@ -37,7 +37,18 @@ export class LambdaChildProcess {
 
         // Run the Serverless API operation and return its output
         await LambdaChildProcess._runChildProcess('npx',
-            ['sls', 'invoke', 'local', '-f', options.lambdaFunction, '-p', 'test/input.txt']);
+            [
+                'sls',
+                'invoke',
+                'local',
+                '-f',
+                options.lambdaFunction,
+                '-p',
+                'test/input.txt',
+                '--stage',
+                'dev',
+            ]
+        );
         return await LambdaChildProcess._transformOutput();
     }
 
