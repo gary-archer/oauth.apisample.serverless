@@ -1,0 +1,114 @@
+service: serverlessapi
+
+# AWS deployment details
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: eu-west-2
+  apiGateway:
+    shouldStartNameWithService: true
+
+  # Grant lambdas access to the DynamoDB cache table
+  iam:
+    role:
+      statements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DescribeTable
+          - dynamodb:Query
+          - dynamodb:Scan
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+        Resource:
+          - "Fn::GetAtt": [ CacheTable, Arn ]
+
+# Serverless domain manager details
+custom:
+  customDomain:
+    domainName: 'api.authsamples.com'
+    certificateName: 'authsamples.com'
+    basePath: investments
+    endpointType: regional
+
+# Lambda functions that receives a JWT access token
+functions:
+  
+  getUserInfo:
+    handler: dist/host/lambda/getUserInfo.handler
+    events:
+      - http: 
+          path: /userinfo
+          method: get
+
+  getCompanyList:
+    handler: dist/host/lambda/getCompanyList.handler
+    events:
+      - http: 
+          path: /companies
+          method: get
+
+  getCompanyTransactions:
+    handler: dist/host/lambda/getCompanyTransactions.handler
+    events:
+      - http: 
+          path: /companies/{id}/transactions
+          method: get
+          request: 
+            parameters: 
+              paths: 
+                id: true
+
+# By default all files are included so remove files we don't need for any lambda
+package:
+  patterns:
+  - '!.codacy.yaml'
+  - '!.eslintrc'
+  - '!.mocharc.json'
+  - '!.vscode/**'
+  - '!environments/**'
+  - '!src/**'
+  - '!doc/**'
+  - '!test/**'
+  - '!ts*.json'
+  - '!package-lock.json'
+  - '!README.md'
+  - '!LICENSE.txt'
+  - '!*.sh'
+
+plugins:
+  - serverless-domain-manager
+
+resources:
+  Resources:
+
+    # Use DynamoDB as a cache for both JWKS keys and extra claims
+    CacheTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: OAUTH_CACHE
+        AttributeDefinitions:
+          - AttributeName: CACHE_KEY
+            AttributeType: S
+        KeySchema:
+          - AttributeName: CACHE_KEY
+            KeyType: HASH
+        TimeToLiveSpecification:
+          AttributeName: TTL_VALUE
+          Enabled: true
+        BillingMode: PAY_PER_REQUEST
+
+    # Limit cloudwatch log retention 
+    getUserInfoLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'
+    GetCompanyListLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'
+    GetCompanyTransactionsLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'

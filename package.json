@@ -1,0 +1,53 @@
+{
+  "name": "sampleapi",
+  "version": "3.0.0",
+  "description": "An OAuth secured API using AWS Serverless Hosting and Lambda Functions",
+  "author": "Gary Archer",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "login": "sls login",
+    "lint": "npx eslint . --ignore-pattern dist",
+    "build": "rm -rf dist && tsc",
+    "buildRelease": "rm -rf dist && tsc --sourceMap false",
+    "start": "./start.sh",
+    "test": "./start.sh",
+    "deploy": "./deploy.sh",
+    "remove": "sls remove --stage deployed"
+  },
+  "dependencies": {
+    "@middy/core": "^5.4.2",
+    "axios": "^1.7.4",
+    "fs-extra": "^11.2.0",
+    "guid-typescript": "^1.0.9",
+    "inversify": "^6.0.1",
+    "jose": "^5.6.3",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.301.0",
+    "@eslint/js": "^9.8.0",
+    "@types/aws-lambda": "^8.10.119",
+    "@types/eslint__js": "^8.42.3",
+    "@types/fs-extra": "^11.0.1",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.16.19",
+    "child-process": "^1.0.2",
+    "eslint": "^9.8.0",
+    "http-proxy-agent": "^7.0.2",
+    "mocha": "^10.7.3",
+    "serverless": "^4.1.22",
+    "serverless-domain-manager": "^7.3.8",
+    "tsx": "^4.17.0",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.0.0"
+  },
+  "overrides": {
+    "serverless-domain-manager": {
+      "serverless": "^4.1.22"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+services:
+  
+  #
+  # Spin up an instance of Wiremock to hsot a JWKS URI for testing
+  #
+  wiremock:
+    image: wiremock/wiremock:latest
+    ports:
+      - 80:80
+    environment:
+      WIREMOCK_OPTIONS: >
+        --root-dir test/integration
+        --port 80
