@@ -39,15 +39,10 @@
     "eslint": "^9.8.0",
     "http-proxy-agent": "^7.0.2",
     "mocha": "^10.7.3",
-    "serverless": "^4.1.22",
-    "serverless-domain-manager": "^7.3.8",
-    "tsx": "^4.17.0",
+    "serverless": "^4.2.5",
+    "serverless-domain-manager": "^7.4.0",
+    "tsx": "^4.19.0",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.0.0"
-  },
-  "overrides": {
-    "serverless-domain-manager": {
-      "serverless": "^4.1.22"
-    }
   }
 }
