@@ -32,7 +32,7 @@ export class LogEntryData {
     public resourceId: string;
 
     // The calling application name
-    public clientApplicationName: string;
+    public clientName: string;
 
     // The subject claim from the OAuth 2.0 access token
     public userId: string;
@@ -81,7 +81,7 @@ export class LogEntryData {
         this.method = '';
         this.path = '';
         this.resourceId = '';
-        this.clientApplicationName = '';
+        this.clientName = '';
         this.userId = '';
         this.statusCode = 200;
         this.errorCode = '';
@@ -119,7 +119,7 @@ export class LogEntryData {
         this._outputString((x) => output.method = x, this.method);
         this._outputString((x) => output.path = x, this.path);
         this._outputString((x) => output.resourceId = x, this.resourceId);
-        this._outputString((x) => output.clientApplicationName = x, this.clientApplicationName);
+        this._outputString((x) => output.clientName = x, this.clientName);
         this._outputString((x) => output.userId = x, this.userId);
         this._outputNumber((x) => output.statusCode = x, this.statusCode);
         this._outputString((x) => output.errorCode = x, this.errorCode);

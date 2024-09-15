@@ -44,9 +44,9 @@ export class LogEntryImpl implements LogEntry {
         this._calculateRequestLocationFields(event);
 
         // Our callers can supply a custom header so that we can keep track of who is calling each API
-        const clientApplicationName = this._getHeader(event, 'x-authsamples-api-client');
-        if (clientApplicationName) {
-            this._data.clientApplicationName = clientApplicationName;
+        const clientName = this._getHeader(event, 'x-authsamples-api-client');
+        if (clientName) {
+            this._data.clientName = clientName;
         }
 
         // Log an optional session id if supplied

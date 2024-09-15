@@ -1,5 +1,5 @@
 {
-  "name": "sampleapi",
+  "name": "finalapi",
   "version": "3.0.0",
   "description": "An OAuth secured API using AWS Serverless Hosting and Lambda Functions",
   "author": "Gary Archer",
