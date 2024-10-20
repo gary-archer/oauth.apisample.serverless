@@ -1,7 +1,7 @@
 
 import axios, {AxiosRequestConfig} from 'axios';
 import {inject, injectable} from 'inversify';
-import {FlattenedJWSInput, importJWK, JWK, JWSHeaderParameters, KeyLike} from 'jose';
+import {FlattenedJWSInput, importJWK, JWK, JoseHeaderParameters, KeyLike} from 'jose';
 import {Cache} from '../cache/cache.js';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
@@ -36,7 +36,7 @@ export class JwksRetriever {
      */
     /* eslint-disable @typescript-eslint/no-unused-vars */
     public async getKey(
-        protectedHeader: JWSHeaderParameters,
+        protectedHeader: JoseHeaderParameters,
         token: FlattenedJWSInput): Promise<Uint8Array | KeyLike> {
 
         try {
@@ -53,7 +53,7 @@ export class JwksRetriever {
             const keys = data.keys as JWK[];
 
             // Then replace keys in the cache and return the result
-            const foundKey = keys.find((k: JWSHeaderParameters) => k.kid === protectedHeader.kid);
+            const foundKey = keys.find((k: JoseHeaderParameters) => k.kid === protectedHeader.kid);
             if (foundKey) {
 
                 // Then replace JWKS keys in the cache, which will only occur rarely
