@@ -45,8 +45,8 @@ This works well enough to meet my low cost deployment goals, though these techni
 
 ## Further Information
 
-* See the [API Journey - Server Side](https://apisandclients.com/posts/api-journey-server-side) for further information on the API's desired behaviour.
-* See the [Serverless API Overview](https://apisandclients.com/posts/serverless-api-overview) for further details on the API development and deployment details.
+* See the [API Journey - Server Side](https://github.com/gary-archer/oauth.blog/tree/master/public/posts/api-journey-server-side.mdx) for further information on the API's desired behaviour.
+* See the [Serverless API Overview](https://github.com/gary-archer/oauth.blog/tree/master/public/posts/serverless-api-overview.mdx) for further details on the API development and deployment details.
 
 ## Programming Languages
 
