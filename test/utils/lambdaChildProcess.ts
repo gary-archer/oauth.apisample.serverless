@@ -36,7 +36,7 @@ export class LambdaChildProcess {
         fs.writeFile('test/input.txt', JSON.stringify(lambdaInput, null, 2));
 
         // Run the Serverless API operation and return its output
-        await LambdaChildProcess._runChildProcess('npx',
+        await LambdaChildProcess.runChildProcess('npx',
             [
                 'sls',
                 'invoke',
@@ -49,14 +49,14 @@ export class LambdaChildProcess {
                 'dev',
             ]
         );
-        return await LambdaChildProcess._transformOutput();
+        return await LambdaChildProcess.transformOutput();
     }
 
     /*
      * Do the child process work
      * https://github.com/ralphtheninja/await-spawn
      */
-    private static async _runChildProcess(command: string, args: string[]): Promise<void> {
+    private static async runChildProcess(command: string, args: string[]): Promise<void> {
 
         return new Promise((resolve, reject) => {
 
@@ -100,7 +100,7 @@ export class LambdaChildProcess {
     /*
      * Reliably transform the child process output into a response object
      */
-    private static async _transformOutput(): Promise<any> {
+    private static async transformOutput(): Promise<any> {
 
         const lambdaOutput = await fs.readFile('test/output.txt', 'utf8');
 

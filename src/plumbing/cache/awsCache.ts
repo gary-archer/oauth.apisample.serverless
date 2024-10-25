@@ -16,17 +16,17 @@ import {Cache} from './cache.js';
  */
 export class AwsCache implements Cache {
 
-    private readonly _configuration: CacheConfiguration;
-    private readonly _extraClaimsProvider: ExtraClaimsProvider;
-    private readonly _database: DynamoDBClient;
+    private readonly configuration: CacheConfiguration;
+    private readonly extraClaimsProvider: ExtraClaimsProvider;
+    private readonly database: DynamoDBClient;
 
     public constructor(configuration: CacheConfiguration, extraClaimsProvider: ExtraClaimsProvider) {
 
         try {
 
-            this._configuration = configuration;
-            this._extraClaimsProvider = extraClaimsProvider;
-            this._database = new DynamoDBClient({region: configuration.region});
+            this.configuration = configuration;
+            this.extraClaimsProvider = extraClaimsProvider;
+            this.database = new DynamoDBClient({region: configuration.region});
 
         } catch (e) {
 
@@ -41,15 +41,15 @@ export class AwsCache implements Cache {
     public async setJwksKeys(jwksText: string): Promise<void> {
 
         const params = {
-            TableName: this._configuration.tableName,
+            TableName: this.configuration.tableName,
             Item: {
                 'CACHE_KEY' : {S: 'JWKS'},
                 'CACHE_VALUE' : {S: jwksText},
-                'TTL_VALUE': {N: `${this._getExpiry()}`},
+                'TTL_VALUE': {N: `${this.getExpiry()}`},
             }
         };
 
-        await this._putItem(params);
+        await this.putItem(params);
     }
 
     /*
@@ -58,14 +58,14 @@ export class AwsCache implements Cache {
     public async getJwksKeys(): Promise<any> {
 
         const params = {
-            TableName: this._configuration.tableName,
+            TableName: this.configuration.tableName,
             Key: {
                 'CACHE_KEY': {S: 'JWKS'},
             },
             ProjectionExpression: 'CACHE_VALUE'
         };
 
-        const data = await this._getItem(params);
+        const data = await this.getItem(params);
         if (data && data.Item) {
             return data.Item['CACHE_VALUE'].S;
         }
@@ -83,16 +83,16 @@ export class AwsCache implements Cache {
 
         // Form the DynamoDB command
         const params = {
-            TableName: this._configuration.tableName,
+            TableName: this.configuration.tableName,
             Item: {
                 'CACHE_KEY' : {S: accessTokenHash},
                 'CACHE_VALUE' : {S: JSON.stringify(dataAsJson)},
-                'TTL_VALUE': {N: `${this._getExpiry()}`},
+                'TTL_VALUE': {N: `${this.getExpiry()}`},
             }
         };
 
         // Write the data
-        await this._putItem(params);
+        await this.putItem(params);
     }
 
     /*
@@ -102,7 +102,7 @@ export class AwsCache implements Cache {
 
         // Form the DynamoDB command
         const params = {
-            TableName: this._configuration.tableName,
+            TableName: this.configuration.tableName,
             Key: {
                 'CACHE_KEY': {S: accessTokenHash},
             },
@@ -110,14 +110,14 @@ export class AwsCache implements Cache {
         };
 
         // Read the data
-        const data = await this._getItem(params);
+        const data = await this.getItem(params);
         if (data && data.Item) {
 
             const claimsText = data.Item['CACHE_VALUE'].S;
             const dataAsJson = JSON.parse(claimsText);
 
             // Get the data in way that handles private property names
-            return this._extraClaimsProvider.deserializeFromCache(dataAsJson);
+            return this.extraClaimsProvider.deserializeFromCache(dataAsJson);
         }
 
         return null;
@@ -126,12 +126,12 @@ export class AwsCache implements Cache {
     /*
      * Handle the put call and capture error causes
      */
-    private async _putItem(params: PutItemInput): Promise<void> {
+    private async putItem(params: PutItemInput): Promise<void> {
 
         try {
 
             const command = new PutItemCommand(params);
-            await this._database.send(command);
+            await this.database.send(command);
 
         } catch (e: any) {
 
@@ -142,12 +142,12 @@ export class AwsCache implements Cache {
     /*
      * Handle the get call and capture error causes
      */
-    private async _getItem(params: GetItemInput): Promise<any> {
+    private async getItem(params: GetItemInput): Promise<any> {
 
         try {
 
             const command = new GetItemCommand(params);
-            await this._database.send(command);
+            await this.database.send(command);
 
         } catch (e: any) {
 
@@ -158,9 +158,9 @@ export class AwsCache implements Cache {
     /*
      * Extra claims are cached for 30 minutes after the current UTC time
      */
-    private _getExpiry(): number {
+    private getExpiry(): number {
 
         const currentUtcTimeInEpochSeconds = Math.floor(new Date().getTime() / 1000);
-        return currentUtcTimeInEpochSeconds + this._configuration.claimsCacheTimeToLiveMinutes * 60;
+        return currentUtcTimeInEpochSeconds + this.configuration.claimsCacheTimeToLiveMinutes * 60;
     }
 }

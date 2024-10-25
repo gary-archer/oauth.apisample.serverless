@@ -16,18 +16,18 @@ import {using} from '../utilities/using.js';
 @injectable()
 export class AccessTokenValidator {
 
-    private readonly _configuration: OAuthConfiguration;
-    private readonly _logEntry: LogEntry;
-    private readonly _jwksRetriever: JwksRetriever;
+    private readonly configuration: OAuthConfiguration;
+    private readonly logEntry: LogEntry;
+    private readonly jwksRetriever: JwksRetriever;
 
     public constructor(
         @inject(BASETYPES.OAuthConfiguration) configuration: OAuthConfiguration,
         @inject(BASETYPES.LogEntry) logEntry: LogEntry,
         @inject(BASETYPES.JwksRetriever) jwksRetriever: JwksRetriever) {
 
-        this._configuration = configuration;
-        this._logEntry = logEntry;
-        this._jwksRetriever = jwksRetriever;
+        this.configuration = configuration;
+        this.logEntry = logEntry;
+        this.jwksRetriever = jwksRetriever;
     }
 
     /*
@@ -35,30 +35,30 @@ export class AccessTokenValidator {
      */
     public async execute(accessToken: string): Promise<JWTPayload> {
 
-        return using(this._logEntry.createPerformanceBreakdown('tokenValidator'), async () => {
+        return using(this.logEntry.createPerformanceBreakdown('tokenValidator'), async () => {
 
             const options = {
-                algorithms: [this._configuration.algorithm],
-                issuer: this._configuration.issuer,
+                algorithms: [this.configuration.algorithm],
+                issuer: this.configuration.issuer,
             } as JWTVerifyOptions;
 
             // Allow for AWS Cognito, which does not include an audience claim in access tokens
-            if (this._configuration.audience) {
-                options.audience = this._configuration.audience;
+            if (this.configuration.audience) {
+                options.audience = this.configuration.audience;
             }
 
             // Validate the token and get its claims
             let claims: JWTPayload;
             try {
 
-                const result = await jwtVerify(accessToken, this._jwksRetriever.getKey, options);
+                const result = await jwtVerify(accessToken, this.jwksRetriever.getKey, options);
                 claims = result.payload;
 
             } catch (e: any) {
 
                 // JWKS URI connection failures return a 500
                 if (e.code === 'ERR_JOSE_GENERIC' || e.code === 'UNABLE_TO_VERIFY_LEAF_SIGNATURE') {
-                    throw ErrorUtils.fromSigningKeyDownloadError(e, this._configuration.jwksEndpoint);
+                    throw ErrorUtils.fromSigningKeyDownloadError(e, this.configuration.jwksEndpoint);
                 }
 
                 // Otherwise return a 401 error, such as when a JWT with an invalid 'kid' value is supplied
@@ -72,7 +72,7 @@ export class AccessTokenValidator {
 
             // The sample API requires the same scope for all endpoints, and it is enforced here
             const scopes = ClaimsReader.getStringClaim(claims, 'scope').split(' ');
-            if (scopes.indexOf(this._configuration.scope) === -1) {
+            if (scopes.indexOf(this.configuration.scope) === -1) {
 
                 throw ErrorFactory.createClientError(
                     403,

@@ -8,11 +8,11 @@ import {ErrorFactory} from '../errors/errorFactory.js';
  */
 export class CustomHeaderMiddleware implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
 
-    private readonly _apiName: string;
+    private readonly apiName: string;
 
     public constructor(apiName: string) {
-        this._apiName = apiName;
-        this._setupCallbacks();
+        this.apiName = apiName;
+        this.setupCallbacks();
     }
 
     /*
@@ -25,7 +25,7 @@ export class CustomHeaderMiddleware implements middy.MiddlewareObj<APIGatewayPro
         if (request.event.headers) {
             const apiToBreak = request.event.headers[textExceptionHeaderName];
             if (apiToBreak) {
-                if (apiToBreak.toLowerCase() === this._apiName.toLowerCase()) {
+                if (apiToBreak.toLowerCase() === this.apiName.toLowerCase()) {
                     throw ErrorFactory.createServerError(
                         BaseErrorCodes.exceptionSimulation,
                         'An exception was simulated in the API');
@@ -37,7 +37,7 @@ export class CustomHeaderMiddleware implements middy.MiddlewareObj<APIGatewayPro
     /*
      * Plumbing to ensure that the this parameter is available in async callbacks
      */
-    private _setupCallbacks(): void {
+    private setupCallbacks(): void {
         this.before = this.before.bind(this);
     }
 }

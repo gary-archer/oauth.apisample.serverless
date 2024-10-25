@@ -10,13 +10,13 @@ import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl.js';
  */
 export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
 
-    private readonly _container: Container;
-    private readonly _loggerFactory: LoggerFactoryImpl;
+    private readonly container: Container;
+    private readonly loggerFactory: LoggerFactoryImpl;
 
     public constructor(container: Container, loggerFactory: LoggerFactoryImpl) {
-        this._container = container;
-        this._loggerFactory = loggerFactory;
-        this._setupCallbacks();
+        this.container = container;
+        this.loggerFactory = loggerFactory;
+        this.setupCallbacks();
     }
 
     /*
@@ -25,10 +25,10 @@ export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEven
     public before(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
 
         // Create the log entry for the current request
-        const logEntry = this._loggerFactory.createLogEntry();
+        const logEntry = this.loggerFactory.createLogEntry();
 
         // Bind it to the container
-        this._container.rebind<LogEntryImpl>(BASETYPES.LogEntry).toConstantValue(logEntry);
+        this.container.rebind<LogEntryImpl>(BASETYPES.LogEntry).toConstantValue(logEntry);
 
         // Start request logging
         logEntry.start(request.event, request.context);
@@ -40,7 +40,7 @@ export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEven
     public after(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
 
         // Get the log entry
-        const logEntry = this._container.get<LogEntryImpl>(BASETYPES.LogEntry);
+        const logEntry = this.container.get<LogEntryImpl>(BASETYPES.LogEntry);
 
         // End logging
         if (request.response && request.response.statusCode) {
@@ -53,7 +53,7 @@ export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEven
     /*
      * Plumbing to ensure that the this parameter is available in async callbacks
      */
-    private _setupCallbacks(): void {
+    private setupCallbacks(): void {
         this.before = this.before.bind(this);
         this.after = this.after.bind(this);
     }

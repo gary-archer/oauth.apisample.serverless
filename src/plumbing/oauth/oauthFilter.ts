@@ -14,18 +14,18 @@ import {BearerToken} from './bearerToken.js';
 @injectable()
 export class OAuthFilter {
 
-    private readonly _cache: Cache;
-    private readonly _accessTokenValidator: AccessTokenValidator;
-    private readonly _extraClaimsProvider: ExtraClaimsProvider;
+    private readonly cache: Cache;
+    private readonly accessTokenValidator: AccessTokenValidator;
+    private readonly extraClaimsProvider: ExtraClaimsProvider;
 
     public constructor(
         @inject(BASETYPES.Cache) cache: Cache,
         @inject(BASETYPES.AccessTokenValidator) accessTokenValidator: AccessTokenValidator,
         @inject(BASETYPES.ExtraClaimsProvider) extraClaimsProvider: ExtraClaimsProvider) {
 
-        this._cache = cache;
-        this._accessTokenValidator = accessTokenValidator;
-        this._extraClaimsProvider = extraClaimsProvider;
+        this.cache = cache;
+        this.accessTokenValidator = accessTokenValidator;
+        this.extraClaimsProvider = extraClaimsProvider;
     }
 
     /*
@@ -37,20 +37,20 @@ export class OAuthFilter {
         const accessToken = BearerToken.read(event);
 
         // On every lambda HTTP request we validate the JWT, in a zero trust manner
-        const tokenClaims = await this._accessTokenValidator.execute(accessToken);
+        const tokenClaims = await this.accessTokenValidator.execute(accessToken);
 
         // If cached results already exist for this token then return them immediately
         const accessTokenHash = createHash('sha256').update(accessToken).digest('hex');
-        let extraClaims = await this._cache.getExtraUserClaims(accessTokenHash);
+        let extraClaims = await this.cache.getExtraUserClaims(accessTokenHash);
         if (extraClaims) {
             return new ClaimsPrincipal(tokenClaims, extraClaims);
         }
 
         // Look up extra claims not in the JWT access token when it is first received
-        extraClaims = await this._extraClaimsProvider.lookupExtraClaims(tokenClaims);
+        extraClaims = await this.extraClaimsProvider.lookupExtraClaims(tokenClaims);
 
         // Cache the extra claims for subsequent requests with the same access token
-        await this._cache.setExtraUserClaims(accessTokenHash, extraClaims);
+        await this.cache.setExtraUserClaims(accessTokenHash, extraClaims);
 
         // Return the final claims
         return new ClaimsPrincipal(tokenClaims, extraClaims);

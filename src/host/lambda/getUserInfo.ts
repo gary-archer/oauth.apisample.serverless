@@ -18,8 +18,8 @@ const baseHandler = async (): Promise<APIGatewayProxyResult> => {
     const claims = container.get<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal);
     const extraClaims = claims.extra as SampleExtraClaims;
     const userInfo = {
-        title: extraClaims.title,
-        regions: extraClaims.regions,
+        title: extraClaims.getTitle(),
+        regions: extraClaims.getRegions(),
     };
 
     return ResponseWriter.successResponse(200, userInfo);

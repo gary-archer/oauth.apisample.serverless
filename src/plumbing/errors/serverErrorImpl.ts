@@ -12,11 +12,11 @@ const MAX_ERROR_ID = 99999;
 export class ServerErrorImpl extends ServerError {
 
     // Standard exception properties to log
-    private readonly _statusCode: number;
-    private readonly _errorCode: string;
-    private readonly _instanceId: number;
-    private readonly _utcTime: string;
-    private _details: any;
+    private readonly statusCode: number;
+    private readonly errorCode: string;
+    private readonly instanceId: number;
+    private readonly utcTime: string;
+    private details: any;
 
     /*
      * Construct an error from known fields
@@ -26,11 +26,11 @@ export class ServerErrorImpl extends ServerError {
         super(userMessage);
 
         // Give fields their default values
-        this._statusCode = 500;
-        this._errorCode = errorCode;
-        this._instanceId = Math.floor(Math.random() * (MAX_ERROR_ID - MIN_ERROR_ID + 1) + MIN_ERROR_ID);
-        this._utcTime = new Date().toISOString();
-        this._details = '';
+        this.statusCode = 500;
+        this.errorCode = errorCode;
+        this.instanceId = Math.floor(Math.random() * (MAX_ERROR_ID - MIN_ERROR_ID + 1) + MIN_ERROR_ID);
+        this.utcTime = new Date().toISOString();
+        this.details = '';
 
         // Record the stack trace of the original error
         if (stack) {
@@ -42,19 +42,19 @@ export class ServerErrorImpl extends ServerError {
     }
 
     public getErrorCode(): string {
-        return this._errorCode;
+        return this.errorCode;
     }
 
     public getInstanceId(): number {
-        return this._instanceId;
+        return this.instanceId;
     }
 
     public getDetails(): any {
-        return this._details;
+        return this.details;
     }
 
     public setDetails(details: any): void {
-        this._details = details;
+        this.details = details;
     }
 
     /*
@@ -63,7 +63,7 @@ export class ServerErrorImpl extends ServerError {
     public toLogFormat(apiName: string): any {
 
         const serviceError: any = {
-            details: this._details,
+            details: this.details,
         };
 
         // Include the stack trace as an array within the JSON object
@@ -79,7 +79,7 @@ export class ServerErrorImpl extends ServerError {
         }
 
         return {
-            statusCode: this._statusCode,
+            statusCode: this.statusCode,
             clientError: this.toClientError(apiName).toResponseFormat(),
             serviceError,
         };
@@ -91,10 +91,10 @@ export class ServerErrorImpl extends ServerError {
     public toClientError(apiName: string): ClientError {
 
         // Return the error code to the client
-        const error = ErrorFactory.createClientError(this._statusCode, this._errorCode, this.message);
+        const error = ErrorFactory.createClientError(this.statusCode, this.errorCode, this.message);
 
         // Also indicate which API, where in logs and when the error occurred
-        error.setExceptionDetails(apiName, this._instanceId, this._utcTime);
+        error.setExceptionDetails(apiName, this.instanceId, this.utcTime);
         return error;
     }
 }

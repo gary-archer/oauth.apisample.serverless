@@ -8,19 +8,19 @@ import {ExtraClaims} from './extraClaims.js';
 @injectable()
 export class ClaimsPrincipal {
 
-    private _jwtClaims: JWTPayload;
-    private _extraClaims: ExtraClaims;
+    private readonly jwtClaims: JWTPayload;
+    private readonly extraClaims: ExtraClaims;
 
     public constructor(jwtClaims: JWTPayload, extraClaims: ExtraClaims) {
-        this._jwtClaims = jwtClaims;
-        this._extraClaims = extraClaims;
+        this.jwtClaims = jwtClaims;
+        this.extraClaims = extraClaims;
     }
 
     public get jwt(): JWTPayload {
-        return this._jwtClaims;
+        return this.jwtClaims;
     }
 
     public get extra(): ExtraClaims {
-        return this._extraClaims;
+        return this.extraClaims;
     }
 }

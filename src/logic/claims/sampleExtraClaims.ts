@@ -5,8 +5,8 @@ import {ExtraClaims} from '../../plumbing/claims/extraClaims.js';
  */
 export class SampleExtraClaims extends ExtraClaims {
 
-    private readonly _title: string;
-    private readonly _regions: string[];
+    private readonly title: string;
+    private readonly regions: string[];
 
     public static importData(data: any): SampleExtraClaims {
         return new SampleExtraClaims(data.title, data.regions);
@@ -14,23 +14,23 @@ export class SampleExtraClaims extends ExtraClaims {
 
     public constructor(title: string, regions: string[]) {
         super();
-        this._title = title;
-        this._regions = regions;
+        this.title = title;
+        this.regions = regions;
     }
 
-    public get title(): string {
-        return this._title;
+    public getTitle(): string {
+        return this.title;
     }
 
-    public get regions(): string[] {
-        return this._regions;
+    public getRegions(): string[] {
+        return this.regions;
     }
 
     public exportData(): any {
 
         return {
-            title: this._title,
-            regions: this._regions,
+            title: this.title,
+            regions: this.regions,
         };
     }
 }

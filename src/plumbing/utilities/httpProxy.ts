@@ -3,18 +3,18 @@
  */
 export class HttpProxy {
 
-    private readonly _useProxy: boolean;
-    private readonly _proxyUrl: string;
-    private _agent: any;
+    private readonly useProxy: boolean;
+    private readonly proxyUrl: string;
+    private agent: any;
 
     /*
      * Create an HTTP agent to route requests to
      */
     public constructor(useProxy: boolean, proxyUrl: string) {
 
-        this._useProxy = useProxy;
-        this._proxyUrl = proxyUrl;
-        this._agent = null;
+        this.useProxy = useProxy;
+        this.proxyUrl = proxyUrl;
+        this.agent = null;
     }
 
     /*
@@ -22,17 +22,17 @@ export class HttpProxy {
      */
     public async initialize(): Promise<void> {
 
-        if (this._useProxy) {
+        if (this.useProxy) {
 
             const module = await import('http-proxy-agent');
-            this._agent = new module.HttpProxyAgent(this._proxyUrl);
+            this.agent = new module.HttpProxyAgent(this.proxyUrl);
         }
     }
 
     /*
      * Return the agent to other parts of the app
      */
-    public get agent(): any {
-        return this._agent;
+    public getAgent(): any {
+        return this.agent;
     }
 }

@@ -9,14 +9,14 @@ import {LoggerFactory} from './loggerFactory.js';
  */
 export class LoggerFactoryImpl implements LoggerFactory {
 
-    private _apiName: string;
-    private _prettyPrint: boolean;
-    private _performanceThresholdMilliseconds: number;
+    private apiName: string;
+    private prettyPrint: boolean;
+    private performanceThresholdMilliseconds: number;
 
     public constructor() {
-        this._apiName = 'api';
-        this._prettyPrint = false;
-        this._performanceThresholdMilliseconds = 1000;
+        this.apiName = 'api';
+        this.prettyPrint = false;
+        this.performanceThresholdMilliseconds = 1000;
     }
 
     /*
@@ -24,16 +24,16 @@ export class LoggerFactoryImpl implements LoggerFactory {
      */
     public configure(configuration: LoggingConfiguration): void {
 
-        this._apiName = configuration.apiName;
-        this._prettyPrint = configuration.prettyPrint;
-        this._performanceThresholdMilliseconds = configuration.performanceThresholdMilliseconds;
+        this.apiName = configuration.apiName;
+        this.prettyPrint = configuration.prettyPrint;
+        this.performanceThresholdMilliseconds = configuration.performanceThresholdMilliseconds;
     }
 
     /*
      * Create the log entry and return it to the framework
      */
     public createLogEntry(): LogEntryImpl {
-        return new LogEntryImpl(this._apiName, this._prettyPrint, this._performanceThresholdMilliseconds);
+        return new LogEntryImpl(this.apiName, this.prettyPrint, this.performanceThresholdMilliseconds);
     }
 
     /*
@@ -46,6 +46,6 @@ export class LoggerFactoryImpl implements LoggerFactory {
         logEntry.setOperationName('startup');
         logEntry.setServerError(error);
         logEntry.write();
-        return error.toClientError(this._apiName);
+        return error.toClientError(this.apiName);
     }
 }

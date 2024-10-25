@@ -27,26 +27,25 @@ import {HttpProxy} from '../utilities/httpProxy.js';
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 export class BaseCompositionRoot {
 
-    private readonly _container: Container;
-
-    private _loggingConfiguration: LoggingConfiguration | null;
-    private _oauthConfiguration: OAuthConfiguration | null;
-    private _extraClaimsProvider: ExtraClaimsProvider | null;
-    private _cacheConfiguration: CacheConfiguration | null;
-    private _cache: Cache | null;
-    private _loggerFactory: LoggerFactoryImpl | null;
-    private _httpProxy: HttpProxy | null;
+    private readonly container: Container;
+    private loggingConfiguration: LoggingConfiguration | null;
+    private oauthConfiguration: OAuthConfiguration | null;
+    private extraClaimsProvider: ExtraClaimsProvider | null;
+    private cacheConfiguration: CacheConfiguration | null;
+    private cache: Cache | null;
+    private loggerFactory: LoggerFactoryImpl | null;
+    private httpProxy: HttpProxy | null;
 
     public constructor(container: Container) {
 
-        this._container = container;
-        this._loggingConfiguration = null;
-        this._oauthConfiguration = null;
-        this._cacheConfiguration = null;
-        this._loggerFactory = null;
-        this._extraClaimsProvider = null;
-        this._cache = null;
-        this._httpProxy = null;
+        this.container = container;
+        this.loggingConfiguration = null;
+        this.oauthConfiguration = null;
+        this.cacheConfiguration = null;
+        this.loggerFactory = null;
+        this.extraClaimsProvider = null;
+        this.cache = null;
+        this.httpProxy = null;
     }
 
     /*
@@ -56,9 +55,9 @@ export class BaseCompositionRoot {
         loggingConfiguration: LoggingConfiguration,
         loggerFactory: LoggerFactory): BaseCompositionRoot {
 
-        this._loggingConfiguration = loggingConfiguration;
-        this._loggerFactory = loggerFactory as LoggerFactoryImpl;
-        this._loggerFactory.configure(loggingConfiguration);
+        this.loggingConfiguration = loggingConfiguration;
+        this.loggerFactory = loggerFactory as LoggerFactoryImpl;
+        this.loggerFactory.configure(loggingConfiguration);
         return this;
     }
 
@@ -67,7 +66,7 @@ export class BaseCompositionRoot {
      */
     public useOAuth(oauthConfiguration: OAuthConfiguration): BaseCompositionRoot {
 
-        this._oauthConfiguration = oauthConfiguration;
+        this.oauthConfiguration = oauthConfiguration;
         return this;
     }
 
@@ -78,11 +77,11 @@ export class BaseCompositionRoot {
         provider: ExtraClaimsProvider,
         configuration: CacheConfiguration) : BaseCompositionRoot {
 
-        this._extraClaimsProvider = provider;
-        this._cacheConfiguration = configuration;
+        this.extraClaimsProvider = provider;
+        this.cacheConfiguration = configuration;
 
-        this._cache = configuration.isActive ?
-            new AwsCache(this._cacheConfiguration, this._extraClaimsProvider) :
+        this.cache = configuration.isActive ?
+            new AwsCache(this.cacheConfiguration, this.extraClaimsProvider) :
             new NullCache();
 
         return this;
@@ -92,7 +91,7 @@ export class BaseCompositionRoot {
      * Receive the HTTP proxy object, which is only used on a developer PC
      */
     public useHttpProxy(httpProxy: HttpProxy): BaseCompositionRoot {
-        this._httpProxy = httpProxy;
+        this.httpProxy = httpProxy;
         return this;
     }
 
@@ -101,75 +100,75 @@ export class BaseCompositionRoot {
      */
     public register(): BaseCompositionRoot {
 
-        this._registerBaseDependencies();
-        this._registerClaimsDependencies();
-        this._registerOAuthDependencies();
+        this.registerBaseDependencies();
+        this.registerClaimsDependencies();
+        this.registerOAuthDependencies();
         return this;
     }
 
     public getLoggerMiddleware(): middy.MiddlewareObj<any, any> {
-        return new LoggerMiddleware(this._container, this._loggerFactory!);
+        return new LoggerMiddleware(this.container, this.loggerFactory!);
     }
 
     public getExceptionMiddleware(): middy.MiddlewareObj<any, any> {
-        return new ExceptionMiddleware(this._container, this._loggingConfiguration!);
+        return new ExceptionMiddleware(this.container, this.loggingConfiguration!);
     }
 
     public getCustomHeaderMiddleware(): middy.MiddlewareObj<any, any> {
-        return new CustomHeaderMiddleware(this._loggingConfiguration!.apiName);
+        return new CustomHeaderMiddleware(this.loggingConfiguration!.apiName);
     }
 
     public getAuthorizerMiddleware(): middy.MiddlewareObj<any, any> {
-        return new AuthorizerMiddleware(this._container);
+        return new AuthorizerMiddleware(this.container);
     }
 
     /*
      * Register any common code logging dependencies
      */
-    private _registerBaseDependencies() {
+    private registerBaseDependencies() {
 
         // This default per request object will be overridden at runtime
-        this._container.bind<LogEntry>(BASETYPES.LogEntry).toConstantValue({} as any);
+        this.container.bind<LogEntry>(BASETYPES.LogEntry).toConstantValue({} as any);
 
         // The proxy object is a singleton
-        this._container.bind<HttpProxy>(BASETYPES.HttpProxy).toConstantValue(this._httpProxy!);
+        this.container.bind<HttpProxy>(BASETYPES.HttpProxy).toConstantValue(this.httpProxy!);
     }
 
     /*
      * Register injectable items used for claims processing
      */
-    private _registerClaimsDependencies() {
+    private registerClaimsDependencies() {
 
         // Register the singleton cache
-        this._container.bind<Cache>(BASETYPES.Cache).toConstantValue(this._cache!);
+        this.container.bind<Cache>(BASETYPES.Cache).toConstantValue(this.cache!);
 
         // Register the extra claims provider
-        this._container.bind<ExtraClaimsProvider>(BASETYPES.ExtraClaimsProvider)
-            .toConstantValue(this._extraClaimsProvider!);
+        this.container.bind<ExtraClaimsProvider>(BASETYPES.ExtraClaimsProvider)
+            .toConstantValue(this.extraClaimsProvider!);
 
         // The per request claims principal is given a dummy value here and then updated at runtime
-        this._container.bind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue({} as any);
+        this.container.bind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue({} as any);
     }
 
     /*
      * Register dependencies used for OAuth handling
      */
-    private _registerOAuthDependencies() {
+    private registerOAuthDependencies() {
 
         // Register singletons
-        this._container.bind<OAuthConfiguration>(BASETYPES.OAuthConfiguration)
-            .toConstantValue(this._oauthConfiguration!);
+        this.container.bind<OAuthConfiguration>(BASETYPES.OAuthConfiguration)
+            .toConstantValue(this.oauthConfiguration!);
 
         // Every request retrieves cached token signing public keys from the cache
-        this._container.bind<JwksRetriever>(BASETYPES.JwksRetriever)
+        this.container.bind<JwksRetriever>(BASETYPES.JwksRetriever)
             .to(JwksRetriever).inTransientScope();
 
         // Every request verifies a JWT access token
-        this._container.bind<AccessTokenValidator>(BASETYPES.AccessTokenValidator)
+        this.container.bind<AccessTokenValidator>(BASETYPES.AccessTokenValidator)
             .to(AccessTokenValidator).inTransientScope();
 
         // Every request does extra work to form a claims principal
-        this._container.bind<OAuthFilter>(BASETYPES.OAuthFilter)
+        this.container.bind<OAuthFilter>(BASETYPES.OAuthFilter)
             .to(OAuthFilter).inTransientScope();
 
         return this;

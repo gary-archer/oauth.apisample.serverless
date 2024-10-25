@@ -14,14 +14,14 @@ import {ResponseWriter} from '../utilities/responseWriter.js';
  */
 export class ExceptionMiddleware implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
 
-    private readonly _container: Container;
-    private readonly _configuration: LoggingConfiguration;
+    private readonly container: Container;
+    private readonly configuration: LoggingConfiguration;
 
     public constructor(container: Container, configuration: LoggingConfiguration) {
 
-        this._container = container;
-        this._configuration = configuration;
-        this._setupCallbacks();
+        this.container = container;
+        this.configuration = configuration;
+        this.setupCallbacks();
     }
 
     /*
@@ -30,7 +30,7 @@ export class ExceptionMiddleware implements middy.MiddlewareObj<APIGatewayProxyE
     public onError(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
 
         // Get the log entry
-        const logEntry = this._container.get<LogEntryImpl>(BASETYPES.LogEntry);
+        const logEntry = this.container.get<LogEntryImpl>(BASETYPES.LogEntry);
 
         // Get the error into a known object
         const error = ErrorUtils.fromException(request.error);
@@ -40,7 +40,7 @@ export class ExceptionMiddleware implements middy.MiddlewareObj<APIGatewayProxyE
 
             // Log the exception and convert to the client error
             logEntry.setServerError(error);
-            clientError = error.toClientError(this._configuration.apiName);
+            clientError = error.toClientError(this.configuration.apiName);
 
         } else {
 
@@ -67,7 +67,7 @@ export class ExceptionMiddleware implements middy.MiddlewareObj<APIGatewayProxyE
     /*
      * Plumbing to ensure that the this parameter is available in async callbacks
      */
-    private _setupCallbacks(): void {
+    private setupCallbacks(): void {
         this.onError = this.onError.bind(this);
     }
 }

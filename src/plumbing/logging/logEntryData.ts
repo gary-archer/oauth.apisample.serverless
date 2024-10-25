@@ -101,7 +101,7 @@ export class LogEntryData {
      * Set fields at the end of a log entry
      */
     public finalise(): void {
-        this.millisecondsTaken = this.performance.millisecondsTaken;
+        this.millisecondsTaken = this.performance.getMillisecondsTaken();
     }
 
     /*
@@ -111,28 +111,28 @@ export class LogEntryData {
 
         // Output fields used as top level queryable columns
         const output: any = {};
-        this._outputString((x) => output.id = x, this.id);
-        this._outputString((x) => output.utcTime = x, this.utcTime.toISOString());
-        this._outputString((x) => output.apiName = x, this.apiName);
-        this._outputString((x) => output.operationName = x, this.operationName);
-        this._outputString((x) => output.hostName = x, this.hostName);
-        this._outputString((x) => output.method = x, this.method);
-        this._outputString((x) => output.path = x, this.path);
-        this._outputString((x) => output.resourceId = x, this.resourceId);
-        this._outputString((x) => output.clientName = x, this.clientName);
-        this._outputString((x) => output.userId = x, this.userId);
-        this._outputNumber((x) => output.statusCode = x, this.statusCode);
-        this._outputString((x) => output.errorCode = x, this.errorCode);
-        this._outputNumber((x) => output.errorId = x, this.errorId);
-        this._outputNumber((x) => output.millisecondsTaken = x, this.performance.millisecondsTaken, true);
-        this._outputNumber((x) => output.millisecondsThreshold = x, this.performanceThresholdMilliseconds, true);
-        this._outputString((x) => output.correlationId = x, this.correlationId);
-        this._outputString((x) => output.sessionId = x, this.sessionId);
+        this.outputString((x) => output.id = x, this.id);
+        this.outputString((x) => output.utcTime = x, this.utcTime.toISOString());
+        this.outputString((x) => output.apiName = x, this.apiName);
+        this.outputString((x) => output.operationName = x, this.operationName);
+        this.outputString((x) => output.hostName = x, this.hostName);
+        this.outputString((x) => output.method = x, this.method);
+        this.outputString((x) => output.path = x, this.path);
+        this.outputString((x) => output.resourceId = x, this.resourceId);
+        this.outputString((x) => output.clientName = x, this.clientName);
+        this.outputString((x) => output.userId = x, this.userId);
+        this.outputNumber((x) => output.statusCode = x, this.statusCode);
+        this.outputString((x) => output.errorCode = x, this.errorCode);
+        this.outputNumber((x) => output.errorId = x, this.errorId);
+        this.outputNumber((x) => output.millisecondsTaken = x, this.performance.getMillisecondsTaken(), true);
+        this.outputNumber((x) => output.millisecondsThreshold = x, this.performanceThresholdMilliseconds, true);
+        this.outputString((x) => output.correlationId = x, this.correlationId);
+        this.outputString((x) => output.sessionId = x, this.sessionId);
 
         // Output object data, which is looked up via top level fields
-        this._outputPerformance(output);
-        this._outputError(output);
-        this._outputInfo(output);
+        this.outputPerformance(output);
+        this.outputError(output);
+        this.outputInfo(output);
         return output;
     }
 
@@ -146,7 +146,8 @@ export class LogEntryData {
     /*
      * Add a string to the output unless empty
      */
-    private _outputString(setter: (val: string) => void, value: string): void {
+    private outputString(setter: (val: string) => void, value: string): void {
+
         if (value && value.length > 0) {
             setter(value);
         }
@@ -155,7 +156,8 @@ export class LogEntryData {
     /*
      * Add a number to the output unless zero or forced
      */
-    private _outputNumber(setter: (val: number) => void, value: number, force = false): void {
+    private outputNumber(setter: (val: number) => void, value: number, force = false): void {
+
         if (value > 0 || force) {
             setter(value);
         }
@@ -164,9 +166,9 @@ export class LogEntryData {
     /*
      * Add the performance breakdown if the threshold has been exceeded
      */
-    private _outputPerformance(output: any): void {
+    private outputPerformance(output: any): void {
 
-        if (this.performance.millisecondsTaken >= this.performanceThresholdMilliseconds) {
+        if (this.performance.getMillisecondsTaken() >= this.performanceThresholdMilliseconds) {
             output.performance = this.performance.data;
         }
     }
@@ -174,7 +176,8 @@ export class LogEntryData {
     /*
      * Add error details if applicable
      */
-    private _outputError(output: any): void {
+    private outputError(output: any): void {
+
         if (this.errorData !== null) {
             output.errorData = this.errorData;
         }
@@ -183,7 +186,8 @@ export class LogEntryData {
     /*
      * Add info details if applicable
      */
-    private _outputInfo(data: any): void {
+    private outputInfo(data: any): void {
+
         if (this.infoData.length > 0) {
             data.infoData = this.infoData;
         }

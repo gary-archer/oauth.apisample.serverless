@@ -13,11 +13,11 @@ import {OAuthFilter} from '../oauth/oauthFilter.js';
  */
 export class AuthorizerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
 
-    private readonly _container: Container;
+    private readonly container: Container;
 
     public constructor(container: Container) {
-        this._container = container;
-        this._setupCallbacks();
+        this.container = container;
+        this.setupCallbacks();
     }
 
     /*
@@ -25,18 +25,18 @@ export class AuthorizerMiddleware implements middy.MiddlewareObj<APIGatewayProxy
      */
     public async before(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): Promise<void> {
 
-        const logEntry = this._container.get<LogEntryImpl>(BASETYPES.LogEntry);
+        const logEntry = this.container.get<LogEntryImpl>(BASETYPES.LogEntry);
         try {
 
             // Get the filter and call it to do the work and return claims
-            const filter =  this._container.get<OAuthFilter>(BASETYPES.OAuthFilter);
+            const filter =  this.container.get<OAuthFilter>(BASETYPES.OAuthFilter);
             const claimsPrincipal = await filter.execute(request.event);
 
             // Include identity details in logs as soon as we have them
             logEntry.setIdentity(ClaimsReader.getStringClaim(claimsPrincipal.jwt, 'sub'));
 
             // Make claims injectable
-            this._container.rebind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue(claimsPrincipal);
+            this.container.rebind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue(claimsPrincipal);
 
         } catch (e) {
 
@@ -57,7 +57,7 @@ export class AuthorizerMiddleware implements middy.MiddlewareObj<APIGatewayProxy
     /*
      * Set up async callbacks
      */
-    private _setupCallbacks(): void {
+    private setupCallbacks(): void {
         this.before = this.before.bind(this);
     }
 }
