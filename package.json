@@ -19,29 +19,29 @@
     "remove": "sls remove --stage deployed"
   },
   "dependencies": {
-    "@middy/core": "^5.4.7",
+    "@middy/core": "^6.0.0",
     "axios": "^1.7.7",
     "fs-extra": "^11.2.0",
     "guid-typescript": "^1.0.9",
-    "inversify": "^6.0.1",
-    "jose": "^5.9.4",
+    "inversify": "^6.1.4",
+    "jose": "^5.9.6",
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {
-    "@aws-sdk/client-dynamodb": "^3.301.0",
-    "@eslint/js": "^9.13.0",
-    "@types/aws-lambda": "^8.10.119",
+    "@aws-sdk/client-dynamodb": "^3.699.0",
+    "@eslint/js": "^9.15.0",
+    "@types/aws-lambda": "^8.10.145",
     "@types/fs-extra": "^11.0.1",
-    "@types/mocha": "^10.0.6",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^20.16.13",
     "child-process": "^1.0.2",
-    "eslint": "^9.13.0",
+    "eslint": "^9.15.0",
     "http-proxy-agent": "^7.0.2",
-    "mocha": "^10.7.3",
-    "serverless": "^4.4.6",
-    "serverless-domain-manager": "^7.4.0",
-    "tsx": "^4.19.1",
-    "typescript": "^5.6.3",
-    "typescript-eslint": "^8.10.0"
+    "mocha": "^10.8.2",
+    "serverless": "^4.4.11",
+    "serverless-domain-manager": "^8.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "5.6.3",
+    "typescript-eslint": "^8.15.0"
   }
 }
