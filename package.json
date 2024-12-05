@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@middy/core": "^6.0.0",
-    "axios": "^1.7.7",
+    "axios": "^1.7.9",
     "fs-extra": "^11.2.0",
     "guid-typescript": "^1.0.9",
     "inversify": "^6.1.4",
@@ -37,7 +37,7 @@
     "child-process": "^1.0.2",
     "eslint": "^9.15.0",
     "http-proxy-agent": "^7.0.2",
-    "mocha": "^10.8.2",
+    "mocha": "^11.0.1",
     "serverless": "^4.4.11",
     "serverless-domain-manager": "^8.0.0",
     "tsx": "^4.19.2",
