@@ -38,7 +38,7 @@
     "eslint": "^9.15.0",
     "http-proxy-agent": "^7.0.2",
     "mocha": "^11.0.1",
-    "serverless": "^4.4.11",
+    "serverless": "^4.4.14",
     "serverless-domain-manager": "^8.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
