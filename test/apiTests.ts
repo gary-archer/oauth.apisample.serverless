@@ -1,6 +1,6 @@
 import assert from 'assert';
+import {randomUUID} from 'crypto';
 import fs from 'fs-extra';
-import {Guid} from 'guid-typescript';
 import {generateKeyPair} from 'jose';
 import {LambdaChildProcess} from './utils/lambdaChildProcess.js';
 import {MockAuthorizationServer} from './utils/mockAuthorizationServer.js';
@@ -12,7 +12,7 @@ import {MockTokenOptions} from './utils/mockTokenOptions.js';
 describe('OAuth API Tests', () => {
 
     const authorizationServer = new MockAuthorizationServer();
-    const sessionId = Guid.create().toString();
+    const sessionId = randomUUID();
 
     /*
      * Start a mock authorization server during tests

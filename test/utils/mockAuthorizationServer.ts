@@ -1,5 +1,5 @@
 import axios, {AxiosRequestConfig} from 'axios';
-import {Guid} from 'guid-typescript';
+import {randomUUID} from 'crypto';
 import {generateKeyPair, exportJWK, KeyLike, SignJWT, GenerateKeyPairResult} from 'jose';
 import {HttpProxy} from '../../src/plumbing/utilities/httpProxy.js';
 import {MockTokenOptions} from './mockTokenOptions.js';
@@ -20,7 +20,7 @@ export class MockAuthorizationServer {
         this.baseUrl = 'http://login.authsamples-dev.com/__admin/mappings';
         this.httpProxy = new HttpProxy(useProxy, 'http://127.0.0.1:8888');
         this.algorithm = 'RS256';
-        this.keyId = Guid.create().toString();
+        this.keyId = randomUUID();
     }
 
     /*

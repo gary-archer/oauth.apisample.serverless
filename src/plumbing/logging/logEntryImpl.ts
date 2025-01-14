@@ -1,6 +1,6 @@
 import {APIGatewayProxyEvent, Context} from 'aws-lambda';
+import {randomUUID} from 'crypto';
 import fs from 'fs-extra';
-import {Guid} from 'guid-typescript';
 import {injectable} from 'inversify';
 import os from 'os';
 import {ClientError} from '../errors/clientError.js';
@@ -225,7 +225,7 @@ export class LogEntryImpl implements LogEntry {
         const correlationId = this.getHeader(event, 'x-authsamples-correlation-id');
 
         // Use the client supplied value or generate a new value
-        this.data.correlationId = correlationId ? correlationId : Guid.create().toString();
+        this.data.correlationId = correlationId ? correlationId : randomUUID();
     }
 
     /*
