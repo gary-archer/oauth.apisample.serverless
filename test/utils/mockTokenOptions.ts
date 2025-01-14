@@ -11,7 +11,7 @@ export class MockTokenOptions {
 
     public role = '';
 
-    public expiryTime = Date.now() / 1000 + (15 * 60 * 1000);
+    public expiryTime = Date.now() + (15 * 60 * 1000);
 
     public subject = '';
 
