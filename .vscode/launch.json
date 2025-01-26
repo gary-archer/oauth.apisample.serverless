@@ -5,7 +5,7 @@
           "type":"node",
           "request":"launch",
           "name":"Launch API",
-          "program":"${workspaceFolder}/node_modules/serverless/bin/serverless",
+          "program":"${workspaceFolder}/node_modules/.bin/serverless",
           "args":[
              "invoke",
              "local",
