@@ -4,7 +4,7 @@
         "proxyUrl": ""
     },
     "logging": {
-        "apiName": "FinalApi",
+        "apiName": "investments",
         "prettyPrint": false,
         "performanceThresholdMilliseconds": 500
     },
