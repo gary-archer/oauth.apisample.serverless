@@ -28,7 +28,7 @@ export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEven
         const logEntry = this.loggerFactory.createLogEntry();
 
         // Bind it to the container
-        this.container.rebind<LogEntryImpl>(BASETYPES.LogEntry).toConstantValue(logEntry);
+        this.container.bind<LogEntryImpl>(BASETYPES.LogEntry).toConstantValue(logEntry);
 
         // Start request logging
         logEntry.start(request.event, request.context);

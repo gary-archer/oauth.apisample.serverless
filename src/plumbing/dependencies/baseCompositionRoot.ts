@@ -3,13 +3,11 @@ import {Container} from 'inversify';
 import {Cache} from '../cache/cache.js';
 import {AwsCache} from '../cache/awsCache.js';
 import {NullCache} from '../cache/nullCache.js';
-import {ClaimsPrincipal} from '../claims/claimsPrincipal.js';
 import {ExtraClaimsProvider} from '../claims/extraClaimsProvider.js';
 import {CacheConfiguration} from '../configuration/cacheConfiguration.js';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration.js';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
-import {LogEntry} from '../logging/logEntry.js';
 import {LoggerFactory} from '../logging/loggerFactory.js';
 import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl.js';
 import {AuthorizerMiddleware} from '../middleware/authorizerMiddleware.js';
@@ -127,9 +125,6 @@ export class BaseCompositionRoot {
      */
     private registerBaseDependencies() {
 
-        // This default per request object will be overridden at runtime
-        this.container.bind<LogEntry>(BASETYPES.LogEntry).toConstantValue({} as any);
-
         // The proxy object is a singleton
         this.container.bind<HttpProxy>(BASETYPES.HttpProxy).toConstantValue(this.httpProxy!);
     }
@@ -145,9 +140,6 @@ export class BaseCompositionRoot {
         // Register the extra claims provider
         this.container.bind<ExtraClaimsProvider>(BASETYPES.ExtraClaimsProvider)
             .toConstantValue(this.extraClaimsProvider!);
-
-        // The per request claims principal is given a dummy value here and then updated at runtime
-        this.container.bind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue({} as any);
     }
 
     /*
