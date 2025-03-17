@@ -10,11 +10,9 @@ import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl.js';
  */
 export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
 
-    private readonly container: Container;
     private readonly loggerFactory: LoggerFactoryImpl;
 
-    public constructor(container: Container, loggerFactory: LoggerFactoryImpl) {
-        this.container = container;
+    public constructor(loggerFactory: LoggerFactoryImpl) {
         this.loggerFactory = loggerFactory;
         this.setupCallbacks();
     }
@@ -25,10 +23,11 @@ export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEven
     public before(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
 
         // Create the log entry for the current request
+        const container = (request.event as any).container as Container;
         const logEntry = this.loggerFactory.createLogEntry();
 
         // Bind it to the container
-        this.container.rebind<LogEntryImpl>(BASETYPES.LogEntry).toConstantValue(logEntry);
+        container.bind<LogEntryImpl>(BASETYPES.LogEntry).toConstantValue(logEntry);
 
         // Start request logging
         logEntry.start(request.event, request.context);
@@ -39,8 +38,9 @@ export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEven
      */
     public after(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
 
-        // Get the log entry
-        const logEntry = this.container.get<LogEntryImpl>(BASETYPES.LogEntry);
+        // Get the log entry for this request
+        const container = (request.event as any).container as Container;
+        const logEntry = container.get<LogEntryImpl>(BASETYPES.LogEntry);
 
         // End logging
         if (request.response && request.response.statusCode) {

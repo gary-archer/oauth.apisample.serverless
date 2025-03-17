@@ -13,30 +13,26 @@ import {OAuthFilter} from '../oauth/oauthFilter.js';
  */
 export class AuthorizerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
 
-    private readonly container: Container;
-
-    public constructor(container: Container) {
-        this.container = container;
-        this.setupCallbacks();
-    }
-
     /*
      * The entry point does the OAuth work as well as AWS specific processing
      */
     public async before(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): Promise<void> {
 
-        const logEntry = this.container.get<LogEntryImpl>(BASETYPES.LogEntry);
+        // Get the log entry for this request
+        const container = (request.event as any).container as Container;
+        const logEntry = container.get<LogEntryImpl>(BASETYPES.LogEntry);
+
         try {
 
             // Get the filter and call it to do the work and return claims
-            const filter =  this.container.get<OAuthFilter>(BASETYPES.OAuthFilter);
+            const filter =  container.get<OAuthFilter>(BASETYPES.OAuthFilter);
             const claimsPrincipal = await filter.execute(request.event);
 
             // Include identity details in logs as soon as we have them
             logEntry.setIdentity(ClaimsReader.getStringClaim(claimsPrincipal.jwt, 'sub'));
 
             // Bind it to make claims injectable
-            this.container.rebind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue(claimsPrincipal);
+            container.bind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue(claimsPrincipal);
 
         } catch (e) {
 
@@ -52,12 +48,5 @@ export class AuthorizerMiddleware implements middy.MiddlewareObj<APIGatewayProxy
         }
 
         // For async middleware, middy calls next for us, so do not call it here
-    }
-
-    /*
-     * Set up async callbacks
-     */
-    private setupCallbacks(): void {
-        this.before = this.before.bind(this);
     }
 }

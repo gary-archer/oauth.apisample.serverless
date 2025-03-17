@@ -1,5 +1,5 @@
-import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import middy from '@middy/core';
+import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
@@ -14,12 +14,10 @@ import {ResponseWriter} from '../utilities/responseWriter.js';
  */
 export class ExceptionMiddleware implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
 
-    private readonly container: Container;
     private readonly configuration: LoggingConfiguration;
 
-    public constructor(container: Container, configuration: LoggingConfiguration) {
+    public constructor(configuration: LoggingConfiguration) {
 
-        this.container = container;
         this.configuration = configuration;
         this.setupCallbacks();
     }
@@ -30,7 +28,8 @@ export class ExceptionMiddleware implements middy.MiddlewareObj<APIGatewayProxyE
     public onError(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
 
         // Get the log entry
-        const logEntry = this.container.get<LogEntryImpl>(BASETYPES.LogEntry);
+        const container = (request.event as any).container as Container;
+        const logEntry = container.get<LogEntryImpl>(BASETYPES.LogEntry);
 
         // Get the error into a known object
         const error = ErrorUtils.fromException(request.error);

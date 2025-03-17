@@ -3,16 +3,15 @@ import {Container} from 'inversify';
 import {Cache} from '../cache/cache.js';
 import {AwsCache} from '../cache/awsCache.js';
 import {NullCache} from '../cache/nullCache.js';
-import {ClaimsPrincipal} from '../claims/claimsPrincipal.js';
 import {ExtraClaimsProvider} from '../claims/extraClaimsProvider.js';
 import {CacheConfiguration} from '../configuration/cacheConfiguration.js';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration.js';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
-import {LogEntry} from '../logging/logEntry.js';
 import {LoggerFactory} from '../logging/loggerFactory.js';
 import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl.js';
 import {AuthorizerMiddleware} from '../middleware/authorizerMiddleware.js';
+import {ChildContainerMiddleware} from '../middleware/childContainerMiddleware.js';
 import {CustomHeaderMiddleware} from '../middleware/customHeaderMiddleware.js';
 import {ExceptionMiddleware} from '../middleware/exceptionMiddleware.js';
 import {LoggerMiddleware} from '../middleware/loggerMiddleware.js';
@@ -27,7 +26,7 @@ import {HttpProxy} from '../utilities/httpProxy.js';
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 export class BaseCompositionRoot {
 
-    private readonly container: Container;
+    private readonly parentContainer: Container;
     private loggingConfiguration: LoggingConfiguration | null;
     private oauthConfiguration: OAuthConfiguration | null;
     private extraClaimsProvider: ExtraClaimsProvider | null;
@@ -36,9 +35,9 @@ export class BaseCompositionRoot {
     private loggerFactory: LoggerFactoryImpl | null;
     private httpProxy: HttpProxy | null;
 
-    public constructor(container: Container) {
+    public constructor(parentContainer: Container) {
 
-        this.container = container;
+        this.parentContainer = parentContainer;
         this.loggingConfiguration = null;
         this.oauthConfiguration = null;
         this.cacheConfiguration = null;
@@ -106,12 +105,16 @@ export class BaseCompositionRoot {
         return this;
     }
 
+    public getChildContainerMiddleware(): middy.MiddlewareObj<any, any> {
+        return new ChildContainerMiddleware(this.parentContainer);
+    }
+
     public getLoggerMiddleware(): middy.MiddlewareObj<any, any> {
-        return new LoggerMiddleware(this.container, this.loggerFactory!);
+        return new LoggerMiddleware(this.loggerFactory!);
     }
 
     public getExceptionMiddleware(): middy.MiddlewareObj<any, any> {
-        return new ExceptionMiddleware(this.container, this.loggingConfiguration!);
+        return new ExceptionMiddleware(this.loggingConfiguration!);
     }
 
     public getCustomHeaderMiddleware(): middy.MiddlewareObj<any, any> {
@@ -119,19 +122,16 @@ export class BaseCompositionRoot {
     }
 
     public getAuthorizerMiddleware(): middy.MiddlewareObj<any, any> {
-        return new AuthorizerMiddleware(this.container);
+        return new AuthorizerMiddleware();
     }
 
     /*
-     * Register any common code logging dependencies
+     * Register any common dependencies
      */
     private registerBaseDependencies() {
 
-        // This default per request object will be overridden at runtime
-        this.container.bind<LogEntry>(BASETYPES.LogEntry).toConstantValue({} as any);
-
         // The proxy object is a singleton
-        this.container.bind<HttpProxy>(BASETYPES.HttpProxy).toConstantValue(this.httpProxy!);
+        this.parentContainer.bind<HttpProxy>(BASETYPES.HttpProxy).toConstantValue(this.httpProxy!);
     }
 
     /*
@@ -140,14 +140,11 @@ export class BaseCompositionRoot {
     private registerClaimsDependencies() {
 
         // Register the singleton cache
-        this.container.bind<Cache>(BASETYPES.Cache).toConstantValue(this.cache!);
+        this.parentContainer.bind<Cache>(BASETYPES.Cache).toConstantValue(this.cache!);
 
         // Register the extra claims provider
-        this.container.bind<ExtraClaimsProvider>(BASETYPES.ExtraClaimsProvider)
+        this.parentContainer.bind<ExtraClaimsProvider>(BASETYPES.ExtraClaimsProvider)
             .toConstantValue(this.extraClaimsProvider!);
-
-        // The per request claims principal is given a dummy value here and then updated at runtime
-        this.container.bind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue({} as any);
     }
 
     /*
@@ -156,19 +153,19 @@ export class BaseCompositionRoot {
     private registerOAuthDependencies() {
 
         // Register singletons
-        this.container.bind<OAuthConfiguration>(BASETYPES.OAuthConfiguration)
+        this.parentContainer.bind<OAuthConfiguration>(BASETYPES.OAuthConfiguration)
             .toConstantValue(this.oauthConfiguration!);
 
         // Every request retrieves cached token signing public keys from the cache
-        this.container.bind<JwksRetriever>(BASETYPES.JwksRetriever)
+        this.parentContainer.bind<JwksRetriever>(BASETYPES.JwksRetriever)
             .to(JwksRetriever).inTransientScope();
 
         // Every request verifies a JWT access token
-        this.container.bind<AccessTokenValidator>(BASETYPES.AccessTokenValidator)
+        this.parentContainer.bind<AccessTokenValidator>(BASETYPES.AccessTokenValidator)
             .to(AccessTokenValidator).inTransientScope();
 
         // Every request does extra work to form a claims principal
-        this.container.bind<OAuthFilter>(BASETYPES.OAuthFilter)
+        this.parentContainer.bind<OAuthFilter>(BASETYPES.OAuthFilter)
             .to(OAuthFilter).inTransientScope();
 
         return this;

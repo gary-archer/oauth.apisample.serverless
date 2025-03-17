@@ -24,31 +24,32 @@ export class LambdaConfiguration {
     /*
      * Apply cross cutting concerns to a lambda
      */
-    public async enrichHandler(baseHandler: AsyncHandler, container: Container)
+    public async enrichHandler(baseHandler: AsyncHandler, parentContainer: Container)
         : Promise<middy.MiddyfiedHandler<APIGatewayProxyEvent, APIGatewayProxyResult> | AsyncHandler> {
 
         const loggerFactory = LoggerFactoryBuilder.create();
         try {
 
             // Load our JSON configuration
-            const configuration = this._loadConfiguration();
+            const configuration = this.loadConfiguration();
 
             // Initialize the HTTP proxy object
             const httpProxy = new HttpProxy(configuration.api.useProxy, configuration.api.proxyUrl);
             await httpProxy.initialize();
 
             // Register common code dependencies for security, logging and error handling
-            const base = new BaseCompositionRoot(container)
+            const base = new BaseCompositionRoot(parentContainer)
                 .useLogging(configuration.logging, loggerFactory)
                 .useOAuth(configuration.oauth)
-                .withExtraClaimsProvider(new SampleExtraClaimsProvider(container), configuration.cache)
+                .withExtraClaimsProvider(new SampleExtraClaimsProvider(), configuration.cache)
                 .useHttpProxy(httpProxy)
                 .register();
 
             // Register API specific dependencies
-            CompositionRoot.register(container);
+            CompositionRoot.register(parentContainer);
 
             // Get framework middleware classes including the OAuth authorizer
+            const childContainerMiddleware = base.getChildContainerMiddleware();
             const loggerMiddleware = base.getLoggerMiddleware();
             const exceptionMiddleware = base.getExceptionMiddleware();
             const authorizerMiddleware = base.getAuthorizerMiddleware();
@@ -60,6 +61,7 @@ export class LambdaConfiguration {
 
             })
                 // Handlers run in the reverse order listed here, so that exceptions are handled then logged
+                .use(childContainerMiddleware)
                 .use(loggerMiddleware)
                 .use(exceptionMiddleware)
                 .use(authorizerMiddleware)
@@ -68,14 +70,14 @@ export class LambdaConfiguration {
         } catch (e) {
 
             // Handle any startup exceptions
-            return this._handleStartupError(loggerFactory, e);
+            return this.handleStartupError(loggerFactory, e);
         }
     }
 
     /*
      * Load the configuration JSON file
      */
-    private _loadConfiguration(): Configuration {
+    private loadConfiguration(): Configuration {
 
         const configBuffer = fs.readFileSync('api.config.json');
         return JSON.parse(configBuffer.toString()) as Configuration;
@@ -84,7 +86,7 @@ export class LambdaConfiguration {
     /*
      * Ensure that any startup errors are logged and then return a handler that will provide the client response
      */
-    private _handleStartupError(loggerFactory: LoggerFactory, error: any): AsyncHandler {
+    private handleStartupError(loggerFactory: LoggerFactory, error: any): AsyncHandler {
 
         const clientError = loggerFactory.logStartupError(error);
         return async () => {

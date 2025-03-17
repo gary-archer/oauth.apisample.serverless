@@ -1,3 +1,4 @@
+import {APIGatewayProxyEvent} from 'aws-lambda';
 import {JWTPayload} from 'jose';
 import {Container} from 'inversify';
 import {ClaimsReader} from '../../plumbing/claims/claimsReader.js';
@@ -12,20 +13,14 @@ import {SampleExtraClaims} from './sampleExtraClaims.js';
  */
 export class SampleExtraClaimsProvider extends ExtraClaimsProvider {
 
-    private readonly container: Container;
-
-    public constructor(container: Container) {
-        super();
-        this.container = container;
-    }
-
     /*
      * Get additional claims from the API's own database
      */
-    public async lookupExtraClaims(jwtClaims: JWTPayload): Promise<ExtraClaims> {
+    public async lookupExtraClaims(jwtClaims: JWTPayload, event: APIGatewayProxyEvent): Promise<ExtraClaims> {
 
         // Get an object to look up user information
-        const userRepository = this.container.get<UserRepository>(SAMPLETYPES.UserRepository);
+        const container = (event as any).container as Container;
+        const userRepository = container.get<UserRepository>(SAMPLETYPES.UserRepository);
 
         // The manager ID is a business user identity from which other claims can be looked up
         const managerId = ClaimsReader.getStringClaim(jwtClaims, 'manager_id');

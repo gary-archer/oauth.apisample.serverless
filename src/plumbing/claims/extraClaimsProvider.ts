@@ -1,3 +1,4 @@
+import {APIGatewayProxyEvent} from 'aws-lambda';
 import {injectable} from 'inversify';
 import {JWTPayload} from 'jose';
 import {ExtraClaims} from './extraClaims.js';
@@ -12,7 +13,7 @@ export class ExtraClaimsProvider {
      * Get additional claims from the API's own database
      */
     /* eslint-disable @typescript-eslint/no-unused-vars */
-    public async lookupExtraClaims(jwtClaims: JWTPayload): Promise<ExtraClaims> {
+    public async lookupExtraClaims(jwtClaims: JWTPayload, event: APIGatewayProxyEvent): Promise<ExtraClaims> {
         return new ExtraClaims();
     }
 

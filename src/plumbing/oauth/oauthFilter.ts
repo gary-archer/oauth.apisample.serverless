@@ -47,7 +47,7 @@ export class OAuthFilter {
         }
 
         // Look up extra claims not in the JWT access token when it is first received
-        extraClaims = await this.extraClaimsProvider.lookupExtraClaims(tokenClaims);
+        extraClaims = await this.extraClaimsProvider.lookupExtraClaims(tokenClaims, event);
 
         // Cache the extra claims for subsequent requests with the same access token
         await this.cache.setExtraUserClaims(accessTokenHash, extraClaims);

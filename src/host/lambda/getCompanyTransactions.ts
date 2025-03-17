@@ -11,7 +11,7 @@ import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
 /*
  * A lambda to return transaction related data
  */
-const container = new Container();
+const parentContainer = new Container();
 const baseHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
     // First get the supplied id and ensure it is a valid integer
@@ -25,6 +25,7 @@ const baseHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxy
     }
 
     // Resolve the service and execute the logic
+    const container = (event as any).container as Container;
     const service = container.get<CompanyService>(SAMPLETYPES.CompanyService);
     const companies = await service.getCompanyTransactions(id);
 
@@ -34,7 +35,7 @@ const baseHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxy
 
 // Create an enriched handler, which wires up middleware to run before the above handler
 const configuration = new LambdaConfiguration();
-const handler = await configuration.enrichHandler(baseHandler, container);
+const handler = await configuration.enrichHandler(baseHandler, parentContainer);
 
 // Export the handler to serverless.yml
 export {handler};
