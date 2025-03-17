@@ -19,28 +19,28 @@
     "remove": "sls remove --stage deployed"
   },
   "dependencies": {
-    "@middy/core": "^6.0.0",
-    "axios": "^1.7.9",
-    "fs-extra": "^11.2.0",
+    "@middy/core": "^6.1.5",
+    "axios": "^1.8.3",
+    "fs-extra": "^11.3.0",
     "inversify": "^6.1.4",
-    "jose": "^5.9.6",
+    "jose": "^6.0.10",
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {
     "@aws-sdk/client-dynamodb": "^3.699.0",
-    "@eslint/js": "^9.15.0",
+    "@eslint/js": "^9.22.0",
     "@types/aws-lambda": "^8.10.145",
     "@types/fs-extra": "^11.0.1",
     "@types/mocha": "^10.0.10",
     "@types/node": "^20.16.13",
     "child-process": "^1.0.2",
-    "eslint": "^9.15.0",
+    "eslint": "^9.22.0",
     "http-proxy-agent": "^7.0.2",
-    "mocha": "^11.0.1",
-    "serverless": "^4.4.14",
+    "mocha": "^11.1.0",
+    "serverless": "^4.7.0",
     "serverless-domain-manager": "^8.0.0",
     "tsx": "^4.19.2",
-    "typescript": "^5.7.2",
-    "typescript-eslint": "^8.16.0"
+    "typescript": "^5.8",
+    "typescript-eslint": "^8.26.1"
   }
 }

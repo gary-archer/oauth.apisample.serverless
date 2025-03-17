@@ -1,7 +1,7 @@
 
 import axios, {AxiosRequestConfig} from 'axios';
 import {inject, injectable} from 'inversify';
-import {FlattenedJWSInput, importJWK, JWK, JoseHeaderParameters, KeyLike} from 'jose';
+import {CryptoKey, importJWK, JWK, JoseHeaderParameters} from 'jose';
 import {Cache} from '../cache/cache.js';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
@@ -34,10 +34,7 @@ export class JwksRetriever {
     /*
      * Do our own DynamoDB based caching of JWKS keys since the JOSE library cannot cache them for lambdas
      */
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    public async getKey(
-        protectedHeader: JoseHeaderParameters,
-        token: FlattenedJWSInput): Promise<Uint8Array | KeyLike> {
+    public async getKey(protectedHeader: JoseHeaderParameters): Promise<CryptoKey | Uint8Array> {
 
         try {
 

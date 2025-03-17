@@ -1,6 +1,6 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import {randomUUID} from 'crypto';
-import {generateKeyPair, exportJWK, KeyLike, SignJWT, GenerateKeyPairResult} from 'jose';
+import {generateKeyPair, exportJWK, SignJWT, GenerateKeyPairResult} from 'jose';
 import {HttpProxy} from '../../src/plumbing/utilities/httpProxy.js';
 import {MockTokenOptions} from './mockTokenOptions.js';
 
@@ -12,7 +12,7 @@ export class MockAuthorizationServer {
     private readonly baseUrl: string;
     private readonly httpProxy: HttpProxy;
     private readonly algorithm: string;
-    private jwk!: GenerateKeyPairResult<KeyLike>;
+    private keypair!: GenerateKeyPairResult;
     private keyId: string;
 
     public constructor(useProxy = false) {
@@ -29,10 +29,10 @@ export class MockAuthorizationServer {
     public async start(): Promise<void> {
 
         // Generate a JSON Web Key for our token issuing
-        this.jwk = await generateKeyPair(this.algorithm);
+        this.keypair = await generateKeyPair(this.algorithm);
 
         // Get the JSON Web Key Set containing the public key
-        const jwk = await exportJWK(this.jwk.publicKey);
+        const jwk = await exportJWK(this.keypair.publicKey);
         jwk.kid = this.keyId;
         jwk.alg = this.algorithm;
         const keys = {
@@ -71,9 +71,9 @@ export class MockAuthorizationServer {
      */
     public async issueAccessToken(
         options: MockTokenOptions,
-        jwk: GenerateKeyPairResult<KeyLike> | null = null): Promise<string> {
+        keypair: GenerateKeyPairResult | null = null): Promise<string> {
 
-        const jwkToUse = jwk || this.jwk;
+        const keypairToUse = keypair || this.keypair;
         return await new SignJWT( {
             iss: options.issuer,
             aud: options.audience,
@@ -84,7 +84,7 @@ export class MockAuthorizationServer {
         })
             .setProtectedHeader( { kid: this.keyId, alg: this.algorithm } )
             .setExpirationTime(options.expiryTime)
-            .sign(jwkToUse.privateKey);
+            .sign(keypairToUse.privateKey);
     }
 
     /*
@@ -99,7 +99,7 @@ export class MockAuthorizationServer {
             headers: {
                 'content-type': 'application/json',
             },
-            httpsAgent: this.httpProxy.agent,
+            httpsAgent: this.httpProxy.getAgent(),
         } as AxiosRequestConfig;
 
         const response = await axios(options);
@@ -116,7 +116,7 @@ export class MockAuthorizationServer {
         const options = {
             url: `${this.baseUrl}/${id}`,
             method: 'DELETE',
-            httpsAgent: this.httpProxy.agent,
+            httpsAgent: this.httpProxy.getAgent(),
         } as AxiosRequestConfig;
 
         const response = await axios(options);

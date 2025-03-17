@@ -139,8 +139,8 @@ describe('OAuth API Tests', () => {
         // Set the access token values
         const jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
-        const maliciousJwk = await generateKeyPair('RS256');
-        const accessToken = await authorizationServer.issueAccessToken(jwtOptions, maliciousJwk);
+        const maliciousKeypair = await generateKeyPair('RS256');
+        const accessToken = await authorizationServer.issueAccessToken(jwtOptions, maliciousKeypair);
 
         // Run the lambda function with an invalid access token
         const lambdaOptions = {
