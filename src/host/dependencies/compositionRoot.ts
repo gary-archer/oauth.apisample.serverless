@@ -17,9 +17,9 @@ export class CompositionRoot {
     public static register(container: Container): void {
 
         // Business logic classes use a non REST based transient scope
-        container.bind<CompanyService>(SAMPLETYPES.CompanyService).to(CompanyService);
-        container.bind<CompanyRepository>(SAMPLETYPES.CompanyRepository).to(CompanyRepository);
-        container.bind<UserRepository>(SAMPLETYPES.UserRepository).to(UserRepository);
-        container.bind<JsonFileReader>(SAMPLETYPES.JsonFileReader).to(JsonFileReader);
+        container.bind<CompanyService>(SAMPLETYPES.CompanyService).to(CompanyService).inTransientScope();
+        container.bind<CompanyRepository>(SAMPLETYPES.CompanyRepository).to(CompanyRepository).inTransientScope();
+        container.bind<UserRepository>(SAMPLETYPES.UserRepository).to(UserRepository).inTransientScope();
+        container.bind<JsonFileReader>(SAMPLETYPES.JsonFileReader).to(JsonFileReader).inTransientScope();
     }
 }

@@ -30,7 +30,7 @@ export class LambdaChildProcess {
 
         // This custom header allows us to rehearse API 500 exceptions in tests
         if (options.rehearseException) {
-            lambdaInput.headers['x-authsamples-test-exception'] = 'investments';
+            lambdaInput.headers['x-authsamples-test-exception'] = 'FinalApi';
         }
 
         fs.writeFile('test/input.txt', JSON.stringify(lambdaInput, null, 2));

@@ -36,7 +36,7 @@ export class AuthorizerMiddleware implements middy.MiddlewareObj<APIGatewayProxy
             logEntry.setIdentity(ClaimsReader.getStringClaim(claimsPrincipal.jwt, 'sub'));
 
             // Bind it to make claims injectable
-            this.container.bind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue(claimsPrincipal);
+            this.container.rebind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue(claimsPrincipal);
 
         } catch (e) {
 

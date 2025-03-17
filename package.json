@@ -22,7 +22,7 @@
     "@middy/core": "^6.1.5",
     "axios": "^1.8.3",
     "fs-extra": "^11.3.0",
-    "inversify": "^7.1.0",
+    "inversify": "^6.1.4",
     "jose": "^6.0.10",
     "reflect-metadata": "^0.2.1"
   },
