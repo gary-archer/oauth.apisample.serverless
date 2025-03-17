@@ -135,24 +135,11 @@ export class BaseCompositionRoot {
     }
 
     /*
-     * Register injectable items used for claims processing
-     */
-    private registerClaimsDependencies() {
-
-        // Register the singleton cache
-        this.parentContainer.bind<Cache>(BASETYPES.Cache).toConstantValue(this.cache!);
-
-        // Register the extra claims provider
-        this.parentContainer.bind<ExtraClaimsProvider>(BASETYPES.ExtraClaimsProvider)
-            .toConstantValue(this.extraClaimsProvider!);
-    }
-
-    /*
      * Register dependencies used for OAuth handling
      */
     private registerOAuthDependencies() {
 
-        // Register singletons
+        // Make the configuration injectable
         this.parentContainer.bind<OAuthConfiguration>(BASETYPES.OAuthConfiguration)
             .toConstantValue(this.oauthConfiguration!);
 
@@ -169,5 +156,18 @@ export class BaseCompositionRoot {
             .to(OAuthFilter).inTransientScope();
 
         return this;
+    }
+
+    /*
+     * Register injectable items used for claims processing
+     */
+    private registerClaimsDependencies() {
+
+        // Register the singleton cache
+        this.parentContainer.bind<Cache>(BASETYPES.Cache).toConstantValue(this.cache!);
+
+        // Register the extra claims provider
+        this.parentContainer.bind<ExtraClaimsProvider>(BASETYPES.ExtraClaimsProvider)
+            .toConstantValue(this.extraClaimsProvider!);
     }
 }
