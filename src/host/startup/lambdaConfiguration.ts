@@ -1,11 +1,12 @@
 import middy from '@middy/core';
-import {APIGatewayProxyEvent, APIGatewayProxyResult, Context} from 'aws-lambda';
+import {APIGatewayProxyResult, Context} from 'aws-lambda';
 import fs from 'fs-extra';
 import {Container} from 'inversify';
 import {SampleExtraClaimsProvider} from '../../logic/claims/sampleExtraClaimsProvider.js';
 import {BaseCompositionRoot} from '../../plumbing/dependencies/baseCompositionRoot.js';
 import {LoggerFactory} from '../../plumbing/logging/loggerFactory.js';
 import {LoggerFactoryBuilder} from '../../plumbing/logging/loggerFactoryBuilder.js';
+import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent.js';
 import {HttpProxy} from '../../plumbing/utilities/httpProxy.js';
 import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
 import {Configuration} from '../configuration/configuration.js';
@@ -14,7 +15,7 @@ import {CompositionRoot} from '../dependencies/compositionRoot.js';
 /*
  * A shorthand type for this module
  */
-type AsyncHandler = (event: APIGatewayProxyEvent, context: Context) => Promise<APIGatewayProxyResult>;
+type AsyncHandler = (event: APIGatewayProxyExtendedEvent, context: Context) => Promise<APIGatewayProxyResult>;
 
 /*
  * A class to configure the lambda and manage cross cutting concerns
@@ -25,7 +26,7 @@ export class LambdaConfiguration {
      * Apply cross cutting concerns to a lambda
      */
     public async enrichHandler(baseHandler: AsyncHandler, parentContainer: Container)
-        : Promise<middy.MiddyfiedHandler<APIGatewayProxyEvent, APIGatewayProxyResult> | AsyncHandler> {
+        : Promise<middy.MiddyfiedHandler<APIGatewayProxyExtendedEvent, APIGatewayProxyResult> | AsyncHandler> {
 
         const loggerFactory = LoggerFactoryBuilder.create();
         try {
@@ -56,7 +57,7 @@ export class LambdaConfiguration {
             const customHeaderMiddleware = base.getCustomHeaderMiddleware();
 
             // Wrap the base handler and add middleware for cross cutting concerns
-            return middy(async (event: APIGatewayProxyEvent, context: Context) => {
+            return middy(async (event: APIGatewayProxyExtendedEvent, context: Context) => {
                 return baseHandler(event, context);
 
             })

@@ -1,11 +1,13 @@
 import middy from '@middy/core';
-import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
+import {APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
+import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent';
 
 /*
  * Creates a child container for each request, to contain request-scoped objects
  */
-export class ChildContainerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
+export class ChildContainerMiddleware implements
+    middy.MiddlewareObj<APIGatewayProxyExtendedEvent, APIGatewayProxyResult> {
 
     private readonly parentContainer: Container;
 
@@ -17,14 +19,14 @@ export class ChildContainerMiddleware implements middy.MiddlewareObj<APIGatewayP
     /*
      * Create the container when a request begins
      */
-    public before(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
-        (request.event as any).container = new Container({ parent: this.parentContainer });
+    public before(request: middy.Request<APIGatewayProxyExtendedEvent, APIGatewayProxyResult>): void {
+        request.event.container = new Container({ parent: this.parentContainer });
     }
 
     /*
      * Delete the container when a request ends
      */
-    public after(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
+    public after(request: middy.Request<APIGatewayProxyExtendedEvent, APIGatewayProxyResult>): void {
         delete (request.event as any).container;
     }
 

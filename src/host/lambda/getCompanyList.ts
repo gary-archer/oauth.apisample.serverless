@@ -1,8 +1,9 @@
-import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
+import {APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
 import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes.js';
 import {CompanyService} from '../../logic/services/companyService.js';
+import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent.js';
 import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
 
@@ -10,11 +11,10 @@ import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
  * A lambda to return a list of company resources
  */
 const parentContainer = new Container();
-const baseHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+const baseHandler = async (event: APIGatewayProxyExtendedEvent): Promise<APIGatewayProxyResult> => {
 
     // Resolve the service and execute the logic
-    const container = (event as any).container as Container;
-    const service = container.get<CompanyService>(SAMPLETYPES.CompanyService);
+    const service = event.container.get<CompanyService>(SAMPLETYPES.CompanyService);
     const companies = await service.getCompanyList();
 
     // Write the response

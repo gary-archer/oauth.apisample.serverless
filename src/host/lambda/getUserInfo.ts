@@ -1,9 +1,10 @@
-import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
+import {APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
 import 'reflect-metadata';
 import {SampleExtraClaims} from '../../logic/claims/sampleExtraClaims.js';
 import {ClaimsPrincipal} from '../../plumbing/claims/claimsPrincipal.js';
 import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
+import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent.js';
 import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
 import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
 
@@ -12,11 +13,10 @@ import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
  * These values are separate to the core identity data returned from the OAuth user info endpoint
  */
 const parentContainer = new Container();
-const baseHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+const baseHandler = async (event: APIGatewayProxyExtendedEvent): Promise<APIGatewayProxyResult> => {
 
     // Return user information not stored in the authorization server
-    const container = (event as any).container as Container;
-    const claims = container.get<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal);
+    const claims = event.container.get<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal);
     const extraClaims = claims.extra as SampleExtraClaims;
     const userInfo = {
         title: extraClaims.getTitle(),
