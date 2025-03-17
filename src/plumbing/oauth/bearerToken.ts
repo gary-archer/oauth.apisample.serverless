@@ -1,5 +1,5 @@
-import {APIGatewayProxyEvent} from 'aws-lambda';
 import {ErrorFactory} from '../errors/errorFactory.js';
+import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
 
 /*
  * A simple class to read the access token from the request
@@ -9,7 +9,7 @@ export class BearerToken {
     /*
      * Try to read the token from the authorization header
      */
-    public static read(event: APIGatewayProxyEvent): string {
+    public static read(event: APIGatewayProxyExtendedEvent): string {
 
         if (event && event.headers) {
 

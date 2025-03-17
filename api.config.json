@@ -1,22 +1,22 @@
 {
     "api": {
         "useProxy": false,
-        "proxyUrl": ""
+        "proxyUrl": "http://127.0.0.1:8888"
     },
     "logging": {
         "apiName": "FinalApi",
-        "prettyPrint": false,
+        "prettyPrint": true,
         "performanceThresholdMilliseconds": 500
     },
     "oauth": {
-        "issuer":           "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_CuhLeqiE9",
-        "audience":         "",
+        "issuer":           "https://login.authsamples-dev.com",
+        "audience":         "api.authsamples.com",
         "algorithm":        "RS256",
         "scope":            "https://api.authsamples.com/investments",
-        "jwksEndpoint":     "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_CuhLeqiE9/.well-known/jwks.json"
+        "jwksEndpoint":     "http://login.authsamples-dev.com/.well-known/jwks.json"
     },
     "cache": {
-        "isActive": true,
+        "isActive": false,
         "region": "eu-west-2",
         "tableName": "OAUTH_CACHE",
         "claimsCacheTimeToLiveMinutes": 15

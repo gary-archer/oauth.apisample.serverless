@@ -1,12 +1,14 @@
-import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
+import {APIGatewayProxyResult} from 'aws-lambda';
 import middy from '@middy/core';
 import {BaseErrorCodes} from '../errors/baseErrorCodes.js';
 import {ErrorFactory} from '../errors/errorFactory.js';
+import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
 
 /*
  * A middleware for special header processing, used to simulate exceptions and check deployed error handling
  */
-export class CustomHeaderMiddleware implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
+export class CustomHeaderMiddleware implements
+    middy.MiddlewareObj<APIGatewayProxyExtendedEvent, APIGatewayProxyResult> {
 
     private readonly apiName: string;
 
@@ -18,7 +20,7 @@ export class CustomHeaderMiddleware implements middy.MiddlewareObj<APIGatewayPro
     /*
      * Simulate a 500 error if a particular test header is received
      */
-    public before(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
+    public before(request: middy.Request<APIGatewayProxyExtendedEvent, APIGatewayProxyResult>): void {
 
         const textExceptionHeaderName = 'x-authsamples-test-exception';
 

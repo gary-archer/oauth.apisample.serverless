@@ -1,10 +1,10 @@
 import {inject, injectable} from 'inversify';
-import {APIGatewayProxyEvent} from 'aws-lambda';
 import {createHash} from 'crypto';
 import {Cache} from '../cache/cache.js';
 import {ClaimsPrincipal} from '../claims/claimsPrincipal.js';
 import {ExtraClaimsProvider} from '../claims/extraClaimsProvider.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
+import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
 import {AccessTokenValidator} from './accessTokenValidator.js';
 import {BearerToken} from './bearerToken.js';
 
@@ -31,7 +31,7 @@ export class OAuthFilter {
     /*
      * Do the token validation and claims lookup
      */
-    public async execute(event: APIGatewayProxyEvent): Promise<ClaimsPrincipal> {
+    public async execute(event: APIGatewayProxyExtendedEvent): Promise<ClaimsPrincipal> {
 
         // First get the access token from the incoming request
         const accessToken = BearerToken.read(event);
@@ -47,7 +47,7 @@ export class OAuthFilter {
         }
 
         // Look up extra claims not in the JWT access token when it is first received
-        extraClaims = await this.extraClaimsProvider.lookupExtraClaims(tokenClaims);
+        extraClaims = await this.extraClaimsProvider.lookupExtraClaims(tokenClaims, event);
 
         // Cache the extra claims for subsequent requests with the same access token
         await this.cache.setExtraUserClaims(accessTokenHash, extraClaims);

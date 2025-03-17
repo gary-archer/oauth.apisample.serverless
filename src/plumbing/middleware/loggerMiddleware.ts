@@ -1,20 +1,18 @@
 import middy from '@middy/core';
-import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
-import {Container} from 'inversify';
+import {APIGatewayProxyResult} from 'aws-lambda';
 import {BASETYPES} from '../dependencies/baseTypes.js';
 import {LogEntryImpl} from '../logging/logEntryImpl.js';
 import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl.js';
+import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
 
 /*
  * The middleware coded in a class based manner
  */
-export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
+export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyExtendedEvent, APIGatewayProxyResult> {
 
-    private readonly container: Container;
     private readonly loggerFactory: LoggerFactoryImpl;
 
-    public constructor(container: Container, loggerFactory: LoggerFactoryImpl) {
-        this.container = container;
+    public constructor(loggerFactory: LoggerFactoryImpl) {
         this.loggerFactory = loggerFactory;
         this.setupCallbacks();
     }
@@ -22,13 +20,13 @@ export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEven
     /*
      * Start logging when a request begins
      */
-    public before(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
+    public before(request: middy.Request<APIGatewayProxyExtendedEvent, APIGatewayProxyResult>): void {
 
         // Create the log entry for the current request
         const logEntry = this.loggerFactory.createLogEntry();
 
         // Bind it to the container
-        this.container.rebind<LogEntryImpl>(BASETYPES.LogEntry).toConstantValue(logEntry);
+        request.event.container.bind<LogEntryImpl>(BASETYPES.LogEntry).toConstantValue(logEntry);
 
         // Start request logging
         logEntry.start(request.event, request.context);
@@ -37,10 +35,10 @@ export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyEven
     /*
      * Finish logging after normal completion
      */
-    public after(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
+    public after(request: middy.Request<APIGatewayProxyExtendedEvent, APIGatewayProxyResult>): void {
 
-        // Get the log entry
-        const logEntry = this.container.get<LogEntryImpl>(BASETYPES.LogEntry);
+        // Get the log entry for this request
+        const logEntry = request.event.container.get<LogEntryImpl>(BASETYPES.LogEntry);
 
         // End logging
         if (request.response && request.response.statusCode) {

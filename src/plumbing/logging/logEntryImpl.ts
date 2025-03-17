@@ -1,10 +1,11 @@
-import {APIGatewayProxyEvent, Context} from 'aws-lambda';
+import {Context} from 'aws-lambda';
 import {randomUUID} from 'crypto';
 import fs from 'fs-extra';
 import {injectable} from 'inversify';
 import os from 'os';
 import {ClientError} from '../errors/clientError.js';
 import {ServerError} from '../errors/serverError.js';
+import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
 import {LogEntry} from './logEntry.js';
 import {LogEntryData} from './logEntryData.js';
 import {PerformanceBreakdown} from './performanceBreakdown.js';
@@ -31,7 +32,7 @@ export class LogEntryImpl implements LogEntry {
     /*
      * Start logging and read data from the context where possible
      */
-    public start(event: APIGatewayProxyEvent, context: Context): void {
+    public start(event: APIGatewayProxyExtendedEvent, context: Context): void {
 
         this.data.performance.start();
 
@@ -168,7 +169,7 @@ export class LogEntryImpl implements LogEntry {
     /*
      * Log details from the incoming URL and query string
      */
-    private calculateRequestLocationFields(event: APIGatewayProxyEvent) {
+    private calculateRequestLocationFields(event: APIGatewayProxyExtendedEvent) {
 
         if (event) {
 
@@ -219,7 +220,7 @@ export class LogEntryImpl implements LogEntry {
     /*
      * Correlate requests together, including authorizers and lambdas
      */
-    private calculateCorrelationId(event: APIGatewayProxyEvent) {
+    private calculateCorrelationId(event: APIGatewayProxyExtendedEvent) {
 
         // See if there is an incoming valid
         const correlationId = this.getHeader(event, 'x-authsamples-correlation-id');
@@ -231,7 +232,7 @@ export class LogEntryImpl implements LogEntry {
     /*
      * Get a header value if supplied
      */
-    private getHeader(event: APIGatewayProxyEvent, key: string): string | null {
+    private getHeader(event: APIGatewayProxyExtendedEvent, key: string): string | null {
 
         if (event.headers) {
             const value = event.headers[key];

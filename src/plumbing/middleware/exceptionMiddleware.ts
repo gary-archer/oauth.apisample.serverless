@@ -1,25 +1,24 @@
-import {APIGatewayProxyEvent, APIGatewayProxyResult} from 'aws-lambda';
 import middy from '@middy/core';
-import {Container} from 'inversify';
+import {APIGatewayProxyResult} from 'aws-lambda';
 import {LoggingConfiguration} from '../configuration/loggingConfiguration.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
 import {ClientError} from '../errors/clientError.js';
 import {ErrorUtils} from '../errors/errorUtils.js';
 import {ServerError} from '../errors/serverError.js';
 import {LogEntryImpl} from '../logging/logEntryImpl.js';
+import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
 import {ResponseWriter} from '../utilities/responseWriter.js';
 
 /*
  * The exception middleware coded in a class based manner
  */
-export class ExceptionMiddleware implements middy.MiddlewareObj<APIGatewayProxyEvent, APIGatewayProxyResult> {
+export class ExceptionMiddleware implements
+    middy.MiddlewareObj<APIGatewayProxyExtendedEvent, APIGatewayProxyResult> {
 
-    private readonly container: Container;
     private readonly configuration: LoggingConfiguration;
 
-    public constructor(container: Container, configuration: LoggingConfiguration) {
+    public constructor(configuration: LoggingConfiguration) {
 
-        this.container = container;
         this.configuration = configuration;
         this.setupCallbacks();
     }
@@ -27,10 +26,10 @@ export class ExceptionMiddleware implements middy.MiddlewareObj<APIGatewayProxyE
     /*
      * All exceptions are caught and returned from AWS here
      */
-    public onError(request: middy.Request<APIGatewayProxyEvent, APIGatewayProxyResult>): void {
+    public onError(request: middy.Request<APIGatewayProxyExtendedEvent, APIGatewayProxyResult>): void {
 
         // Get the log entry
-        const logEntry = this.container.get<LogEntryImpl>(BASETYPES.LogEntry);
+        const logEntry = request.event.container.get<LogEntryImpl>(BASETYPES.LogEntry);
 
         // Get the error into a known object
         const error = ErrorUtils.fromException(request.error);

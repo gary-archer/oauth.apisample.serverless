@@ -1,6 +1,7 @@
 import {injectable} from 'inversify';
 import {JWTPayload} from 'jose';
 import {ExtraClaims} from './extraClaims.js';
+import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent.js';
 
 /*
  * Add extra claims that you cannot, or do not want to, manage in the authorization server
@@ -12,7 +13,7 @@ export class ExtraClaimsProvider {
      * Get additional claims from the API's own database
      */
     /* eslint-disable @typescript-eslint/no-unused-vars */
-    public async lookupExtraClaims(jwtClaims: JWTPayload): Promise<ExtraClaims> {
+    public async lookupExtraClaims(jwtClaims: JWTPayload, event: APIGatewayProxyExtendedEvent): Promise<ExtraClaims> {
         return new ExtraClaims();
     }
 
