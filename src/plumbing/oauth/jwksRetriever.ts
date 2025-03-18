@@ -1,128 +1,72 @@
-
-import axios, {AxiosRequestConfig} from 'axios';
+import axios from 'axios';
 import {inject, injectable} from 'inversify';
-import {CryptoKey, importJWK, JWK, JoseHeaderParameters} from 'jose';
-import {Cache} from '../cache/cache.js';
+import {createRemoteJWKSet, customFetch, JWTVerifyGetKey, RemoteJWKSetOptions} from 'jose';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
-import {ErrorFactory} from '../errors/errorFactory.js';
-import {ServerError} from '../errors/serverError.js';
-import {ErrorUtils} from '../errors/errorUtils.js';
 import {HttpProxy} from '../utilities/httpProxy.js';
 
 /*
- * This class deals with downloading and caching JWKS keys for lambda environments
+ * A singleton that caches the result of createRemoteJWKSet, to ensure efficient lookup
  */
 @injectable()
 export class JwksRetriever {
 
-    private readonly configuration: OAuthConfiguration;
-    private readonly cache: Cache;
+    private readonly remoteJWKSet: JWTVerifyGetKey;
     private readonly httpProxy: HttpProxy;
 
     public constructor(
         @inject(BASETYPES.OAuthConfiguration) configuration: OAuthConfiguration,
-        @inject(BASETYPES.Cache) cache: Cache,
         @inject(BASETYPES.HttpProxy) httpProxy: HttpProxy) {
 
-        this.configuration = configuration;
-        this.cache = cache;
         this.httpProxy = httpProxy;
         this.setupCallbacks();
-    }
 
-    /*
-     * Do our own DynamoDB based caching of JWKS keys since the JOSE library cannot cache them for lambdas
-     */
-    public async getKey(protectedHeader: JoseHeaderParameters): Promise<CryptoKey | Uint8Array> {
+        // View requests via an HTTP proxy if required
+        const jwksOptions = {
+            [customFetch]: this.fetchJwks,
+        } as RemoteJWKSetOptions;
 
-        try {
-
-            // See if the JSON Web Key for this key id is cached outside this lambda
-            const key = await this.getCachedKey(protectedHeader.kid);
-            if (key) {
-                return importJWK(key);
-            }
-
-            // If not then download all JSON web keys
-            const keysText = await this.downloadKeys();
-            const data = JSON.parse(keysText);
-            const keys = data.keys as JWK[];
-
-            // Then replace keys in the cache and return the result
-            const foundKey = keys.find((k: JoseHeaderParameters) => k.kid === protectedHeader.kid);
-            if (foundKey) {
-
-                // Then replace JWKS keys in the cache, which will only occur rarely
-                this.cache.setJwksKeys(keysText);
-
-                // Then parse the JWK into a crypto object
-                return importJWK(foundKey);
-            }
-
-            throw ErrorFactory.createClient401Error('A JWT kid field was received that does not exist in JWS keys');
-
-        } catch (e) {
-
-            if (e instanceof ServerError) {
-                throw e;
-            }
-
-            // Errors are reported as a 500 service error rather than 401s, to reduce work for clients
-            throw ErrorUtils.fromJwksProcessingError(e);
-        }
-    }
-
-    /*
-     * The jose library caches downloaded JWKS keys, but a new lambda is spun up on every request
-     * Therefore we instead cache keys in DynamoDB cache for the deployed system
-     */
-    private async getCachedKey(kid?: string): Promise<JWK | null> {
-
-        const keysText = await this.cache.getJwksKeys();
-        if (keysText) {
-
-            const data = JSON.parse(keysText);
-            const keys = data.keys as JWK[];
-            const foundKey = keys.find((k: any) => k.kid === kid);
-            if (foundKey) {
-                return foundKey;
-            }
+        // Integration tests use a value of zero to ensure multiple test runs without unfound JWK errors
+        if (configuration.jwksCooldownDuration !== undefined) {
+            jwksOptions.cooldownDuration = configuration.jwksCooldownDuration;
         }
 
-        return null;
+        // Create this object only once
+        this.remoteJWKSet = createRemoteJWKSet(new URL(configuration.jwksEndpoint), jwksOptions);
     }
 
     /*
-     * Get the keys as raw text and work around this issue: https://github.com/axios/axios/issues/907
+     * Return the global object
      */
-    private async downloadKeys(): Promise<string> {
-
-        try {
-
-            const options = {
-                url: this.configuration.jwksEndpoint,
-                method: 'GET',
-                responseType: 'arraybuffer',
-                headers: {
-                    'accept': 'application/json',
-                },
-                httpAgent: this.httpProxy.getAgent(),
-            };
-
-            const response = await axios.request(options as AxiosRequestConfig);
-            return Buffer.from(response.data as any, 'binary').toString();
-
-        } catch (e) {
-
-            throw ErrorUtils.fromSigningKeyDownloadError(e, this.configuration.jwksEndpoint);
-        }
+    public getRemoteJWKSet(): JWTVerifyGetKey {
+        return this.remoteJWKSet;
     }
 
     /*
-     * Plumbing to ensure that the this parameter is available in async callbacks
+     * To support the use of an HTTP proxy I use axios to download the JWKS
+     */
+    private async fetchJwks(url: string): Promise<any> {
+
+        const options = {
+            url,
+            method: 'GET',
+            headers: {
+                'accept': 'application/json',
+            },
+            httpsAgent: this.httpProxy.getAgent(),
+        };
+
+        const response = await axios.request(options);
+        return {
+            status: response.status,
+            json: async () => response.data,
+        };
+    }
+
+    /*
+     * Set up async callbacks
      */
     private setupCallbacks(): void {
-        this.getKey = this.getKey.bind(this);
+        this.fetchJwks = this.fetchJwks.bind(this);
     }
 }

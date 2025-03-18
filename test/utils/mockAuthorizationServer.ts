@@ -19,7 +19,7 @@ export class MockAuthorizationServer {
 
         this.baseUrl = 'http://login.authsamples-dev.com/__admin/mappings';
         this.httpProxy = new HttpProxy(useProxy, 'http://127.0.0.1:8888');
-        this.algorithm = 'RS256';
+        this.algorithm = 'ES256';
         this.keyId = randomUUID();
     }
 

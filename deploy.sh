@@ -45,11 +45,11 @@ fi
 #
 # Do the Serverless deployment
 #
-"$SLS" deploy --stage deployed --package .serverless
-if [ $? -ne 0 ]; then
-  echo 'Problem encountered packaging the API'
-  exit
-fi
+#"$SLS" deploy --stage deployed --package .serverless
+#if [ $? -ne 0 ]; then
+#  echo 'Problem encountered packaging the API'
+#  exit
+#fi
 
 #
 # Replace the development configuration on success

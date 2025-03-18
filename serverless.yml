@@ -8,22 +8,6 @@ provider:
   apiGateway:
     shouldStartNameWithService: true
 
-  # Grant lambdas access to the DynamoDB cache table
-  iam:
-    role:
-      statements:
-      - Effect: Allow
-        Action:
-          - dynamodb:DescribeTable
-          - dynamodb:Query
-          - dynamodb:Scan
-          - dynamodb:GetItem
-          - dynamodb:PutItem
-          - dynamodb:UpdateItem
-          - dynamodb:DeleteItem
-        Resource:
-          - "Fn::GetAtt": [ CacheTable, Arn ]
-
 # Serverless domain manager details
 custom:
   customDomain:
@@ -64,14 +48,14 @@ functions:
 package:
   patterns:
   - '!.codacy.yaml'
-  - '!.eslintrc'
   - '!.mocharc.json'
   - '!.vscode/**'
+  - '!eslint.config.mjs'
   - '!environments/**'
   - '!src/**'
   - '!doc/**'
   - '!test/**'
-  - '!ts*.json'
+  - '!tsconfig.json'
   - '!package-lock.json'
   - '!README.md'
   - '!LICENSE.txt'
@@ -82,22 +66,6 @@ plugins:
 
 resources:
   Resources:
-
-    # Use DynamoDB as a cache for both JWKS keys and extra claims
-    CacheTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: OAUTH_CACHE
-        AttributeDefinitions:
-          - AttributeName: CACHE_KEY
-            AttributeType: S
-        KeySchema:
-          - AttributeName: CACHE_KEY
-            KeyType: HASH
-        TimeToLiveSpecification:
-          AttributeName: TTL_VALUE
-          Enabled: true
-        BillingMode: PAY_PER_REQUEST
 
     # Limit cloudwatch log retention 
     getUserInfoLogGroup:

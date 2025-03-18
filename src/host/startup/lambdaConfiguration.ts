@@ -40,10 +40,10 @@ export class LambdaConfiguration {
 
             // Register common code dependencies for security, logging and error handling
             const base = new BaseCompositionRoot(parentContainer)
-                .useLogging(configuration.logging, loggerFactory)
                 .useOAuth(configuration.oauth)
-                .withExtraClaimsProvider(new SampleExtraClaimsProvider(), configuration.cache)
-                .useHttpProxy(httpProxy)
+                .withExtraClaimsProvider(new SampleExtraClaimsProvider())
+                .withLogging(configuration.logging, loggerFactory)
+                .withHttpProxy(httpProxy)
                 .register();
 
             // Register API specific dependencies
