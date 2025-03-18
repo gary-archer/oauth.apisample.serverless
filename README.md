@@ -7,7 +7,7 @@
 The Serverless OAuth secured Node.js API code sample:
 
 - The API takes control over OAuth claims-based authorization to enable security with good manageability.
-- The API uses JSON request logging and log aggregation, for the best supportability.
+- The API uses JSON request logging and can use log aggregation, for the best supportability.
 
 ## API Serves Frontend Clients
 
