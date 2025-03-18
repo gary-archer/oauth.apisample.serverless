@@ -39,8 +39,7 @@ Run this command to build code and then run mocha tests that invoke all lambdas:
 
 This works well enough to meet my low cost deployment goals, though these technical limitations exist:
 
-- The lambdas cannot be run as real HTTP endpoints locally, and be called concurrently by clients.
-- The lambdas cannot be load tested locally, due to the slow lambda startup times.
+- The lambdas have limited options for running as local HTTP endpoints.
 - The lambdas use in-memory caching but less efficiently than my cloud native APIs.
 
 ## Further Information
@@ -59,4 +58,4 @@ This works well enough to meet my low cost deployment goals, though these techni
 * AWS Certificate Manager issues and auto-renews the API's SSL certificate.
 * AWS Cognito is the API's default authorization server.
 * The AWS API Gateway provides the internet API entry point.
-* The API logs output to CloudWatch and could be shipped to a log aggregation system.
+* The API outputs logs to CloudWatch and they could be shipped to a log aggregation system.
