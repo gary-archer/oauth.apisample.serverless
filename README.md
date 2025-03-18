@@ -41,7 +41,7 @@ This works well enough to meet my low cost deployment goals, though these techni
 
 - The lambdas cannot be run as real HTTP endpoints locally, and be called concurrently by clients.
 - The lambdas cannot be load tested locally, due to the slow lambda startup times.
-- The lambdas cannot use in-memory caching of token signing public keys or extra claims.
+- The lambdas use in-memory caching but less efficiently than my cloud native APIs.
 
 ## Further Information
 
@@ -57,7 +57,6 @@ This works well enough to meet my low cost deployment goals, though these techni
 * The [jose](https://github.com/panva/jose) library manages in-memory JWT validation.
 * AWS Route 53 provides custom hosting domains.
 * AWS Certificate Manager issues and auto-renews the API's SSL certificate.
-* AWS Cognito is the API's default Authorization Server.
-* DynamoDB caches JWKS keys and extra claims.
-* The AWS API Gateway is the internet API entry point.
+* AWS Cognito is the API's default authorization server.
+* The AWS API Gateway provides the internet API entry point.
 * The API logs output to CloudWatch and could be shipped to a log aggregation system.
