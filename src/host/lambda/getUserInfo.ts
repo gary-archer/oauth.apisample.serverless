@@ -1,17 +1,15 @@
 import {APIGatewayProxyResult} from 'aws-lambda';
-import {Container} from 'inversify';
 import 'reflect-metadata';
 import {SampleExtraClaims} from '../../logic/claims/sampleExtraClaims.js';
 import {ClaimsPrincipal} from '../../plumbing/claims/claimsPrincipal.js';
 import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
 import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent.js';
 import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
-import {LambdaConfiguration} from '../startup/lambdaConfiguration.js';
+import {LambdaInstance} from '../startup/lambdaInstance.js';
 
 /*
- * A lambda to return user info not stored in the authorization server
+ * Logic for each HTTP request uses a container per request to return API user info
  */
-const parentContainer = new Container();
 const baseHandler = async (event: APIGatewayProxyExtendedEvent): Promise<APIGatewayProxyResult> => {
 
     const claims = event.container.get<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal);
@@ -24,9 +22,7 @@ const baseHandler = async (event: APIGatewayProxyExtendedEvent): Promise<APIGate
     return ResponseWriter.successResponse(200, userInfo);
 };
 
-// Create an enriched handler, which wires up middleware to run before the above handler
-const configuration = new LambdaConfiguration();
-const handler = await configuration.enrichHandler(baseHandler, parentContainer);
-
-// Export the handler to serverless.yml
+// Prepare the lambda instance, which is used for multiple HTTP requests, with cross cutting concerns
+const instance = new LambdaInstance();
+const handler = await instance.prepare(baseHandler);
 export {handler};

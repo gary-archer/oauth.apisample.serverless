@@ -13,26 +13,29 @@ import {Configuration} from '../configuration/configuration.js';
 import {CompositionRoot} from '../dependencies/compositionRoot.js';
 
 /*
- * A shorthand type for this module
+ * A shorthand for the lambda handler method signature
  */
-type AsyncHandler = (event: APIGatewayProxyExtendedEvent, context: Context) => Promise<APIGatewayProxyResult>;
+type LambdaHandler = (event: APIGatewayProxyExtendedEvent, context: Context) => Promise<APIGatewayProxyResult>;
 
 /*
- * A class to configure the lambda and manage cross cutting concerns
+ * Each instance of the lambda receives multiple HTTP requests
  */
-export class LambdaConfiguration {
+export class LambdaInstance {
 
     /*
-     * Apply cross cutting concerns to a lambda
+     * Enrich the base handler with middleware to manage cross cutting concerns
      */
-    public async enrichHandler(baseHandler: AsyncHandler, parentContainer: Container)
-        : Promise<middy.MiddyfiedHandler<APIGatewayProxyExtendedEvent, APIGatewayProxyResult> | AsyncHandler> {
+    public async prepare(baseHandler: LambdaHandler)
+        : Promise<middy.MiddyfiedHandler<APIGatewayProxyExtendedEvent, APIGatewayProxyResult> | LambdaHandler> {
 
         const loggerFactory = LoggerFactoryBuilder.create();
         try {
 
-            // Load our JSON configuration
+            // Load configuration
             const configuration = this.loadConfiguration();
+
+            // Create the container to manage dependencies and lifetimes
+            const parentContainer = new Container();
 
             // Initialize the HTTP proxy object
             const httpProxy = new HttpProxy(configuration.api.useProxy, configuration.api.proxyUrl);
@@ -56,7 +59,7 @@ export class LambdaConfiguration {
             const authorizerMiddleware = base.getAuthorizerMiddleware();
             const customHeaderMiddleware = base.getCustomHeaderMiddleware();
 
-            // Wrap the base handler and add middleware for cross cutting concerns
+            // Wrap the base handler with the middleware
             return middy(async (event: APIGatewayProxyExtendedEvent, context: Context) => {
                 return baseHandler(event, context);
 
@@ -87,7 +90,7 @@ export class LambdaConfiguration {
     /*
      * Ensure that any startup errors are logged and then return a handler that will provide the client response
      */
-    private handleStartupError(loggerFactory: LoggerFactory, error: any): AsyncHandler {
+    private handleStartupError(loggerFactory: LoggerFactory, error: any): LambdaHandler {
 
         const clientError = loggerFactory.logStartupError(error);
         return async () => {
