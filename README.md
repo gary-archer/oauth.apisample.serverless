@@ -6,6 +6,7 @@
  
 The Serverless OAuth secured Node.js API code sample:
 
+- The API users a zero trust approach and does its own JWT access token validation.
 - The API takes control over OAuth claims-based authorization to enable security with good manageability.
 - The API uses JSON request logging and can use log aggregation, for the best supportability.
 
