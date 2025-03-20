@@ -34,7 +34,7 @@ export class LambdaInstance {
             // Load configuration
             const configuration = this.loadConfiguration();
 
-            // Create the container to manage dependencies and lifetimes
+            // Create a parent container to manage dependencies and lifetimes
             const parentContainer = new Container();
 
             // Initialize the HTTP proxy object
@@ -59,12 +59,11 @@ export class LambdaInstance {
             const authorizerMiddleware = base.getAuthorizerMiddleware();
             const customHeaderMiddleware = base.getCustomHeaderMiddleware();
 
-            // Wrap the base handler with the middleware
+            // Wrap the base handler with middleware that runs in the following sequence
             return middy(async (event: APIGatewayProxyExtendedEvent, context: Context) => {
                 return baseHandler(event, context);
 
             })
-                // Handlers run in the reverse order listed here, so that exceptions are handled then logged
                 .use(childContainerMiddleware)
                 .use(loggerMiddleware)
                 .use(exceptionMiddleware)

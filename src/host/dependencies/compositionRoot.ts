@@ -11,15 +11,13 @@ import {JsonFileReader} from '../../logic/utilities/jsonFileReader.js';
 export class CompositionRoot {
 
     /*
-     * Register this API's dependencies, most of which will be recreated for each API request
-     * Note also that Inversify instantiates each per request object at application startup to create a dependency graph
+     * Register this API's dependencies
      */
-    public static register(container: Container): void {
+    public static register(parentContainer: Container): void {
 
-        // Business logic classes use a non REST based transient scope
-        container.bind<CompanyService>(SAMPLETYPES.CompanyService).to(CompanyService).inTransientScope();
-        container.bind<CompanyRepository>(SAMPLETYPES.CompanyRepository).to(CompanyRepository).inTransientScope();
-        container.bind<UserRepository>(SAMPLETYPES.UserRepository).to(UserRepository).inTransientScope();
-        container.bind<JsonFileReader>(SAMPLETYPES.JsonFileReader).to(JsonFileReader).inTransientScope();
+        parentContainer.bind<CompanyService>(SAMPLETYPES.CompanyService).to(CompanyService).inTransientScope();
+        parentContainer.bind<CompanyRepository>(SAMPLETYPES.CompanyRepository).to(CompanyRepository).inTransientScope();
+        parentContainer.bind<UserRepository>(SAMPLETYPES.UserRepository).to(UserRepository).inTransientScope();
+        parentContainer.bind<JsonFileReader>(SAMPLETYPES.JsonFileReader).to(JsonFileReader).inTransientScope();
     }
 }
