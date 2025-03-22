@@ -38,10 +38,7 @@ Run this command to build code and then run mocha tests that invoke all lambdas:
 ./start.sh
 ```
 
-This works well enough to meet my low cost deployment goals, though these technical limitations exist:
-
-- The lambdas have limited options for running as local HTTP endpoints.
-- The lambdas use in-memory caching but less efficiently than my cloud native APIs.
+This works well enough to meet my low cost deployment goals, though the options for running code locally are more limited than my equivalent [Cloud Native Node.js API](https://github.com/gary-archer/oauth.apisample.nodejs).
 
 ## Further Information
 
