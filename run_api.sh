@@ -49,6 +49,7 @@ npx sls offline \
   --httpPort 446 \
   --httpsProtocol certs
 if [ $? -ne 0 ]; then
+  echo '** Problem encountered starting Serverless Offline'
   exit 1
 fi
 
