@@ -11,15 +11,16 @@
   "scripts": {
     "login": "sls login",
     "lint": "npx eslint . --ignore-pattern dist",
+    "start": "./start.sh",
+    "testsetup": "./test/scripts/testsetup.sh",
+    "test": "./test/scripts/test.sh",
     "build": "rm -rf dist && tsc",
     "buildRelease": "rm -rf dist && tsc --sourceMap false",
-    "start": "./start.sh",
-    "test": "./start.sh",
+    "loadtest": "./test/scripts/loadtest.sh",
     "deploy": "./deploy.sh",
     "remove": "sls remove --stage deployed"
   },
   "dependencies": {
-    "@middy/core": "^6.1.5",
     "axios": "^1.8.3",
     "fs-extra": "^11.3.0",
     "inversify": "^7.1.0",
@@ -28,17 +29,19 @@
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {
+    "@colors/colors": "^1.6.0",
     "@eslint/js": "^9.22.0",
+    "@middy/core": "^6.1.5",
     "@types/aws-lambda": "^8.10.147",
     "@types/fs-extra": "^11.0.1",
     "@types/mocha": "^10.0.10",
     "@types/node": "^20.16.13",
-    "child-process": "^1.0.2",
     "eslint": "^9.22.0",
-    "http-proxy-agent": "^7.0.2",
+    "https-proxy-agent": "^7.0.5",
     "mocha": "^11.1.0",
     "serverless": "^4.7.0",
     "serverless-domain-manager": "^8.0.0",
+    "serverless-offline": "^14.4.0",
     "tsx": "^4.19.2",
     "typescript": "^5.8",
     "typescript-eslint": "^8.26.1"

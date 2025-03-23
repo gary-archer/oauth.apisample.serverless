@@ -2,6 +2,7 @@
 node_modules
 dist
 .serverless
-lambdatest.log
-input.txt
-output.txt
+*.log
+certs/*.p12
+certs/*.crt
+certs/*.pem

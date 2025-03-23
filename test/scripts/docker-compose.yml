@@ -6,8 +6,15 @@ services:
   wiremock:
     image: wiremock/wiremock:latest
     ports:
-      - 80:80
+      - 447:447
+    volumes:
+      - ../../certs/authsamples-dev.ssl.p12:/certs/authsamples-dev.ssl.p12
     environment:
       WIREMOCK_OPTIONS: >
         --root-dir test/integration
-        --port 80
+         --https-port 447
+         --disable-http
+         --https-keystore /certs/authsamples-dev.ssl.p12
+         --keystore-type pkcs12
+         --keystore-password Password1
+         --key-manager-password Password1

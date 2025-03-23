@@ -1,5 +1,5 @@
 {
     "extension": ["ts"],
     "node-option": ["import=tsx"],
-    "spec": ["test/apiTests.ts"]
+    "spec": ["test/integrationTests.ts"]
 }

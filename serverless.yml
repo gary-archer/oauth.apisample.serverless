@@ -62,6 +62,7 @@ package:
   - '!*.sh'
 
 plugins:
+  - serverless-offline
   - serverless-domain-manager
 
 resources:
