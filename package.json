@@ -11,10 +11,11 @@
   "scripts": {
     "login": "sls login",
     "lint": "npx eslint . --ignore-pattern dist",
-    "build": "rm -rf dist && tsc",
+    "start": "./start.sh",
+    "testsetup": "./test/scripts/testsetup.sh",
+    "test": "./test/scripts/test.sh",
     "buildRelease": "rm -rf dist && tsc --sourceMap false",
-    "start": "sls offline",
-    "test": "./start.sh",
+    "loadtest": "./test/scripts/loadtest.sh",
     "deploy": "./deploy.sh",
     "remove": "sls remove --stage deployed"
   },

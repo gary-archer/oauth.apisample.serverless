@@ -30,11 +30,15 @@ fi
 #
 # If certificates already exist for another code sample, copy them to the local folder
 #
-ROOT_CA_PATH="$SECRETS_FOLDER/authsamples-dev.ca.crt"
+KEY_PATH="$SECRETS_FOLDER/authsamples-dev.ssl.key"
+CERT_PATH="$SECRETS_FOLDER/authsamples-dev.ssl.crt"
 P12_PATH="$SECRETS_FOLDER/authsamples-dev.ssl.p12"
-if [ -f "$ROOT_CA_PATH" ] && [ -f "$P12_PATH" ]; then
-  cp "$ROOT_CA_PATH" .
+ROOT_CA_PATH="$SECRETS_FOLDER/authsamples-dev.ca.crt"
+if [ -f "$KEY_PATH" ] && [ -f "$CERT_PATH" ] && [ -f "$P12_PATH" ] && [ -f "$ROOT_CA_PATH" ]; then
+  cp "$KEY_PATH" ./key.pem
+  cp "$CERT_PATH" ./cert.pem
   cp "$P12_PATH" .
+  cp "$ROOT_CA_PATH" .
   exit 0
 fi
 
@@ -49,5 +53,7 @@ fi
 #
 # Copy certificate files locally
 #
-cp "$ROOT_CA_PATH" .
+cp "$KEY_PATH" ./key.pem
+cp "$CERT_PATH" ./cert.pem
 cp "$P12_PATH" .
+cp "$ROOT_CA_PATH" .

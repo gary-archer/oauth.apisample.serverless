@@ -8,9 +8,9 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 cd ../..
 
 #
-# Copy down the test configuration, to point the API to Wiremock rather than AWS Cognito
+# Ensure that the development configuration is used
 #
-cp deployment/environments/test/api.config.json ./api.config.json
+cp environments/dev.config.json ./api.config.json
 
 #
 # Create SSL certificates if required
@@ -80,11 +80,6 @@ API_URL='https://api.authsamples-dev.com:446/investments/companies'
 while [ "$(curl -k -s -X GET -o /dev/null -w '%{http_code}' "$API_URL")" != '401' ]; do
   sleep 2
 done
-
-#
-# Restore the API configuration once the API is loaded
-#
-cp deployment/environments/dev/api.config.json ./api.config.json
 
 #
 # Indicate success

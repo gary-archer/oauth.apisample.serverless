@@ -1,0 +1,47 @@
+{
+  "id": "dbf3e8fd-5c35-499a-9dbe-226ac07095a5",
+  "utcTime": "2025-03-23T10:05:13.762Z",
+  "apiName": "FinalApi",
+  "operationName": "getUserInfo",
+  "hostName": "UBUNTU",
+  "method": "GET",
+  "path": "/userinfo",
+  "statusCode": 401,
+  "errorCode": "invalid_token",
+  "millisecondsTaken": 1,
+  "millisecondsThreshold": 500,
+  "correlationId": "5e492840-0322-45f3-b486-b847a2d99847",
+  "errorData": {
+    "statusCode": 401,
+    "clientError": {
+      "code": "invalid_token",
+      "message": "Missing, invalid or expired access token"
+    },
+    "context": {
+      "details": "No access token was found in an API request"
+    }
+  }
+}{
+  "id": "5557036d-0cac-4a9e-ac54-7332286298bb",
+  "utcTime": "2025-03-23T10:22:16.508Z",
+  "apiName": "FinalApi",
+  "operationName": "getCompanyList",
+  "hostName": "UBUNTU",
+  "method": "GET",
+  "path": "/investments/companies",
+  "statusCode": 401,
+  "errorCode": "invalid_token",
+  "millisecondsTaken": 1,
+  "millisecondsThreshold": 500,
+  "correlationId": "3490aee5-be65-4442-b66f-47a57d476f96",
+  "errorData": {
+    "statusCode": 401,
+    "clientError": {
+      "code": "invalid_token",
+      "message": "Missing, invalid or expired access token"
+    },
+    "context": {
+      "details": "No access token was found in an API request"
+    }
+  }
+}
