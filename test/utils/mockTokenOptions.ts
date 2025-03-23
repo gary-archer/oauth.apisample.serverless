@@ -7,7 +7,7 @@ export class MockTokenOptions {
 
     public audience = 'api.authsamples.com';
 
-    public scope = 'openid profile https://api.authsamples.com/investments';
+    public scope = 'openid profile investments';
 
     public role = '';
 
@@ -21,7 +21,7 @@ export class MockTokenOptions {
      * Test with the user identities for the standard user
      */
     public useStandardUser(): void {
-        this.subject = '06e3c525-33d1-47ec-97be-03d8affc3726';
+        this.subject = 'a6b404b1-98af-41a2-8e7f-e4061dc0bf86';
         this.managerId = '10345';
         this.role = 'user';
     }
@@ -30,7 +30,7 @@ export class MockTokenOptions {
      * Test with the user identities for the admin user
      */
     public useAdminUser(): void {
-        this.subject = 'd3d64319-1f84-42bb-92cb-5883793c50dc';
+        this.subject = '77a97e5b-b748-45e5-bb6f-658e85b2df91';
         this.managerId = '20116';
         this.role = 'admin';
     }

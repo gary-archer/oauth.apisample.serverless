@@ -15,9 +15,9 @@ export class MockAuthorizationServer {
     private keypair!: GenerateKeyPairResult;
     private keyId: string;
 
-    public constructor(useProxy = false) {
+    public constructor(useProxy: boolean) {
 
-        this.baseUrl = 'http://login.authsamples-dev.com/__admin/mappings';
+        this.baseUrl = 'https://login.authsamples-dev.com:447/__admin/mappings';
         this.httpProxy = new HttpProxy(useProxy, 'http://127.0.0.1:8888');
         this.algorithm = 'ES256';
         this.keyId = randomUUID();

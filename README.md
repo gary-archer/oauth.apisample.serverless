@@ -6,6 +6,7 @@
  
 The Serverless OAuth secured Node.js API code sample:
 
+- The API users a zero trust approach and does its own JWT access token validation.
 - The API takes control over OAuth claims-based authorization to enable security with good manageability.
 - The API uses JSON request logging and can use log aggregation, for the best supportability.
 
@@ -24,23 +25,71 @@ This enables productive frontend developemnt against remote cloud endpoints:
 The API's clients are UIs, which get user-level access tokens by running an OpenID Connect code flow.\
 To enable test-driven development, the API instead mocks the authorization server:
 
-![Local Lambda Tests](./doc/local-lambda-tests.png)
+![Local Lambda Tests](./images/tests.png)
 
-## How to Run the API
+A basic load test fires batches of concurrent requests at the API.\
+This further verifies reliability and the correctness of API logs.
 
-- Ensure that Node.js 20 or later is installed
-- Integration tests run Wiremock in Docker, so ensure that Docker is installed
+![Load Test](./images/loadtest.png)
 
-Run this command to build code and then run mocha tests that invoke all lambdas:
+### API is Supportable
+
+You could aggregate API logs to Elasticsearch and run [Technical Support Queries](https://github.com/gary-archer/oauth.blog/tree/master/public/posts/api-technical-support-analysis.mdx).
+
+![Support Queries](./images/support-queries.png)
+
+## Local Development Quick Start
+
+To run the code sample locally you must configure some infrastructure before you run the code.
+
+### Configure DNS and SSL
+
+Configure custom development domains by adding these DNS entries to your hosts file:
+
+```bash
+127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com
+```
+
+Install OpenSSL 3+ if required, create a secrets folder, then create development certificates:
+
+```bash
+export SECRETS_FOLDER="$HOME/secrets"
+mkdir -p "$SECRETS_FOLDER"
+./certs/create.sh
+```
+
+If required, configure [Node.js SSL trust](
+https://github.com/gary-archer/oauth.blog/tree/master/public/posts/developer-ssl-setup.mdx#trusting-a-root-certificate-in-nodejs-apis) for the root CA at the following location:
+
+```text
+./certs/authsamples-dev.ca.crt
+```
+
+### Run the Code
+
+- Install Node.js 20+.
+- Also install Docker to run integration tests that use Wiremock.
+
+Then run the API with this command:
 
 ```bash
 ./start.sh
 ```
 
-This works well enough to meet my low cost deployment goals, though these technical limitations exist:
+### Test the API
 
-- The lambdas have limited options for running as local HTTP endpoints.
-- The lambdas use in-memory caching but less efficiently than my cloud native APIs.
+Stop the API, then re-run it with a test configuration:
+
+```bash
+npm run testsetup
+```
+
+Then run integration tests and a load test:
+
+```bash
+npm test
+npm run loadtest
+```
 
 ## Further Information
 
@@ -49,7 +98,7 @@ This works well enough to meet my low cost deployment goals, though these techni
 
 ## Programming Languages
 
-* The API uses Node.js and TypeScript.
+* The API uses Node.js, TypeScript and the Serverless framework.
 
 ## Infrastructure
 
