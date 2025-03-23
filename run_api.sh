@@ -12,7 +12,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 if [ ! -d 'node_modules' ]; then
   npm install
   if [ $? -ne 0 ]; then
-    echo 'Problem encountered installing dependencies'
+    echo '*** Problem encountered installing dependencies'
     read -n 1
     exit 1
   fi
@@ -23,7 +23,17 @@ fi
 #
 npm run lint
 if [ $? -ne 0 ]; then
-  echo 'Code quality checks failed'
+  echo '*** Code quality checks failed'
+  read -n 1
+  exit 1
+fi
+
+#
+# Build code
+#
+npm run build
+if [ $? -ne 0 ]; then
+  echo '** Problem encountered building the API code'
   read -n 1
   exit 1
 fi

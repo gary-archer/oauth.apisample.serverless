@@ -137,7 +137,7 @@ export class LogEntryImpl implements LogEntry {
 
             // On a developer PC, output from 'npm run lambda' is written with pretty printing to a file
             const data = JSON.stringify(this.data.toLogFormat(), null, 2);
-            fs.appendFileSync('./test/lambdatest.log', data);
+            fs.appendFileSync('./api.log', data);
 
         } else {
 

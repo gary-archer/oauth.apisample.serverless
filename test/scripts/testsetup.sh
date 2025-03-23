@@ -8,9 +8,9 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 cd ../..
 
 #
-# Ensure that the development configuration is used
+# Ensure that the test configuration is used
 #
-cp environments/dev.config.json ./api.config.json
+cp environments/test.config.json ./api.config.json
 
 #
 # Create SSL certificates if required

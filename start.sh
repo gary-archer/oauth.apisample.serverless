@@ -1,15 +1,14 @@
 #!/bin/bash
 
-##########################################################################
-# A script to build and run the API locally
-# On Windows, ensure that you have first set Git bash as the node.js shell
-# - npm config set script-shell "C:\\Program Files\\git\\bin\\bash.exe"
-##########################################################################
+###########################################################################################
+# A script to build and run the Serverless API using HTTPS locally using Serverless Offline
+###########################################################################################
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 #
-# Ensure that the development configuration is used
+# Ensure that the development configuration is used that points to AWS Cognito
+# You can then run a frontend locally that calls the Serverless API
 #
 cp environments/dev.config.json ./api.config.json
 

@@ -14,6 +14,7 @@
     "start": "./start.sh",
     "testsetup": "./test/scripts/testsetup.sh",
     "test": "./test/scripts/test.sh",
+    "build": "rm -rf dist && tsc",
     "buildRelease": "rm -rf dist && tsc --sourceMap false",
     "loadtest": "./test/scripts/loadtest.sh",
     "deploy": "./deploy.sh",
@@ -28,6 +29,7 @@
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {
+    "@colors/colors": "^1.6.0",
     "@eslint/js": "^9.22.0",
     "@middy/core": "^6.1.5",
     "@types/aws-lambda": "^8.10.147",
