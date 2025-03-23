@@ -45,7 +45,7 @@ npx sls offline \
   --useInProcess \
   --noPrependStageInUrl \
   --prefix 'investments' \
-  --host api.authsamples-dev.com \
+  --host '0.0.0.0' \
   --httpPort 446 \
   --httpsProtocol certs
 if [ $? -ne 0 ]; then
