@@ -15,12 +15,10 @@ cp ./environments/deployed.config.json ./api.config.json
 #
 # Install dependencies if needed
 #
-if [ ! -d 'node_modules' ]; then
-  npm install
-  if [ $? -ne 0 ]; then
-    echo '*** Problem encountered installing API dependencies'
-    exit
-  fi
+npm install
+if [ $? -ne 0 ]; then
+  echo '*** Problem encountered installing API dependencies'
+  exit
 fi
 
 #

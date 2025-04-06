@@ -9,13 +9,11 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 #
 # Install dependencies if needed
 #
-if [ ! -d 'node_modules' ]; then
-  npm install
-  if [ $? -ne 0 ]; then
-    echo '*** Problem encountered installing dependencies'
-    read -n 1
-    exit 1
-  fi
+npm install
+if [ $? -ne 0 ]; then
+  echo '*** Problem encountered installing dependencies'
+  read -n 1
+  exit 1
 fi
 
 #
