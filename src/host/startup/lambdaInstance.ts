@@ -82,8 +82,8 @@ export class LambdaInstance {
      */
     private loadConfiguration(): Configuration {
 
-        const configBuffer = fs.readFileSync('api.config.json');
-        return JSON.parse(configBuffer.toString()) as Configuration;
+        const configJson = fs.readFileSync('api.config.json', 'utf8');
+        return JSON.parse(configJson) as Configuration;
     }
 
     /*
