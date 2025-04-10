@@ -17,15 +17,15 @@ export class JsonFileReader {
         try {
 
             // Try the file operation
-            const buffer = await fs.readFile(filePath);
-            return JSON.parse(buffer.toString()) as T;
+            const json = await fs.readFile(filePath, 'utf8');
+            return JSON.parse(json) as T;
 
         } catch (e: any) {
 
             // Report the error including an error code and exception details
             const error = ErrorFactory.createServerError(
                 ErrorCodes.fileReadError,
-                'Problem encountered reading data',
+                `Problem encountered reading file ${filePath}`,
                 e.stack);
 
             // File system errors are a JSON object with the error number
