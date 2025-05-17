@@ -3,7 +3,7 @@ service: serverlessapi
 # AWS deployment details
 provider:
   name: aws
-  runtime: nodejs20.x
+  runtime: nodejs22.x
   region: eu-west-2
   apiGateway:
     shouldStartNameWithService: true
@@ -50,10 +50,12 @@ package:
   - '!.codacy.yaml'
   - '!.mocharc.json'
   - '!.vscode/**'
+  - '!api.log'
   - '!eslint.config.mjs'
+  - '!certs/**'
   - '!environments/**'
+  - '!images/**'
   - '!src/**'
-  - '!doc/**'
   - '!test/**'
   - '!tsconfig.json'
   - '!package-lock.json'

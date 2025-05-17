@@ -71,7 +71,7 @@ https://github.com/gary-archer/oauth.blog/tree/master/public/posts/developer-ssl
 
 ### Run the Code
 
-- Install Node.js 20+.
+- Install Node.js 22+.
 - Also install Docker to run integration tests that use Wiremock.
 
 Then run the API with this command:
