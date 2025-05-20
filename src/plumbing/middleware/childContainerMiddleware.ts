@@ -1,7 +1,7 @@
 import middy from '@middy/core';
 import {APIGatewayProxyResult} from 'aws-lambda';
 import {Container} from 'inversify';
-import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent';
+import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
 
 /*
  * Creates a child container for each request, to contain request-scoped objects
