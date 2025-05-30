@@ -2,7 +2,7 @@ import middy from '@middy/core';
 import {APIGatewayProxyResult, Context} from 'aws-lambda';
 import fs from 'fs-extra';
 import {Container} from 'inversify';
-import {SampleExtraClaimsProvider} from '../../logic/claims/sampleExtraClaimsProvider.js';
+import {ExtraClaimsProviderImpl} from '../../logic/claims/extraClaimsProviderImpl.js';
 import {BaseCompositionRoot} from '../../plumbing/dependencies/baseCompositionRoot.js';
 import {LoggerFactory} from '../../plumbing/logging/loggerFactory.js';
 import {LoggerFactoryBuilder} from '../../plumbing/logging/loggerFactoryBuilder.js';
@@ -44,7 +44,7 @@ export class LambdaInstance {
             // Register common code dependencies for security, logging and error handling
             const base = new BaseCompositionRoot(parentContainer)
                 .useOAuth(configuration.oauth)
-                .withExtraClaimsProvider(new SampleExtraClaimsProvider())
+                .withExtraClaimsProvider(new ExtraClaimsProviderImpl())
                 .withLogging(configuration.logging, loggerFactory)
                 .withHttpProxy(httpProxy)
                 .register();

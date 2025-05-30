@@ -1,6 +1,5 @@
 import {injectable} from 'inversify';
 import NodeCache from 'node-cache';
-import {ExtraClaims} from './extraClaims.js';
 import {ExtraClaimsProvider} from './extraClaimsProvider.js';
 
 /*
@@ -10,13 +9,13 @@ import {ExtraClaimsProvider} from './extraClaimsProvider.js';
 export class ClaimsCache {
 
     private readonly cache: NodeCache;
-    private readonly defaultTimeToLiveSeconds: number;
     private readonly extraClaimsProvider: ExtraClaimsProvider;
+    private readonly defaultTimeToLiveSeconds: number;
 
     /*
      * Create the cache at application startup
      */
-    public constructor(timeToLiveMinutes: number, extraClaimsProvider: ExtraClaimsProvider) {
+    public constructor(extraClaimsProvider: ExtraClaimsProvider, timeToLiveMinutes: number) {
 
         this.extraClaimsProvider = extraClaimsProvider;
 
@@ -28,12 +27,9 @@ export class ClaimsCache {
     }
 
     /*
-     * Add claims to the cache until the token's time to live
+     * Add serialized claims to the cache until the token's time to live
      */
-    public setExtraUserClaims(accessTokenHash: string, claims: ExtraClaims, exp: number): void {
-
-        // Get the data in way that handles private property names
-        const dataAsJson = claims.exportData();
+    public setExtraUserClaims(accessTokenHash: string, claims: any, exp: number): void {
 
         // Use the exp field to work out the token expiry time
         const epochSeconds = Math.floor((new Date().getTime()) / 1000);
@@ -46,26 +42,24 @@ export class ClaimsCache {
             }
 
             // Cache the claims until the above time
-            const claimsText = JSON.stringify(dataAsJson);
-            this.cache.set(accessTokenHash, claimsText, secondsToCache);
+            this.cache.set(accessTokenHash, JSON.stringify(claims), secondsToCache);
         }
     }
 
     /*
-     * Get claims from the cache or return null if not found
+     * Get serialized claims from the cache or return null if not found
      */
-    public getExtraUserClaims(accessTokenHash: string): ExtraClaims | null {
+    public getExtraUserClaims(accessTokenHash: string): any {
 
         // Get the token hash and see if it exists in the cache
-        const claimsText = this.cache.get<string>(accessTokenHash);
-        if (!claimsText) {
+        const claimsJson = this.cache.get<string>(accessTokenHash);
+        if (!claimsJson) {
 
             // If this is a new token and we need to do claims processing
             return null;
         }
 
         // Otherwise return cached claims
-        const dataAsJson = JSON.parse(claimsText);
-        return this.extraClaimsProvider.deserializeFromCache(dataAsJson);
+        return this.extraClaimsProvider.deserializeFromCache(claimsJson);
     }
 }

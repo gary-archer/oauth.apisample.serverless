@@ -1,11 +1,11 @@
 {
     "api": {
         "useProxy": false,
-        "proxyUrl": "http://127.0.0.1:8888"
+        "proxyUrl": ""
     },
     "logging": {
         "apiName": "FinalApi",
-        "prettyPrint": true,
+        "prettyPrint": false,
         "performanceThresholdMilliseconds": 500
     },
     "oauth": {
