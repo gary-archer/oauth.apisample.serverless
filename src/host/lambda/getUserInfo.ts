@@ -1,6 +1,6 @@
 import {APIGatewayProxyResult} from 'aws-lambda';
 import 'reflect-metadata';
-import {SampleExtraClaims} from '../../logic/claims/sampleExtraClaims.js';
+import {ExtraClaims} from '../../logic/claims/extraClaims.js';
 import {ClaimsPrincipal} from '../../plumbing/claims/claimsPrincipal.js';
 import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
 import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent.js';
@@ -13,10 +13,10 @@ import {LambdaInstance} from '../startup/lambdaInstance.js';
 const baseHandler = async (event: APIGatewayProxyExtendedEvent): Promise<APIGatewayProxyResult> => {
 
     const claims = event.container.get<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal);
-    const extraClaims = claims.extra as SampleExtraClaims;
+    const extraClaims = claims.getExtra() as ExtraClaims;
     const userInfo = {
-        title: extraClaims.getTitle(),
-        regions: extraClaims.getRegions(),
+        title: extraClaims.title,
+        regions: extraClaims.regions,
     };
 
     return ResponseWriter.successResponse(200, userInfo);

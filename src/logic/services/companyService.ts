@@ -4,7 +4,8 @@ import {ClaimsReader} from '../../plumbing/claims/claimsReader.js';
 import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
 import {ClientError} from '../../plumbing/errors/clientError.js';
 import {ErrorFactory} from '../../plumbing/errors/errorFactory.js';
-import {SampleExtraClaims} from '../claims/sampleExtraClaims.js';
+import {CustomClaimNames} from '../claims/customClaimNames.js';
+import {ExtraClaims} from '../claims/extraClaims.js';
 import {SAMPLETYPES} from '../dependencies/sampleTypes.js';
 import {Company} from '../entities/company.js';
 import {CompanyTransactions} from '../entities/companyTransactions.js';
@@ -62,7 +63,7 @@ export class CompanyService {
     private isUserAuthorizedForCompany(company: Company): boolean {
 
         // The admin role is granted access to all resources
-        const role = ClaimsReader.getStringClaim(this.claims.jwt, 'role').toLowerCase();
+        const role = ClaimsReader.getStringClaim(this.claims.getJwt(), CustomClaimNames.role).toLowerCase();
         if (role === 'admin') {
             return true;
         }
@@ -73,8 +74,8 @@ export class CompanyService {
         }
 
         // For the user role, authorize based on a business rule that links the user to regional data
-        const extraClaims = this.claims.extra as SampleExtraClaims;
-        const found = extraClaims.getRegions().find((c) => c === company.region);
+        const extraClaims = this.claims.getExtra() as ExtraClaims;
+        const found = extraClaims.regions.find((c) => c === company.region);
         return !!found;
     }
 

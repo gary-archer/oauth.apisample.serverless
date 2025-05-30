@@ -25,7 +25,7 @@ export class AuthorizerMiddleware implements middy.MiddlewareObj<APIGatewayProxy
         const claimsPrincipal = await filter.execute(request.event);
 
         // Include identity details in logs as soon as we have them
-        logEntry.setIdentity(ClaimsReader.getStringClaim(claimsPrincipal.jwt, 'sub'));
+        logEntry.setIdentity(ClaimsReader.getStringClaim(claimsPrincipal.getJwt(), 'sub'));
 
         // Bind it to make claims injectable
         request.event.container.bind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue(claimsPrincipal);

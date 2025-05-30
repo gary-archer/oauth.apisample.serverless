@@ -1,31 +1,29 @@
-import {injectable} from 'inversify';
-import {SampleExtraClaims} from '../claims/sampleExtraClaims.js';
+import {ExtraClaims} from '../claims/extraClaims.js';
 
 /*
- * A repository that returns hard coded data, whereas a real implementation would use a database lookup
+ * A repository that returns extra authorization values from the API's own data
  */
-@injectable()
 export class UserRepository {
 
     /*
-     * Receive the manager ID in the access token, as a useful identity to the API, then look up extra claims
+     * Given a manager ID look up extra values from the API's own data
      */
-    public getClaimsForManagerId(managerId: string): SampleExtraClaims {
+    public async getUserInfoForManagerId(managerId: string): Promise<any> {
 
         if (managerId === '20116') {
 
             // These claims are used for the guestadmin@example.com user account
-            return new SampleExtraClaims('Global Manager', ['Europe', 'USA', 'Asia']);
+            return ExtraClaims.create('Global Manager', ['Europe', 'USA', 'Asia']);
 
         } else if (managerId == '10345') {
 
             // These claims are used for the guestuser@example.com user account
-            return new SampleExtraClaims('Regional Manager', ['USA']);
+            return ExtraClaims.create('Regional Manager', ['USA']);
 
         } else {
 
             // Use empty claims for unrecognized users
-            return new SampleExtraClaims('', []);
+            return new ExtraClaims();
         }
     }
 }

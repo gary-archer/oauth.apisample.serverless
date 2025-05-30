@@ -1,26 +1,25 @@
 import {injectable} from 'inversify';
 import {JWTPayload} from 'jose';
-import {ExtraClaims} from './extraClaims.js';
 
 /*
- * The total set of claims for this API
+ * The total set of claims for this API, with claims from the access token and extra claims
  */
 @injectable()
 export class ClaimsPrincipal {
 
-    private readonly jwtClaims: JWTPayload;
-    private readonly extraClaims: ExtraClaims;
+    private jwtClaims: JWTPayload;
+    private extraClaims: any;
 
-    public constructor(jwtClaims: JWTPayload, extraClaims: ExtraClaims) {
+    public constructor(jwtClaims: JWTPayload, extraClaims: any) {
         this.jwtClaims = jwtClaims;
         this.extraClaims = extraClaims;
     }
 
-    public get jwt(): JWTPayload {
+    public getJwt(): JWTPayload {
         return this.jwtClaims;
     }
 
-    public get extra(): ExtraClaims {
+    public getExtra(): any {
         return this.extraClaims;
     }
 }
