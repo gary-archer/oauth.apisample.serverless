@@ -6,7 +6,7 @@ import {ClientError} from '../../plumbing/errors/clientError.js';
 import {ErrorFactory} from '../../plumbing/errors/errorFactory.js';
 import {CustomClaimNames} from '../claims/customClaimNames.js';
 import {ExtraClaims} from '../claims/extraClaims.js';
-import {SAMPLETYPES} from '../dependencies/sampleTypes.js';
+import {APPLICATIONTYPES} from '../dependencies/applicationTypes.js';
 import {Company} from '../entities/company.js';
 import {CompanyTransactions} from '../entities/companyTransactions.js';
 import {ErrorCodes} from '../errors/errorCodes.js';
@@ -22,7 +22,7 @@ export class CompanyService {
     private readonly claims: ClaimsPrincipal;
 
     public constructor(
-        @inject(SAMPLETYPES.CompanyRepository) repository: CompanyRepository,
+        @inject(APPLICATIONTYPES.CompanyRepository) repository: CompanyRepository,
         @inject(BASETYPES.ClaimsPrincipal) claims: ClaimsPrincipal) {
 
         this.repository = repository;

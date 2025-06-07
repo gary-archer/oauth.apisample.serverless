@@ -3,9 +3,12 @@ import {APIGatewayProxyResult, Context} from 'aws-lambda';
 import fs from 'fs-extra';
 import {Container} from 'inversify';
 import {ExtraClaimsProviderImpl} from '../../logic/claims/extraClaimsProviderImpl.js';
-import {BaseCompositionRoot} from '../../plumbing/dependencies/baseCompositionRoot.js';
-import {LoggerFactory} from '../../plumbing/logging/loggerFactory.js';
-import {LoggerFactoryBuilder} from '../../plumbing/logging/loggerFactoryBuilder.js';
+import {LoggerFactoryImpl} from '../../plumbing/logging/loggerFactoryImpl.js';
+import {AuthorizerMiddleware} from '../../plumbing/middleware/authorizerMiddleware.js';
+import {ChildContainerMiddleware} from '../../plumbing/middleware/childContainerMiddleware.js';
+import {CustomHeaderMiddleware} from '../../plumbing/middleware/customHeaderMiddleware.js';
+import {ExceptionMiddleware} from '../../plumbing/middleware/exceptionMiddleware.js';
+import {LoggerMiddleware} from '../../plumbing/middleware/loggerMiddleware.js';
 import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent.js';
 import {HttpProxy} from '../../plumbing/utilities/httpProxy.js';
 import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
@@ -28,7 +31,7 @@ export class LambdaInstance {
     public async prepare(baseHandler: LambdaHandler)
         : Promise<middy.MiddyfiedHandler<APIGatewayProxyExtendedEvent, APIGatewayProxyResult> | LambdaHandler> {
 
-        const loggerFactory = LoggerFactoryBuilder.create();
+        const loggerFactory = new LoggerFactoryImpl();
         try {
 
             // Load configuration
@@ -41,23 +44,20 @@ export class LambdaInstance {
             const httpProxy = new HttpProxy(configuration.api.useProxy, configuration.api.proxyUrl);
             await httpProxy.initialize();
 
-            // Register common code dependencies for security, logging and error handling
-            const base = new BaseCompositionRoot(parentContainer)
-                .useOAuth(configuration.oauth)
-                .withExtraClaimsProvider(new ExtraClaimsProviderImpl())
-                .withLogging(configuration.logging, loggerFactory)
-                .withHttpProxy(httpProxy)
+            // Register dependencies with the container
+            new CompositionRoot(parentContainer)
+                .addConfiguration(configuration)
+                .addExtraClaimsProvider(new ExtraClaimsProviderImpl())
+                .addLogging(configuration.logging, loggerFactory)
+                .addHttpProxy(httpProxy)
                 .register();
 
-            // Register API specific dependencies
-            CompositionRoot.register(parentContainer);
-
-            // Get framework middleware classes including the OAuth authorizer
-            const childContainerMiddleware = base.getChildContainerMiddleware();
-            const loggerMiddleware = base.getLoggerMiddleware();
-            const exceptionMiddleware = base.getExceptionMiddleware();
-            const authorizerMiddleware = base.getAuthorizerMiddleware();
-            const customHeaderMiddleware = base.getCustomHeaderMiddleware();
+            // Create middleware objects
+            const childContainerMiddleware = new ChildContainerMiddleware(parentContainer);
+            const loggerMiddleware = new LoggerMiddleware(loggerFactory);
+            const exceptionMiddleware = new ExceptionMiddleware(configuration.logging);
+            const authorizerMiddleware = new AuthorizerMiddleware();
+            const customHeaderMiddleware = new CustomHeaderMiddleware(configuration.logging.apiName);
 
             // Wrap the base handler with middleware that runs in the following sequence
             return middy(async (event: APIGatewayProxyExtendedEvent, context: Context) => {
@@ -89,7 +89,7 @@ export class LambdaInstance {
     /*
      * Ensure that any startup errors are logged and then return a handler that will provide the client response
      */
-    private handleStartupError(loggerFactory: LoggerFactory, error: any): LambdaHandler {
+    private handleStartupError(loggerFactory: LoggerFactoryImpl, error: any): LambdaHandler {
 
         const clientError = loggerFactory.logStartupError(error);
         return async () => {

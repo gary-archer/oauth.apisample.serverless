@@ -1,6 +1,6 @@
 import {APIGatewayProxyResult} from 'aws-lambda';
 import 'reflect-metadata';
-import {SAMPLETYPES} from '../../logic/dependencies/sampleTypes.js';
+import {APPLICATIONTYPES} from '../../logic/dependencies/applicationTypes.js';
 import {ErrorCodes} from '../../logic/errors/errorCodes.js';
 import {CompanyService} from '../../logic/services/companyService.js';
 import {ErrorFactory} from '../../plumbing/errors/errorFactory.js';
@@ -24,7 +24,7 @@ const baseHandler = async (event: APIGatewayProxyExtendedEvent): Promise<APIGate
     }
 
     // Resolve the service and execute the logic
-    const service = event.container.get<CompanyService>(SAMPLETYPES.CompanyService);
+    const service = event.container.get<CompanyService>(APPLICATIONTYPES.CompanyService);
     const companies = await service.getCompanyTransactions(id);
 
     // Write the response
