@@ -1,0 +1,20 @@
+{
+    "api": {
+        "useProxy": false,
+        "proxyUrl": "http://127.0.0.1:8888"
+    },
+    "logging": {
+        "apiName": "FinalApi",
+        "prettyPrint": true,
+        "performanceThresholdMilliseconds": 500
+    },
+    "oauth": {
+        "issuer":                       "https://login.authsamples-dev.com",
+        "audience":                     "api.authsamples.com",
+        "algorithm":                    "ES256",
+        "scope":                        "investments",
+        "jwksEndpoint":                 "https://login.authsamples-dev.com:447/.well-known/jwks.json",
+        "jwksCooldownDuration":         0,
+        "claimsCacheTimeToLiveMinutes": 15
+    }
+}

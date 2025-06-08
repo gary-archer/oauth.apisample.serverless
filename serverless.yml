@@ -1,0 +1,85 @@
+service: serverlessapi
+
+# AWS deployment details
+provider:
+  name: aws
+  runtime: nodejs22.x
+  region: eu-west-2
+  apiGateway:
+    shouldStartNameWithService: true
+
+# Serverless domain manager details
+custom:
+  customDomain:
+    domainName: 'api.authsamples.com'
+    certificateName: 'authsamples.com'
+    basePath: investments
+    endpointType: regional
+
+# Lambda functions that receives a JWT access token
+functions:
+  
+  getUserInfo:
+    handler: dist/host/lambda/getUserInfo.handler
+    events:
+      - http: 
+          path: /userinfo
+          method: get
+
+  getCompanyList:
+    handler: dist/host/lambda/getCompanyList.handler
+    events:
+      - http: 
+          path: /companies
+          method: get
+
+  getCompanyTransactions:
+    handler: dist/host/lambda/getCompanyTransactions.handler
+    events:
+      - http: 
+          path: /companies/{id}/transactions
+          method: get
+          request: 
+            parameters: 
+              paths: 
+                id: true
+
+# By default all files are included so remove files we don't need for any lambda
+package:
+  patterns:
+  - '!.codacy.yaml'
+  - '!.mocharc.json'
+  - '!.vscode/**'
+  - '!api.log'
+  - '!eslint.config.mjs'
+  - '!certs/**'
+  - '!environments/**'
+  - '!images/**'
+  - '!src/**'
+  - '!test/**'
+  - '!tsconfig.json'
+  - '!package-lock.json'
+  - '!README.md'
+  - '!LICENSE.txt'
+  - '!*.sh'
+
+plugins:
+  - serverless-offline
+  - serverless-domain-manager
+
+resources:
+  Resources:
+
+    # Limit cloudwatch log retention 
+    getUserInfoLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'
+    GetCompanyListLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'
+    GetCompanyTransactionsLogGroup:
+      Type: 'AWS::Logs::LogGroup'
+      Properties:
+        RetentionInDays: '5'

@@ -1,0 +1,19 @@
+{
+    "api": {
+        "useProxy": false,
+        "proxyUrl": ""
+    },
+    "logging": {
+        "apiName": "FinalApi",
+        "prettyPrint": false,
+        "performanceThresholdMilliseconds": 500
+    },
+    "oauth": {
+        "issuer":                       "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_CuhLeqiE9",
+        "audience":                     "",
+        "algorithm":                    "RS256",
+        "scope":                        "https://api.authsamples.com/investments",
+        "jwksEndpoint":                 "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_CuhLeqiE9/.well-known/jwks.json",
+        "claimsCacheTimeToLiveMinutes": 15
+    }
+}

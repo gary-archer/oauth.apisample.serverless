@@ -1,0 +1,49 @@
+{
+  "name": "finalapi",
+  "version": "3.0.0",
+  "description": "An OAuth secured API using AWS Serverless Hosting and Lambda Functions",
+  "author": "Gary Archer",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "login": "sls login",
+    "lint": "npx eslint . --ignore-pattern dist",
+    "start": "./start.sh",
+    "testsetup": "./test/scripts/testsetup.sh",
+    "test": "./test/scripts/test.sh",
+    "build": "rm -rf dist && tsc",
+    "buildRelease": "rm -rf dist && tsc --sourceMap false",
+    "loadtest": "./test/scripts/loadtest.sh",
+    "deploy": "./deploy.sh",
+    "remove": "sls remove --stage deployed"
+  },
+  "dependencies": {
+    "@middy/core": "^6.1.5",
+    "axios": "^1.9.0",
+    "fs-extra": "^11.3.0",
+    "inversify": "^7.1.0",
+    "jose": "^6.0.10",
+    "node-cache": "^5.1.2",
+    "reflect-metadata": "^0.2.1"
+  },
+  "devDependencies": {
+    "@colors/colors": "^1.6.0",
+    "@eslint/js": "^9.22.0",
+    "@types/aws-lambda": "^8.10.149",
+    "@types/fs-extra": "^11.0.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.15.18",
+    "eslint": "^9.22.0",
+    "https-proxy-agent": "^7.0.5",
+    "mocha": "^11.3.0",
+    "serverless": "^4.14.3",
+    "serverless-domain-manager": "^8.0.0",
+    "serverless-offline": "^14.4.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.8",
+    "typescript-eslint": "^8.26.1"
+  }
+}
