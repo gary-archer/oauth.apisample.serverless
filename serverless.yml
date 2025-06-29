@@ -71,7 +71,7 @@ resources:
   Resources:
 
     # Limit cloudwatch log retention 
-    getUserInfoLogGroup:
+    GetUserInfoLogGroup:
       Type: 'AWS::Logs::LogGroup'
       Properties:
         RetentionInDays: '5'
