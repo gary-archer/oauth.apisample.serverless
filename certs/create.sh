@@ -18,12 +18,12 @@ fi
 # Otherwise require an environment variable
 #
 if [ "$SECRETS_FOLDER" == '' ]; then
-  echo '*** You must supply a SECRETS_FOLDER environment variable to the certificate creation script'
+  echo 'You must supply a SECRETS_FOLDER environment variable to the certificate creation script'
   exit 1
 fi
 
 if [ ! -d "$SECRETS_FOLDER" ]; then
-  echo '*** The SECRETS_FOLDER does not exist'
+  echo 'The SECRETS_FOLDER does not exist'
   exit 1
 fi
 

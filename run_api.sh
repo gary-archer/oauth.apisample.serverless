@@ -11,7 +11,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 #
 npm install
 if [ $? -ne 0 ]; then
-  echo '*** Problem encountered installing dependencies'
+  echo 'Problem encountered installing dependencies'
   read -n 1
   exit 1
 fi
@@ -21,7 +21,7 @@ fi
 #
 npm run lint
 if [ $? -ne 0 ]; then
-  echo '*** Code quality checks failed'
+  echo 'Code quality checks failed'
   read -n 1
   exit 1
 fi
@@ -31,7 +31,7 @@ fi
 #
 npm run build
 if [ $? -ne 0 ]; then
-  echo '** Problem encountered building the API code'
+  echo 'Problem encountered building the API code'
   read -n 1
   exit 1
 fi
@@ -47,7 +47,7 @@ npx sls offline \
   --httpPort 446 \
   --httpsProtocol certs
 if [ $? -ne 0 ]; then
-  echo '** Problem encountered starting Serverless Offline'
+  echo 'Problem encountered starting Serverless Offline'
   exit 1
 fi
 

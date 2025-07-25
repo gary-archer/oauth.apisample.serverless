@@ -17,7 +17,7 @@ cp ./environments/deployed.config.json ./api.config.json
 #
 npm install
 if [ $? -ne 0 ]; then
-  echo '*** Problem encountered installing API dependencies'
+  echo 'Problem encountered installing API dependencies'
   exit
 fi
 
@@ -26,7 +26,7 @@ fi
 #
 npm run buildRelease
 if [ $? -ne 0 ]; then
-  echo '*** Problem encountered building the API'
+  echo 'Problem encountered building the API'
   exit
 fi
 
@@ -36,7 +36,7 @@ fi
 rm -rf ./.serverless
 "$SLS" package --stage deployed
 if [ $? -ne 0 ]; then
-  echo '*** Problem encountered packaging the API'
+  echo 'Problem encountered packaging the API'
   exit
 fi
 
@@ -45,7 +45,7 @@ fi
 #
 "$SLS" deploy --stage deployed --package .serverless
 if [ $? -ne 0 ]; then
-  echo '*** Problem encountered packaging the API'
+  echo 'Problem encountered packaging the API'
   exit
 fi
 

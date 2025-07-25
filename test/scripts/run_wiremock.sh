@@ -11,7 +11,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 #
 docker compose --project-name wiremock up --force-recreate
 if [ $? -ne 0 ]; then
-  echo '*** Problem encountered deploying Wiremock'
+  echo 'Problem encountered deploying Wiremock'
   read -n 1
   exit 1
 fi
