@@ -5,4 +5,5 @@ dist
 *.log
 certs/*.p12
 certs/*.crt
-certs/*.pem
+certs/*.key
+
