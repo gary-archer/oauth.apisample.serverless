@@ -45,7 +45,10 @@ export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyExte
             logEntry.setResponseStatus(request.response.statusCode);
         }
         logEntry.end();
-        logEntry.write();
+
+        // Output the log data
+        this.loggerFactory.getRequestLogger()?.write(logEntry.getRequestLog());
+        this.loggerFactory.getAuditLogger()?.write(logEntry.getAuditLog());
     }
 
     /*

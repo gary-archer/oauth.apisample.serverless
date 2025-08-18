@@ -5,8 +5,17 @@
     },
     "logging": {
         "apiName": "FinalApi",
-        "prettyPrint": false,
-        "performanceThresholdMilliseconds": 500
+        "loggers": [
+            {
+                "type": "request",
+                "performanceThresholdMilliseconds": 500,
+                "prettyPrint": false
+            },
+            {
+                "type": "audit",
+                "prettyPrint": false
+            }
+        ]
     },
     "oauth": {
         "issuer":                       "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_CuhLeqiE9",

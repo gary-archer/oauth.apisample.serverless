@@ -1,7 +1,7 @@
 import {PerformanceBreakdown} from './performanceBreakdown.js';
 
 /*
- * The full implementation class is private to the framework and excluded from the index.ts file
+ * Performs basic timing of expensive subtasks
  */
 export class PerformanceBreakdownImpl implements PerformanceBreakdown {
 
