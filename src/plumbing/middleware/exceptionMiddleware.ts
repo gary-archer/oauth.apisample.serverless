@@ -5,6 +5,7 @@ import {ClientError} from '../errors/clientError.js';
 import {ErrorUtils} from '../errors/errorUtils.js';
 import {ServerError} from '../errors/serverError.js';
 import {LogEntryImpl} from '../logging/logEntryImpl.js';
+import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl.js';
 import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
 import {ResponseWriter} from '../utilities/responseWriter.js';
 
@@ -14,10 +15,11 @@ import {ResponseWriter} from '../utilities/responseWriter.js';
 export class ExceptionMiddleware implements
     middy.MiddlewareObj<APIGatewayProxyExtendedEvent, APIGatewayProxyResult> {
 
+    private readonly loggerFactory: LoggerFactoryImpl;
     private readonly apiName: string;
 
-    public constructor(apiName: string) {
-
+    public constructor(loggerFactory: LoggerFactoryImpl, apiName: string) {
+        this.loggerFactory = loggerFactory;
         this.apiName = apiName;
         this.setupCallbacks();
     }
@@ -56,7 +58,8 @@ export class ExceptionMiddleware implements
         // Finish the log entry for the exception case
         logEntry.setResponseStatus(clientError.getStatusCode());
         logEntry.end();
-        logEntry.write();
+        this.loggerFactory.getRequestLogger()?.write(logEntry.getRequestLog());
+        this.loggerFactory.getAuditLogger()?.write(logEntry.getAuditLog());
 
         // Set the client error as the lambda response error, which will be serialized and returned via the API gateway
         request.response = ResponseWriter.errorResponse(clientError.getStatusCode(), clientError);

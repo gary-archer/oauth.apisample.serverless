@@ -55,8 +55,8 @@ export class LambdaInstance {
             // Create middleware objects
             const childContainerMiddleware = new ChildContainerMiddleware(parentContainer);
             const loggerMiddleware = new LoggerMiddleware(loggerFactory);
-            const exceptionMiddleware = new ExceptionMiddleware(configuration.logging.apiName);
-            const authorizerMiddleware = new AuthorizerMiddleware();
+            const exceptionMiddleware = new ExceptionMiddleware(loggerFactory, configuration.logging.apiName);
+            const authorizerMiddleware = new AuthorizerMiddleware(configuration.oauth.scope);
             const customHeaderMiddleware = new CustomHeaderMiddleware(configuration.logging.apiName);
 
             // Wrap the base handler with middleware that runs in the following sequence

@@ -7,7 +7,7 @@
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 #
-# Do nothing if the final file exists for this code sample
+# Do nothing if the local file exists
 #
 CERT_PATH='./authsamples-dev.ssl.p12'
 if [ -f "$CERT_PATH" ]; then
@@ -15,7 +15,7 @@ if [ -f "$CERT_PATH" ]; then
 fi
 
 #
-# Otherwise require an environment variable
+# Otherwise require an environment variable for a shared secrets folder
 #
 if [ "$SECRETS_FOLDER" == '' ]; then
   echo 'You must supply a SECRETS_FOLDER environment variable to the certificate creation script'
@@ -43,7 +43,7 @@ if [ -f "$KEY_PATH" ] && [ -f "$CERT_PATH" ] && [ -f "$P12_PATH" ] && [ -f "$ROO
 fi
 
 #
-# Create the certs
+# Create the certs in this folder
 #
 ./makecerts.sh
 if [ $? -ne 0 ]; then
@@ -51,9 +51,6 @@ if [ $? -ne 0 ]; then
 fi
 
 #
-# Copy certificate files locally
+# Copy certificate files to the secrets folder to avoid recreation for other code samples
 #
-cp "$KEY_PATH" ./key.pem
-cp "$CERT_PATH" ./cert.pem
-cp "$P12_PATH" .
-cp "$ROOT_CA_PATH" .
+cp authsamples-dev* "$SECRETS_FOLDER"

@@ -1,10 +1,8 @@
 import {AxiosError} from 'axios';
 import {inject, injectable} from 'inversify';
 import {JWTPayload, JWTVerifyOptions, jwtVerify} from 'jose';
-import {ClaimsReader} from '../claims/claimsReader.js';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
-import {BaseErrorCodes} from '../errors/baseErrorCodes.js';
 import {ErrorFactory} from '../errors/errorFactory.js';
 import {ErrorUtils} from '../errors/errorUtils.js';
 import {JwksRetriever} from './jwksRetriever.js';
@@ -69,16 +67,6 @@ export class AccessTokenValidator {
                 }
 
                 throw ErrorFactory.createClient401Error(details);
-            }
-
-            // The sample API requires the same scope for all endpoints, and it is enforced here
-            const scopes = ClaimsReader.getStringClaim(claims, 'scope').split(' ');
-            if (scopes.indexOf(this.configuration.scope) === -1) {
-
-                throw ErrorFactory.createClientError(
-                    403,
-                    BaseErrorCodes.insufficientScope,
-                    'The token does not contain sufficient scope for this API');
             }
 
             return claims;

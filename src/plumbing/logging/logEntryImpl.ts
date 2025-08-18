@@ -1,6 +1,5 @@
 import {Context} from 'aws-lambda';
 import {randomUUID} from 'crypto';
-import fs from 'fs-extra';
 import {injectable} from 'inversify';
 import os from 'os';
 import {ClientError} from '../errors/clientError.js';
@@ -11,21 +10,19 @@ import {LogEntryData} from './logEntryData.js';
 import {PerformanceBreakdown} from './performanceBreakdown.js';
 
 /*
- * A class to manage logging of a lambda request
+ * A log entry collects data during an API request and outputs it at the end
  */
 @injectable()
 export class LogEntryImpl implements LogEntry {
 
     private readonly data: LogEntryData;
     private readonly performanceThresholdMilliseconds: number;
-    private readonly prettyPrint: boolean;
 
-    public constructor(apiName: string, prettyPrint: boolean, performanceThresholdMilliseconds: number) {
+    public constructor(apiName: string, performanceThresholdMilliseconds: number) {
 
         this.data = new LogEntryData();
         this.data.hostName = os.hostname();
         this.data.apiName = apiName;
-        this.prettyPrint = prettyPrint;
         this.performanceThresholdMilliseconds = performanceThresholdMilliseconds;
     }
 
@@ -60,10 +57,12 @@ export class LogEntryImpl implements LogEntry {
     }
 
     /*
-     * Add identity details for secured requests
+     * Audit identity details
      */
-    public setIdentity(subject: string): void {
-        this.data.userId = subject;
+    public setIdentity(userId: string, scope: string[], claims: any): void {
+        this.data.userId = userId;
+        this.data.scope = scope;
+        this.data.claims = claims;
     }
 
     /*
@@ -129,22 +128,17 @@ export class LogEntryImpl implements LogEntry {
     }
 
     /*
-     * Output the log data as JSON
+     * Get the request data to output to logs for a support team
      */
-    public write(): void {
+    public getRequestLog(): any {
+        return this.data.toRequestLog();
+    }
 
-        if (this.prettyPrint) {
-
-            // On a developer PC, output from 'npm run lambda' is written with pretty printing to a file
-            const data = JSON.stringify(this.data.toLogFormat(), null, 2);
-            fs.appendFileSync('./api.log', data);
-
-        } else {
-
-            // In AWS Cloudwatch we use bare JSON logging that will work best with log shippers
-            // Note that the format remains readable in the Cloudwatch console
-            process.stdout.write(JSON.stringify(this.data.toLogFormat()) + '\n');
-        }
+    /*
+     * Get the audit data to output to logs for a security team
+     */
+    public getAuditLog(): any {
+        return this.data.toAuditLog();
     }
 
     /*
