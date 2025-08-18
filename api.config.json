@@ -10,6 +10,10 @@
                 "type": "request",
                 "performanceThresholdMilliseconds": 500,
                 "prettyPrint": true
+            },
+            {
+                "type": "audit",
+                "prettyPrint": true
             }
         ]
     },

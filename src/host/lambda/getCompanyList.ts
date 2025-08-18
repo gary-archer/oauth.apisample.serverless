@@ -12,7 +12,6 @@ import {LambdaInstance} from '../startup/lambdaInstance.js';
 const baseHandler = async (event: APIGatewayProxyExtendedEvent): Promise<APIGatewayProxyResult> => {
 
     // Resolve the service and execute the logic
-    console.error('*** IN LAMBDA');
     const service = event.container.get<CompanyService>(APPLICATIONTYPES.CompanyService);
     const companies = await service.getCompanyList();
 
@@ -21,7 +20,6 @@ const baseHandler = async (event: APIGatewayProxyExtendedEvent): Promise<APIGate
 };
 
 // Prepare the lambda instance, which is used for multiple HTTP requests, with cross cutting concerns
-console.error('*** IN STARTUP');
 const instance = new LambdaInstance();
 const handler = await instance.prepare(baseHandler);
 export {handler};
