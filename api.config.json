@@ -10,20 +10,15 @@
                 "type": "request",
                 "performanceThresholdMilliseconds": 500,
                 "prettyPrint": true
-            },
-            {
-                "type": "audit",
-                "prettyPrint": true
             }
         ]
     },
     "oauth": {
-        "issuer":                       "https://login.authsamples-dev.com",
-        "audience":                     "api.authsamples.com",
-        "algorithm":                    "ES256",
-        "scope":                        "investments",
-        "jwksEndpoint":                 "https://login.authsamples-dev.com:447/.well-known/jwks.json",
-        "jwksCooldownDuration":         0,
+        "issuer":                       "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_CuhLeqiE9",
+        "audience":                     "",
+        "algorithm":                    "RS256",
+        "scope":                        "https://api.authsamples.com/investments",
+        "jwksEndpoint":                 "https://cognito-idp.eu-west-2.amazonaws.com/eu-west-2_CuhLeqiE9/.well-known/jwks.json",
         "claimsCacheTimeToLiveMinutes": 15
     }
 }

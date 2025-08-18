@@ -165,7 +165,7 @@ export class LogEntryData {
         this.outputString((x) => output.sessionId = x, this.sessionId);
 
         output.isAuthenticated = !!this.userId;
-        output.isAuthorized = output.isAuthenticated && (this.statusCode !== 403 && this.statusCode !== 404);
+        output.isAuthorized = output.isAuthenticated && (this.statusCode >= 200 && this.statusCode <= 299);
 
         if (this.scope.length > 0) {
             output.scope = this.scope;
