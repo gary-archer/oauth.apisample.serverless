@@ -50,7 +50,7 @@ package:
   - '!.codacy.yaml'
   - '!.mocharc.json'
   - '!.vscode/**'
-  - '!api.log'
+  - '!api*.log'
   - '!eslint.config.mjs'
   - '!certs/**'
   - '!environments/**'
