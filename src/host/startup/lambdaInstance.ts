@@ -4,7 +4,7 @@ import fs from 'fs-extra';
 import {Container} from 'inversify';
 import {ExtraClaimsProviderImpl} from '../../logic/claims/extraClaimsProviderImpl.js';
 import {LoggerFactoryImpl} from '../../plumbing/logging/loggerFactoryImpl.js';
-import {AuthorizerMiddleware} from '../../plumbing/middleware/authorizerMiddleware.js';
+import {AuthenticationMiddleware} from '../../plumbing/middleware/authenticationMiddleware.js';
 import {ChildContainerMiddleware} from '../../plumbing/middleware/childContainerMiddleware.js';
 import {CustomHeaderMiddleware} from '../../plumbing/middleware/customHeaderMiddleware.js';
 import {ExceptionMiddleware} from '../../plumbing/middleware/exceptionMiddleware.js';
@@ -56,7 +56,7 @@ export class LambdaInstance {
             const childContainerMiddleware = new ChildContainerMiddleware(parentContainer);
             const loggerMiddleware = new LoggerMiddleware(loggerFactory);
             const exceptionMiddleware = new ExceptionMiddleware(loggerFactory, configuration.logging.apiName);
-            const authorizerMiddleware = new AuthorizerMiddleware(configuration.oauth.scope);
+            const authenticationMiddleware = new AuthenticationMiddleware(configuration.oauth.scope);
             const customHeaderMiddleware = new CustomHeaderMiddleware(configuration.logging.apiName);
 
             // Wrap the base handler with middleware that runs in the following sequence
@@ -67,7 +67,7 @@ export class LambdaInstance {
                 .use(childContainerMiddleware)
                 .use(loggerMiddleware)
                 .use(exceptionMiddleware)
-                .use(authorizerMiddleware)
+                .use(authenticationMiddleware)
                 .use(customHeaderMiddleware);
 
         } catch (e) {

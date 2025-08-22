@@ -11,9 +11,10 @@ import {OAuthFilter} from '../oauth/oauthFilter.js';
 import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
 
 /*
- * A middleware class as the entry point for OAuth authorization
+ * A custom authentication filter to take finer control over processing of tokens and claims
  */
-export class AuthorizerMiddleware implements middy.MiddlewareObj<APIGatewayProxyExtendedEvent, APIGatewayProxyResult> {
+export class AuthenticationMiddleware implements
+    middy.MiddlewareObj<APIGatewayProxyExtendedEvent, APIGatewayProxyResult> {
 
     private readonly requiredScope: string;
 
@@ -23,7 +24,7 @@ export class AuthorizerMiddleware implements middy.MiddlewareObj<APIGatewayProxy
     }
 
     /*
-     * The entry point does the OAuth work as well as AWS specific processing
+     * Do the main work to process tokens, claims and log identity details
      */
     public async before(request: middy.Request<APIGatewayProxyExtendedEvent, APIGatewayProxyResult>): Promise<void> {
 

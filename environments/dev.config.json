@@ -9,11 +9,11 @@
             {
                 "type": "request",
                 "performanceThresholdMilliseconds": 500,
-                "prettyPrint": true
+                "prettyPrint": false
             },
             {
                 "type": "audit",
-                "prettyPrint": true
+                "prettyPrint": false
             }
         ]
     },
