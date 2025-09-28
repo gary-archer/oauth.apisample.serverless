@@ -27,6 +27,7 @@ export class CustomHeaderMiddleware implements
         if (request.event.headers) {
             const apiToBreak = request.event.headers[textExceptionHeaderName];
             if (apiToBreak) {
+                console.log(apiToBreak);
                 if (apiToBreak.toLowerCase() === this.apiName.toLowerCase()) {
                     throw ErrorFactory.createServerError(
                         BaseErrorCodes.exceptionSimulation,
