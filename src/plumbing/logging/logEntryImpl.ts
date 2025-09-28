@@ -41,13 +41,13 @@ export class LogEntryImpl implements LogEntry {
         this.calculateRequestLocationFields(event);
 
         // Our callers can supply a custom header so that we can keep track of who is calling each API
-        const clientName = this.getHeader(event, 'x-authsamples-api-client');
+        const clientName = this.getHeader(event, 'authsamples-api-client');
         if (clientName) {
             this.data.clientName = clientName;
         }
 
         // Log an optional session id if supplied
-        const sessionId = this.getHeader(event, 'x-authsamples-session-id');
+        const sessionId = this.getHeader(event, 'authsamples-session-id');
         if (sessionId) {
             this.data.sessionId = sessionId;
         }
@@ -217,7 +217,7 @@ export class LogEntryImpl implements LogEntry {
     private calculateCorrelationId(event: APIGatewayProxyExtendedEvent) {
 
         // See if there is an incoming valid
-        const correlationId = this.getHeader(event, 'x-authsamples-correlation-id');
+        const correlationId = this.getHeader(event, 'authsamples-correlation-id');
 
         // Use the client supplied value or generate a new value
         this.data.correlationId = correlationId ? correlationId : randomUUID();
