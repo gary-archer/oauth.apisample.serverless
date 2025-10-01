@@ -229,9 +229,10 @@ export class LogEntryImpl implements LogEntry {
     private getHeader(event: APIGatewayProxyExtendedEvent, key: string): string | null {
 
         if (event.headers) {
-            const value = event.headers[key];
-            if (value) {
-                return value;
+
+            const found = Object.keys(event.headers).find((h) => h.toLowerCase() === key);
+            if (found) {
+                return event.headers[found] as string;
             }
         }
 

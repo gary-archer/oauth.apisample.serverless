@@ -22,19 +22,30 @@ export class CustomHeaderMiddleware implements
      */
     public before(request: middy.Request<APIGatewayProxyExtendedEvent, APIGatewayProxyResult>): void {
 
-        const textExceptionHeaderName = 'authsamples-test-exception';
-
-        if (request.event.headers) {
-            const apiToBreak = request.event.headers[textExceptionHeaderName];
-            if (apiToBreak) {
-                console.log(apiToBreak);
-                if (apiToBreak.toLowerCase() === this.apiName.toLowerCase()) {
-                    throw ErrorFactory.createServerError(
-                        BaseErrorCodes.exceptionSimulation,
-                        'An exception was simulated in the API');
-                }
+        const apiToBreak = this.getHeader(request.event, 'authsamples-test-exception');
+        if (apiToBreak) {
+            if (apiToBreak.toLowerCase() === this.apiName.toLowerCase()) {
+                throw ErrorFactory.createServerError(
+                    BaseErrorCodes.exceptionSimulation,
+                    'An exception was simulated in the API');
             }
         }
+    }
+
+    /*
+     * Get a header value if supplied
+     */
+    private getHeader(event: APIGatewayProxyExtendedEvent, key: string): string | null {
+
+        if (event.headers) {
+
+            const found = Object.keys(event.headers).find((h) => h.toLowerCase() === key);
+            if (found) {
+                return event.headers[found] as string;
+            }
+        }
+
+        return null;
     }
 
     /*
