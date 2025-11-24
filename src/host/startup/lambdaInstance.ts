@@ -1,7 +1,7 @@
 import middy from '@middy/core';
 import {APIGatewayProxyResult, Context} from 'aws-lambda';
-import fs from 'fs-extra';
 import {Container} from 'inversify';
+import fs from 'node:fs/promises';
 import {ExtraClaimsProviderImpl} from '../../logic/claims/extraClaimsProviderImpl.js';
 import {LoggerFactoryImpl} from '../../plumbing/logging/loggerFactoryImpl.js';
 import {AuthenticationMiddleware} from '../../plumbing/middleware/authenticationMiddleware.js';
@@ -35,7 +35,7 @@ export class LambdaInstance {
         try {
 
             // Load configuration and configure logging
-            const configuration = this.loadConfiguration();
+            const configuration = await this.loadConfiguration();
             loggerFactory.configure(configuration.logging);
 
             // Create a parent container to manage dependencies and lifetimes
@@ -80,9 +80,9 @@ export class LambdaInstance {
     /*
      * Load the configuration JSON file
      */
-    private loadConfiguration(): Configuration {
+    private async loadConfiguration(): Promise<Configuration> {
 
-        const configJson = fs.readFileSync('api.config.json', 'utf8');
+        const configJson = await fs.readFile('api.config.json', 'utf8');
         return JSON.parse(configJson) as Configuration;
     }
 

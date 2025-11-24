@@ -3,7 +3,3 @@ node_modules
 dist
 .serverless
 *.log
-certs/*.p12
-certs/*.crt
-certs/*.key
-
