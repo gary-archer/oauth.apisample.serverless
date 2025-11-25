@@ -18,11 +18,41 @@ export class ResponseWriter {
     }
 
     /*
-     * This blog's examples use a JSON response to provide client friendly OAuth errors
-     * When required, such as to inform clients how to integrate, a www-authenticate header can be added here
-     * - https://datatracker.ietf.org/doc/html/rfc6750#section-3
+     * This blog's clients read a JSON response, to handle OAuth errors in the same way as other errors
+     * Also add the standard www-authenticate header for interoperability
      */
-    public static errorResponse(statusCode: number, error: ClientError): APIGatewayProxyResult {
+    public static errorResponse(statusCode: number, error: ClientError, scope: string): APIGatewayProxyResult {
+
+        let wwwAuthenticate: string | null = null;
+
+        if (error.getStatusCode() === 401) {
+            wwwAuthenticate =
+                `Bearer error="${error.getStatusCode()}", error_description="${error.message}"`;
+        }
+
+        if (error.getStatusCode() === 403) {
+            wwwAuthenticate =
+                `Bearer error="${error.getStatusCode()}", error_description="${error.message}", scope="${scope}"`;
+        }
+
+        const response = {
+            statusCode,
+            body: JSON.stringify(error.toResponseFormat()),
+        } as APIGatewayProxyResult;
+
+        if (wwwAuthenticate) {
+            response.headers = {
+                'www-authenticate': wwwAuthenticate,
+            }
+        }
+
+        return response;
+    }
+
+    /*
+     * Handle startup errors with reduced logic
+     */
+    public static startupErrorResponse(statusCode: number, error: ClientError) {
 
         return {
             statusCode,

@@ -55,7 +55,10 @@ export class LambdaInstance {
             // Create middleware objects
             const childContainerMiddleware = new ChildContainerMiddleware(parentContainer);
             const loggerMiddleware = new LoggerMiddleware(loggerFactory);
-            const exceptionMiddleware = new ExceptionMiddleware(loggerFactory, configuration.logging.apiName);
+            const exceptionMiddleware = new ExceptionMiddleware(
+                loggerFactory,
+                configuration.logging,
+                configuration.oauth);
             const authenticationMiddleware = new AuthenticationMiddleware(configuration.oauth.scope);
             const customHeaderMiddleware = new CustomHeaderMiddleware(configuration.logging.apiName);
 
@@ -93,7 +96,7 @@ export class LambdaInstance {
 
         const clientError = loggerFactory.logStartupError(error);
         return async () => {
-            return ResponseWriter.errorResponse(500, clientError);
+            return ResponseWriter.startupErrorResponse(500, clientError);
         };
     }
 }

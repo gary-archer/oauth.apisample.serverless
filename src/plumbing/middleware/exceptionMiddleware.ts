@@ -1,5 +1,7 @@
 import middy from '@middy/core';
 import {APIGatewayProxyResult} from 'aws-lambda';
+import {LoggingConfiguration} from '../configuration/loggingConfiguration.js';
+import {OAuthConfiguration} from '../configuration/oauthConfiguration.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
 import {ClientError} from '../errors/clientError.js';
 import {ErrorUtils} from '../errors/errorUtils.js';
@@ -16,11 +18,17 @@ export class ExceptionMiddleware implements
     middy.MiddlewareObj<APIGatewayProxyExtendedEvent, APIGatewayProxyResult> {
 
     private readonly loggerFactory: LoggerFactoryImpl;
-    private readonly apiName: string;
+    private readonly loggingConfiguration: LoggingConfiguration;
+    private readonly oauthConfiguration: OAuthConfiguration;
 
-    public constructor(loggerFactory: LoggerFactoryImpl, apiName: string) {
+    public constructor(
+        loggerFactory: LoggerFactoryImpl,
+        loggingConfiguration: LoggingConfiguration,
+        oauthConfiguration: OAuthConfiguration,
+    ) {
         this.loggerFactory = loggerFactory;
-        this.apiName = apiName;
+        this.loggingConfiguration = loggingConfiguration;
+        this.oauthConfiguration = oauthConfiguration;
         this.setupCallbacks();
     }
 
@@ -40,7 +48,7 @@ export class ExceptionMiddleware implements
 
             // Log the exception and convert to the client error
             logEntry.setServerError(error);
-            clientError = error.toClientError(this.apiName);
+            clientError = error.toClientError(this.loggingConfiguration.apiName);
 
         } else {
 
@@ -62,7 +70,10 @@ export class ExceptionMiddleware implements
         this.loggerFactory.getAuditLogger()?.write(logEntry.getAuditLog());
 
         // Set the client error as the lambda response error, which will be serialized and returned via the API gateway
-        request.response = ResponseWriter.errorResponse(clientError.getStatusCode(), clientError);
+        request.response = ResponseWriter.errorResponse(
+            clientError.getStatusCode(),
+            clientError,
+            this.oauthConfiguration.scope);
     }
 
     /*
