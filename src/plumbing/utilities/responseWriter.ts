@@ -27,12 +27,12 @@ export class ResponseWriter {
 
         if (error.getStatusCode() === 401) {
             wwwAuthenticate =
-                `Bearer error="${error.getStatusCode()}", error_description="${error.message}"`;
+                `Bearer error="${error.getErrorCode()}", error_description="${error.message}"`;
         }
 
         if (error.getStatusCode() === 403) {
             wwwAuthenticate =
-                `Bearer error="${error.getStatusCode()}", error_description="${error.message}", scope="${scope}"`;
+                `Bearer error="${error.getErrorCode()}", error_description="${error.message}", scope="${scope}"`;
         }
 
         const response = {
