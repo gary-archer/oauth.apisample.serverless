@@ -43,7 +43,7 @@ export class ResponseWriter {
         if (wwwAuthenticate) {
             response.headers = {
                 'www-authenticate': wwwAuthenticate,
-            }
+            };
         }
 
         return response;
@@ -52,7 +52,7 @@ export class ResponseWriter {
     /*
      * Handle startup errors with reduced logic
      */
-    public static startupErrorResponse(statusCode: number, error: ClientError) {
+    public static startupErrorResponse(statusCode: number, error: ClientError): APIGatewayProxyResult {
 
         return {
             statusCode,
