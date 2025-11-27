@@ -7,7 +7,6 @@ import {ErrorFactory} from '../errors/errorFactory.js';
 import {ErrorUtils} from '../errors/errorUtils.js';
 import {JwksRetriever} from './jwksRetriever.js';
 import {LogEntry} from '../logging/logEntry.js';
-import {using} from '../utilities/using.js';
 
 /*
  * A class to deal with OAuth JWT access token validation
@@ -32,44 +31,44 @@ export class AccessTokenValidator {
     /*
      * Do the work of performing token validation via the injected class
      */
+    /* eslint-disable @typescript-eslint/no-unused-vars */
     public async execute(accessToken: string): Promise<JWTPayload> {
 
-        return using(this.logEntry.createPerformanceBreakdown('tokenValidator'), async () => {
+        using breakdown = this.logEntry.createPerformanceBreakdown('tokenValidator');
 
-            const options = {
-                algorithms: [this.configuration.algorithm],
-                issuer: this.configuration.issuer,
-            } as JWTVerifyOptions;
+        const options = {
+            algorithms: [this.configuration.algorithm],
+            issuer: this.configuration.issuer,
+        } as JWTVerifyOptions;
 
-            // Allow for AWS Cognito, which does not include an audience claim in access tokens
-            if (this.configuration.audience) {
-                options.audience = this.configuration.audience;
+        // Allow for AWS Cognito, which does not include an audience claim in access tokens
+        if (this.configuration.audience) {
+            options.audience = this.configuration.audience;
+        }
+
+        // Validate the token and get its claims
+        let claims: JWTPayload;
+        try {
+
+            const result = await jwtVerify(accessToken, this.jwksRetriever.getRemoteJWKSet(), options);
+            claims = result.payload;
+
+        } catch (e: any) {
+
+            // Handle failures downloading or deserializing token signing public keys
+            if (e instanceof AxiosError || e.code === 'ERR_JOSE_GENERIC') {
+                throw ErrorUtils.fromSigningKeyDownloadError(e, this.configuration.jwksEndpoint);
             }
 
-            // Validate the token and get its claims
-            let claims: JWTPayload;
-            try {
-
-                const result = await jwtVerify(accessToken, this.jwksRetriever.getRemoteJWKSet(), options);
-                claims = result.payload;
-
-            } catch (e: any) {
-
-                // Handle failures downloading or deserializing token signing public keys
-                if (e instanceof AxiosError || e.code === 'ERR_JOSE_GENERIC') {
-                    throw ErrorUtils.fromSigningKeyDownloadError(e, this.configuration.jwksEndpoint);
-                }
-
-                // Otherwise return a 401 error, such as when a JWT with an invalid 'kid' value is supplied
-                let details = 'JWT verification failed';
-                if (e.message) {
-                    details += ` : ${e.message}`;
-                }
-
-                throw ErrorFactory.createClient401Error(details);
+            // Otherwise return a 401 error, such as when a JWT with an invalid 'kid' value is supplied
+            let details = 'JWT verification failed';
+            if (e.message) {
+                details += ` : ${e.message}`;
             }
 
-            return claims;
-        });
+            throw ErrorFactory.createClient401Error(details);
+        }
+
+        return claims;
     }
 }

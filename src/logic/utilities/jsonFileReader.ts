@@ -1,5 +1,5 @@
-import fs from 'fs-extra';
 import {injectable} from 'inversify';
+import fs from 'node:fs/promises';
 import {ErrorFactory} from '../../plumbing/errors/errorFactory.js';
 import {ErrorCodes} from '../errors/errorCodes.js';
 

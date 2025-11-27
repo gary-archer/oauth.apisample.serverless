@@ -36,7 +36,7 @@ export class PerformanceBreakdownImpl implements PerformanceBreakdown {
     /*
      * Stop the timer and finish the measurement, converting nanoseconds to milliseconds
      */
-    public dispose(): void {
+    public [Symbol.dispose](): void {
 
         const endTime = process.hrtime(this.startTime);
         this.millisecondsTaken = Math.floor((endTime[0] * 1000000000 + endTime[1]) / 1000000);

@@ -1,4 +1,4 @@
-import fs from 'fs-extra';
+import fs from 'node:fs/promises';
 
 /*
  * A simple logger class without adding frameworks that increase lambda upload sizes
@@ -18,7 +18,7 @@ export class Logger {
         if (this.prettyPrint) {
 
             // On a developer PC, output from 'npm run lambda' is written with pretty printing to a file
-            fs.appendFileSync(`./api-${this.type}.log`, JSON.stringify(data, null, 2));
+            fs.appendFile(`./api-${this.type}.log`, JSON.stringify(data, null, 2));
 
         } else {
 

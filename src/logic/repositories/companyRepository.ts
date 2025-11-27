@@ -1,7 +1,6 @@
 import {inject, injectable} from 'inversify';
 import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
 import {LogEntry} from '../../plumbing/logging/logEntry.js';
-import {using} from '../../plumbing/utilities/using.js';
 import {APPLICATIONTYPES} from '../dependencies/applicationTypes.js';
 import {Company} from '../entities/company.js';
 import {CompanyTransactions} from '../entities/companyTransactions.js';
@@ -31,41 +30,40 @@ export class CompanyRepository {
     /*
      * Return the list of companies from a hard coded data file
      */
+    /* eslint-disable @typescript-eslint/no-unused-vars */
     public async getCompanyList(): Promise<Company[]> {
 
-        return using(this.logEntry.createPerformanceBreakdown('selectCompanyListData'), async () => {
-
-            return this.jsonReader.readData<Company[]>('data/companyList.json');
-        });
+        using breakdown = this.logEntry.createPerformanceBreakdown('selectCompanyListData');
+        return this.jsonReader.readData<Company[]>('data/companyList.json');
     }
 
     /*
      * Return transactions for a company given its id
      */
+    /* eslint-disable @typescript-eslint/no-unused-vars */
     public async getCompanyTransactions(companyId: number): Promise<CompanyTransactions | null> {
 
-        return using(this.logEntry.createPerformanceBreakdown('selectCompanyTransactionsData'), async () => {
+        using breakdown = this.logEntry.createPerformanceBreakdown('selectCompanyTransactionsData');
 
-            // Read companies and find that supplied
-            const companyList = await this.jsonReader.readData<Company[]>('data/companyList.json');
-            const foundCompany = companyList.find((c) => c.id === companyId);
-            if (foundCompany) {
+        // Read companies and find that supplied
+        const companyList = await this.jsonReader.readData<Company[]>('data/companyList.json');
+        const foundCompany = companyList.find((c) => c.id === companyId);
+        if (foundCompany) {
 
-                // Next read transactions from the database
-                const companyTransactions =
-                    await this.jsonReader.readData<CompanyTransactions[]>('data/companyTransactions.json');
+            // Next read transactions from the database
+            const companyTransactions =
+                await this.jsonReader.readData<CompanyTransactions[]>('data/companyTransactions.json');
 
-                // Then join the data
-                const foundTransactions = companyTransactions.find((ct) => ct.id === companyId);
-                if (foundTransactions) {
-                    foundTransactions.company = foundCompany;
-                    return foundTransactions;
-                }
+            // Then join the data
+            const foundTransactions = companyTransactions.find((ct) => ct.id === companyId);
+            if (foundTransactions) {
+                foundTransactions.company = foundCompany;
+                return foundTransactions;
             }
+        }
 
-            // Indicate no data found
-            return null;
-        });
+        // Indicate no data found
+        return null;
     }
 
     /*

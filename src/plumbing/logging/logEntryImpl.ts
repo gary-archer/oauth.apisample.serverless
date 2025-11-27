@@ -123,7 +123,7 @@ export class LogEntryImpl implements LogEntry {
      * Finish writing output data by adding response details
      */
     public end(): void {
-        this.data.performance.dispose();
+        this.data.performance[Symbol.dispose]();
         this.data.finalise();
     }
 

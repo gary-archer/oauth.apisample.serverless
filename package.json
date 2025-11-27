@@ -6,7 +6,7 @@
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "scripts": {
     "login": "sls login",
@@ -21,29 +21,27 @@
     "remove": "sls remove --stage deployed"
   },
   "dependencies": {
-    "@middy/core": "^6.4.3",
-    "axios": "^1.12.2",
-    "fs-extra": "^11.3.0",
+    "@middy/core": "^6.4.5",
+    "axios": "^1.13.2",
     "inversify": "^7.10.0",
-    "jose": "^6.1.0",
+    "jose": "^6.1.2",
     "node-cache": "^5.1.2",
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {
     "@colors/colors": "^1.6.0",
-    "@eslint/js": "^9.35.0",
-    "@types/aws-lambda": "^8.10.149",
-    "@types/fs-extra": "^11.0.4",
+    "@eslint/js": "^9.39.1",
+    "@types/aws-lambda": "^8.10.159",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^24.5.2",
-    "eslint": "^9.35.0",
+    "@types/node": "^24.10.1",
+    "eslint": "^9.39.1",
     "https-proxy-agent": "^7.0.6",
-    "mocha": "^11.7.2",
-    "serverless": "^4.19.1",
+    "mocha": "^11.7.5",
+    "serverless": "^4.25.0",
     "serverless-domain-manager": "^8.0.0",
     "serverless-offline": "^14.4.0",
-    "tsx": "^4.20.5",
-    "typescript": "^5.9.2",
-    "typescript-eslint": "^8.44.0"
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.47.0"
   }
 }

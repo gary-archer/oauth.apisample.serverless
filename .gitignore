@@ -1,9 +1,9 @@
 .DS_store
 node_modules
 dist
+serverlessOffline.yml
 .serverless
-*.log
 certs/*.p12
 certs/*.crt
-certs/*.key
-
+certs/*.pem
+*.log
