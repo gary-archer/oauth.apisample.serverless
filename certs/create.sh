@@ -7,10 +7,9 @@
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 #
-# Do nothing if the local file exists
+# Do nothing if the required local files exist
 #
-CERT_PATH='./authsamples-dev.ssl.p12'
-if [ -f "$CERT_PATH" ]; then
+if [ -f './authsamples-dev.ssl.p12' ] && [ -f './authsamples-dev.ssl.crt' ] && [ -f './cert/pem' ] && [ -f './key.pem' ]; then
   exit 0
 fi
 
@@ -43,7 +42,7 @@ if [ -f "$KEY_PATH" ] && [ -f "$CERT_PATH" ] && [ -f "$P12_PATH" ] && [ -f "$ROO
 fi
 
 #
-# Create the certs in this folder
+# Otherwise, create the certs in this folder
 #
 ./makecerts.sh
 if [ $? -ne 0 ]; then
@@ -51,6 +50,6 @@ if [ $? -ne 0 ]; then
 fi
 
 #
-# Copy certificate files to the secrets folder to avoid recreation for other code samples
+# Then copy certificate files to the secrets folder, to avoid recreation for other code samples
 #
 cp authsamples-dev* "$SECRETS_FOLDER"
