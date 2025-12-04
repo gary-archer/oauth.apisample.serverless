@@ -37,7 +37,7 @@
     "eslint": "^9.39.1",
     "https-proxy-agent": "^7.0.6",
     "mocha": "^11.7.5",
-    "serverless": "^4.25.0",
+    "serverless": "^4.27.0",
     "serverless-domain-manager": "^8.0.0",
     "serverless-offline": "^14.4.0",
     "tsx": "^4.20.6",
