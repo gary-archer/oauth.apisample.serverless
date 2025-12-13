@@ -1,4 +1,3 @@
-import color from '@colors/colors';
 import {randomUUID} from 'crypto';
 import {ApiClient} from './utils/apiClient.js';
 import {ApiRequestOptions} from './utils/apiRequestOptions.js';
@@ -16,6 +15,11 @@ export class LoadTest {
     private readonly sessionId: string;
     private totalCount: number;
     private errorCount: number;
+
+    private colorBlue = '\u001B[34m';
+    private colorGreen = '\u001B[32m';
+    private colorRed = '\u001B[31m';
+    private colorYellow = '\u001B[33m';
 
     public constructor() {
 
@@ -39,7 +43,7 @@ export class LoadTest {
 
         // Get some access tokens to send to the API
         const startMessage = `Load test session ${this.sessionId} starting at ${new Date().toISOString()}\n`;
-        console.log(color.blue(startMessage));
+        this.outputMessage(this.colorBlue, startMessage);
         const accessTokens = await this.getAccessTokens();
 
         // Show a startup table header
@@ -54,7 +58,7 @@ export class LoadTest {
             'ERROR-ID'.padEnd(12),
         ];
         const header = headings.join('');
-        console.log(color.yellow(header));
+        this.outputMessage(this.colorYellow, header);
 
         // Next execute the main body of requests
         await this.sendLoadTestRequests(accessTokens);
@@ -64,7 +68,7 @@ export class LoadTest {
         const millisecondsTaken = Math.floor((endTime[0] * 1000000000 + endTime[1]) / 1000000);
         const endMessage = `Load test session ${this.sessionId} completed in ${millisecondsTaken} milliseconds`;
         const errorStats = `${this.errorCount} errors from ${this.totalCount} requests`;
-        console.log(color.blue(`\n${endMessage}: (${errorStats})`));
+        this.outputMessage(this.colorBlue, `\n${endMessage}: (${errorStats})`);
 
         // Clean up before exiting
         await this.authorizationServer.stop();
@@ -212,12 +216,12 @@ export class LoadTest {
                 if (response.statusCode >= 200 && response.statusCode <= 299) {
 
                     // Report successful requests
-                    console.log(color.green(this.formatMetrics(response)));
+                    this.outputMessage(this.colorGreen, this.formatMetrics(response));
 
                 } else {
 
                     // Report failed requests, some of which are expected
-                    console.log(color.red(this.formatMetrics(response)));
+                    this.outputMessage(this.colorRed, this.formatMetrics(response));
                     this.errorCount++;
                 }
 
@@ -253,6 +257,13 @@ export class LoadTest {
             errorId.padEnd(12),
         ];
         return values.join('');
+    }
+
+    /*
+     * Output a message in colour
+     */
+    private outputMessage(colorCode: string, message: string): void {
+        console.log(`${colorCode}${message}`);
     }
 }
 
