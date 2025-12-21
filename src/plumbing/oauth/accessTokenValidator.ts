@@ -66,13 +66,14 @@ export class AccessTokenValidator {
                 throw ErrorUtils.fromSigningKeyDownloadError(e, this.configuration.jwksEndpoint);
             }
 
-            // For expired access tokens, or my expired access token testing, add identity data to logs
+            // For expired access tokens, add identity data to logs.
+            // Do the same for my expired access token testing, which causes invalid signatures.
             if (e.code === 'ERR_JWT_EXPIRED' || e.code === 'ERR_JWS_SIGNATURE_VERIFICATION_FAILED') {
                 claims = decodeJwt(accessToken);
                 this.logEntry.setIdentityData(this.getIdentityData(claims));
             }
 
-            // Otherwise return a 401 error, such as when a JWT with an invalid 'kid' value is supplied
+            // For most errors return 401s
             let details = 'JWT verification failed';
             if (e.code && e.message) {
                 details += ` : ${e.code} : ${e.message}`;
