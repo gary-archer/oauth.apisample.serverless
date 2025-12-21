@@ -53,12 +53,19 @@ export class LogEntryImpl implements LogEntry {
     /*
      * Audit identity details
      */
-    public setIdentity(data: IdentityLogData): void {
+    public setIdentityData(data: IdentityLogData): void {
         this.data.userId = data.userId;
         this.data.clientId = data.clientId;
         this.data.sessionId = data.sessionId;
         this.data.scope = data.scope;
         this.data.claims = data.claims;
+    }
+
+    /*
+     * Allow the session ID to be passed back to the client in response headers
+     */
+    public getSessionId(): string {
+        return this.data.sessionId;
     }
 
     /*

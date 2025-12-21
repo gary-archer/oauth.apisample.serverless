@@ -9,7 +9,7 @@ import {ErrorFactory} from '../errors/errorFactory.js';
 import {ErrorUtils} from '../errors/errorUtils.js';
 import {JwksRetriever} from './jwksRetriever.js';
 import {IdentityLogData} from '../logging/identityLogData.js';
-import {LogEntry} from '../logging/logEntry.js';
+import {LogEntryImpl} from '../logging/logEntryImpl.js';
 
 /*
  * A class to deal with OAuth JWT access token validation
@@ -18,12 +18,12 @@ import {LogEntry} from '../logging/logEntry.js';
 export class AccessTokenValidator {
 
     private readonly configuration: OAuthConfiguration;
-    private readonly logEntry: LogEntry;
+    private readonly logEntry: LogEntryImpl;
     private readonly jwksRetriever: JwksRetriever;
 
     public constructor(
         @inject(BASETYPES.OAuthConfiguration) configuration: OAuthConfiguration,
-        @inject(BASETYPES.LogEntry) logEntry: LogEntry,
+        @inject(BASETYPES.LogEntry) logEntry: LogEntryImpl,
         @inject(BASETYPES.JwksRetriever) jwksRetriever: JwksRetriever) {
 
         this.configuration = configuration;
@@ -57,7 +57,7 @@ export class AccessTokenValidator {
             claims = result.payload;
 
             // Add identity data to logs
-            this.logEntry.setIdentity(this.getIdentityData(claims));
+            this.logEntry.setIdentityData(this.getIdentityData(claims));
 
         } catch (e: any) {
 
@@ -69,7 +69,7 @@ export class AccessTokenValidator {
             // For expired access tokens, or my expired access token testing, add identity data to logs
             if (e.code === 'ERR_JWT_EXPIRED' || e.code === 'ERR_JWS_SIGNATURE_VERIFICATION_FAILED') {
                 claims = decodeJwt(accessToken);
-                this.logEntry.setIdentity(this.getIdentityData(claims));
+                this.logEntry.setIdentityData(this.getIdentityData(claims));
             }
 
             // Otherwise return a 401 error, such as when a JWT with an invalid 'kid' value is supplied
