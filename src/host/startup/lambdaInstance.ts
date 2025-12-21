@@ -59,7 +59,7 @@ export class LambdaInstance {
                 loggerFactory,
                 configuration.logging,
                 configuration.oauth);
-            const authenticationMiddleware = new AuthenticationMiddleware(configuration.oauth.scope);
+            const authenticationMiddleware = new AuthenticationMiddleware(configuration.oauth);
             const customHeaderMiddleware = new CustomHeaderMiddleware(configuration.logging.apiName);
 
             // Wrap the base handler with middleware that runs in the following sequence

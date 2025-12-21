@@ -22,7 +22,7 @@ export class CustomHeaderMiddleware implements
      */
     public before(request: middy.Request<APIGatewayProxyExtendedEvent, APIGatewayProxyResult>): void {
 
-        const apiToBreak = this.getHeader(request.event, 'authsamples-test-exception');
+        const apiToBreak = this.getHeader(request.event, 'api-exception-simulation');
         if (apiToBreak) {
             if (apiToBreak.toLowerCase() === this.apiName.toLowerCase()) {
                 throw ErrorFactory.createServerError(

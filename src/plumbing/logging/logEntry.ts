@@ -1,3 +1,4 @@
+import {IdentityLogData} from './identityLogData.js';
 import {PerformanceBreakdown} from './performanceBreakdown.js';
 
 /*
@@ -7,6 +8,9 @@ export interface LogEntry {
 
     // Create a performance breakdown
     createPerformanceBreakdown(name: string): PerformanceBreakdown;
+
+    // Add identity data
+    setIdentity(data: IdentityLogData): void;
 
     // Add text logging
     addInfo(info: any): void;

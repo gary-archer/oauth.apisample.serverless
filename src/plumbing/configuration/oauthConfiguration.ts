@@ -8,5 +8,6 @@ export interface OAuthConfiguration {
     scope: string;
     jwksEndpoint: string;
     jwksCooldownDuration?: number;
+    sessionIdClaimName: string;
     claimsCacheTimeToLiveMinutes: number;
 }

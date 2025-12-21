@@ -16,7 +16,7 @@ describe('OAuth API Tests', () => {
 
     const apiBaseUrl = 'https://api.authsamples-dev.com:446';
     const sessionId = randomUUID();
-    const apiClient = new ApiClient(apiBaseUrl, 'IntegrationTests', sessionId, useProxy);
+    const apiClient = new ApiClient(apiBaseUrl, useProxy);
 
     /*
      * Start a mock authorization server during tests
@@ -54,6 +54,7 @@ describe('OAuth API Tests', () => {
         // Get an access token for the end user of this test
         const jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.delegationId = sessionId;
         jwtOptions.expiryTime = Date.now() / 1000 - (60 * 1000);
         const accessToken = await authorizationServer.issueAccessToken(jwtOptions);
 
@@ -74,6 +75,7 @@ describe('OAuth API Tests', () => {
         // Set the access token values
         const jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.delegationId = sessionId;
         jwtOptions.issuer = 'https://otherissuer.com';
         const accessToken = await authorizationServer.issueAccessToken(jwtOptions);
 
@@ -94,6 +96,7 @@ describe('OAuth API Tests', () => {
         // Set the access token values
         const jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.delegationId = sessionId;
         jwtOptions.audience = 'api.other.com';
         const accessToken = await authorizationServer.issueAccessToken(jwtOptions);
 
@@ -114,6 +117,7 @@ describe('OAuth API Tests', () => {
         // Set the access token values
         const jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.delegationId = sessionId;
         const maliciousKeypair = await generateKeyPair('ES256');
         const accessToken = await authorizationServer.issueAccessToken(jwtOptions, maliciousKeypair);
 
@@ -134,6 +138,7 @@ describe('OAuth API Tests', () => {
         // Set the access token values
         const jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.delegationId = sessionId;
         jwtOptions.scope = 'openid profile';
         const accessToken = await authorizationServer.issueAccessToken(jwtOptions);
 
@@ -154,6 +159,7 @@ describe('OAuth API Tests', () => {
         // Set the access token values
         const jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.delegationId = sessionId;
         const accessToken = await authorizationServer.issueAccessToken(jwtOptions);
 
         // Call a valid API operation but pass a custom header to cause an API exception
@@ -174,6 +180,7 @@ describe('OAuth API Tests', () => {
         // Set the access token values
         const jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.delegationId = sessionId;
         const accessToken = await authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API
@@ -193,6 +200,7 @@ describe('OAuth API Tests', () => {
         // Set the access token values
         const jwtOptions = new MockTokenOptions();
         jwtOptions.useAdminUser();
+        jwtOptions.delegationId = sessionId;
         const accessToken = await authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API
@@ -212,6 +220,7 @@ describe('OAuth API Tests', () => {
         // Set the access token values
         const jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.delegationId = sessionId;
         const accessToken = await authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API
@@ -231,6 +240,7 @@ describe('OAuth API Tests', () => {
         // Set the access token values
         const jwtOptions = new MockTokenOptions();
         jwtOptions.useAdminUser();
+        jwtOptions.delegationId = sessionId;
         const accessToken = await authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API
@@ -250,6 +260,7 @@ describe('OAuth API Tests', () => {
         // Set the access token values
         const jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.delegationId = sessionId;
         const accessToken = await authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API
@@ -269,6 +280,7 @@ describe('OAuth API Tests', () => {
         // Set the access token values
         const jwtOptions = new MockTokenOptions();
         jwtOptions.useStandardUser();
+        jwtOptions.delegationId = sessionId;
         const accessToken = await authorizationServer.issueAccessToken(jwtOptions);
 
         // Call the API

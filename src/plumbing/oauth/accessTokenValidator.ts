@@ -1,11 +1,14 @@
 import {AxiosError} from 'axios';
 import {inject, injectable} from 'inversify';
-import {JWTPayload, JWTVerifyOptions, jwtVerify} from 'jose';
+import {JWTPayload, JWTVerifyOptions, decodeJwt, jwtVerify} from 'jose';
+import {ClaimsReader} from '../claims/claimsReader.js';
+import {CustomClaimNames} from '../claims/customClaimNames.js';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
 import {ErrorFactory} from '../errors/errorFactory.js';
 import {ErrorUtils} from '../errors/errorUtils.js';
 import {JwksRetriever} from './jwksRetriever.js';
+import {IdentityLogData} from '../logging/identityLogData.js';
 import {LogEntry} from '../logging/logEntry.js';
 
 /*
@@ -46,12 +49,15 @@ export class AccessTokenValidator {
             options.audience = this.configuration.audience;
         }
 
-        // Validate the token and get its claims
         let claims: JWTPayload;
         try {
 
+            // Validate the token and get its claims
             const result = await jwtVerify(accessToken, this.jwksRetriever.getRemoteJWKSet(), options);
             claims = result.payload;
+
+            // Add identity data to logs
+            this.logEntry.setIdentity(this.getIdentityData(claims));
 
         } catch (e: any) {
 
@@ -60,15 +66,38 @@ export class AccessTokenValidator {
                 throw ErrorUtils.fromSigningKeyDownloadError(e, this.configuration.jwksEndpoint);
             }
 
+            // For expired access tokens, or my expired access token testing, add identity data to logs
+            if (e.code === 'ERR_JWT_EXPIRED' || e.code === 'ERR_JWS_SIGNATURE_VERIFICATION_FAILED') {
+                claims = decodeJwt(accessToken);
+                this.logEntry.setIdentity(this.getIdentityData(claims));
+            }
+
             // Otherwise return a 401 error, such as when a JWT with an invalid 'kid' value is supplied
             let details = 'JWT verification failed';
-            if (e.message) {
-                details += ` : ${e.message}`;
+            if (e.code && e.message) {
+                details += ` : ${e.code} : ${e.message}`;
             }
 
             throw ErrorFactory.createClient401Error(details);
         }
 
         return claims;
+    }
+
+    /*
+     * Collect identity data to add to logs
+     */
+    public getIdentityData(claims: JWTPayload): IdentityLogData {
+
+        return {
+            userId: ClaimsReader.getStringClaim(claims, 'sub'),
+            sessionId: ClaimsReader.getStringClaim(claims, this.configuration.sessionIdClaimName),
+            clientId: ClaimsReader.getStringClaim(claims, 'client_id'),
+            scope: ClaimsReader.getStringClaim(claims, 'scope'),
+            claims: {
+                managerId: ClaimsReader.getStringClaim(claims, CustomClaimNames.managerId),
+                role: ClaimsReader.getStringClaim(claims, CustomClaimNames.role),
+            },
+        };
     }
 }
