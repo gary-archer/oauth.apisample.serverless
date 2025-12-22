@@ -55,7 +55,7 @@ export class LogEntryImpl implements LogEntry {
      */
     public setIdentityData(data: IdentityLogData): void {
         this.data.userId = data.userId;
-        this.data.sessionId = data.sessionId;
+        this.data.sessionId = data.delegationId;
         this.data.clientId = data.clientId;
         this.data.scope = data.scope;
         this.data.claims = data.claims;

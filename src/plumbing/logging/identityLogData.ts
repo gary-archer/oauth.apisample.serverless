@@ -7,7 +7,7 @@ export interface IdentityLogData {
     userId: string;
 
     // The delegation ID
-    sessionId: string;
+    delegationId: string;
 
     // The client ID or name
     clientId: string;

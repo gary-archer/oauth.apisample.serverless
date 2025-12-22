@@ -92,7 +92,7 @@ export class AccessTokenValidator {
 
         return {
             userId: ClaimsReader.getStringClaim(claims, 'sub', false),
-            sessionId: ClaimsReader.getStringClaim(claims, this.configuration.sessionIdClaimName, false),
+            delegationId: ClaimsReader.getStringClaim(claims, this.configuration.delegationIdClaimName, false),
             clientId: ClaimsReader.getStringClaim(claims, 'client_id', false),
             scope: ClaimsReader.getStringClaim(claims, 'scope', false),
             claims: {
