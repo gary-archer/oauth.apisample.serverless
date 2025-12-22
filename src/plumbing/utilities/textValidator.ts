@@ -8,7 +8,7 @@ export class TextValidator {
      */
     public static sanitize(input: string): string {
 
-        if (/^[a-z0-9-]+$/i.test(input) && input.length < 64) {
+        if (/^[a-zA-Z0-9-]+$/i.test(input) && input.length < 64) {
             return input;
         }
 
