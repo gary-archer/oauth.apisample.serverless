@@ -78,6 +78,8 @@ export class MockAuthorizationServer {
             iss: options.issuer,
             aud: options.audience,
             scope: options.scope,
+            delegation_id: options.delegationId,
+            client_id: 'TestClient',
             sub: options.subject,
             manager_id: options.managerId,
             role: options.role,

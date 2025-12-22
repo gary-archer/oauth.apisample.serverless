@@ -15,6 +15,8 @@ export class BaseErrorCodes {
 
     public static readonly insufficientScope = 'insufficient_scope';
 
+    public static readonly insufficientData = 'insufficient_data';
+
     public static readonly cacheConnect = 'cache_connect';
 
     public static readonly cacheRead = 'cache_read';

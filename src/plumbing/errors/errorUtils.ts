@@ -82,8 +82,8 @@ export class ErrorUtils {
 
         const error = ErrorFactory.createClientError(
             403,
-            BaseErrorCodes.insufficientScope,
-            'The token does not contain sufficient scope for this API');
+            BaseErrorCodes.insufficientData,
+            'The token does not contain sufficient data for this API');
 
         error.setLogContext(`Missing claim in input: '${claimName}'`);
         return error;

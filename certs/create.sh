@@ -9,7 +9,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 #
 # Do nothing if the required local files exist
 #
-if [ -f './authsamples-dev.ssl.p12' ] && [ -f './authsamples-dev.ssl.crt' ] && [ -f './cert/pem' ] && [ -f './key.pem' ]; then
+if [ -f './authsamples-dev.ssl.p12' ] && [ -f './cert.pem' ] && [ -f './key.pem' ]; then
   exit 0
 fi
 

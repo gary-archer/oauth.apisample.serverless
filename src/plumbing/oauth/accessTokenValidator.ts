@@ -1,12 +1,15 @@
 import {AxiosError} from 'axios';
 import {inject, injectable} from 'inversify';
-import {JWTPayload, JWTVerifyOptions, jwtVerify} from 'jose';
+import {JWTPayload, JWTVerifyOptions, decodeJwt, jwtVerify} from 'jose';
+import {ClaimsReader} from '../claims/claimsReader.js';
+import {CustomClaimNames} from '../claims/customClaimNames.js';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration.js';
 import {BASETYPES} from '../dependencies/baseTypes.js';
 import {ErrorFactory} from '../errors/errorFactory.js';
 import {ErrorUtils} from '../errors/errorUtils.js';
 import {JwksRetriever} from './jwksRetriever.js';
-import {LogEntry} from '../logging/logEntry.js';
+import {IdentityLogData} from '../logging/identityLogData.js';
+import {LogEntryImpl} from '../logging/logEntryImpl.js';
 
 /*
  * A class to deal with OAuth JWT access token validation
@@ -15,12 +18,12 @@ import {LogEntry} from '../logging/logEntry.js';
 export class AccessTokenValidator {
 
     private readonly configuration: OAuthConfiguration;
-    private readonly logEntry: LogEntry;
+    private readonly logEntry: LogEntryImpl;
     private readonly jwksRetriever: JwksRetriever;
 
     public constructor(
         @inject(BASETYPES.OAuthConfiguration) configuration: OAuthConfiguration,
-        @inject(BASETYPES.LogEntry) logEntry: LogEntry,
+        @inject(BASETYPES.LogEntry) logEntry: LogEntryImpl,
         @inject(BASETYPES.JwksRetriever) jwksRetriever: JwksRetriever) {
 
         this.configuration = configuration;
@@ -46,12 +49,15 @@ export class AccessTokenValidator {
             options.audience = this.configuration.audience;
         }
 
-        // Validate the token and get its claims
         let claims: JWTPayload;
         try {
 
+            // Validate the token and get its claims
             const result = await jwtVerify(accessToken, this.jwksRetriever.getRemoteJWKSet(), options);
             claims = result.payload;
+
+            // Add identity data to logs
+            this.logEntry.setIdentityData(this.getIdentityData(claims));
 
         } catch (e: any) {
 
@@ -60,15 +66,39 @@ export class AccessTokenValidator {
                 throw ErrorUtils.fromSigningKeyDownloadError(e, this.configuration.jwksEndpoint);
             }
 
-            // Otherwise return a 401 error, such as when a JWT with an invalid 'kid' value is supplied
+            // My expiry testing adds extra characters to JWTs to cause 401 errors and simulate expiry over time.
+            // That results in signature validation errors, which I treat as expiry to demonstrate the desired logging.
+            if (e.code === 'ERR_JWT_EXPIRED' || e.code === 'ERR_JWS_SIGNATURE_VERIFICATION_FAILED') {
+                claims = decodeJwt(accessToken);
+                this.logEntry.setIdentityData(this.getIdentityData(claims));
+            }
+
+            // For most errors return 401s
             let details = 'JWT verification failed';
-            if (e.message) {
-                details += ` : ${e.message}`;
+            if (e.code && e.message) {
+                details += ` : ${e.code} : ${e.message}`;
             }
 
             throw ErrorFactory.createClient401Error(details);
         }
 
         return claims;
+    }
+
+    /*
+     * Collect identity data to add to logs
+     */
+    public getIdentityData(claims: JWTPayload): IdentityLogData {
+
+        return {
+            userId: ClaimsReader.getStringClaim(claims, 'sub', false),
+            sessionId: ClaimsReader.getStringClaim(claims, this.configuration.sessionIdClaimName, false),
+            clientId: ClaimsReader.getStringClaim(claims, 'client_id', false),
+            scope: ClaimsReader.getStringClaim(claims, 'scope', false),
+            claims: {
+                managerId: ClaimsReader.getStringClaim(claims, CustomClaimNames.managerId, false),
+                role: ClaimsReader.getStringClaim(claims, CustomClaimNames.role, false),
+            },
+        };
     }
 }

@@ -5,6 +5,8 @@ import os from 'os';
 import {ClientError} from '../errors/clientError.js';
 import {ServerError} from '../errors/serverError.js';
 import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
+import {TextValidator} from '../utilities/textValidator.js';
+import {IdentityLogData} from './identityLogData.js';
 import {LogEntry} from './logEntry.js';
 import {LogEntryData} from './logEntryData.js';
 import {PerformanceBreakdown} from './performanceBreakdown.js';
@@ -33,36 +35,30 @@ export class LogEntryImpl implements LogEntry {
 
         this.data.performance.start();
 
+        // Set the correlation id
+        let correlationId = this.getHeader(event, 'correlation-id');
+        if (correlationId) {
+            correlationId = TextValidator.sanitize(correlationId);
+        }
+        this.data.correlationId = correlationId ? correlationId : randomUUID();
+
         // Get the operation name and set the performance threshold
         this.calculateOperationName(context);
         this.data.performanceThresholdMilliseconds = this.performanceThresholdMilliseconds;
 
         // Record REST path details
         this.calculateRequestLocationFields(event);
-
-        // Our callers can supply a custom header so that we can keep track of who is calling each API
-        const clientName = this.getHeader(event, 'authsamples-api-client');
-        if (clientName) {
-            this.data.clientName = clientName;
-        }
-
-        // Log an optional session id if supplied
-        const sessionId = this.getHeader(event, 'authsamples-session-id');
-        if (sessionId) {
-            this.data.sessionId = sessionId;
-        }
-
-        // Calculate the correlation id
-        this.calculateCorrelationId(event);
     }
 
     /*
      * Audit identity details
      */
-    public setIdentity(userId: string, scope: string[], claims: any): void {
-        this.data.userId = userId;
-        this.data.scope = scope;
-        this.data.claims = claims;
+    public setIdentityData(data: IdentityLogData): void {
+        this.data.userId = data.userId;
+        this.data.sessionId = data.sessionId;
+        this.data.clientId = data.clientId;
+        this.data.scope = data.scope;
+        this.data.claims = data.claims;
     }
 
     /*
@@ -212,14 +208,15 @@ export class LogEntryImpl implements LogEntry {
     }
 
     /*
-     * Correlate requests together, including authorizers and lambdas
+     * Correlate requests together
      */
     private calculateCorrelationId(event: APIGatewayProxyExtendedEvent) {
 
-        // See if there is an incoming valid
-        const correlationId = this.getHeader(event, 'authsamples-correlation-id');
+        let correlationId = this.getHeader(event, 'correlation-id');
+        if (correlationId) {
+            correlationId = TextValidator.sanitize(correlationId);
+        }
 
-        // Use the client supplied value or generate a new value
         this.data.correlationId = correlationId ? correlationId : randomUUID();
     }
 

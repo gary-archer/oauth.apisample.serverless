@@ -17,6 +17,8 @@ export class MockTokenOptions {
 
     public managerId = '';
 
+    public delegationId = '';
+
     /*
      * Test with the user identities for the standard user
      */
