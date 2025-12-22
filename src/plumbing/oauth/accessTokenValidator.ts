@@ -66,8 +66,8 @@ export class AccessTokenValidator {
                 throw ErrorUtils.fromSigningKeyDownloadError(e, this.configuration.jwksEndpoint);
             }
 
-            // For expired access tokens, add identity data to logs.
-            // Do the same for my expired access token testing, which causes invalid signatures.
+            // My expiry testing adds extra characters to JWTs to cause 401 errors and simulate expiry over time.
+            // That results in signature validation errors, which I treat as expiry to demonstrate the desired logging.
             if (e.code === 'ERR_JWT_EXPIRED' || e.code === 'ERR_JWS_SIGNATURE_VERIFICATION_FAILED') {
                 claims = decodeJwt(accessToken);
                 this.logEntry.setIdentityData(this.getIdentityData(claims));
