@@ -62,13 +62,6 @@ export class LogEntryImpl implements LogEntry {
     }
 
     /*
-     * Allow the session ID to be passed back to the client in response headers
-     */
-    public getSessionId(): string {
-        return this.data.sessionId;
-    }
-
-    /*
      * An internal method for setting the operation name
      */
     public setOperationName(name: string): void {

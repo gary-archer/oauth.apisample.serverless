@@ -91,13 +91,13 @@ export class AccessTokenValidator {
     public getIdentityData(claims: JWTPayload): IdentityLogData {
 
         return {
-            userId: ClaimsReader.getStringClaim(claims, 'sub'),
-            sessionId: ClaimsReader.getStringClaim(claims, this.configuration.sessionIdClaimName),
-            clientId: ClaimsReader.getStringClaim(claims, 'client_id'),
-            scope: ClaimsReader.getStringClaim(claims, 'scope'),
+            userId: ClaimsReader.getStringClaim(claims, 'sub', false),
+            sessionId: ClaimsReader.getStringClaim(claims, this.configuration.sessionIdClaimName, false),
+            clientId: ClaimsReader.getStringClaim(claims, 'client_id', false),
+            scope: ClaimsReader.getStringClaim(claims, 'scope', false),
             claims: {
-                managerId: ClaimsReader.getStringClaim(claims, CustomClaimNames.managerId),
-                role: ClaimsReader.getStringClaim(claims, CustomClaimNames.role),
+                managerId: ClaimsReader.getStringClaim(claims, CustomClaimNames.managerId, false),
+                role: ClaimsReader.getStringClaim(claims, CustomClaimNames.role, false),
             },
         };
     }
