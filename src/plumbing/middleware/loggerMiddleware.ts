@@ -1,9 +1,9 @@
 import middy from '@middy/core';
 import {APIGatewayProxyResult} from 'aws-lambda';
-import {BASETYPES} from '../dependencies/baseTypes.js';
-import {LogEntryImpl} from '../logging/logEntryImpl.js';
-import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl.js';
-import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
+import {BASETYPES} from '../dependencies/baseTypes';
+import {LogEntryImpl} from '../logging/logEntryImpl';
+import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
+import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent';
 
 /*
  * A class to log API requests as JSON objects so that we get structured logging output

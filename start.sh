@@ -58,6 +58,16 @@ if [ $? -ne 0 ]; then
 fi
 
 #
+# Prepare the dist folder
+#
+rm -rf dist
+mkdir dist
+cp package*.json dist/
+cd dist
+npm install --omit=dev
+cd ..
+
+#
 # Run webpack to build the API code into bundles
 #
 NODE_OPTIONS='--import tsx' npx webpack --config webpack/webpack.config.dev.ts

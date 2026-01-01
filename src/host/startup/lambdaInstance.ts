@@ -2,18 +2,18 @@ import middy from '@middy/core';
 import {APIGatewayProxyResult, Context} from 'aws-lambda';
 import {Container} from 'inversify';
 import fs from 'node:fs/promises';
-import {ExtraClaimsProviderImpl} from '../../logic/claims/extraClaimsProviderImpl.js';
-import {LoggerFactoryImpl} from '../../plumbing/logging/loggerFactoryImpl.js';
-import {AuthenticationMiddleware} from '../../plumbing/middleware/authenticationMiddleware.js';
-import {ChildContainerMiddleware} from '../../plumbing/middleware/childContainerMiddleware.js';
-import {CustomHeaderMiddleware} from '../../plumbing/middleware/customHeaderMiddleware.js';
-import {ExceptionMiddleware} from '../../plumbing/middleware/exceptionMiddleware.js';
-import {LoggerMiddleware} from '../../plumbing/middleware/loggerMiddleware.js';
-import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent.js';
-import {HttpProxy} from '../../plumbing/utilities/httpProxy.js';
-import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
-import {Configuration} from '../configuration/configuration.js';
-import {CompositionRoot} from '../dependencies/compositionRoot.js';
+import {ExtraClaimsProviderImpl} from '../../logic/claims/extraClaimsProviderImpl';
+import {LoggerFactoryImpl} from '../../plumbing/logging/loggerFactoryImpl';
+import {AuthenticationMiddleware} from '../../plumbing/middleware/authenticationMiddleware';
+import {ChildContainerMiddleware} from '../../plumbing/middleware/childContainerMiddleware';
+import {CustomHeaderMiddleware} from '../../plumbing/middleware/customHeaderMiddleware';
+import {ExceptionMiddleware} from '../../plumbing/middleware/exceptionMiddleware';
+import {LoggerMiddleware} from '../../plumbing/middleware/loggerMiddleware';
+import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent';
+import {HttpProxy} from '../../plumbing/utilities/httpProxy';
+import {ResponseWriter} from '../../plumbing/utilities/responseWriter';
+import {Configuration} from '../configuration/configuration';
+import {CompositionRoot} from '../dependencies/compositionRoot';
 
 /*
  * A shorthand for the lambda handler method signature

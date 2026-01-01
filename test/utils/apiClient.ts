@@ -1,9 +1,9 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import {randomUUID} from 'crypto';
-import {HttpProxy} from '../../src/plumbing/utilities/httpProxy.js';
-import {ApiRequestOptions} from './apiRequestOptions.js';
-import {ApiResponse} from './apiResponse.js';
-import {ApiResponseMetrics} from './apiResponseMetrics.js';
+import {HttpProxy} from '../../src/plumbing/utilities/httpProxy';
+import {ApiRequestOptions} from './apiRequestOptions';
+import {ApiResponse} from './apiResponse';
+import {ApiResponseMetrics} from './apiResponseMetrics';
 
 /*
  * A utility class to call the API in a parameterized manner

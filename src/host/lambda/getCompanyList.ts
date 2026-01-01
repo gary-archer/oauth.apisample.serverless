@@ -1,10 +1,10 @@
 import {APIGatewayProxyResult} from 'aws-lambda';
 import 'reflect-metadata';
-import {APPLICATIONTYPES} from '../../logic/dependencies/applicationTypes.js';
-import {CompanyService} from '../../logic/services/companyService.js';
-import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent.js';
-import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
-import {LambdaInstance} from '../startup/lambdaInstance.js';
+import {APPLICATIONTYPES} from '../../logic/dependencies/applicationTypes';
+import {CompanyService} from '../../logic/services/companyService';
+import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent';
+import {ResponseWriter} from '../../plumbing/utilities/responseWriter';
+import {LambdaInstance} from '../startup/lambdaInstance';
 
 /*
  * Logic for each HTTP request uses a container per request to return a list of company resources

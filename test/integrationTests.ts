@@ -1,10 +1,10 @@
 import assert from 'assert';
 import {randomUUID} from 'crypto';
 import {generateKeyPair} from 'jose';
-import {ApiClient} from './utils/apiClient.js';
-import {ApiRequestOptions} from './utils/apiRequestOptions.js';
-import {MockAuthorizationServer} from './utils/mockAuthorizationServer.js';
-import {MockTokenOptions} from './utils/mockTokenOptions.js';
+import {ApiClient} from './utils/apiClient';
+import {ApiRequestOptions} from './utils/apiRequestOptions';
+import {MockAuthorizationServer} from './utils/mockAuthorizationServer';
+import {MockTokenOptions} from './utils/mockTokenOptions';
 
 /*
  * Test the API in isolation, without any dependencies on real access tokens

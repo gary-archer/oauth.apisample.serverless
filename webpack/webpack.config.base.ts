@@ -1,5 +1,6 @@
 import path from 'path';
 import webpack from 'webpack';
+import nodeExternals from 'webpack-node-externals';
 
 /*
  * Performs tree shaking to reduce lambda sizes and improve startup times
@@ -43,13 +44,16 @@ const config: webpack.Configuration = {
         // Set extensions for import statements, and the .js extension allows us to import modules from JS libraries
         extensions: ['.ts', '.js']
     },
+    externals: [
+        // For backend projects, we cannot reliably bundle the node_modules folder so exclude it
+        nodeExternals()
+    ],
     output: {
 
         // For the main build, using ESM modules prevents CommonJS output
         path: path.resolve(dirname, './dist'),
-        filename: '[name].bundle.js',
+        filename: '[name].js',
         module: true,
-        clean: true,
     },
     experiments: {
         outputModule: true,

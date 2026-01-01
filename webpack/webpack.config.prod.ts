@@ -1,6 +1,6 @@
 import webpack from 'webpack';
 import {merge} from 'webpack-merge';
-import {removeSourceMapReferences} from './rewriteSourceMaps.js';
+import {removeSourceMapReferences} from './rewriteSourceMaps';
 import baseConfig from './webpack.config.base';
 
 const prodConfig: webpack.Configuration =
@@ -14,9 +14,9 @@ const prodConfig: webpack.Configuration =
             apply: (compiler: any) => {
                 compiler.hooks.afterEmit.tap('AfterEmitPlugin', () => {
                     removeSourceMapReferences([
-                        'getUserInfo.bundle.js',
-                        'getCompanyList.bundle.js',
-                        'getCompanyTransactions.bundle.js',
+                        'getUserInfo.js',
+                        'getCompanyList.js',
+                        'getCompanyTransactions.js',
                     ]);
                 });
             }

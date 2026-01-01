@@ -1,9 +1,9 @@
 import {randomUUID} from 'crypto';
-import {ApiClient} from './utils/apiClient.js';
-import {ApiRequestOptions} from './utils/apiRequestOptions.js';
-import {ApiResponse} from './utils/apiResponse.js';
-import {MockAuthorizationServer} from './utils/mockAuthorizationServer.js';
-import {MockTokenOptions} from './utils/mockTokenOptions.js';
+import {ApiClient} from './utils/apiClient';
+import {ApiRequestOptions} from './utils/apiRequestOptions';
+import {ApiResponse} from './utils/apiResponse';
+import {MockAuthorizationServer} from './utils/mockAuthorizationServer';
+import {MockTokenOptions} from './utils/mockTokenOptions';
 
 /*
  * A basic load test to run some requests in parallel and report results

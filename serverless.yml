@@ -20,44 +20,44 @@ custom:
 functions:
   
   getUserInfo:
-    handler: src/host/lambda/getUserInfo.handler
-    #package:
-    #  individually: true
-    #  include:
-    #    - dist/getUserInfo.bundle.js
-    #    - api.config.json
-    #    - serverless.yml
-    #    - package.json
+    handler: dist/getUserInfo.handler
+    package:
+      include:
+        - dist/getUserInfo.js
+        - dist/node_modules/**
+        - api.config.json
+        - serverless.yml
+        - package.json
     events:
       - http: 
           path: /userinfo
           method: get
 
   getCompanyList:
-    handler: src/host/lambda/getCompanyList.handler
-    #package:
-    #  individually: true
-    #  include:
-    #    - dist/getCompanyList.bundle.js
-    #    - data/companyList.json
-    #    - api.config.json
-    #    - serverless.yml
-    #    - package.json
+    handler: dist/getCompanyList.handler
+    package:
+      include:
+        - dist/getCompanyList.js
+        - dist/node_modules/**
+        - data/companyList.json
+        - api.config.json
+        - serverless.yml
+        - package.json
     events:
       - http: 
           path: /companies
           method: get
 
   getCompanyTransactions:
-    handler: src/host/lambda/getCompanyTransactions.handler
-    #package:
-    #  individually: true
-    #  include:
-    #    - dist/getCompanyTransactions.bundle.js
-    #    - data/companyTransactions.json
-    #    - api.config.json
-    #    - serverless.yml
-    #    - package.json
+    handler: dist/getCompanyTransactions.handler
+    package:
+      include:
+        - dist/getCompanyTransactions.js
+        - dist/node_modules/**
+        - data/companyTransactions.json
+        - api.config.json
+        - serverless.yml
+        - package.json
     events:
       - http: 
           path: /companies/{id}/transactions
@@ -76,36 +76,12 @@ plugins:
   - serverless-offline
   - serverless-domain-manager
 
-# Exclude all files by default and choose files within each lambda
-#package:
-#  patterns:
-#  - '!/**'
-
+# Exclude all files by default and choose files in the function packaging above
 package:
-  # Package individual bundles that can be minimized
   individually: true
-  
-  # Exclude irrelevant files
   patterns:
-  - '!.codacy.yaml'
-  - '!.mocharc.json'
-  - '!.vscode/**'
-  - '!api*.log'
-  - '!eslint.config.mjs'
-  - '!certs/**'
-  - '!environments/**'
-  - '!images/**'
-  - '!src/**'
-  - '!webpack/**'
-  - '!test/**'
-  - '!tsconfig.json'
-  - '!package-lock.json'
-  - '!serverlessOffline.yml'
-  - '!README.md'
-  - '!LICENSE.txt'
-  - '!*.map'
-  - '!*.sh'
-
+  - '!/**'
+  
 resources:
   Resources:
   

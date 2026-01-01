@@ -26,6 +26,16 @@ if [ $? -ne 0 ]; then
 fi
 
 #
+# Prepare the dist folder
+#
+rm -rf dist
+mkdir dist
+cp package*.json dist/
+cd dist
+npm install --omit=dev
+cd ..
+
+#
 # Do a release build of the API code
 #
 NODE_OPTIONS='--import tsx' npx webpack --config webpack/webpack.config.prod.ts
