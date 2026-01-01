@@ -17,7 +17,6 @@ functions:
       include:
         - dist/getUserInfo.js
         - api.config.json
-        - serverless.yml
         - package.json
     events:
       - http: 
@@ -31,7 +30,6 @@ functions:
         - dist/getCompanyList.js
         - data/companyList.json
         - api.config.json
-        - serverless.yml
         - package.json
     events:
       - http: 
@@ -43,9 +41,9 @@ functions:
     package:
       include:
         - dist/getCompanyTransactions.js
+        - data/companyList.json
         - data/companyTransactions.json
         - api.config.json
-        - serverless.yml
         - package.json
     events:
       - http: 

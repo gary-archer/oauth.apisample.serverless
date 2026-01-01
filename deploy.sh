@@ -45,12 +45,6 @@ if [ $? -ne 0 ]; then
 fi
 
 #
-# A real API would keep source map files to help with exception resolution
-# My example deployment just deletes source maps to exclude them from the upload package
-#
-rm dist/*.map
-
-#
 # Copy down the deployed configuration
 #
 cp ./environments/deployed.config.json ./api.config.json
@@ -64,9 +58,6 @@ if [ $? -ne 0 ]; then
   echo 'Problem encountered packaging the API'
   exit 1
 fi
-
-echo 'Quit early'
-exit 1
 
 #
 # Do the Serverless deployment
