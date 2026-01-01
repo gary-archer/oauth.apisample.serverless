@@ -20,21 +20,21 @@ custom:
 functions:
   
   getUserInfo:
-    handler: dist/getUserInfo.bundle.js
+    handler: src/host/lambda/getUserInfo.handler
     events:
       - http: 
           path: /userinfo
           method: get
 
   getCompanyList:
-    handler: dist/getCompanyList.bundle.js
+    handler: src/host/lambda/getCompanyList.handler
     events:
       - http: 
           path: /companies
           method: get
 
   getCompanyTransactions:
-    handler: dist/getCompanyTransactions.bundle.js
+    handler: src/host/lambda/getCompanyTransactions.handler
     events:
       - http: 
           path: /companies/{id}/transactions

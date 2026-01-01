@@ -1,31 +1,11 @@
 #!/bin/bash
 
-########################################################################
-# A script to run the API with a test configuration, along with Wiremock
-########################################################################
+##########################################################################
+# A script to run the API with Serverless Offline and a test configuration
+##########################################################################
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 cd ../..
-
-#
-# Ensure that the test configuration is used
-#
-cp environments/test.config.json ./api.config.json
-
-#
-# Create SSL certificates if required
-#
-./certs/create.sh
-if [ $? -ne 0 ]; then
-  exit 1
-fi
-
-#
-# Tell Node.js to trust the CA, or the user can add this CA to their own trust file
-#
-if [ "$NODE_EXTRA_CA_CERTS" == '' ]; then
-  export NODE_EXTRA_CA_CERTS='./certs/authsamples-dev.ca.crt'
-fi
 
 #
 # Get the platform
@@ -46,24 +26,75 @@ case "$(uname -s)" in
 esac
 
 #
-# Run Wiremock and the API in child windows
+# Create SSL certificates if required
 #
-echo 'Running Wiremock and API ...'
+./certs/create.sh
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
+#
+# Tell Node.js to trust the CA, or the user can add this CA to their own trust file
+#
+if [ "$NODE_EXTRA_CA_CERTS" == '' ]; then
+  export NODE_EXTRA_CA_CERTS='./certs/authsamples-dev.ca.crt'
+fi
+
+
+#
+# Install dependencies if needed
+#
+npm install
+if [ $? -ne 0 ]; then
+  echo 'Problem encountered installing dependencies'
+  read -n 1
+  exit 1
+fi
+
+#
+# Enforce code quality checks
+#
+npm run lint
+if [ $? -ne 0 ]; then
+  echo 'Code quality checks failed'
+  read -n 1
+  exit 1
+fi
+
+#
+# Run webpack to build the API code into bundles
+#
+NODE_OPTIONS='--import tsx' npx webpack --config webpack/webpack.config.dev.ts
+if [ $? -ne 0 ]; then
+  echo 'Problem encountered building the API code'
+  read -n 1
+  exit 1
+fi
+
+#
+# Ensure that the test configuration is used
+#
+cp environments/test.config.json ./api.config.json
+
+#
+# Run serverless offline as the API host and Wiremock as a mock authorization server
+#
+echo 'Running the Serverless API and a mock authorization server ...'
 if [ "$PLATFORM" == 'MACOS' ]; then
 
   open -a Terminal ./test/scripts/run_wiremock.sh
-  open -a Terminal ./run_api.sh
+  open -a Terminal ./run_serverless_offline.sh
 
 elif [ "$PLATFORM" == 'WINDOWS' ]; then
 
   GIT_BASH='C:\Program Files\Git\git-bash.exe'
   "$GIT_BASH" -c ./test/scripts/run_wiremock.sh &
-  "$GIT_BASH" -c ./run_api.sh &
+  "$GIT_BASH" -c ./run_serverless_offline.sh &
 
 elif [ "$PLATFORM" == 'LINUX' ]; then
 
   gnome-terminal -- ./test/scripts/run_wiremock.sh
-  gnome-terminal -- ./run_api.sh
+  gnome-terminal -- ./run_serverless_offline.sh
 fi
 
 #

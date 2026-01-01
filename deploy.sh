@@ -8,16 +8,21 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 SLS='./node_modules/.bin/sls'
 
 #
-# Copy down the deployed configuration
-#
-cp ./environments/deployed.config.json ./api.config.json
-
-#
 # Install dependencies if needed
 #
 npm install
 if [ $? -ne 0 ]; then
   echo 'Problem encountered installing API dependencies'
+  exit 1
+fi
+
+#
+# Enforce code quality checks
+#
+npm run lint
+if [ $? -ne 0 ]; then
+  echo 'Code quality checks failed'
+  read -n 1
   exit 1
 fi
 
@@ -31,8 +36,10 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo 'quitting early'
-exit 1
+#
+# Copy down the deployed configuration
+#
+cp ./environments/deployed.config.json ./api.config.json
 
 #
 # Do the Serverless packaging
@@ -43,6 +50,9 @@ if [ $? -ne 0 ]; then
   echo 'Problem encountered packaging the API'
   exit 1
 fi
+
+echo '*** Quitting after packaging'
+exit 1
 
 #
 # Do the Serverless deployment
