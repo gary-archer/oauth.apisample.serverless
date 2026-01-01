@@ -8,15 +8,7 @@ provider:
   apiGateway:
     shouldStartNameWithService: true
 
-# Serverless domain manager details
-custom:
-  customDomain:
-    domainName: 'api.authsamples.com'
-    certificateName: 'authsamples.com'
-    basePath: investments
-    endpointType: regional
-
-# Lambda functions that receives a JWT access token
+# Lambda functions that authorize using scopes and claims in JWT access tokens
 functions:
   
   getUserInfo:
@@ -44,7 +36,7 @@ functions:
               paths: 
                 id: true
 
-# By default all files are included so remove files we don't need for any lambda
+# Files excluding from packaging
 package:
   patterns:
   - '!.codacy.yaml'
@@ -64,9 +56,18 @@ package:
   - '!*.sh'
   - '!*serverlessOffline.yml'
 
+# Enable local HTTPS hosting and integration with AWS domains
 plugins:
   - serverless-offline
   - serverless-domain-manager
+
+# Details for the Serverless domain manager plugin
+custom:
+  customDomain:
+    domainName: 'api.authsamples.com'
+    certificateName: 'authsamples.com'
+    basePath: investments
+    endpointType: regional
 
 resources:
   Resources:
