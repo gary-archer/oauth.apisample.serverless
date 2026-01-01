@@ -1,4 +1,4 @@
-import {ClientError} from './clientError.js';
+import {ClientError} from './clientError';
 
 /*
  * The default implementation of a client error

@@ -1,6 +1,6 @@
 import {injectable} from 'inversify';
 import NodeCache from 'node-cache';
-import {ExtraClaims} from './extraClaims.js';
+import {ExtraClaims} from './extraClaims';
 
 /*
  * A singleton memory cache for extra authorization values

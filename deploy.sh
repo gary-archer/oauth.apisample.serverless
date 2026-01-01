@@ -18,17 +18,21 @@ cp ./environments/deployed.config.json ./api.config.json
 npm install
 if [ $? -ne 0 ]; then
   echo 'Problem encountered installing API dependencies'
-  exit
+  exit 1
 fi
 
 #
 # Do a release build of the API code
 #
-npm run buildRelease
+NODE_OPTIONS='--import tsx' npx webpack --config webpack/webpack.config.prod.ts
 if [ $? -ne 0 ]; then
-  echo 'Problem encountered building the API'
-  exit
+  echo 'Problem encountered building the API code'
+  read -n 1
+  exit 1
 fi
+
+echo 'quitting early'
+exit 1
 
 #
 # Do the Serverless packaging
@@ -37,7 +41,7 @@ rm -rf ./.serverless
 "$SLS" package --stage deployed
 if [ $? -ne 0 ]; then
   echo 'Problem encountered packaging the API'
-  exit
+  exit 1
 fi
 
 #

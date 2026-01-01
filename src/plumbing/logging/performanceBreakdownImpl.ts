@@ -1,4 +1,4 @@
-import {PerformanceBreakdown} from './performanceBreakdown.js';
+import {PerformanceBreakdown} from './performanceBreakdown';
 
 /*
  * Performs basic timing of expensive subtasks

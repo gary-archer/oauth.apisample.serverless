@@ -20,21 +20,21 @@ custom:
 functions:
   
   getUserInfo:
-    handler: dist/host/lambda/getUserInfo.handler
+    handler: dist/getUserInfo.bundle.js
     events:
       - http: 
           path: /userinfo
           method: get
 
   getCompanyList:
-    handler: dist/host/lambda/getCompanyList.handler
+    handler: dist/getCompanyList.bundle.js
     events:
       - http: 
           path: /companies
           method: get
 
   getCompanyTransactions:
-    handler: dist/host/lambda/getCompanyTransactions.handler
+    handler: dist/getCompanyTransactions.bundle.js
     events:
       - http: 
           path: /companies/{id}/transactions
@@ -44,8 +44,11 @@ functions:
               paths: 
                 id: true
 
-# By default all files are included so remove files we don't need for any lambda
 package:
+  # Package individual bundles that can be minimized
+  individually: true
+  
+  # Exclude irrelevant files
   patterns:
   - '!.codacy.yaml'
   - '!.mocharc.json'

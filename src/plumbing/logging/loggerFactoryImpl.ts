@@ -1,9 +1,9 @@
-import {LoggingConfiguration} from '../configuration/loggingConfiguration.js';
-import {ClientError} from '../errors/clientError.js';
-import {ErrorUtils} from '../errors/errorUtils.js';
-import {LogEntryImpl} from './logEntryImpl.js';
-import {Logger} from './logger.js';
-import {LoggerFactory} from './loggerFactory.js';
+import {LoggingConfiguration} from '../configuration/loggingConfiguration';
+import {ClientError} from '../errors/clientError';
+import {ErrorUtils} from '../errors/errorUtils';
+import {LogEntryImpl} from './logEntryImpl';
+import {Logger} from './logger';
+import {LoggerFactory} from './loggerFactory';
 
 /*
  * The logger factory implementation to manage winston and creating log entries

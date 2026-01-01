@@ -43,12 +43,15 @@ fi
 #
 # Build code
 #
-npm run build
+NODE_OPTIONS='--import tsx' npx webpack --config webpack/webpack.config.dev.ts
 if [ $? -ne 0 ]; then
   echo 'Problem encountered building the API code'
   read -n 1
   exit 1
 fi
+
+echo 'quit early'
+exit 1
 
 #
 # Make a replacement until Serverless Offline supports Node.js 24

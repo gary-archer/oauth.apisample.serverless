@@ -1,6 +1,6 @@
-import {LoggingConfiguration} from '../configuration/loggingConfiguration.js';
-import {ClientError} from '../errors/clientError.js';
-import {Logger} from './logger.js';
+import {LoggingConfiguration} from '../configuration/loggingConfiguration';
+import {ClientError} from '../errors/clientError';
+import {Logger} from './logger';
 
 /*
  * An interface to create and get logger objects

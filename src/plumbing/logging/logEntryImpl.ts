@@ -2,14 +2,14 @@ import {Context} from 'aws-lambda';
 import {randomUUID} from 'crypto';
 import {injectable} from 'inversify';
 import os from 'os';
-import {ClientError} from '../errors/clientError.js';
-import {ServerError} from '../errors/serverError.js';
-import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
-import {TextValidator} from '../utilities/textValidator.js';
-import {IdentityLogData} from './identityLogData.js';
-import {LogEntry} from './logEntry.js';
-import {LogEntryData} from './logEntryData.js';
-import {PerformanceBreakdown} from './performanceBreakdown.js';
+import {ClientError} from '../errors/clientError';
+import {ServerError} from '../errors/serverError';
+import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent';
+import {TextValidator} from '../utilities/textValidator';
+import {IdentityLogData} from './identityLogData';
+import {LogEntry} from './logEntry';
+import {LogEntryData} from './logEntryData';
+import {PerformanceBreakdown} from './performanceBreakdown';
 
 /*
  * A log entry collects data during an API request and outputs it at the end

@@ -17,7 +17,6 @@ export default tseslint.config({
         'brace-style': ['error', '1tbs'],
         'indent': 'error',
         'max-len': ['error', { 'code': 120 }],
-        "no-debugger": "off",
         'no-multiple-empty-lines': ['error', {'max': 1}],
         'no-trailing-spaces': 'error',
         'quotes': ['error', 'single', { 'avoidEscape': true }],

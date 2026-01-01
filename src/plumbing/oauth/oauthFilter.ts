@@ -1,12 +1,12 @@
 import {inject, injectable} from 'inversify';
 import {createHash} from 'crypto';
-import {ClaimsCache} from '../claims/claimsCache.js';
-import {ClaimsPrincipal} from '../claims/claimsPrincipal.js';
-import {ExtraClaimsProvider} from '../claims/extraClaimsProvider.js';
-import {BASETYPES} from '../dependencies/baseTypes.js';
-import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
-import {AccessTokenValidator} from './accessTokenValidator.js';
-import {BearerToken} from './bearerToken.js';
+import {ClaimsCache} from '../claims/claimsCache';
+import {ClaimsPrincipal} from '../claims/claimsPrincipal';
+import {ExtraClaimsProvider} from '../claims/extraClaimsProvider';
+import {BASETYPES} from '../dependencies/baseTypes';
+import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent';
+import {AccessTokenValidator} from './accessTokenValidator';
+import {BearerToken} from './bearerToken';
 
 /*
  * A class to create the claims principal at the start of every secured request

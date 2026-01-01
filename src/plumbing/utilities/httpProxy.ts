@@ -1,3 +1,5 @@
+import {HttpsProxyAgent} from 'https-proxy-agent';
+
 /*
  * Manage routing outbound calls from the API via an HTTP proxy
  */
@@ -24,8 +26,7 @@ export class HttpProxy {
 
         if (this.useProxy) {
 
-            const module = await import('http-proxy-agent');
-            this.agent = new module.HttpProxyAgent(this.proxyUrl);
+            this.agent = new HttpsProxyAgent(this.proxyUrl);
         }
     }
 
