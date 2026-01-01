@@ -1,9 +1,8 @@
 import path from 'path';
 import webpack from 'webpack';
-import nodeExternals from 'webpack-node-externals';
 
 /*
- * Performs tree shaking to reduce lambda sizes and improve startup times
+ * Performs tree shaking to reduce lambda sizes and improve cold start times
  */
 const dirname = process.cwd();
 const config: webpack.Configuration = {
@@ -44,10 +43,6 @@ const config: webpack.Configuration = {
         // Set extensions for import statements, and the .js extension allows us to import modules from JS libraries
         extensions: ['.ts', '.js']
     },
-    externals: [
-        // For backend projects, we cannot reliably bundle the node_modules folder so exclude it
-        nodeExternals()
-    ],
     output: {
 
         // Serverless projects require the library webpack setting
