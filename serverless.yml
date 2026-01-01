@@ -8,14 +8,6 @@ provider:
   apiGateway:
     shouldStartNameWithService: true
 
-# Serverless domain manager details
-custom:
-  customDomain:
-    domainName: 'api.authsamples.com'
-    certificateName: 'authsamples.com'
-    basePath: investments
-    endpointType: regional
-
 # Lambda functions that authorize data access using JWT access token
 functions:
   
@@ -24,7 +16,6 @@ functions:
     package:
       include:
         - dist/getUserInfo.js
-        - dist/node_modules/**
         - api.config.json
         - serverless.yml
         - package.json
@@ -38,7 +29,6 @@ functions:
     package:
       include:
         - dist/getCompanyList.js
-        - dist/node_modules/**
         - data/companyList.json
         - api.config.json
         - serverless.yml
@@ -53,7 +43,6 @@ functions:
     package:
       include:
         - dist/getCompanyTransactions.js
-        - dist/node_modules/**
         - data/companyTransactions.json
         - api.config.json
         - serverless.yml
@@ -71,17 +60,25 @@ functions:
 build:
   esbuild: false
 
-# Support running locally and configuring domain details in AWS
-plugins:
-  - serverless-offline
-  - serverless-domain-manager
-
 # Exclude all files by default and choose files in the function packaging above
 package:
   individually: true
   patterns:
   - '!/**'
   
+# Support running locally and configuring domain details in AWS
+plugins:
+  - serverless-offline
+  - serverless-domain-manager
+
+# AWS custom domain integration details
+custom:
+  customDomain:
+    domainName: 'api.authsamples.com'
+    certificateName: 'authsamples.com'
+    basePath: investments
+    endpointType: regional
+
 resources:
   Resources:
   
