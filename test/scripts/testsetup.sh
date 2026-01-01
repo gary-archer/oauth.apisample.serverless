@@ -47,7 +47,6 @@ fi
 npm install
 if [ $? -ne 0 ]; then
   echo 'Problem encountered installing dependencies'
-  read -n 1
   exit 1
 fi
 
@@ -57,7 +56,6 @@ fi
 npm run lint
 if [ $? -ne 0 ]; then
   echo 'Code quality checks failed'
-  read -n 1
   exit 1
 fi
 
@@ -67,7 +65,6 @@ fi
 NODE_OPTIONS='--import tsx' npx webpack --config webpack/webpack.config.dev.ts
 if [ $? -ne 0 ]; then
   echo 'Problem encountered building the API code'
-  read -n 1
   exit 1
 fi
 

@@ -22,7 +22,6 @@ fi
 npm run lint
 if [ $? -ne 0 ]; then
   echo 'Code quality checks failed'
-  read -n 1
   exit 1
 fi
 
@@ -32,9 +31,14 @@ fi
 NODE_OPTIONS='--import tsx' npx webpack --config webpack/webpack.config.prod.ts
 if [ $? -ne 0 ]; then
   echo 'Problem encountered building the API code'
-  read -n 1
   exit 1
 fi
+
+#
+# A real API would keep source map files to help with exception resolution
+# My example deployment just deletes source maps to exclude them from the upload package
+#
+rm dist/*.map
 
 #
 # Copy down the deployed configuration
@@ -51,7 +55,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo '*** Quitting after packaging'
+echo 'Quit early'
 exit 1
 
 #
@@ -60,7 +64,7 @@ exit 1
 "$SLS" deploy --stage deployed --package .serverless
 if [ $? -ne 0 ]; then
   echo 'Problem encountered packaging the API'
-  exit
+  exit 1
 fi
 
 #

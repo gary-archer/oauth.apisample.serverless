@@ -65,6 +65,7 @@ package:
   - '!serverlessOffline.yml'
   - '!README.md'
   - '!LICENSE.txt'
+  - '!*.map'
   - '!*.sh'
 
 plugins:

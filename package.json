@@ -21,6 +21,7 @@
   "dependencies": {
     "@middy/core": "^6.4.5",
     "axios": "^1.13.2",
+    "https-proxy-agent": "^7.0.6",
     "inversify": "^7.10.0",
     "jose": "^6.1.3",
     "node-cache": "^5.1.2",
@@ -32,7 +33,6 @@
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.10.3",
     "eslint": "^9.39.2",
-    "https-proxy-agent": "^7.0.6",
     "mocha": "^11.7.5",
     "serverless": "^4.29.3",
     "serverless-domain-manager": "^8.0.0",
