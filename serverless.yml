@@ -62,6 +62,7 @@ package:
   - '!README.md'
   - '!LICENSE.txt'
   - '!*.sh'
+  - '!*serverlessOffline.yml'
 
 plugins:
   - serverless-offline

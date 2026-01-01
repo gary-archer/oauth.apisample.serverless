@@ -8,26 +8,6 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 cd ../..
 
 #
-# Ensure that the test configuration is used
-#
-cp environments/test.config.json ./api.config.json
-
-#
-# Create SSL certificates if required
-#
-./certs/create.sh
-if [ $? -ne 0 ]; then
-  exit 1
-fi
-
-#
-# Tell Node.js to trust the CA, or the user can add this CA to their own trust file
-#
-if [ "$NODE_EXTRA_CA_CERTS" == '' ]; then
-  export NODE_EXTRA_CA_CERTS='./certs/authsamples-dev.ca.crt'
-fi
-
-#
 # Get the platform
 #
 case "$(uname -s)" in
@@ -46,9 +26,29 @@ case "$(uname -s)" in
 esac
 
 #
-# Run Wiremock and the API in child windows
+# Create SSL certificates if required
 #
-echo 'Running Wiremock and API ...'
+./certs/create.sh
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
+#
+# Tell Node.js to trust the CA, or the user can add this CA to their own trust file
+#
+if [ "$NODE_EXTRA_CA_CERTS" == '' ]; then
+  export NODE_EXTRA_CA_CERTS='./certs/authsamples-dev.ca.crt'
+fi
+
+#
+# Copy down the test configuration
+#
+cp environments/test.config.json ./api.config.json
+
+#
+# Build and run the API using Serverless Offline, and run Wiremock as a mock authorization server
+#
+echo 'Running the API in Serverless Offline and Wiremock as the authorization server ...'
 if [ "$PLATFORM" == 'MACOS' ]; then
 
   open -a Terminal ./test/scripts/run_wiremock.sh
