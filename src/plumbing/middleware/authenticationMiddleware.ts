@@ -1,13 +1,13 @@
 import middy from '@middy/core';
 import {APIGatewayProxyResult} from 'aws-lambda';
-import {ClaimsPrincipal} from '../claims/claimsPrincipal';
-import {ClaimsReader} from '../claims/claimsReader';
-import {OAuthConfiguration} from '../configuration/oauthConfiguration';
-import {BASETYPES} from '../dependencies/baseTypes';
-import {BaseErrorCodes} from '../errors/baseErrorCodes';
-import {ErrorFactory} from '../errors/errorFactory';
-import {OAuthFilter} from '../oauth/oauthFilter';
-import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent';
+import {ClaimsPrincipal} from '../claims/claimsPrincipal.js';
+import {ClaimsReader} from '../claims/claimsReader.js';
+import {OAuthConfiguration} from '../configuration/oauthConfiguration.js';
+import {BASETYPES} from '../dependencies/baseTypes.js';
+import {BaseErrorCodes} from '../errors/baseErrorCodes.js';
+import {ErrorFactory} from '../errors/errorFactory.js';
+import {OAuthFilter} from '../oauth/oauthFilter.js';
+import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
 
 /*
  * A custom authentication filter to take finer control over processing of tokens and claims

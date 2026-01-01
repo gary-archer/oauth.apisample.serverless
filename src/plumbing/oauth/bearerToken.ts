@@ -1,5 +1,5 @@
-import {ErrorFactory} from '../errors/errorFactory';
-import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent';
+import {ErrorFactory} from '../errors/errorFactory.js';
+import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent.js';
 
 /*
  * A simple class to read the access token from the request

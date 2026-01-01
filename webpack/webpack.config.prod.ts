@@ -1,6 +1,6 @@
 import webpack from 'webpack';
 import {merge} from 'webpack-merge';
-import {removeSourceMapReferences} from './rewriteSourceMaps';
+import {removeSourceMapReferences} from './rewriteSourceMaps.js';
 import baseConfig from './webpack.config.base';
 
 const prodConfig: webpack.Configuration =

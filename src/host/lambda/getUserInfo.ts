@@ -1,10 +1,10 @@
 import {APIGatewayProxyResult} from 'aws-lambda';
 import 'reflect-metadata';
-import {ClaimsPrincipal} from '../../plumbing/claims/claimsPrincipal';
-import {BASETYPES} from '../../plumbing/dependencies/baseTypes';
-import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent';
-import {ResponseWriter} from '../../plumbing/utilities/responseWriter';
-import {LambdaInstance} from '../startup/lambdaInstance';
+import {ClaimsPrincipal} from '../../plumbing/claims/claimsPrincipal.js';
+import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
+import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent.js';
+import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
+import {LambdaInstance} from '../startup/lambdaInstance.js';
 
 /*
  * This user info is separate to the OpenID Connect user info that returns core user attributes

@@ -1,5 +1,5 @@
 import {JWTPayload} from 'jose';
-import {ErrorUtils} from '../errors/errorUtils';
+import {ErrorUtils} from '../errors/errorUtils.js';
 
 /*
  * A utility to read claims defensively

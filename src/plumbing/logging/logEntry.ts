@@ -1,4 +1,4 @@
-import {PerformanceBreakdown} from './performanceBreakdown';
+import {PerformanceBreakdown} from './performanceBreakdown.js';
 
 /*
  * A log entry collects data during an API request and outputs it at the end

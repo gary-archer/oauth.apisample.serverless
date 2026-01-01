@@ -1,7 +1,7 @@
 import {injectable} from 'inversify';
 import fs from 'node:fs/promises';
-import {ErrorFactory} from '../../plumbing/errors/errorFactory';
-import {ErrorCodes} from '../errors/errorCodes';
+import {ErrorFactory} from '../../plumbing/errors/errorFactory.js';
+import {ErrorCodes} from '../errors/errorCodes.js';
 
 /*
  * A simple utility to deal with the infrastructure of reading JSON files

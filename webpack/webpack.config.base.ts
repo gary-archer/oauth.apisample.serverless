@@ -8,7 +8,7 @@ const dirname = process.cwd();
 const config: webpack.Configuration = {
 
     // Build for a node.js target
-    target: ['node'],
+    target: 'node',
 
     // Always output source maps so that we can decompile bundles
     devtool: 'source-map',

@@ -1,11 +1,11 @@
 import {JWTPayload} from 'jose';
-import {ClaimsReader} from '../../plumbing/claims/claimsReader';
-import {CustomClaimNames} from '../../plumbing/claims/customClaimNames';
-import {ExtraClaims} from '../../plumbing/claims/extraClaims';
-import {ExtraClaimsProvider} from '../../plumbing/claims/extraClaimsProvider';
-import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent';
-import {APPLICATIONTYPES} from '../dependencies/applicationTypes';
-import {UserRepository} from '../repositories/userRepository';
+import {ClaimsReader} from '../../plumbing/claims/claimsReader.js';
+import {CustomClaimNames} from '../../plumbing/claims/customClaimNames.js';
+import {ExtraClaims} from '../../plumbing/claims/extraClaims.js';
+import {ExtraClaimsProvider} from '../../plumbing/claims/extraClaimsProvider.js';
+import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent.js';
+import {APPLICATIONTYPES} from '../dependencies/applicationTypes.js';
+import {UserRepository} from '../repositories/userRepository.js';
 
 /*
  * Add extra claims that you cannot, or do not want to, manage in the authorization server

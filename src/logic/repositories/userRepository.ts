@@ -1,4 +1,4 @@
-import {ExtraClaims} from '../../plumbing/claims/extraClaims';
+import {ExtraClaims} from '../../plumbing/claims/extraClaims.js';
 
 /*
  * A repository that returns extra authorization values from the API's own data

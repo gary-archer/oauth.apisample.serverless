@@ -1,5 +1,5 @@
 import {APIGatewayProxyResult} from 'aws-lambda';
-import {ClientError} from '../errors/clientError';
+import {ClientError} from '../errors/clientError.js';
 
 /*
  * A utility to write REST responses from objects and deal with common aspects

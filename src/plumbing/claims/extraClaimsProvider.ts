@@ -1,6 +1,6 @@
 import {JWTPayload} from 'jose';
-import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent';
-import {ExtraClaims} from './extraClaims';
+import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent.js';
+import {ExtraClaims} from './extraClaims.js';
 
 /*
  * An interface through which OAuth plumbing code calls a repository in the API logic

@@ -1,4 +1,4 @@
-import {ClientError} from './clientError';
+import {ClientError} from './clientError.js';
 
 /*
  * An interface for errors internal to the API

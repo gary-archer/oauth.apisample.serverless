@@ -21,11 +21,13 @@ functions:
   
   getUserInfo:
     handler: src/host/lambda/getUserInfo.handler
-    package:
-      individually: true
-      include:
-        - dist/getUserInfo.bundle.js
-        - package.json
+    #package:
+    #  individually: true
+    #  include:
+    #    - dist/getUserInfo.bundle.js
+    #    - api.config.json
+    #    - serverless.yml
+    #    - package.json
     events:
       - http: 
           path: /userinfo
@@ -33,12 +35,14 @@ functions:
 
   getCompanyList:
     handler: src/host/lambda/getCompanyList.handler
-    package:
-      individually: true
-      include:
-        - dist/getCompanyList.bundle.js
-        - data/companyList.json
-        - package.json
+    #package:
+    #  individually: true
+    #  include:
+    #    - dist/getCompanyList.bundle.js
+    #    - data/companyList.json
+    #    - api.config.json
+    #    - serverless.yml
+    #    - package.json
     events:
       - http: 
           path: /companies
@@ -46,12 +50,14 @@ functions:
 
   getCompanyTransactions:
     handler: src/host/lambda/getCompanyTransactions.handler
-    package:
-      individually: true
-      include:
-        - data/companyTransactions.json        
-        - dist/getCompanyTransactions.bundle.js
-        - package.json
+    #package:
+    #  individually: true
+    #  include:
+    #    - dist/getCompanyTransactions.bundle.js
+    #    - data/companyTransactions.json
+    #    - api.config.json
+    #    - serverless.yml
+    #    - package.json
     events:
       - http: 
           path: /companies/{id}/transactions
@@ -71,13 +77,38 @@ plugins:
   - serverless-domain-manager
 
 # Exclude all files by default and choose files within each lambda
+#package:
+#  patterns:
+#  - '!/**'
+
 package:
+  # Package individual bundles that can be minimized
+  individually: true
+  
+  # Exclude irrelevant files
   patterns:
-  - '!/**'
+  - '!.codacy.yaml'
+  - '!.mocharc.json'
+  - '!.vscode/**'
+  - '!api*.log'
+  - '!eslint.config.mjs'
+  - '!certs/**'
+  - '!environments/**'
+  - '!images/**'
+  - '!src/**'
+  - '!webpack/**'
+  - '!test/**'
+  - '!tsconfig.json'
+  - '!package-lock.json'
+  - '!serverlessOffline.yml'
+  - '!README.md'
+  - '!LICENSE.txt'
+  - '!*.map'
+  - '!*.sh'
 
 resources:
   Resources:
-
+  
     # Limit cloudwatch log retention 
     GetUserInfoLogGroup:
       Type: 'AWS::Logs::LogGroup'

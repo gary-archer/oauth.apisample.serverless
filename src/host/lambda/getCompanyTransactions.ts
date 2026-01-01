@@ -1,12 +1,12 @@
 import {APIGatewayProxyResult} from 'aws-lambda';
 import 'reflect-metadata';
-import {APPLICATIONTYPES} from '../../logic/dependencies/applicationTypes';
-import {ErrorCodes} from '../../logic/errors/errorCodes';
-import {CompanyService} from '../../logic/services/companyService';
-import {ErrorFactory} from '../../plumbing/errors/errorFactory';
-import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent';
-import {ResponseWriter} from '../../plumbing/utilities/responseWriter';
-import {LambdaInstance} from '../startup/lambdaInstance';
+import {APPLICATIONTYPES} from '../../logic/dependencies/applicationTypes.js';
+import {ErrorCodes} from '../../logic/errors/errorCodes.js';
+import {CompanyService} from '../../logic/services/companyService.js';
+import {ErrorFactory} from '../../plumbing/errors/errorFactory.js';
+import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent.js';
+import {ResponseWriter} from '../../plumbing/utilities/responseWriter.js';
+import {LambdaInstance} from '../startup/lambdaInstance.js';
 
 /*
  * Logic for each HTTP request uses a container per request to return transaction data

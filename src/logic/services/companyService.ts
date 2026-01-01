@@ -1,15 +1,15 @@
 import {inject, injectable} from 'inversify';
-import {ClaimsPrincipal} from '../../plumbing/claims/claimsPrincipal';
-import {ClaimsReader} from '../../plumbing/claims/claimsReader';
-import {CustomClaimNames} from '../../plumbing/claims/customClaimNames';
-import {BASETYPES} from '../../plumbing/dependencies/baseTypes';
-import {ClientError} from '../../plumbing/errors/clientError';
-import {ErrorFactory} from '../../plumbing/errors/errorFactory';
-import {APPLICATIONTYPES} from '../dependencies/applicationTypes';
-import {Company} from '../entities/company';
-import {CompanyTransactions} from '../entities/companyTransactions';
-import {ErrorCodes} from '../errors/errorCodes';
-import {CompanyRepository} from '../repositories/companyRepository';
+import {ClaimsPrincipal} from '../../plumbing/claims/claimsPrincipal.js';
+import {ClaimsReader} from '../../plumbing/claims/claimsReader.js';
+import {CustomClaimNames} from '../../plumbing/claims/customClaimNames.js';
+import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
+import {ClientError} from '../../plumbing/errors/clientError.js';
+import {ErrorFactory} from '../../plumbing/errors/errorFactory.js';
+import {APPLICATIONTYPES} from '../dependencies/applicationTypes.js';
+import {Company} from '../entities/company.js';
+import {CompanyTransactions} from '../entities/companyTransactions.js';
+import {ErrorCodes} from '../errors/errorCodes.js';
+import {CompanyRepository} from '../repositories/companyRepository.js';
 
 /*
  * The service class applies business authorization

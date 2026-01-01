@@ -1,5 +1,5 @@
 import {randomUUID} from 'crypto';
-import {PerformanceBreakdownImpl} from './performanceBreakdownImpl';
+import {PerformanceBreakdownImpl} from './performanceBreakdownImpl.js';
 
 /*
  * Log data collected during the lifetime of an API request

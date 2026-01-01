@@ -1,6 +1,6 @@
 import {injectable} from 'inversify';
 import {JWTPayload} from 'jose';
-import {ExtraClaims} from './extraClaims';
+import {ExtraClaims} from './extraClaims.js';
 
 /*
  * The claims for this API
