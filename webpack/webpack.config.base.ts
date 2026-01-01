@@ -50,10 +50,14 @@ const config: webpack.Configuration = {
     ],
     output: {
 
-        // For the main build, using ESM modules prevents CommonJS output
+        // Serverless projects require the library webpack setting
         path: path.resolve(dirname, './dist'),
         filename: '[name].js',
+        library: {
+            type: 'module'
+        },
         module: true,
+        clean: true,
     },
     experiments: {
         outputModule: true,

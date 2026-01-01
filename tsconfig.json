@@ -3,7 +3,7 @@
     "strict": true,
     "target": "ES2024",
     "lib": ["ES2024"],
-    "module":"es2022",
+    "module":"ES2022",
     "moduleResolution": "Bundler",
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,

@@ -60,12 +60,12 @@ fi
 #
 # Prepare the dist folder
 #
-rm -rf dist
-mkdir dist
-cp package*.json dist/
-cd dist
-npm install --omit=dev
-cd ..
+#rm -rf dist
+#mkdir dist
+#cp package*.json dist/
+#cd dist
+#npm install --omit=dev
+#cd ..
 
 #
 # Run webpack to build the API code into bundles
