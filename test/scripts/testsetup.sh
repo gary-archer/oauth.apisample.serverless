@@ -40,34 +40,6 @@ if [ "$NODE_EXTRA_CA_CERTS" == '' ]; then
   export NODE_EXTRA_CA_CERTS='./certs/authsamples-dev.ca.crt'
 fi
 
-
-#
-# Install dependencies if needed
-#
-npm install
-if [ $? -ne 0 ]; then
-  echo 'Problem encountered installing dependencies'
-  exit 1
-fi
-
-#
-# Enforce code quality checks
-#
-npm run lint
-if [ $? -ne 0 ]; then
-  echo 'Code quality checks failed'
-  exit 1
-fi
-
-#
-# Run webpack to build the API code into bundles
-#
-NODE_OPTIONS='--import tsx' npx webpack --config webpack/webpack.config.dev.ts
-if [ $? -ne 0 ]; then
-  echo 'Problem encountered building the API code'
-  exit 1
-fi
-
 #
 # Ensure that the test configuration is used
 #
@@ -80,18 +52,18 @@ echo 'Running the Serverless API and a mock authorization server ...'
 if [ "$PLATFORM" == 'MACOS' ]; then
 
   open -a Terminal ./test/scripts/run_wiremock.sh
-  open -a Terminal ./run_serverless_offline.sh
+  open -a Terminal ./run_api.sh
 
 elif [ "$PLATFORM" == 'WINDOWS' ]; then
 
   GIT_BASH='C:\Program Files\Git\git-bash.exe'
   "$GIT_BASH" -c ./test/scripts/run_wiremock.sh &
-  "$GIT_BASH" -c ./run_serverless_offline.sh &
+  "$GIT_BASH" -c ./run_api.sh &
 
 elif [ "$PLATFORM" == 'LINUX' ]; then
 
   gnome-terminal -- ./test/scripts/run_wiremock.sh
-  gnome-terminal -- ./run_serverless_offline.sh
+  gnome-terminal -- ./run_api.sh
 fi
 
 #

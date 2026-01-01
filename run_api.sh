@@ -21,6 +21,36 @@ function replaceServerlessVersion() {
 }
 
 #
+# Install dependencies if needed
+#
+npm install
+if [ $? -ne 0 ]; then
+  echo 'Problem encountered installing dependencies'
+  read -n 1
+  exit 1
+fi
+
+#
+# Enforce code quality checks
+#
+npm run lint
+if [ $? -ne 0 ]; then
+  echo 'Code quality checks failed'
+  read -n 1
+  exit 1
+fi
+
+#
+# Run webpack to build the API code into bundles
+#
+NODE_OPTIONS='--import tsx' npx webpack --config webpack/webpack.config.dev.ts
+if [ $? -ne 0 ]; then
+  echo 'Problem encountered building the API code'
+  read -n 1
+  exit 1
+fi
+
+#
 # Make a replacement until Serverless Offline supports Node.js 24
 #
 rm serverlessOffline.yml 2>/dev/null
