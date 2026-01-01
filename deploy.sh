@@ -13,7 +13,7 @@ SLS='./node_modules/.bin/sls'
 npm install
 if [ $? -ne 0 ]; then
   echo 'Problem encountered installing API dependencies'
-  exit
+  exit 1
 fi
 
 #
@@ -32,7 +32,7 @@ fi
 npm run buildRelease
 if [ $? -ne 0 ]; then
   echo 'Problem encountered building the API'
-  exit
+  exit 1
 fi
 
 #
@@ -47,7 +47,7 @@ rm -rf ./.serverless
 "$SLS" package --stage deployed
 if [ $? -ne 0 ]; then
   echo 'Problem encountered packaging the API'
-  exit
+  exit 1
 fi
 
 #
@@ -56,7 +56,7 @@ fi
 "$SLS" deploy --stage deployed --package .serverless
 if [ $? -ne 0 ]; then
   echo 'Problem encountered packaging the API'
-  exit
+  exit 1
 fi
 
 #

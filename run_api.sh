@@ -71,10 +71,6 @@ npx sls offline \
   --httpsProtocol certs
 if [ $? -ne 0 ]; then
   echo 'Problem encountered starting Serverless Offline'
+  read -n 1
   exit 1
 fi
-
-#
-# Prevent automatic terminal closure if there is a startup error
-#
-read -n 1
