@@ -59,6 +59,7 @@ package:
   - '!test/**'
   - '!tsconfig.json'
   - '!package-lock.json'
+  - '!serverlessOffline.yml'
   - '!README.md'
   - '!LICENSE.txt'
   - '!*.sh'
