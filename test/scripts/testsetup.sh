@@ -1,8 +1,8 @@
 #!/bin/bash
 
-########################################################################
-# A script to run the API with a test configuration, along with Wiremock
-########################################################################
+##########################################################################
+# A script to run the API with Serverless Offline and a test configuration
+##########################################################################
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
 cd ../..
@@ -41,14 +41,14 @@ if [ "$NODE_EXTRA_CA_CERTS" == '' ]; then
 fi
 
 #
-# Copy down the test configuration
+# Ensure that the test configuration is used
 #
 cp environments/test.config.json ./api.config.json
 
 #
-# Build and run the API using Serverless Offline, and run Wiremock as a mock authorization server
+# Run serverless offline as the API host and Wiremock as a mock authorization server
 #
-echo 'Running the API in Serverless Offline and Wiremock as the authorization server ...'
+echo 'Running the Serverless API and a mock authorization server ...'
 if [ "$PLATFORM" == 'MACOS' ]; then
 
   open -a Terminal ./test/scripts/run_wiremock.sh

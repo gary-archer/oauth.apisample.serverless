@@ -1,4 +1,4 @@
-import {ApiResponseMetrics} from './apiResponseMetrics.js';
+import {ApiResponseMetrics} from './apiResponseMetrics';
 
 /*
  * Model a test API response as both data and metrics

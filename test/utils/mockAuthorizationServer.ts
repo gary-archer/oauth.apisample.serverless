@@ -1,8 +1,8 @@
 import axios, {AxiosRequestConfig} from 'axios';
 import {randomUUID} from 'crypto';
 import {generateKeyPair, exportJWK, SignJWT, GenerateKeyPairResult} from 'jose';
-import {HttpProxy} from '../../src/plumbing/utilities/httpProxy.js';
-import {MockTokenOptions} from './mockTokenOptions.js';
+import {HttpProxy} from '../../src/plumbing/utilities/httpProxy';
+import {MockTokenOptions} from './mockTokenOptions';
 
 /*
  * A mock authorization server implemented with wiremock and a JOSE library

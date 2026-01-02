@@ -1,9 +1,9 @@
 import {randomUUID} from 'crypto';
-import {ApiClient} from './utils/apiClient.js';
-import {ApiRequestOptions} from './utils/apiRequestOptions.js';
-import {ApiResponse} from './utils/apiResponse.js';
-import {MockAuthorizationServer} from './utils/mockAuthorizationServer.js';
-import {MockTokenOptions} from './utils/mockTokenOptions.js';
+import {ApiClient} from './utils/apiClient';
+import {ApiRequestOptions} from './utils/apiRequestOptions';
+import {ApiResponse} from './utils/apiResponse';
+import {MockAuthorizationServer} from './utils/mockAuthorizationServer';
+import {MockTokenOptions} from './utils/mockTokenOptions';
 
 /*
  * A basic load test to run some requests in parallel and report results
@@ -12,7 +12,7 @@ export class LoadTest {
 
     private readonly authorizationServer: MockAuthorizationServer;
     private readonly apiClient: ApiClient;
-    private readonly sessionId: string;
+    private readonly delegationId: string;
     private totalCount: number;
     private errorCount: number;
 
@@ -23,11 +23,18 @@ export class LoadTest {
 
     public constructor() {
 
+        // Use an HTTP proxy if required
         const useProxy = false;
+
+        // Create the mock authorization server
         this.authorizationServer = new MockAuthorizationServer(useProxy);
+
+        // Create the API client
         const apiBaseUrl = 'https://api.authsamples-dev.com:446';
-        this.sessionId = randomUUID();
         this.apiClient = new ApiClient(apiBaseUrl, useProxy);
+
+        // Create a mock delegation ID for testing
+        this.delegationId = randomUUID();
         this.totalCount = 0;
         this.errorCount = 0;
     }
@@ -42,7 +49,7 @@ export class LoadTest {
         await this.authorizationServer.start();
 
         // Get some access tokens to send to the API
-        const startMessage = `Load test session ${this.sessionId} starting at ${new Date().toISOString()}\n`;
+        const startMessage = `Load test session ${this.delegationId} starting at ${new Date().toISOString()}\n`;
         this.outputMessage(this.colorBlue, startMessage);
         const accessTokens = await this.getAccessTokens();
 
@@ -66,7 +73,7 @@ export class LoadTest {
         // Report a summary of results
         const endTime = process.hrtime(startTime);
         const millisecondsTaken = Math.floor((endTime[0] * 1000000000 + endTime[1]) / 1000000);
-        const endMessage = `Load test session ${this.sessionId} completed in ${millisecondsTaken} milliseconds`;
+        const endMessage = `Load test session ${this.delegationId} completed in ${millisecondsTaken} milliseconds`;
         const errorStats = `${this.errorCount} errors from ${this.totalCount} requests`;
         this.outputMessage(this.colorBlue, `\n${endMessage}: (${errorStats})`);
 
@@ -84,7 +91,7 @@ export class LoadTest {
 
             const jwtOptions = new MockTokenOptions();
             jwtOptions.useStandardUser();
-            jwtOptions.delegationId = this.sessionId;
+            jwtOptions.delegationId = this.delegationId;
             const accessToken = await this.authorizationServer.issueAccessToken(jwtOptions);
             accessTokens.push(accessToken);
         }

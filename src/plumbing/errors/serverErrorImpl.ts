@@ -1,6 +1,6 @@
-import {ClientError} from './clientError.js';
-import {ErrorFactory} from './errorFactory.js';
-import {ServerError} from './serverError.js';
+import {ClientError} from './clientError';
+import {ErrorFactory} from './errorFactory';
+import {ServerError} from './serverError';
 
 // Ranges for random error ids
 const MIN_ERROR_ID = 10000;
@@ -66,16 +66,10 @@ export class ServerErrorImpl extends ServerError {
             details: this.details,
         };
 
-        // Include the stack trace as an array within the JSON object
+        // Write a raw exception stack trace.
+        // This enables use of source map tools to get back to the original lines of code.
         if (this.stack) {
-
-            const frames: string[] = [];
-            const items = this.stack.split('\n').map((x: string) => x.trim());
-            items.forEach((i) => {
-                frames.push(i);
-            });
-
-            serviceError.stack = frames;
+            serviceError.stack = this.stack;
         }
 
         return {

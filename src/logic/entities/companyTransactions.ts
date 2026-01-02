@@ -1,5 +1,5 @@
-import {Company} from './company.js';
-import {Transaction} from './transaction.js';
+import {Company} from './company';
+import {Transaction} from './transaction';
 
 /*
  * A composite entity of a company and its transactions

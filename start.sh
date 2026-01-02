@@ -40,21 +40,22 @@ if [ "$NODE_EXTRA_CA_CERTS" == '' ]; then
 fi
 
 #
-# Copy down the development configuration
+# Ensure that the development configuration is used that points to AWS Cognito
+# You can then run a frontend locally that calls the Serverless API
 #
 cp environments/dev.config.json ./api.config.json
 
 #
-# Build and run the API using Serverless Offline
+# Run serverless offline as the API host
 #
-echo 'Running the API in Serverless Offline ...'
+echo 'Running the Serverless API ...'
 if [ "$PLATFORM" == 'MACOS' ]; then
 
   open -a Terminal ./run_api.sh
 
 elif [ "$PLATFORM" == 'WINDOWS' ]; then
-
-  GIT_BASH='C:\Program Files\Git\git-bash.exe'
+  
+  GIT_BASH="C:\Program Files\Git\git-bash.exe"
   "$GIT_BASH" -c ./run_api.sh &
 
 elif [ "$PLATFORM" == 'LINUX' ]; then

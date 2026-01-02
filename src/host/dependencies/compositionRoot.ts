@@ -1,18 +1,18 @@
 import {Container} from 'inversify';
-import {APPLICATIONTYPES} from '../../logic/dependencies/applicationTypes.js';
-import {CompanyRepository} from '../../logic/repositories/companyRepository.js';
-import {UserRepository} from '../../logic/repositories/userRepository.js';
-import {CompanyService} from '../../logic/services/companyService.js';
-import {JsonFileReader} from '../../logic/utilities/jsonFileReader.js';
-import {ClaimsCache} from '../../plumbing/claims/claimsCache.js';
-import {ExtraClaimsProvider} from '../../plumbing/claims/extraClaimsProvider.js';
-import {OAuthConfiguration} from '../../plumbing/configuration/oauthConfiguration.js';
-import {BASETYPES} from '../../plumbing/dependencies/baseTypes.js';
-import {AccessTokenValidator} from '../../plumbing/oauth/accessTokenValidator.js';
-import {JwksRetriever} from '../../plumbing/oauth/jwksRetriever.js';
-import {OAuthFilter} from '../../plumbing/oauth/oauthFilter.js';
-import {HttpProxy} from '../../plumbing/utilities/httpProxy.js';
-import {Configuration} from '../configuration/configuration.js';
+import {APPLICATIONTYPES} from '../../logic/dependencies/applicationTypes';
+import {CompanyRepository} from '../../logic/repositories/companyRepository';
+import {UserRepository} from '../../logic/repositories/userRepository';
+import {CompanyService} from '../../logic/services/companyService';
+import {JsonFileReader} from '../../logic/utilities/jsonFileReader';
+import {ClaimsCache} from '../../plumbing/claims/claimsCache';
+import {ExtraClaimsProvider} from '../../plumbing/claims/extraClaimsProvider';
+import {OAuthConfiguration} from '../../plumbing/configuration/oauthConfiguration';
+import {BASETYPES} from '../../plumbing/dependencies/baseTypes';
+import {AccessTokenValidator} from '../../plumbing/oauth/accessTokenValidator';
+import {JwksRetriever} from '../../plumbing/oauth/jwksRetriever';
+import {OAuthFilter} from '../../plumbing/oauth/oauthFilter';
+import {HttpProxy} from '../../plumbing/utilities/httpProxy';
+import {Configuration} from '../configuration/configuration';
 
 /*
  * A class to manage dependency injection composition at application startup

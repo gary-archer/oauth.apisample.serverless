@@ -1,6 +1,7 @@
 .DS_store
 node_modules
 dist
+/api.config.json
 serverlessOffline.yml
 .serverless
 certs/*.p12

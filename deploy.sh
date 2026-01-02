@@ -22,16 +22,15 @@ fi
 npm run lint
 if [ $? -ne 0 ]; then
   echo 'Code quality checks failed'
-  read -n 1
   exit 1
 fi
 
 #
 # Do a release build of the API code
 #
-npm run buildRelease
+NODE_OPTIONS='--import tsx' npx webpack --config webpack/webpack.config.prod.ts
 if [ $? -ne 0 ]; then
-  echo 'Problem encountered building the API'
+  echo 'Problem encountered building the API code'
   exit 1
 fi
 
@@ -60,6 +59,6 @@ if [ $? -ne 0 ]; then
 fi
 
 #
-# Replace the development configuration on success
+# Clean up on success
 #
-cp ./environments/dev.config.json ./api.config.json
+rm ./api.config.json

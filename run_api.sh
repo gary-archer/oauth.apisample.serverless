@@ -41,9 +41,9 @@ if [ $? -ne 0 ]; then
 fi
 
 #
-# Build code
+# Run webpack to build the API code into bundles
 #
-npm run build
+NODE_OPTIONS='--import tsx' npx webpack --config webpack/webpack.config.dev.ts
 if [ $? -ne 0 ]; then
   echo 'Problem encountered building the API code'
   read -n 1

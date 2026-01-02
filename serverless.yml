@@ -8,25 +8,43 @@ provider:
   apiGateway:
     shouldStartNameWithService: true
 
-# Lambda functions that authorize using scopes and claims in JWT access tokens
+# Lambda functions that authorize data access using JWT access token
 functions:
   
   getUserInfo:
-    handler: dist/host/lambda/getUserInfo.handler
+    handler: dist/getUserInfo.handler
+    package:
+      include:
+        - dist/getUserInfo.js
+        - api.config.json
+        - package.json
     events:
       - http: 
           path: /userinfo
           method: get
 
   getCompanyList:
-    handler: dist/host/lambda/getCompanyList.handler
+    handler: dist/getCompanyList.handler
+    package:
+      include:
+        - dist/getCompanyList.js
+        - data/companyList.json
+        - api.config.json
+        - package.json
     events:
       - http: 
           path: /companies
           method: get
 
   getCompanyTransactions:
-    handler: dist/host/lambda/getCompanyTransactions.handler
+    handler: dist/getCompanyTransactions.handler
+    package:
+      include:
+        - dist/getCompanyTransactions.js
+        - data/companyList.json
+        - data/companyTransactions.json
+        - api.config.json
+        - package.json
     events:
       - http: 
           path: /companies/{id}/transactions
@@ -36,32 +54,22 @@ functions:
               paths: 
                 id: true
 
-# Files excluding from packaging
-package:
-  patterns:
-  - '!.codacy.yaml'
-  - '!.mocharc.json'
-  - '!.vscode/**'
-  - '!api*.log'
-  - '!eslint.config.mjs'
-  - '!certs/**'
-  - '!environments/**'
-  - '!images/**'
-  - '!src/**'
-  - '!test/**'
-  - '!tsconfig.json'
-  - '!package-lock.json'
-  - '!README.md'
-  - '!LICENSE.txt'
-  - '!*.sh'
-  - '!*serverlessOffline.yml'
+# Disable the default build which we are overriding with webpack
+build:
+  esbuild: false
 
-# Enable local HTTPS hosting and integration with AWS domains
+# Exclude all files by default and choose files in the function packaging above
+package:
+  individually: true
+  patterns:
+  - '!/**'
+  
+# Support running locally and configuring domain details in AWS
 plugins:
   - serverless-offline
   - serverless-domain-manager
 
-# Details for the Serverless domain manager plugin
+# AWS custom domain integration details
 custom:
   customDomain:
     domainName: 'api.authsamples.com'
@@ -71,7 +79,7 @@ custom:
 
 resources:
   Resources:
-
+  
     # Limit cloudwatch log retention 
     GetUserInfoLogGroup:
       Type: 'AWS::Logs::LogGroup'
