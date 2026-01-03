@@ -60,9 +60,8 @@ replaceServerlessVersion
 
 #
 # Run Serverless offline to expose lambda endpoints at HTTPS endpoints
-# Use the --inspect argument to support attach to process
 #
-node --inspect "$SLS" offline \
+npx sls offline \
   --config ./serverlessOffline.yml \
   --useInProcess \
   --noPrependStageInUrl \

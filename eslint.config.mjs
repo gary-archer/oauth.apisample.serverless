@@ -21,6 +21,5 @@ export default tseslint.config({
         'no-trailing-spaces': 'error',
         'quotes': ['error', 'single', { 'avoidEscape': true }],
         'semi': 'error',
-        'no-debugger': 'off',
     },
 });

@@ -5,8 +5,19 @@
            "type": "node",
            "request": "attach",
            "name": "Attach to API",
-           "processId": "${command:PickProcess}",
+           "processId": "${input:findNodePID}",
            "skipFiles": ["<node_internals>/**"]
+       }
+   ],
+   "inputs": [
+       {
+           "id": "findNodePID",
+           "type": "command",
+           "command": "shellCommand.execute",
+           "args": {
+               "command": "ps aux | grep [s]f-core.js | awk {'print $2'}",
+               "useFirstResult": true,
+           }
        }
    ]
 }
