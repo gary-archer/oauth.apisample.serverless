@@ -4,9 +4,9 @@
        {
            "type": "node",
            "request": "attach",
-           "name": "Attach to Serverless Offline",
+           "name": "Attach to API",
            "processId": "${command:PickProcess}",
-           "port": 446
+           "skipFiles": ["<node_internals>/**"]
        }
    ]
 }

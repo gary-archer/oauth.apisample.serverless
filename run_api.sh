@@ -5,6 +5,7 @@
 ##########################################
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
+SLS='./node_modules/.bin/sls'
 
 #
 # A utility to change the Node.js version that Serverless Offline receives
@@ -59,8 +60,9 @@ replaceServerlessVersion
 
 #
 # Run Serverless offline to expose lambda endpoints at HTTPS endpoints
+# Use the --inspect argument to support attach to process
 #
-npx sls offline \
+node --inspect "$SLS" offline \
   --config ./serverlessOffline.yml \
   --useInProcess \
   --noPrependStageInUrl \
