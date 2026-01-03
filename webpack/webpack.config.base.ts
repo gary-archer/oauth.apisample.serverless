@@ -18,15 +18,9 @@ const config: webpack.Configuration = {
 
     // Provide each lambda entry point
     entry: {
-        getUserInfo: [
-            './src/host/lambda/getUserInfo.ts',
-        ],
-        getCompanyList: [
-            './src/host/lambda/getCompanyList.ts',
-        ],
-        getCompanyTransactions: [
-            './src/host/lambda/getCompanyTransactions.ts',
-        ],
+        getUserInfo: './src/host/lambda/getUserInfo.ts',
+        getCompanyList: './src/host/lambda/getCompanyList.ts',
+        getCompanyTransactions: './src/host/lambda/getCompanyTransactions.ts',
     },
     module: {
         rules: [
