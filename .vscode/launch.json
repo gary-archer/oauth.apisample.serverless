@@ -16,7 +16,7 @@
            "command": "shellCommand.execute",
            "args": {
                "command": "ps aux | grep [s]f-core.js | awk {'print $2'}",
-               "useFirstResult": true,
+               "useFirstResult": true
            }
        }
    ]
