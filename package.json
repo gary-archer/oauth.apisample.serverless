@@ -34,14 +34,14 @@
     "@types/node": "^24.10.3",
     "eslint": "^9.39.2",
     "mocha": "^11.7.5",
-    "serverless": "^4.29.3",
-    "serverless-domain-manager": "^8.0.0",
-    "serverless-offline": "^14.4.0",
+    "serverless": "^4.33.0",
+    "serverless-domain-manager": "^10.0.0",
+    "serverless-offline": "^14.5.0",
     "ts-loader": "^9.5.4",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.49.0",
-    "webpack": "^5.103.0",
+    "webpack": "^5.105.3",
     "webpack-cli": "^6.0.1",
     "webpack-merge": "^6.0.1"
   }

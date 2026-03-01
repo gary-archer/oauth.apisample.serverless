@@ -8,20 +8,6 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 SLS='./node_modules/.bin/sls'
 
 #
-# A utility to change the Node.js version that Serverless Offline receives
-#
-function replaceServerlessVersion() {
-
-  local _FROM='nodejs24.x';
-  local _TO='nodejs22.x';
-  if [ "$(uname -s)" == 'Darwin' ]; then
-    sed -i '' "s/$_FROM/$_TO/" ./serverlessOffline.yml
-  else
-    sed -i "s/$_FROM/$_TO/" ./serverlessOffline.yml
-  fi
-}
-
-#
 # Install dependencies if needed
 #
 npm install
@@ -50,13 +36,6 @@ if [ $? -ne 0 ]; then
   read -n 1
   exit 1
 fi
-
-#
-# Make a replacement until Serverless Offline supports Node.js 24
-#
-rm serverlessOffline.yml 2>/dev/null
-cp serverless.yml serverlessOffline.yml
-replaceServerlessVersion
 
 #
 # Run Serverless offline to expose lambda endpoints at HTTPS endpoints
