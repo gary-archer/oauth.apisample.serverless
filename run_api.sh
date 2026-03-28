@@ -41,7 +41,7 @@ fi
 # Run Serverless offline to expose lambda endpoints at HTTPS endpoints
 #
 npx sls offline \
-  --config ./serverlessOffline.yml \
+  --config ./serverless.yml \
   --useInProcess \
   --noPrependStageInUrl \
   --noSponsor \
