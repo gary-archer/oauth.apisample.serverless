@@ -1,9 +1,9 @@
-import axios, {AxiosRequestConfig} from 'axios';
 import {randomUUID} from 'crypto';
-import {HttpProxy} from '../../src/plumbing/utilities/httpProxy';
-import {ApiRequestOptions} from './apiRequestOptions';
-import {ApiResponse} from './apiResponse';
-import {ApiResponseMetrics} from './apiResponseMetrics';
+import {fetch, RequestInit} from 'undici';
+import {HttpProxy} from '../../src/plumbing/utilities/httpProxy.js';
+import {ApiRequestOptions} from './apiRequestOptions.js';
+import {ApiResponse} from './apiResponse.js';
+import {ApiResponseMetrics} from './apiResponseMetrics.js';
 
 /*
  * A utility class to call the API in a parameterized manner
@@ -60,17 +60,17 @@ export class ApiClient {
         metrics.correlationId = randomUUID();
         const hrtimeStart = process.hrtime();
 
-        const headers: any = {
+        const headers: HeadersInit = {
             authorization: `Bearer ${requestOptions.getAccessToken()}`,
             'correlation-id': metrics.correlationId,
         };
 
-        const options = {
-            url: this.baseUrl + requestOptions.getApiPath(),
+        const url = this.baseUrl + requestOptions.getApiPath();
+        const options: RequestInit = {
             method: requestOptions.getHttpMethod(),
             headers,
-            httpsAgent: this.httpProxy.getAgent(),
-        } as AxiosRequestConfig;
+            dispatcher: this.httpProxy.getDispatcher() || undefined,
+        };
 
         if (requestOptions.getRehearseException()) {
             headers['api-exception-simulation'] = 'FinalApi';
@@ -78,33 +78,29 @@ export class ApiClient {
 
         try {
 
-            const response = await axios(options);
+            const response = await fetch(url, options);
+            if (response.ok) {
 
-            return {
-                statusCode: response.status,
-                body: response.data,
-                metrics,
-            };
-
-        } catch (e: any) {
-
-            if (e.response && e.response.status && e.response.data && typeof e.response.data === 'object') {
-
-                // Return JSON error responses
+                const responseData = await response.json();
                 return {
-                    statusCode: e.response.status,
-                    body: e.response.data,
+                    statusCode: response.status,
+                    body: responseData,
                     metrics,
                 };
 
             } else {
 
-                // Rethrow connectivity errors, which will stop the load test
-                throw e;
+                const errorData = await response.json();
+                return {
+                    statusCode: response.status,
+                    body: errorData,
+                    metrics,
+                };
+
             }
+
         } finally {
 
-            // Report the time taken
             const hrtimeEnd = process.hrtime(hrtimeStart);
             metrics.millisecondsTaken = Math.floor((hrtimeEnd[0] * 1000000000 + hrtimeEnd[1]) / 1000000);
         }

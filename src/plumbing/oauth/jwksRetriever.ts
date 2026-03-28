@@ -1,6 +1,6 @@
-import axios from 'axios';
 import {inject, injectable} from 'inversify';
 import {createRemoteJWKSet, customFetch, JWTVerifyGetKey, RemoteJWKSetOptions} from 'jose';
+import {fetch, RequestInit} from 'undici';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
 import {BASETYPES} from '../dependencies/baseTypes';
 import {HttpProxy} from '../utilities/httpProxy';
@@ -26,7 +26,7 @@ export class JwksRetriever {
             [customFetch]: this.fetchJwks,
         } as RemoteJWKSetOptions;
 
-        // Integration tests use a value of zero to ensure multiple test runs without unfound JWK errors
+        // Integration tests use a value of zero to ensure multiple test runs without unfound kid errors
         if (configuration.jwksCooldownDuration !== undefined) {
             jwksOptions.cooldownDuration = configuration.jwksCooldownDuration;
         }
@@ -43,24 +43,15 @@ export class JwksRetriever {
     }
 
     /*
-     * To support the use of an HTTP proxy I use axios to download the JWKS
+     * Use an HTTP proxy to capture the JWKS URI request if required
      */
     private async fetchJwks(url: string): Promise<any> {
 
-        const options = {
-            url,
-            method: 'GET',
-            headers: {
-                'accept': 'application/json',
-            },
-            httpsAgent: this.httpProxy.getAgent(),
+        const options: RequestInit = {
+            dispatcher: this.httpProxy.getDispatcher() || undefined,
         };
 
-        const response = await axios.request(options);
-        return {
-            status: response.status,
-            json: async () => response.data,
-        };
+        return await fetch(url, options);
     }
 
     /*

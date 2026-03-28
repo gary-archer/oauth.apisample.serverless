@@ -1,4 +1,3 @@
-import {AxiosError} from 'axios';
 import {inject, injectable} from 'inversify';
 import {JWTPayload, JWTVerifyOptions, decodeJwt, jwtVerify} from 'jose';
 import {ClaimsReader} from '../claims/claimsReader';
@@ -61,8 +60,8 @@ export class AccessTokenValidator {
 
         } catch (e: any) {
 
-            // Handle failures downloading or deserializing token signing public keys
-            if (e instanceof AxiosError || e.code === 'ERR_JOSE_GENERIC') {
+            // Backend errors return a 500 status
+            if (e?.cause?.code || e.code === 'ERR_JOSE_GENERIC') {
                 throw ErrorUtils.fromSigningKeyDownloadError(e, this.configuration.jwksEndpoint);
             }
 

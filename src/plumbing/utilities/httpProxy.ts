@@ -1,39 +1,33 @@
-import {HttpsProxyAgent} from 'https-proxy-agent';
+import {EnvHttpProxyAgent} from 'undici';
 
 /*
  * Manage routing outbound calls from the API via an HTTP proxy
  */
 export class HttpProxy {
 
-    private readonly useProxy: boolean;
-    private readonly proxyUrl: string;
-    private agent: any;
+    private readonly agent: EnvHttpProxyAgent | null;
 
     /*
      * Create an HTTP agent to route requests to
      */
     public constructor(useProxy: boolean, proxyUrl: string) {
 
-        this.useProxy = useProxy;
-        this.proxyUrl = proxyUrl;
-        this.agent = null;
-    }
+        if (!useProxy) {
 
-    /*
-     * The proxy module is only used for development, so avoid adding to the AWS upload size
-     */
-    public async initialize(): Promise<void> {
+            this.agent = null;
 
-        if (this.useProxy) {
+        } else {
 
-            this.agent = new HttpsProxyAgent(this.proxyUrl);
+            this.agent = new EnvHttpProxyAgent({
+                httpsProxy: proxyUrl,
+            });
         }
     }
 
     /*
-     * Return the agent to other parts of the app
+     * Return the agent to be assigned during HTTP requests
      */
-    public getAgent(): any {
+    public getDispatcher(): EnvHttpProxyAgent | null {
         return this.agent;
     }
 }

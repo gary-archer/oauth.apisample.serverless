@@ -41,9 +41,8 @@ export class LambdaInstance {
             // Create a parent container to manage dependencies and lifetimes
             const parentContainer = new Container();
 
-            // Initialize the HTTP proxy object
+            // Create the HTTP proxy object
             const httpProxy = new HttpProxy(configuration.api.useProxy, configuration.api.proxyUrl);
-            await httpProxy.initialize();
 
             // Register dependencies with the container
             new CompositionRoot(parentContainer)
