@@ -5,11 +5,11 @@
     "lib": ["ES2024"],
     "module":"ES2022",
     "moduleResolution": "Bundler",
-    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "outDir": "dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "rootDir": "./src"
   },
   "include": [
     "./src"
