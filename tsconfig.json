@@ -9,10 +9,10 @@
     "emitDecoratorMetadata": true,
     "outDir": "dist",
     "sourceMap": true,
-    "rootDir": "./src"
+    "rootDir": "src"
   },
   "include": [
-    "./src"
+    "src"
   ],
   "exclude": [
     "node_modules"
