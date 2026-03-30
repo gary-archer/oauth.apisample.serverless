@@ -9,7 +9,8 @@
     "emitDecoratorMetadata": true,
     "outDir": "dist",
     "sourceMap": true,
-    "rootDir": "src"
+    "rootDir": "src",
+    "types": ["node"]
   },
   "include": [
     "src"
