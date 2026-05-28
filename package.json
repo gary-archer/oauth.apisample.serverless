@@ -36,17 +36,16 @@
     "serverless": "^4.37.0",
     "serverless-domain-manager": "^10.0.0",
     "serverless-offline": "^14.7.1",
-    "ts-loader": "^9.5.4",
     "tsx": "^4.21.0",
     "typescript": "^6.0.2",
-    "typescript-eslint": "^8.58.0",
-    "webpack": "^5.107.2",
-    "webpack-cli": "^6.0.1",
-    "webpack-merge": "^6.0.1"
+    "typescript-eslint": "^8.58.0"
   },
-   "overrides": {
+  "overrides": {
     "mocha": {
       "serialize-javascript": "7.0.5"
     }
-  }
+  },
+  "workspaces": [
+    "build"
+  ]
 }
