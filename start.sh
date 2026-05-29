@@ -7,22 +7,9 @@
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 #
-# Get the platform
+# Ensure that the development configuration is used
 #
-case "$(uname -s)" in
-
-  Darwin)
-    PLATFORM="MACOS"
- 	;;
-
-  MINGW64*)
-    PLATFORM="WINDOWS"
-	;;
-
-  Linux)
-    PLATFORM="LINUX"
-	;;
-esac
+cp environments/dev.config.json ./api.config.json
 
 #
 # Create SSL certificates if required
@@ -33,32 +20,6 @@ if [ $? -ne 0 ]; then
 fi
 
 #
-# Tell Node.js to trust the CA, or the user can add this CA to their own trust file
+# Call a shared script to do the work
 #
-if [ "$NODE_EXTRA_CA_CERTS" == '' ]; then
-  export NODE_EXTRA_CA_CERTS='./certs/authsamples-dev.ca.crt'
-fi
-
-#
-# Ensure that the development configuration is used that points to AWS Cognito
-# You can then run a frontend locally that calls the Serverless API
-#
-cp environments/dev.config.json ./api.config.json
-
-#
-# Run serverless offline as the API host
-#
-echo 'Running the Serverless API ...'
-if [ "$PLATFORM" == 'MACOS' ]; then
-
-  open -a Terminal ./run_api.sh
-
-elif [ "$PLATFORM" == 'WINDOWS' ]; then
-  
-  GIT_BASH="C:\Program Files\Git\git-bash.exe"
-  "$GIT_BASH" -c ./run_api.sh &
-
-elif [ "$PLATFORM" == 'LINUX' ]; then
-
-  gnome-terminal -- ./run_api.sh
-fi
+./run_api.sh
