@@ -63,9 +63,7 @@ export default lambdaFilenames.map((filename: string) => {
             typescript(),
 
             // Minimize release bundles
-            isDevelopment ? [] : [
-                terser(),
-            ]
+            isDevelopment ? [] : [ terser() ]
         ],
     };
 
