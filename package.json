@@ -12,6 +12,7 @@
     "login": "sls login",
     "lint": "eslint .",
     "start": "./start.sh",
+    "build": "rm -rf dist && NODE_OPTIONS='--import tsx' npx rollup --config build/rollup.config.ts",
     "testsetup": "./test/scripts/testsetup.sh",
     "test": "./test/scripts/test.sh",
     "loadtest": "./test/scripts/loadtest.sh",

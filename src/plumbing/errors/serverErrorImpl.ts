@@ -1,5 +1,5 @@
 import {ClientError} from './clientError';
-import {ErrorFactory} from './errorFactory';
+import {ClientErrorImpl} from './clientErrorImpl';
 import {ServerError} from './serverError';
 
 // Ranges for random error ids
@@ -85,7 +85,7 @@ export class ServerErrorImpl extends ServerError {
     public toClientError(apiName: string): ClientError {
 
         // Return the error code to the client
-        const error = ErrorFactory.createClientError(this.statusCode, this.errorCode, this.message);
+        const error = new ClientErrorImpl(this.statusCode, this.errorCode, this.message);
 
         // Also indicate which API, where in logs and when the error occurred
         error.setExceptionDetails(apiName, this.instanceId, this.utcTime);

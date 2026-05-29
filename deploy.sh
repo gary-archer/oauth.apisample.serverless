@@ -26,19 +26,9 @@ if [ $? -ne 0 ]; then
 fi
 
 #
-# Clean the output folder
-#
-rm -rf dist
-if [ $? -ne 0 ]; then
-  echo 'Problem encountered deleting the dist folder'
-  read -n 1
-  exit 1
-fi
-
-#
 # Run rollup to build the API code in into a release bundle
 #
-NODE_OPTIONS='--import tsx' npx rollup --config build/rollup.config.ts
+npm run build
 if [ $? -ne 0 ]; then
   echo 'Problem encountered building the API code'
   read -n 1
