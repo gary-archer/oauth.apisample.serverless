@@ -8,22 +8,9 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 cd ../..
 
 #
-# Get the platform
+# Copy down the test configuration, to point the API to Wiremock rather than AWS Cognito
 #
-case "$(uname -s)" in
-
-  Darwin)
-    PLATFORM="MACOS"
- 	;;
-
-  MINGW64*)
-    PLATFORM="WINDOWS"
-	;;
-
-  Linux)
-    PLATFORM="LINUX"
-	;;
-esac
+cp environments/test.config.json ./api.config.json
 
 #
 # Create SSL certificates if required
@@ -41,9 +28,22 @@ if [ "$NODE_EXTRA_CA_CERTS" == '' ]; then
 fi
 
 #
-# Ensure that the test configuration is used
+# Get the platform
 #
-cp environments/test.config.json ./api.config.json
+case "$(uname -s)" in
+
+  Darwin)
+    PLATFORM="MACOS"
+ 	;;
+
+  MINGW64*)
+    PLATFORM="WINDOWS"
+	;;
+
+  Linux)
+    PLATFORM="LINUX"
+	;;
+esac
 
 #
 # Run serverless offline as the API host and Wiremock as a mock authorization server

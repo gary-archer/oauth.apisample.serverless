@@ -26,11 +26,12 @@ if [ $? -ne 0 ]; then
 fi
 
 #
-# Do a release build of the API code
+# Run rollup to build the API code in into a release bundle
 #
-NODE_OPTIONS='--import tsx' npx webpack --config webpack/webpack.config.prod.ts
+npm run build
 if [ $? -ne 0 ]; then
   echo 'Problem encountered building the API code'
+  read -n 1
   exit 1
 fi
 

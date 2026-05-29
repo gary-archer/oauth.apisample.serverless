@@ -28,29 +28,23 @@ if [ $? -ne 0 ]; then
 fi
 
 #
-# Run webpack to build the API code into bundles
+# Tell Node.js to trust the CA, or the user can add this CA to their own trust file
 #
-NODE_OPTIONS='--import tsx' npx webpack --config webpack/webpack.config.dev.ts
+if [ "$NODE_EXTRA_CA_CERTS" == '' ]; then
+  export NODE_EXTRA_CA_CERTS='./certs/authsamples-dev.ca.crt'
+fi
+
+#
+# Run rollup in watch mode and serverless offline to receive HTTP requests
+#
+npm run start
 if [ $? -ne 0 ]; then
-  echo 'Problem encountered building the API code'
+  echo 'Problem encountered running the API'
   read -n 1
   exit 1
 fi
 
 #
-# Run Serverless offline to expose lambda endpoints at HTTPS endpoints
+# Prevent automatic terminal closure
 #
-npx sls offline \
-  --config ./serverless.yml \
-  --useInProcess \
-  --noPrependStageInUrl \
-  --noSponsor \
-  --prefix 'investments' \
-  --host '0.0.0.0' \
-  --httpPort 446 \
-  --httpsProtocol certs
-if [ $? -ne 0 ]; then
-  echo 'Problem encountered starting Serverless Offline'
-  read -n 1
-  exit 1
-fi
+read -n 1

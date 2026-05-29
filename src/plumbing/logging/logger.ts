@@ -1,4 +1,4 @@
-import fs from 'node:fs/promises';
+import fs from 'fs/promises';
 
 /*
  * A simple logger class without adding frameworks that increase lambda upload sizes

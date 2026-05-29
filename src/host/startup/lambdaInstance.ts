@@ -1,7 +1,7 @@
 import middy from '@middy/core';
 import {APIGatewayProxyResult, Context} from 'aws-lambda';
 import {Container} from 'inversify';
-import fs from 'node:fs/promises';
+import fs from 'fs/promises';
 import {ExtraClaimsProviderImpl} from '../../logic/claims/extraClaimsProviderImpl';
 import {LoggerFactoryImpl} from '../../plumbing/logging/loggerFactoryImpl';
 import {AuthenticationMiddleware} from '../../plumbing/middleware/authenticationMiddleware';
