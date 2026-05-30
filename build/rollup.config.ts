@@ -1,16 +1,15 @@
 import _commonjs from '@rollup/plugin-commonjs';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import _terser from '@rollup/plugin-terser';
-import _typescript from '@rollup/plugin-typescript';
 import fs from 'fs';
-import { builtinModules } from 'module';
+import {builtinModules} from 'module';
 import path from 'path';
 import {RollupOptions} from 'rollup';
+import esbuild from 'rollup-plugin-esbuild';
 
 // Type updates to prevent Visual Studio Code intellisense warnings
 // - https://github.com/rollup/plugins/issues/1662
 const commonjs = _commonjs as unknown as typeof _commonjs.default;
-const typescript = _typescript as unknown as typeof _typescript.default;
 const terser = _terser as unknown as typeof _terser.default;
 
 // Set base values and use the watch flag to distinguish between development v production builds
@@ -59,8 +58,11 @@ export default lambdaFilenames.map((filename: string) => {
             // Convert any commonjs libraries from the node_modules folder to ECMAScript
             commonjs(),
 
-            // Use tslib and the typescript plugin with the settings from the tsconfig.json file
-            typescript(),
+            // Use esbuild as an up to date plugin for building typescript code
+            esbuild({
+                tsconfig: './tsconfig.json',
+                target: 'es2022',
+            }),
 
             // Minimize release bundles
             isDevelopment ? [] : [ terser() ]
