@@ -30,7 +30,7 @@ export default lambdaFilenames.map((filename: string) => {
             format: 'esm',
             entryFileNames: `${filename.replace('.ts', '')}.js`,
 
-            // Enable source maps and use correct paths to support SPA debugging
+            // Enable source maps and use correct paths to support debugging
             sourcemap: true,
             sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
                 return path.resolve(path.dirname(sourcemapPath), relativeSourcePath);
