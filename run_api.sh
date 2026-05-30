@@ -37,7 +37,7 @@ fi
 #
 # Run rollup in watch mode and serverless offline to receive HTTP requests
 #
-npm run start
+npm start
 if [ $? -ne 0 ]; then
   echo 'Problem encountered running the API'
   read -n 1
