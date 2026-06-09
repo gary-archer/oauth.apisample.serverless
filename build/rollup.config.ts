@@ -60,7 +60,7 @@ export default lambdaFilenames.map((filename: string) => {
             }),
 
             // Minimize release bundles
-            isDevelopment ? [] : [ terser() ]
+            ...(isDevelopment ? [] : [ terser() ]),
         ],
     };
 
