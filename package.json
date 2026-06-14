@@ -22,7 +22,7 @@
   "dependencies": {
     "@middy/core": "^6.4.5",
     "inversify": "^7.10.0",
-    "jose": "^6.2.2",
+    "jose": "^6.2.3",
     "node-cache": "^5.1.2",
     "reflect-metadata": "^0.2.1",
     "undici": "^7.24.6"
@@ -32,14 +32,14 @@
     "@types/aws-lambda": "^8.10.159",
     "@types/mocha": "^10.0.10",
     "@types/node": "^24.10.3",
-    "eslint": "^10.1.0",
+    "eslint": "^10.5.0",
     "mocha": "^11.7.6",
     "serverless": "^4.37.0",
     "serverless-domain-manager": "^10.0.0",
     "serverless-offline": "^14.7.1",
-    "tsx": "^4.21.0",
-    "typescript": "^6.0.2",
-    "typescript-eslint": "^8.58.0"
+    "tsx": "^4.22.4",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.61.0"
   },
   "overrides": {
     "mocha": {

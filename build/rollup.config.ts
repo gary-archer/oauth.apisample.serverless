@@ -32,7 +32,7 @@ export default lambdaFilenames.map((filename: string) => {
             },
         },
 
-        // Avoid packaging Node.js built in modules and the AWS SDK
+        // Avoid packaging built in modules
         external: [
             ...builtinModules,
             ...builtinModules.map((m) => `node:${m}`),
