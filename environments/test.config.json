@@ -1,8 +1,4 @@
 {
-    "api": {
-        "useProxy": false,
-        "proxyUrl": "http://127.0.0.1:8888"
-    },
     "logging": {
         "apiName": "FinalApi",
         "loggers": [

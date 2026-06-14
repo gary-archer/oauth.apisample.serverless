@@ -1,7 +1,5 @@
 import {randomUUID} from 'crypto';
 import {generateKeyPair, exportJWK, SignJWT, GenerateKeyPairResult} from 'jose';
-import {fetch, RequestInit} from 'undici';
-import {HttpProxy} from '../../src/plumbing/utilities/httpProxy';
 import {MockTokenOptions} from './mockTokenOptions';
 
 /*
@@ -10,15 +8,13 @@ import {MockTokenOptions} from './mockTokenOptions';
 export class MockAuthorizationServer {
 
     private readonly baseUrl: string;
-    private readonly httpProxy: HttpProxy;
     private readonly algorithm: string;
     private keypair!: GenerateKeyPairResult;
     private keyId: string;
 
-    public constructor(useProxy: boolean) {
+    public constructor() {
 
         this.baseUrl = 'https://login.authsamples-dev.com:447/__admin/mappings';
-        this.httpProxy = new HttpProxy(useProxy, 'http://127.0.0.1:8888');
         this.algorithm = 'ES256';
         this.keyId = randomUUID();
     }
@@ -100,7 +96,6 @@ export class MockAuthorizationServer {
             headers: {
                 'content-type': 'application/json',
             },
-            dispatcher: this.httpProxy.getDispatcher() || undefined,
         };
 
         const response = await fetch(this.baseUrl, options);
@@ -116,7 +111,6 @@ export class MockAuthorizationServer {
 
         const options: RequestInit = {
             method: 'DELETE',
-            dispatcher: this.httpProxy.getDispatcher() || undefined,
         };
 
         const response = await fetch(`${this.baseUrl}/${id}`, options);

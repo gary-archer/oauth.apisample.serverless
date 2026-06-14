@@ -23,15 +23,12 @@ export class LoadTest {
 
     public constructor() {
 
-        // Use an HTTP proxy if required
-        const useProxy = false;
-
         // Create the mock authorization server
-        this.authorizationServer = new MockAuthorizationServer(useProxy);
+        this.authorizationServer = new MockAuthorizationServer();
 
         // Create the API client
         const apiBaseUrl = 'https://api.authsamples-dev.com:446';
-        this.apiClient = new ApiClient(apiBaseUrl, useProxy);
+        this.apiClient = new ApiClient(apiBaseUrl);
 
         // Create a mock delegation ID for testing
         this.delegationId = randomUUID();

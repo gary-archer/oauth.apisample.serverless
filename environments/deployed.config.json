@@ -1,8 +1,4 @@
 {
-    "api": {
-        "useProxy": false,
-        "proxyUrl": ""
-    },
     "logging": {
         "apiName": "FinalApi",
         "loggers": [

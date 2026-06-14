@@ -11,18 +11,15 @@ import {BASETYPES} from '../../plumbing/dependencies/baseTypes';
 import {AccessTokenValidator} from '../../plumbing/oauth/accessTokenValidator';
 import {JwksRetriever} from '../../plumbing/oauth/jwksRetriever';
 import {OAuthFilter} from '../../plumbing/oauth/oauthFilter';
-import {HttpProxy} from '../../plumbing/utilities/httpProxy';
 import {Configuration} from '../configuration/configuration';
 
 /*
  * A class to manage dependency injection composition at application startup
  */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 export class CompositionRoot {
 
     private readonly parentContainer: Container;
     private configuration!: Configuration;
-    private httpProxy!: HttpProxy;
     private extraClaimsProvider!: ExtraClaimsProvider;
 
     /*
@@ -50,30 +47,14 @@ export class CompositionRoot {
     }
 
     /*
-     * Store an object to manage HTTP debugging
-     */
-    public addHttpProxy(httpProxy: HttpProxy): CompositionRoot {
-        this.httpProxy = httpProxy;
-        return this;
-    }
-
-    /*
      * Do the main builder work of registering dependencies
      */
     public register(): CompositionRoot {
 
-        this.registerBaseDependencies();
         this.registerOAuthDependencies();
         this.registerClaimsDependencies();
         this.registerApplicationDependencies();
         return this;
-    }
-
-    /*
-     * Register any common dependencies
-     */
-    private registerBaseDependencies() {
-        this.parentContainer.bind<HttpProxy>(BASETYPES.HttpProxy).toConstantValue(this.httpProxy!);
     }
 
     /*
@@ -95,7 +76,7 @@ export class CompositionRoot {
 
         // Also register a singleton to cache token signing public keys
         this.parentContainer.bind<JwksRetriever>(BASETYPES.JwksRetriever)
-            .toConstantValue(new JwksRetriever(this.configuration.oauth, this.httpProxy));
+            .toConstantValue(new JwksRetriever(this.configuration.oauth));
 
         return this;
     }

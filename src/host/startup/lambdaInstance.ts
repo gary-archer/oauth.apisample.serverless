@@ -10,7 +10,6 @@ import {CustomHeaderMiddleware} from '../../plumbing/middleware/customHeaderMidd
 import {ExceptionMiddleware} from '../../plumbing/middleware/exceptionMiddleware';
 import {LoggerMiddleware} from '../../plumbing/middleware/loggerMiddleware';
 import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent';
-import {HttpProxy} from '../../plumbing/utilities/httpProxy';
 import {ResponseWriter} from '../../plumbing/utilities/responseWriter';
 import {Configuration} from '../configuration/configuration';
 import {CompositionRoot} from '../dependencies/compositionRoot';
@@ -41,13 +40,9 @@ export class LambdaInstance {
             // Create a parent container to manage dependencies and lifetimes
             const parentContainer = new Container();
 
-            // Create the HTTP proxy object
-            const httpProxy = new HttpProxy(configuration.api.useProxy, configuration.api.proxyUrl);
-
             // Register dependencies with the container
             new CompositionRoot(parentContainer)
                 .addConfiguration(configuration)
-                .addHttpProxy(httpProxy)
                 .addExtraClaimsProvider(new ExtraClaimsProviderImpl())
                 .register();
 

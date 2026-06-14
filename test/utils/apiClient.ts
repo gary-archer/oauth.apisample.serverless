@@ -1,6 +1,4 @@
 import {randomUUID} from 'crypto';
-import {fetch, RequestInit} from 'undici';
-import {HttpProxy} from '../../src/plumbing/utilities/httpProxy.js';
 import {ApiRequestOptions} from './apiRequestOptions.js';
 import {ApiResponse} from './apiResponse.js';
 import {ApiResponseMetrics} from './apiResponseMetrics.js';
@@ -11,11 +9,9 @@ import {ApiResponseMetrics} from './apiResponseMetrics.js';
 export class ApiClient {
 
     private readonly baseUrl: string;
-    private readonly httpProxy: HttpProxy;
 
-    public constructor(baseUrl: string, useProxy: boolean) {
+    public constructor(baseUrl: string) {
         this.baseUrl = baseUrl;
-        this.httpProxy = new HttpProxy(useProxy, 'http://127.0.0.1:8888');
     }
 
     public async getUserInfoClaims(options: ApiRequestOptions): Promise<ApiResponse> {
@@ -69,7 +65,6 @@ export class ApiClient {
         const options: RequestInit = {
             method: requestOptions.getHttpMethod(),
             headers,
-            dispatcher: this.httpProxy.getDispatcher() || undefined,
         };
 
         if (requestOptions.getRehearseException()) {
