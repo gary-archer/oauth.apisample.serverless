@@ -54,7 +54,7 @@ functions:
               paths: 
                 id: true
 
-# Disable the default build which we are overriding with rollup
+# Disable the default build which we are overriding with a bundler
 build:
   esbuild: false
 

@@ -27,7 +27,7 @@ export default lambdaFilenames.map((filename: string) => {
 
             // Enable source maps and use correct paths to support debugging
             sourcemap: true,
-            sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
+            sourcemapPathTransform: (relativeSourcePath: string, sourcemapPath: string) => {
                 return path.resolve(path.dirname(sourcemapPath), relativeSourcePath);
             },
         },
@@ -35,7 +35,7 @@ export default lambdaFilenames.map((filename: string) => {
         // Avoid packaging built in modules
         external: [
             ...builtinModules,
-            ...builtinModules.map((m) => `node:${m}`),
+            ...builtinModules.map((m: string) => `node:${m}`),
             'aws-sdk',
         ],
 
