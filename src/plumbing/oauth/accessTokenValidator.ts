@@ -1,5 +1,5 @@
 import {inject, injectable} from 'inversify';
-import {JWTPayload, JWTVerifyOptions, decodeJwt, jwtVerify} from 'jose';
+import {JWTPayload, JWTVerifyOptions, jwtVerify} from 'jose';
 import {ClaimsReader} from '../claims/claimsReader';
 import {CustomClaimNames} from '../claims/customClaimNames';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
@@ -63,13 +63,6 @@ export class AccessTokenValidator {
             // Backend errors return a 500 status
             if (e?.cause?.code || e.code === 'ERR_JOSE_GENERIC') {
                 throw ErrorUtils.fromSigningKeyDownloadError(e, this.configuration.jwksEndpoint);
-            }
-
-            // My expiry testing adds extra characters to JWTs to cause 401 errors and simulate expiry over time.
-            // That results in signature validation errors, which I treat as expiry to demonstrate the desired logging.
-            if (e.code === 'ERR_JWT_EXPIRED' || e.code === 'ERR_JWS_SIGNATURE_VERIFICATION_FAILED') {
-                claims = decodeJwt(accessToken);
-                this.logEntry.setIdentityData(this.getIdentityData(claims));
             }
 
             // For most errors return 401s
