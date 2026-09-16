@@ -91,23 +91,23 @@ resources:
           Ref: ApiGatewayRestApi
         Stage: deployed
 
-    # Configure a web route to APIs that requires SameSite cookies, for requests from the SPA running in Cloudfront
-    BffDomainMapping:
-      Type: AWS::ApiGateway::BasePathMapping
-      Properties:
-        DomainName:
-          Fn::ImportValue: BffDomainName
-        BasePath: investments
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        Stage: deployed
-
     # Configure a web route to APIs that requires SameSite cookies, for requests from the SPA running on a development computer
     BffDomainDevMapping:
       Type: AWS::ApiGateway::BasePathMapping
       Properties:
         DomainName:
-          Fn::ImportValue: BffDomainDevName
+          Fn::ImportValue: BffDomainName-dev
+        BasePath: investments
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Stage: deployed
+
+    # Configure a web route to APIs that requires SameSite cookies, for requests from the SPA running in Cloudfront
+    BffDomainDeployedMapping:
+      Type: AWS::ApiGateway::BasePathMapping
+      Properties:
+        DomainName:
+          Fn::ImportValue: BffDomainName-deployed
         BasePath: investments
         RestApiId:
           Ref: ApiGatewayRestApi
