@@ -69,7 +69,7 @@ plugins:
 resources:
   Resources:
   
-    # Configure the main API route that requires JWT access tokens
+    # Take ownership of the API domain
     ApiDomain:
       Type: AWS::ApiGateway::DomainName
       Properties:
@@ -81,6 +81,7 @@ resources:
         SecurityPolicy: SecurityPolicy_TLS13_1_3_2025_09
         EndpointAccessMode: STRICT
 
+    # Configure the main API route that requires JWT access tokens
     ApiDomainMapping:
       Type: AWS::ApiGateway::BasePathMapping
       Properties:
@@ -91,42 +92,22 @@ resources:
         Stage: deployed
 
     # Configure a web route to APIs that requires SameSite cookies, for requests from the SPA running in Cloudfront
-    WebDomain:
-      Type: AWS::ApiGateway::DomainName
-      Properties:
-        DomainName: bff.authsamples.com
-        EndpointConfiguration:
-          Types:
-            - REGIONAL
-        RegionalCertificateArn: 'arn:aws:acm:eu-west-2:090109105180:certificate/953873fe-43f7-4e6f-90fe-3227ce194d6e'
-        SecurityPolicy: SecurityPolicy_TLS13_1_3_2025_09
-        EndpointAccessMode: STRICT
-
-    WebDomainMapping:
+    BffDomainMapping:
       Type: AWS::ApiGateway::BasePathMapping
       Properties:
-        DomainName: !Ref WebDomain
+        DomainName:
+          Fn::ImportValue: BffDomainName
         BasePath: investments
         RestApiId:
           Ref: ApiGatewayRestApi
         Stage: deployed
 
     # Configure a web route to APIs that requires SameSite cookies, for requests from the SPA running on a development computer
-    WebDomainDev:
-      Type: AWS::ApiGateway::DomainName
-      Properties:
-        DomainName: bff.authsamples-dev.com
-        EndpointConfiguration:
-          Types:
-            - REGIONAL
-        RegionalCertificateArn: 'arn:aws:acm:eu-west-2:090109105180:certificate/b2f2c46a-582a-4e3a-9521-91b54a455703'
-        SecurityPolicy: SecurityPolicy_TLS13_1_3_2025_09
-        EndpointAccessMode: STRICT
-
-    WebDomainDevMapping:
+    BffDomainDevMapping:
       Type: AWS::ApiGateway::BasePathMapping
       Properties:
-        DomainName: !Ref WebDomainDev
+        DomainName:
+          Fn::ImportValue: BffDomainDevName
         BasePath: investments
         RestApiId:
           Ref: ApiGatewayRestApi

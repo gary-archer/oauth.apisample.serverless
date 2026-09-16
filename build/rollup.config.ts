@@ -1,9 +1,9 @@
 import commonjs from '@rollup/plugin-commonjs';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
-import fs from 'fs';
 import {builtinModules} from 'module';
-import path from 'path';
+import fs from 'node:fs';
+import path from 'node:path';
 import {RollupOptions} from 'rollup';
 import esbuild from 'rollup-plugin-esbuild';
 
