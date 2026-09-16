@@ -1,19 +1,18 @@
 service: serverlessapi
 
+# The AWS API has a single stage of deployed
+stages:
+  deployed:
+    params:
+      domainName: 'api.authsamples.com'
+      certificateArn: 'arn:aws:acm:eu-west-2:090109105180:certificate/953873fe-43f7-4e6f-90fe-3227ce194d6e'
+
 # AWS base details
 provider:
   name: aws
   runtime: nodejs24.x
   region: eu-west-2
-  
-  # Domain and certificate details
-  domain:
-    name: 'api.authsamples.com'
-    basePath: investments
-    securityPolicy: SecurityPolicy_TLS13_1_3_2025_09
-    accessMode: strict
-    endpointType: regional
-    certificateArn: 'arn:aws:acm:eu-west-2:090109105180:certificate/953873fe-43f7-4e6f-90fe-3227ce194d6e'
+  stage: deployed
 
 # Lambda functions that authorize data access using JWT access token
 functions:
@@ -77,7 +76,29 @@ plugins:
 
 resources:
   Resources:
-  
+
+    # Take ownership of the API domain
+    ApiDomain:
+      Type: AWS::ApiGateway::DomainName
+      Properties:
+        DomainName: ${param:domainName}
+        EndpointConfiguration:
+          Types:
+            - REGIONAL
+        RegionalCertificateArn: ${param:certificateArn}
+        SecurityPolicy: SecurityPolicy_TLS13_1_3_2025_09
+        EndpointAccessMode: STRICT
+
+    # Configure the main API route that requires JWT access tokens
+    ApiDomainMapping:
+      Type: AWS::ApiGateway::BasePathMapping
+      Properties:
+        DomainName: !Ref ApiDomain
+        BasePath: investments
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Stage: deployed
+
     # Limit cloudwatch log retention 
     GetUserInfoLogGroup:
       Type: 'AWS::Logs::LogGroup'
