@@ -1,6 +1,6 @@
 import {randomUUID} from 'crypto';
 import {generateKeyPair, exportJWK, SignJWT, GenerateKeyPairResult} from 'jose';
-import {MockTokenOptions} from './mockTokenOptions';
+import {MockTokenOptions} from './mockTokenOptions.js';
 
 /*
  * A mock authorization server implemented with wiremock and a JOSE library
