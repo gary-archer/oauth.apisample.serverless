@@ -15,7 +15,7 @@ export class Logger {
 
         if (this.prettyPrint) {
 
-            // On a developer PC, output from 'npm run lambda' is written with pretty printing to a file
+            // On a developer PC, output uses pretty printing
             console.log(JSON.stringify(data, null, 2));
 
         } else {
