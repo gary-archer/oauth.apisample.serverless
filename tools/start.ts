@@ -23,10 +23,29 @@ const server = spawn(
         'certs',
     ],
     {
-        stdio: 'inherit',
+        stdio: ['ignore', 'pipe', 'pipe'],
         shell: process.platform === 'win32',
     }
 );
+
+/*
+ * Avoid serverless output of no interest to my API
+ */
+server.stdout.on('data', (data: any) => {
+
+    const output = data.toString();
+    if (!output.includes('(λ:')) {
+        process.stdout.write(output);
+    }
+});
+
+server.stderr.on('data', (data: any) => {
+
+    const output = data.toString();
+    if (!output.includes('(λ:')) {
+        process.stdout.write(output);
+    }
+});
 
 /*
  * Run the rollup bundler in watch mode

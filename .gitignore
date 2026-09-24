@@ -7,4 +7,3 @@ serverlessOffline.yml
 certs/*.p12
 certs/*.crt
 certs/*.pem
-*.log
