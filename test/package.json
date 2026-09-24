@@ -1,7 +1,7 @@
 {
   "name": "test",
   "version": "1.0.0",
-  "description": "Test dependencies for the Node.js API",
+  "description": "Test dependencies for the Serverless API",
   "author": "Gary Archer",
   "license": "MIT",
   "type": "module",

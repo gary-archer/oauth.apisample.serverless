@@ -5,7 +5,6 @@
 ###########################################################
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
-cd ../..
 
 #
 # Tell Node.js to trust the CA, or the user can add this CA to their own trust file
@@ -17,4 +16,4 @@ fi
 #
 # Run the load test
 #
-npx tsx test/loadTest.ts
+./node_modules/.bin/mocha ./test/loadTest.ts

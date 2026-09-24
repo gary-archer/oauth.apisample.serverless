@@ -85,14 +85,14 @@ Then run the API with this command:
 Stop the API, then re-run it with a test configuration:
 
 ```bash
-npm run testsetup
+./testsetup.sh
 ```
 
 Then run integration tests and a load test:
 
 ```bash
-npm test
-npm run loadtest
+./integration_tests.sh
+./load_test.sh
 ```
 
 ## Further Information

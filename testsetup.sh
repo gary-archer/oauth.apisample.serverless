@@ -5,7 +5,6 @@
 ##########################################################################
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
-cd ../..
 
 #
 # Copy down the test configuration, to point the API to Wiremock rather than AWS Cognito
@@ -84,4 +83,4 @@ done
 #
 # Indicate success
 #
-echo "Start tests via 'npm test' or 'npm run loadtest' ..."
+echo "Start tests via './integration_tests.sh' or './load_test.sh' ..."

@@ -5,7 +5,6 @@
 ################################################################
 
 cd "$(dirname "${BASH_SOURCE[0]}")"
-cd ../..
 
 #
 # Default to our trusted CA file, or the user can add this CA to their own trust file
@@ -17,4 +16,4 @@ fi
 #
 # Run the suite of integration tests
 #
-./node_modules/.bin/mocha
+./node_modules/.bin/mocha ./test/integrationTests.ts

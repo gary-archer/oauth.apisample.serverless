@@ -13,9 +13,9 @@
     "lint": "eslint .",
     "start": "rm -rf dist && tsx tools/start.ts",
     "build": "rm -rf dist && NODE_OPTIONS='--import tsx' npx rollup --config build/rollup.config.ts",
-    "testsetup": "./test/scripts/testsetup.sh",
-    "test": "./test/scripts/test.sh",
-    "loadtest": "./test/scripts/loadtest.sh",
+    "testsetup": "./testsetup.sh",
+    "integrationtests": "./integration_tests.sh",
+    "loadtest": "./load_test.sh",
     "deploy": "./deploy.sh",
     "remove": "sls remove --stage deployed"
   },

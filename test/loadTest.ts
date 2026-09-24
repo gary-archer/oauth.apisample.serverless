@@ -1,4 +1,6 @@
-import {randomUUID} from 'crypto';
+import {after, before, describe, it} from 'mocha';
+import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
 import {ApiClient} from './utils/apiClient.js';
 import {ApiRequestOptions} from './utils/apiRequestOptions.js';
 import {ApiResponse} from './utils/apiResponse.js';
@@ -6,49 +8,54 @@ import {MockAuthorizationServer} from './utils/mockAuthorizationServer.js';
 import {MockTokenOptions} from './utils/mockTokenOptions.js';
 
 /*
- * A basic load test to run some requests in parallel and report results
+ * A load test to ensure that the API can safely be called concurrently
  */
-export class LoadTest {
+describe('Load Test', () => {
 
-    private readonly authorizationServer: MockAuthorizationServer;
-    private readonly apiClient: ApiClient;
-    private readonly delegationId: string;
-    private totalCount: number;
-    private errorCount: number;
+    // Use an HTTP proxy if required
+    const useProxy = false;
 
-    private colorBlue = '\u001B[34m';
-    private colorGreen = '\u001B[32m';
-    private colorRed = '\u001B[31m';
-    private colorYellow = '\u001B[33m';
+    // Create the mock authorization server
+    const authorizationServer = new MockAuthorizationServer(useProxy);
 
-    public constructor() {
+    // Create the API client
+    const apiBaseUrl = 'https://api.authsamples-dev.com:446';
+    const apiClient = new ApiClient(apiBaseUrl, useProxy);
 
-        // Create the mock authorization server
-        this.authorizationServer = new MockAuthorizationServer();
+    // Create a delegation ID to represent the load test session
+    const delegationId = randomUUID();
 
-        // Create the API client
-        const apiBaseUrl = 'https://api.authsamples-dev.com:446';
-        this.apiClient = new ApiClient(apiBaseUrl);
+    // Initialize counts
+    const numApiRequests = 100;
+    let totalCount = 0;
+    let errorCount = 0;
 
-        // Create a mock delegation ID for testing
-        this.delegationId = randomUUID();
-        this.totalCount = 0;
-        this.errorCount = 0;
-    }
+    // Set colours
+    const colorBlue = '\u001B[34m';
+    const colorGreen = '\u001B[32m';
+    const colorRed = '\u001B[31m';
+    const colorYellow = '\u001B[33m';
 
     /*
-     * Call the API with a volume of requests, with batches that run in parallel
-     * The tests can be used to verify that Elasticsearch logging is working as requested
+     * Start a mock authorization server during tests
      */
-    public async execute(): Promise<void> {
+    before( async () => {
+        await authorizationServer.start();
+    });
 
-        // First prepare the system
-        await this.authorizationServer.start();
+    /*
+     * Free resources when all tests have completed
+     */
+    after( async () => {
+        await authorizationServer.stop();
+    });
+
+    it ('Makes a volume of requests with the expected error count', async () => {
 
         // Get some access tokens to send to the API
-        const startMessage = `Load test session ${this.delegationId} starting at ${new Date().toISOString()}\n`;
-        this.outputMessage(this.colorBlue, startMessage);
-        const accessTokens = await this.getAccessTokens();
+        const startMessage = `Load test session ${delegationId} starting at ${new Date().toISOString()}\n`;
+        outputMessage(colorBlue, startMessage);
+        const accessTokens = await getAccessTokens();
 
         // Show a startup table header
         const startTime = process.hrtime();
@@ -62,34 +69,36 @@ export class LoadTest {
             'ERROR-ID'.padEnd(12),
         ];
         const header = headings.join('');
-        this.outputMessage(this.colorYellow, header);
+        outputMessage(colorYellow, header);
 
         // Next execute the main body of requests
-        await this.sendLoadTestRequests(accessTokens);
+        await sendLoadTestRequests(accessTokens);
 
         // Report a summary of results
         const endTime = process.hrtime(startTime);
         const millisecondsTaken = Math.floor((endTime[0] * 1000000000 + endTime[1]) / 1000000);
-        const endMessage = `Load test session ${this.delegationId} completed in ${millisecondsTaken} milliseconds`;
-        const errorStats = `${this.errorCount} errors from ${this.totalCount} requests`;
-        this.outputMessage(this.colorBlue, `\n${endMessage}: (${errorStats})`);
+        const endMessage = `Load test session ${delegationId} completed in ${millisecondsTaken} milliseconds`;
+        const errorStats = `${errorCount} errors from ${totalCount} requests`;
+        outputMessage(colorBlue, `\n${endMessage}: (${errorStats})`);
 
-        // Clean up before exiting
-        await this.authorizationServer.stop();
-    }
+        // Assert expected results
+        assert.strictEqual(totalCount, numApiRequests);
+        assert.strictEqual(errorCount, 3);
+
+    }).timeout(60 * 1000);
 
     /*
      * Do some initial work to get multiple access tokens
      */
-    private async getAccessTokens(): Promise<string[]> {
+    async function getAccessTokens(): Promise<string[]> {
 
         const accessTokens: string[] = [];
         for (let index = 0; index < 5; index++) {
 
             const jwtOptions = new MockTokenOptions();
             jwtOptions.useStandardUser();
-            jwtOptions.delegationId = this.delegationId;
-            const accessToken = await this.authorizationServer.issueAccessToken(jwtOptions);
+            jwtOptions.delegationId = delegationId;
+            const accessToken = await authorizationServer.issueAccessToken(jwtOptions);
             accessTokens.push(accessToken);
         }
 
@@ -100,11 +109,11 @@ export class LoadTest {
     /*
      * Run the main body of API requests, including some invalid requests that trigger errors
      */
-    private async sendLoadTestRequests(accessTokens: string[]): Promise<void> {
+    async function sendLoadTestRequests(accessTokens: string[]): Promise<void> {
 
         // Next produce some requests that will run in parallel
         const requests: (() => Promise<ApiResponse>)[] = [];
-        for (let index = 0; index < 100; index++) {
+        for (let index = 0; index < numApiRequests; index++) {
 
             // Create a 401 error on request 10, by making the access token act expired
             let accessToken = accessTokens[index % 5];
@@ -115,69 +124,66 @@ export class LoadTest {
             // Create some promises for various API endpoints
             if (index % 5 === 0) {
 
-                requests.push(this.createUserInfoRequest(accessToken));
+                requests.push(createUserInfoRequest(accessToken));
 
             } else if (index % 5 === 1) {
 
-                requests.push(this.createTransactionsRequest(accessToken, 2));
+                requests.push(createTransactionsRequest(accessToken, 2));
 
             } else if (index % 5 === 2) {
 
                 // On request 71 try to access unauthorized data for company 3, to create a 404 error
                 const companyId = (index === 72) ? 3 : 2;
-                requests.push(this.createTransactionsRequest(accessToken, companyId));
+                requests.push(createTransactionsRequest(accessToken, companyId));
 
             } else {
 
-                requests.push(this.createCompaniesRequest(accessToken));
+                requests.push(createCompaniesRequest(accessToken));
             }
         }
 
         // Fire the API requests in batches
-        await this.executeApiRequests(requests);
+        await executeApiRequests(requests);
     }
 
     /*
      * Create a user info request callback
      */
-    private createUserInfoRequest(accessToken: string): () => Promise<ApiResponse> {
+    function createUserInfoRequest(accessToken: string): () => Promise<ApiResponse> {
 
         const options = new ApiRequestOptions(accessToken);
-        this.initializeApiRequest(options);
-
-        return () => this.apiClient.getUserInfoClaims(options);
+        initializeApiRequest(options);
+        return () => apiClient.getUserInfoClaims(options);
     }
 
     /*
      * Create a get companies request callback
      */
-    private createCompaniesRequest(accessToken: string): () => Promise<ApiResponse> {
+    function createCompaniesRequest(accessToken: string): () => Promise<ApiResponse> {
 
         const options = new ApiRequestOptions(accessToken);
-        this.initializeApiRequest(options);
-
-        return () => this.apiClient.getCompanyList(options);
+        initializeApiRequest(options);
+        return () => apiClient.getCompanyList(options);
     }
 
     /*
      * Create a get transactions request callback
      */
-    private createTransactionsRequest(accessToken: string, companyId: number): () => Promise<ApiResponse> {
+    function createTransactionsRequest(accessToken: string, companyId: number): () => Promise<ApiResponse> {
 
         const options = new ApiRequestOptions(accessToken);
-        this.initializeApiRequest(options);
-
-        return () => this.apiClient.getCompanyTransactions(options, companyId);
+        initializeApiRequest(options);
+        return () => apiClient.getCompanyTransactions(options, companyId);
     }
 
     /*
      * Set any special logic before sending an API request
      */
-    private initializeApiRequest(options: ApiRequestOptions): void {
+    function initializeApiRequest(options: ApiRequestOptions): void {
 
         // On request 85 we'll simulate a 500 error via a custom header
-        this.totalCount++;
-        if (this.totalCount === 85) {
+        totalCount++;
+        if (totalCount === 85) {
             options.setRehearseException(true);
         }
     }
@@ -186,7 +192,7 @@ export class LoadTest {
      * Issue API requests in batches of 5, to avoid excessive queueing on a development computer
      * By default there is a limit of 5 concurrent outgoing requests to a single host
      */
-    private async executeApiRequests(requests: (() => Promise<ApiResponse>)[]): Promise<void> {
+    async function executeApiRequests(requests: (() => Promise<ApiResponse>)[]): Promise<void> {
 
         // Set counters
         const total = requests.length;
@@ -200,7 +206,7 @@ export class LoadTest {
             const requestBatch = requests.slice(current, Math.min(current + batchSize, total));
 
             // Execute them to create promises
-            const batchPromises = requestBatch.map((r) => this.executeApiRequest(r));
+            const batchPromises = requestBatch.map((r) => executeApiRequest(r));
 
             // Wait for the batch to complete
             await Promise.all(batchPromises);
@@ -211,7 +217,7 @@ export class LoadTest {
     /*
      * Start execution and return a success promise regardless of whether the API call succeeded
      */
-    private executeApiRequest(callback: () => Promise<ApiResponse>): Promise<ApiResponse> {
+    async function executeApiRequest(callback: () => Promise<ApiResponse>): Promise<ApiResponse> {
 
         return new Promise<ApiResponse>((resolve) => {
 
@@ -221,13 +227,13 @@ export class LoadTest {
                 if (response.statusCode >= 200 && response.statusCode <= 299) {
 
                     // Report successful requests
-                    this.outputMessage(this.colorGreen, this.processMetrics(response));
+                    outputMessage(colorGreen, processMetrics(response));
 
                 } else {
 
                     // Report failed requests, some of which are expected
-                    this.outputMessage(this.colorRed, this.processMetrics(response));
-                    this.errorCount++;
+                    outputMessage(colorRed, processMetrics(response));
+                    errorCount++;
                 }
 
                 // Resolve the promise
@@ -239,7 +245,7 @@ export class LoadTest {
     /*
      * Process metrics and return a table row
      */
-    private processMetrics(response: ApiResponse): string {
+    function processMetrics(response: ApiResponse): string {
 
         let errorCode = '';
         let errorId   = '';
@@ -267,13 +273,7 @@ export class LoadTest {
     /*
      * Output a message in colour
      */
-    private outputMessage(colorCode: string, message: string): void {
+    function outputMessage(colorCode: string, message: string): void {
         console.log(`${colorCode}${message}`);
     }
-}
-
-/*
- * Run the load test
- */
-const loadTest = new LoadTest();
-await loadTest.execute();
+});
