@@ -15,7 +15,7 @@ The Serverless OAuth secured Node.js API code sample:
 The API can run as part of an OAuth end-to-end setup, to serve my blog's UI code samples.\
 Running the API in this manner forces it to be consumer-focused to its clients:
 
-![SPA and API](./images/spa-and-api.png)
+![SPA and API](./images/spa-and-api.jpg)
 
 The AWS deployed API is the default API that the blog's final frontend code samples connect to:
 
