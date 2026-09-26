@@ -47,7 +47,7 @@ describe('Load Test', () => {
      * Free resources when all tests have completed
      */
     after( async () => {
-        await authorizationServer.stop();
+        authorizationServer.stop();
     });
 
     it ('Makes a volume of requests with the expected error count', async () => {
