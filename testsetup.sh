@@ -7,7 +7,7 @@
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 #
-# Copy down the test configuration, to point the API to Wiremock rather than AWS Cognito
+# Copy down the test configuration, to point the API to a mock authorization server
 #
 cp environments/test.config.json ./api.config.json
 
@@ -27,58 +27,9 @@ if [ "$NODE_EXTRA_CA_CERTS" == '' ]; then
 fi
 
 #
-# Get the platform
+# Call a shared script to run the API
 #
-case "$(uname -s)" in
-
-  Darwin)
-    PLATFORM="MACOS"
- 	;;
-
-  MINGW64*)
-    PLATFORM="WINDOWS"
-	;;
-
-  Linux)
-    PLATFORM="LINUX"
-	;;
-esac
-
-#
-# Run serverless offline as the API host and Wiremock as a mock authorization server
-#
-echo 'Running the Serverless API and a mock authorization server ...'
-if [ "$PLATFORM" == 'MACOS' ]; then
-
-  open -a Terminal ./test/scripts/run_wiremock.sh
-  open -a Terminal ./run_api.sh
-
-elif [ "$PLATFORM" == 'WINDOWS' ]; then
-
-  GIT_BASH='C:\Program Files\Git\git-bash.exe'
-  "$GIT_BASH" -c ./test/scripts/run_wiremock.sh &
-  "$GIT_BASH" -c ./run_api.sh &
-
-elif [ "$PLATFORM" == 'LINUX' ]; then
-
-  gnome-terminal -- ./test/scripts/run_wiremock.sh
-  gnome-terminal -- ./run_api.sh
-fi
-
-#
-# Wait for endpoints to become available
-#
-echo 'Waiting for Wiremock endpoints to come up ...'
-WIREMOCK_URL='https://login.authsamples-dev.com:447/__admin/mappings'
-while [ "$(curl -k -s -X GET -o /dev/null -w '%{http_code}' "$WIREMOCK_URL")" != '200' ]; do
-  sleep 2
-done
-
-echo 'Waiting for API endpoints to come up ...'
-API_URL='https://api.authsamples-dev.com:446/investments/companies'
-while [ "$(curl -k -s -X GET -o /dev/null -w '%{http_code}' "$API_URL")" != '401' ]; do
-  sleep 2
-done
+./run_api.sh
 
 #
 # Indicate success
