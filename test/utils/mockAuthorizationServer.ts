@@ -1,22 +1,30 @@
-import {randomUUID} from 'crypto';
-import {generateKeyPair, exportJWK, SignJWT, GenerateKeyPairResult} from 'jose';
+import express, {Application, Request, Response} from 'express';
+import {randomUUID} from 'node:crypto';
+import {readFile} from 'node:fs/promises';
+import https from 'node:https';
+import {generateKeyPair, exportJWK, SignJWT, GenerateKeyPairResult, JWTPayload} from 'jose';
 import {MockTokenOptions} from './mockTokenOptions.js';
 
 /*
- * A mock authorization server implemented with wiremock and a JOSE library
+ * A mock authorization server implemented with an HTTP server and a JOSE library
  */
 export class MockAuthorizationServer {
 
-    private readonly baseUrl: string;
+    private application: Application;
+    private httpsServer: https.Server | null;
     private readonly algorithm: string;
     private keypair!: GenerateKeyPairResult;
     private keyId: string;
+    private keysJson: string;
 
     public constructor() {
 
-        this.baseUrl = 'https://login.authsamples-dev.com:447/__admin/mappings';
+        this.application = express();
+        this.httpsServer = null;
         this.algorithm = 'ES256';
         this.keyId = randomUUID();
+        this.keysJson = '';
+        this.getJwks = this.getJwks.bind(this);
     }
 
     /*
@@ -36,30 +44,28 @@ export class MockAuthorizationServer {
                 jwk,
             ],
         };
-        const keysJson = JSON.stringify(keys);
+        this.keysJson = JSON.stringify(keys);
 
-        // Publish the public keys at a Wiremock JWKS URI
-        const stubbedResponse = {
-            id: this.keyId,
-            priority: 1,
-            request: {
-                method: 'GET',
-                url: '/.well-known/jwks.json'
-            },
-            response: {
-                status: 200,
-                body: keysJson,
-            },
+        // Load certificate details
+        const pfxFile = await readFile('./certs/authsamples-dev.ssl.p12');
+        const serverOptions = {
+            pfx: pfxFile,
+            passphrase: 'Password1',
         };
 
-        await this.register(stubbedResponse);
+        // Start listening over HTTPS
+        console.log('4');
+        this.application.get('/.well-known/jwks.json', this.getJwks);
+        this.httpsServer = https.createServer(serverOptions, this.application);
+        this.httpsServer.listen(447);
+        console.log('5');
     }
 
     /*
      * Free resources at the end of the test run
      */
-    public async stop(): Promise<void> {
-        await this.unregister(this.keyId);
+    public stop(): void {
+        this.httpsServer?.close();
     }
 
     /*
@@ -70,7 +76,8 @@ export class MockAuthorizationServer {
         keypair: GenerateKeyPairResult | null = null): Promise<string> {
 
         const keypairToUse = keypair || this.keypair;
-        return await new SignJWT( {
+
+        const payload: JWTPayload = {
             iss: options.issuer,
             aud: options.audience,
             scope: options.scope,
@@ -79,43 +86,20 @@ export class MockAuthorizationServer {
             sub: options.subject,
             manager_id: options.managerId,
             role: options.role,
-        })
+        };
+
+        return await new SignJWT(payload)
             .setProtectedHeader( { kid: this.keyId, alg: this.algorithm } )
             .setExpirationTime(options.expiryTime)
             .sign(keypairToUse.privateKey);
     }
 
     /*
-     * Add a stubbed response to Wiremock via its Admin API
+     * Serve the JSON web keyset with public keys
      */
-    private async register(stubbedResponse: any): Promise<void> {
+    private getJwks(request: Request, response: Response): void {
 
-        const options: RequestInit = {
-            method: 'POST',
-            body: JSON.stringify(stubbedResponse),
-            headers: {
-                'content-type': 'application/json',
-            },
-        };
-
-        const response = await fetch(this.baseUrl, options);
-        if (response.status !== 201) {
-            throw new Error(`Failed to add Wiremock stub: status ${response.status}`);
-        }
-    }
-
-    /*
-     * Delete a stubbed response from Wiremock via its Admin API
-     */
-    private async unregister(id: string): Promise<void> {
-
-        const options: RequestInit = {
-            method: 'DELETE',
-        };
-
-        const response = await fetch(`${this.baseUrl}/${id}`, options);
-        if (response.status !== 200) {
-            throw new Error(`Failed to delete Wiremock stub: status ${response.status}`);
-        }
+        response.setHeader('content-type', 'application/json');
+        response.status(200).send(this.keysJson);
     }
 }
