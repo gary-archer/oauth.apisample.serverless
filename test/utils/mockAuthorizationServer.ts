@@ -54,11 +54,9 @@ export class MockAuthorizationServer {
         };
 
         // Start listening over HTTPS
-        console.log('4');
         this.application.get('/.well-known/jwks.json', this.getJwks);
         this.httpsServer = https.createServer(serverOptions, this.application);
         this.httpsServer.listen(447);
-        console.log('5');
     }
 
     /*

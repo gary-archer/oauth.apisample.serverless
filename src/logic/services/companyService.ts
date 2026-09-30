@@ -2,10 +2,8 @@ import {inject, injectable} from 'inversify';
 import {ClaimsPrincipal} from '../../plumbing/claims/claimsPrincipal';
 import {ClaimsReader} from '../../plumbing/claims/claimsReader';
 import {CustomClaimNames} from '../../plumbing/claims/customClaimNames';
-import {BASETYPES} from '../../plumbing/dependencies/baseTypes';
 import {ClientError} from '../../plumbing/errors/clientError';
 import {ErrorFactory} from '../../plumbing/errors/errorFactory';
-import {APPLICATIONTYPES} from '../dependencies/applicationTypes';
 import {Company} from '../entities/company';
 import {CompanyTransactions} from '../entities/companyTransactions';
 import {ErrorCodes} from '../errors/errorCodes';
@@ -21,8 +19,8 @@ export class CompanyService {
     private readonly claims: ClaimsPrincipal;
 
     public constructor(
-        @inject(APPLICATIONTYPES.CompanyRepository) repository: CompanyRepository,
-        @inject(BASETYPES.ClaimsPrincipal) claims: ClaimsPrincipal) {
+        @inject(CompanyRepository) repository: CompanyRepository,
+        @inject(ClaimsPrincipal) claims: ClaimsPrincipal) {
 
         this.repository = repository;
         this.claims = claims;

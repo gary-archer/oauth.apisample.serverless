@@ -19,8 +19,8 @@ export class OAuthFilter {
     private readonly extraClaimsProvider: ExtraClaimsProvider;
 
     public constructor(
-        @inject(BASETYPES.ClaimsCache) cache: ClaimsCache,
-        @inject(BASETYPES.AccessTokenValidator) accessTokenValidator: AccessTokenValidator,
+        @inject(ClaimsCache) cache: ClaimsCache,
+        @inject(AccessTokenValidator) accessTokenValidator: AccessTokenValidator,
         @inject(BASETYPES.ExtraClaimsProvider) extraClaimsProvider: ExtraClaimsProvider) {
 
         this.cache = cache;

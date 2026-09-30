@@ -1,5 +1,4 @@
 import {Container} from 'inversify';
-import {APPLICATIONTYPES} from '../../logic/dependencies/applicationTypes';
 import {CompanyRepository} from '../../logic/repositories/companyRepository';
 import {UserRepository} from '../../logic/repositories/userRepository';
 import {CompanyService} from '../../logic/services/companyService';
@@ -67,15 +66,15 @@ export class CompositionRoot {
             .toConstantValue(this.configuration.oauth);
 
         // Register an object to validate JWT access tokens
-        this.parentContainer.bind<AccessTokenValidator>(BASETYPES.AccessTokenValidator)
-            .to(AccessTokenValidator).inTransientScope();
+        this.parentContainer.bind(AccessTokenValidator)
+            .toSelf().inTransientScope();
 
         // The filter deals with finalizing the claims principal
-        this.parentContainer.bind<OAuthFilter>(BASETYPES.OAuthFilter)
-            .to(OAuthFilter).inTransientScope();
+        this.parentContainer.bind(OAuthFilter)
+            .toSelf().inTransientScope();
 
         // Also register a singleton to cache token signing public keys
-        this.parentContainer.bind<JwksRetriever>(BASETYPES.JwksRetriever)
+        this.parentContainer.bind(JwksRetriever)
             .toConstantValue(new JwksRetriever(this.configuration.oauth));
 
         return this;
@@ -88,7 +87,7 @@ export class CompositionRoot {
 
         // Register the singleton cache
         const claimsCache = new ClaimsCache(this.configuration.oauth.claimsCacheTimeToLiveMinutes);
-        this.parentContainer.bind<ClaimsCache>(BASETYPES.ClaimsCache)
+        this.parentContainer.bind(ClaimsCache)
             .toConstantValue(claimsCache);
 
         // Register the extra claims provider
@@ -101,13 +100,13 @@ export class CompositionRoot {
      */
     private registerApplicationDependencies(): void {
 
-        this.parentContainer.bind<CompanyService>(APPLICATIONTYPES.CompanyService)
-            .to(CompanyService).inTransientScope();
-        this.parentContainer.bind<CompanyRepository>(APPLICATIONTYPES.CompanyRepository)
-            .to(CompanyRepository).inTransientScope();
-        this.parentContainer.bind<UserRepository>(APPLICATIONTYPES.UserRepository)
-            .to(UserRepository).inTransientScope();
-        this.parentContainer.bind<JsonFileReader>(APPLICATIONTYPES.JsonFileReader)
-            .to(JsonFileReader).inTransientScope();
+        this.parentContainer.bind(CompanyService)
+            .toSelf().inTransientScope();
+        this.parentContainer.bind(CompanyRepository)
+            .toSelf().inTransientScope();
+        this.parentContainer.bind(UserRepository)
+            .toSelf().inTransientScope();
+        this.parentContainer.bind(JsonFileReader)
+            .toSelf().inTransientScope();
     }
 }

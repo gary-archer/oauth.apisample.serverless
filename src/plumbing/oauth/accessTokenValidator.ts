@@ -23,7 +23,7 @@ export class AccessTokenValidator {
     public constructor(
         @inject(BASETYPES.OAuthConfiguration) configuration: OAuthConfiguration,
         @inject(BASETYPES.LogEntry) logEntry: LogEntryImpl,
-        @inject(BASETYPES.JwksRetriever) jwksRetriever: JwksRetriever) {
+        @inject(JwksRetriever) jwksRetriever: JwksRetriever) {
 
         this.configuration = configuration;
         this.logEntry = logEntry;

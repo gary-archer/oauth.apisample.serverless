@@ -3,7 +3,6 @@ import {APIGatewayProxyResult} from 'aws-lambda';
 import {ClaimsPrincipal} from '../claims/claimsPrincipal';
 import {ClaimsReader} from '../claims/claimsReader';
 import {OAuthConfiguration} from '../configuration/oauthConfiguration';
-import {BASETYPES} from '../dependencies/baseTypes';
 import {BaseErrorCodes} from '../errors/baseErrorCodes';
 import {ErrorFactory} from '../errors/errorFactory';
 import {OAuthFilter} from '../oauth/oauthFilter';
@@ -28,11 +27,11 @@ export class AuthenticationMiddleware implements
     public async before(request: middy.Request<APIGatewayProxyExtendedEvent, APIGatewayProxyResult>): Promise<void> {
 
         // Get the filter and call it to do the work and return claims
-        const filter =  request.event.container.get<OAuthFilter>(BASETYPES.OAuthFilter);
+        const filter =  request.event.container.get(OAuthFilter);
         const claimsPrincipal = await filter.execute(request.event);
 
         // Bind claims to make them injectable
-        request.event.container.bind<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal).toConstantValue(claimsPrincipal);
+        request.event.container.bind(ClaimsPrincipal).toConstantValue(claimsPrincipal);
 
         // The sample API requires the same scope for all endpoints, so enforce it here
         // In AWS this is a URL value of the form https://api.authsamples.com/investments

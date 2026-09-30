@@ -1,7 +1,6 @@
 import {APIGatewayProxyResult} from 'aws-lambda';
 import 'reflect-metadata';
 import {ClaimsPrincipal} from '../../plumbing/claims/claimsPrincipal';
-import {BASETYPES} from '../../plumbing/dependencies/baseTypes';
 import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent';
 import {ResponseWriter} from '../../plumbing/utilities/responseWriter';
 import {LambdaInstance} from '../startup/lambdaInstance';
@@ -12,7 +11,7 @@ import {LambdaInstance} from '../startup/lambdaInstance';
 const baseHandler = async (event: APIGatewayProxyExtendedEvent): Promise<APIGatewayProxyResult> => {
 
     // Return product specific user info from the API to clients
-    const claims = event.container.get<ClaimsPrincipal>(BASETYPES.ClaimsPrincipal);
+    const claims = event.container.get(ClaimsPrincipal);
     const userInfo = {
         title: claims.getExtra().title,
         regions: claims.getExtra().regions,

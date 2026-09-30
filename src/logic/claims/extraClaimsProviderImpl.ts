@@ -4,7 +4,6 @@ import {CustomClaimNames} from '../../plumbing/claims/customClaimNames';
 import {ExtraClaims} from '../../plumbing/claims/extraClaims';
 import {ExtraClaimsProvider} from '../../plumbing/claims/extraClaimsProvider';
 import {APIGatewayProxyExtendedEvent} from '../../plumbing/utilities/apiGatewayExtendedProxyEvent';
-import {APPLICATIONTYPES} from '../dependencies/applicationTypes';
 import {UserRepository} from '../repositories/userRepository';
 
 /*
@@ -18,7 +17,7 @@ export class ExtraClaimsProviderImpl implements ExtraClaimsProvider {
     public async lookupExtraClaims(jwtClaims: JWTPayload, event: APIGatewayProxyExtendedEvent): Promise<any> {
 
         // Get an object to look up user information
-        const userRepository = event.container.get<UserRepository>(APPLICATIONTYPES.UserRepository);
+        const userRepository = event.container.get(UserRepository);
 
         // Look up values using the manager ID, a business user identity
         const managerId = ClaimsReader.getStringClaim(jwtClaims, CustomClaimNames.managerId);
