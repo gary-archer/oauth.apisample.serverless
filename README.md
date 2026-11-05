@@ -71,7 +71,7 @@ https://github.com/gary-archer/oauth.blog/tree/master/public/posts/developer-ssl
 
 ### Run the Code
 
-Install Node.js 24+, then run the API with the following command:
+Install Node.js 26+, then run the API with the following command:
 
 ```bash
 ./start.sh

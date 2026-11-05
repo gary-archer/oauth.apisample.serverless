@@ -10,7 +10,7 @@ stages:
 # AWS base details
 provider:
   name: aws
-  runtime: nodejs24.x
+  runtime: nodejs26.x
   region: eu-west-2
   stage: deployed
 

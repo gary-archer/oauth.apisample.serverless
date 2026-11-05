@@ -6,14 +6,14 @@
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": ">=24"
+    "node": ">=26"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^29.0.3",
     "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-terser": "^1.0.0",
-    "@types/node": "^24.13.4",
-    "rollup": "^4.63.1",
+    "@types/node": "^26.6.6",
+    "rollup": "^4.67.4",
     "rollup-plugin-esbuild": "^6.2.1"
   }
 }
