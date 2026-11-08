@@ -44,17 +44,18 @@ You can aggregate request logs and audit logs to Elasticsearch and run [Technica
 
 ## Local Development Quick Start
 
-To run the code sample locally you must configure some infrastructure before you run the code.
+The API uses [Real World OAuth Development URLs](https://github.com/gary-archer/oauth.blog/blob/master/public/posts/developer-ssl-setup.mdx#real-world-oauth-development-urls) on a local computer.  
+You must use admin permissions to configure infrastructure before you run the code.  
 
-### Configure DNS and SSL
+### Infrastructure Setup
 
-Configure custom development domains by adding these DNS entries to your hosts file:
+Add DNS entries to your `/etc/hosts` file:
 
 ```bash
 127.0.0.1 localhost api.authsamples-dev.com login.authsamples-dev.com
 ```
 
-Install OpenSSL 3+ if required, create a secrets folder, then create development certificates:
+Make sure OpenSSL 3+ is installed, specify a secrets folder, then create development certificates:
 
 ```bash
 export SECRETS_FOLDER="$HOME/secrets"
@@ -62,16 +63,21 @@ mkdir -p "$SECRETS_FOLDER"
 ./certs/create.sh
 ```
 
-If required, configure [Node.js SSL trust](
-https://github.com/gary-archer/oauth.blog/tree/master/public/posts/developer-ssl-setup.mdx#trusting-a-root-certificate-in-nodejs-apis) for the root CA at the following location:
+Configure [HTTPS Trust](https://github.com/gary-archer/oauth.blog/blob/master/public/posts/developer-ssl-setup.mdx#configure-operating-system-trust) for the SSL root certificate at the following location:
 
 ```text
 ./certs/authsamples-dev.ca.crt
 ```
 
+Ensure that Node.js 26+ is installed, then grant it access to listen on port 443:
+
+```bash
+sudo setcap 'cap_net_bind_service=+ep' $(which node)
+```
+
 ### Run the Code
 
-Install Node.js 26+, then run the API with the following command:
+Then run the API, which does not require admin permissions:
 
 ```bash
 ./start.sh
