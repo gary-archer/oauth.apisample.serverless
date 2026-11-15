@@ -1,5 +1,5 @@
 /*
- * A list of API specific error codes
+ * Error codes to represent error causes
  */
 export class ErrorCodes {
 
