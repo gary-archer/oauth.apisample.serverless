@@ -12,15 +12,12 @@ import {MockTokenOptions} from './utils/mockTokenOptions.js';
  */
 describe('Load Test', () => {
 
-    // Use an HTTP proxy if required
-    const useProxy = false;
-
     // Create the mock authorization server
-    const authorizationServer = new MockAuthorizationServer(useProxy);
+    const authorizationServer = new MockAuthorizationServer();
 
     // Create the API client
     const apiBaseUrl = 'https://api.authsamples-dev.com:446';
-    const apiClient = new ApiClient(apiBaseUrl, useProxy);
+    const apiClient = new ApiClient(apiBaseUrl);
 
     // Create a delegation ID to represent the load test session
     const delegationId = randomUUID();

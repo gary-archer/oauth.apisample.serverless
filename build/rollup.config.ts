@@ -12,12 +12,12 @@ const isDevelopment = process.env.ROLLUP_WATCH === 'true';
 const outputFolder = 'dist';
 
 // Export a rollup configuration for each lambda file
-const lambdaFilenames = fs.readdirSync('./src/host/lambda');
+const lambdaFilenames = fs.readdirSync('./src/lambda');
 export default lambdaFilenames.map((filename: string) => {
 
     const options: RollupOptions = {
 
-        input: `./src/host/lambda/${filename}`,
+        input: `./src/lambda/${filename}`,
         output: {
 
             // Output ECMAScript modules

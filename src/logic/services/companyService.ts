@@ -1,13 +1,13 @@
 import {inject, injectable} from 'inversify';
-import {ClaimsPrincipal} from '../../plumbing/claims/claimsPrincipal';
-import {ClaimsReader} from '../../plumbing/claims/claimsReader';
-import {CustomClaimNames} from '../../plumbing/claims/customClaimNames';
-import {ClientError} from '../../plumbing/errors/clientError';
-import {ErrorFactory} from '../../plumbing/errors/errorFactory';
+import {ClaimsPrincipal} from '../../middleware/claims/claimsPrincipal';
+import {ClaimsReader} from '../../middleware/claims/claimsReader';
+import {CustomClaimNames} from '../../middleware/claims/customClaimNames';
+import {ClientError} from '../../middleware/errors/clientError';
+import {ErrorCodes} from '../../middleware/errors/errorCodes';
+import {ErrorFactory} from '../../middleware/errors/errorFactory';
 import {Company} from '../entities/company';
-import {CompanyTransactions} from '../entities/companyTransactions';
-import {ErrorCodes} from '../errors/errorCodes';
 import {CompanyRepository} from '../repositories/companyRepository';
+import {CompanyTransactions} from '../entities/companyTransactions';
 
 /*
  * The service class applies business authorization

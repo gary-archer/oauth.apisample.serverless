@@ -1,0 +1,61 @@
+import middy from '@middy/core';
+import {APIGatewayProxyResult} from 'aws-lambda';
+import {INTERFACES} from '../../dependencies/interfaces';
+import {APIGatewayProxyExtendedEvent} from '../../utilities/apiGatewayExtendedProxyEvent';
+import {LogEntryImpl} from '../logging/logEntryImpl';
+import {LoggerFactoryImpl} from '../logging/loggerFactoryImpl';
+
+/*
+ * A class to log API requests as JSON objects so that we get structured logging output
+ */
+export class LoggerMiddleware implements middy.MiddlewareObj<APIGatewayProxyExtendedEvent, APIGatewayProxyResult> {
+
+    private readonly loggerFactory: LoggerFactoryImpl;
+
+    public constructor(loggerFactory: LoggerFactoryImpl) {
+        this.loggerFactory = loggerFactory;
+        this.setupCallbacks();
+    }
+
+    /*
+     * Start logging when a request begins
+     */
+    public before(request: middy.Request<APIGatewayProxyExtendedEvent, APIGatewayProxyResult>): void {
+
+        // Create the log entry for the current request
+        const logEntry = this.loggerFactory.createLogEntry();
+
+        // Bind it to the container
+        request.event.container.bind<LogEntryImpl>(INTERFACES.LogEntry).toConstantValue(logEntry);
+
+        // Start request logging
+        logEntry.start(request.event, request.context);
+    }
+
+    /*
+     * Finish logging after normal completion
+     */
+    public after(request: middy.Request<APIGatewayProxyExtendedEvent, APIGatewayProxyResult>): void {
+
+        // Get the log entry for this request
+        const logEntry = request.event.container.get<LogEntryImpl>(INTERFACES.LogEntry);
+
+        // End logging
+        if (request.response && request.response.statusCode) {
+            logEntry.setResponseStatus(request.response.statusCode);
+        }
+        logEntry.end();
+
+        // Output the log data
+        this.loggerFactory.getRequestLogger()?.write(logEntry.getRequestLog());
+        this.loggerFactory.getAuditLogger()?.write(logEntry.getAuditLog());
+    }
+
+    /*
+     * Plumbing to ensure that the this parameter is available in async callbacks
+     */
+    private setupCallbacks(): void {
+        this.before = this.before.bind(this);
+        this.after = this.after.bind(this);
+    }
+}

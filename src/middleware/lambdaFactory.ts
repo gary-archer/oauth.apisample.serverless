@@ -1,0 +1,94 @@
+import middy from '@middy/core';
+import {APIGatewayProxyResult, Context} from 'aws-lambda';
+import {Container} from 'inversify';
+import fs from 'fs/promises';
+import {Configuration} from '../configuration/configuration';
+import {CompositionRoot} from '../dependencies/compositionRoot';
+import {APIGatewayProxyExtendedEvent} from '../utilities/apiGatewayExtendedProxyEvent';
+import {ResponseWriter} from '../utilities/responseWriter';
+import {ChildContainerMiddleware} from './dependencies/childContainerMiddleware';
+import {CustomHeaderMiddleware} from './errors/customHeaderMiddleware';
+import {ExceptionMiddleware} from './errors/exceptionMiddleware';
+import {LoggerFactoryImpl} from './logging/loggerFactoryImpl';
+import {LoggerMiddleware} from './logging/loggerMiddleware';
+import {OAuthMiddleware} from './oauth/oauthMiddleware';
+
+/*
+ * A shorthand for the lambda handler method signature
+ */
+type LambdaHandler = (event: APIGatewayProxyExtendedEvent, context: Context) => Promise<APIGatewayProxyResult>;
+
+/*
+ * Create an enriched lambda function with middleware
+ */
+export class LambdaFactory {
+
+    /*
+     * Enrich the base handler with middleware to manage cross cutting concerns
+     */
+    public async create(baseHandler: LambdaHandler)
+        : Promise<middy.MiddyfiedHandler<APIGatewayProxyExtendedEvent, APIGatewayProxyResult> | LambdaHandler> {
+
+        const loggerFactory = new LoggerFactoryImpl();
+        try {
+
+            // Load configuration and configure logging
+            const configuration = await this.loadConfiguration();
+            loggerFactory.configure(configuration.logging);
+
+            // Create a parent container to manage dependencies and lifetimes
+            const parentContainer = new Container();
+
+            // Register dependencies with the container
+            new CompositionRoot(parentContainer)
+                .addConfiguration(configuration)
+                .register();
+
+            // Create middleware objects
+            const childContainerMiddleware = new ChildContainerMiddleware(parentContainer);
+            const loggerMiddleware = new LoggerMiddleware(loggerFactory);
+            const exceptionMiddleware = new ExceptionMiddleware(
+                loggerFactory,
+                configuration.logging,
+                configuration.oauth);
+            const oauthMiddleware = new OAuthMiddleware(configuration.oauth);
+            const customHeaderMiddleware = new CustomHeaderMiddleware(configuration.logging.apiName);
+
+            // Wrap the base handler with middleware that runs in the following sequence
+            return middy(async (event: APIGatewayProxyExtendedEvent, context: Context) => {
+                return baseHandler(event, context);
+
+            })
+                .use(childContainerMiddleware)
+                .use(loggerMiddleware)
+                .use(exceptionMiddleware)
+                .use(oauthMiddleware)
+                .use(customHeaderMiddleware);
+
+        } catch (e) {
+
+            // Handle any startup exceptions
+            return this.handleStartupError(loggerFactory, e);
+        }
+    }
+
+    /*
+     * Load the configuration JSON file
+     */
+    private async loadConfiguration(): Promise<Configuration> {
+
+        const configJson = await fs.readFile('api.config.json', 'utf8');
+        return JSON.parse(configJson) as Configuration;
+    }
+
+    /*
+     * Ensure that any startup errors are logged and then return a handler that will provide the client response
+     */
+    private handleStartupError(loggerFactory: LoggerFactoryImpl, error: any): LambdaHandler {
+
+        const clientError = loggerFactory.logStartupError(error);
+        return async () => {
+            return ResponseWriter.startupErrorResponse(500, clientError);
+        };
+    }
+}
