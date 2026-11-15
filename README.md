@@ -64,6 +64,12 @@ mkdir -p "$SECRETS_FOLDER"
 ./certs/create.sh
 ```
 
+You may need to configure [HTTPS Trust](https://github.com/gary-archer/oauth.blog/blob/master/public/posts/developer-ssl-setup.mdx#configure-operating-system-trust) for the SSL root certificate at the following location:
+
+```text
+./certs/authsamples-dev.ca.crt
+```
+
 Ensure that Node.js 26+ is installed, then grant it access to listen on port 443:
 
 ```bash
