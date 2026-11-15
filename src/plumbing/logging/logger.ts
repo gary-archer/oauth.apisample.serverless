@@ -22,7 +22,7 @@ export class Logger {
 
             // In AWS Cloudwatch we use bare JSON logging that will work best with log shippers
             // Note that the format remains readable in the Cloudwatch console
-            process.stdout.write(JSON.stringify(data));
+            process.stdout.write(JSON.stringify(data) + '\n');
         }
     }
 }
